@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  operator
+}
+
+enum ChannelType {
+  mock
+  telegram
+  instagram
+  messenger
+  whatsapp
+}
+
+enum ConsentStatus {
+  opted_in
+  opted_out
+  unknown
+}
+
+enum ConversationStatus {
+  open
+  pending
+  closed
+}
+
+enum MessageDirection {
+  inbound
+  outbound
+}
+
+enum MessageType {
+  text
+  image
+  button
+  system
+}
+
+enum TriggerType {
+  keyword
+  new_contact
+  manual
+  webhook
+}
+
+enum AutomationStepType {
+  send_message
+  add_tag
+  remove_tag
+  wait
+  condition
+  ai_reply
+  set_field
+}
+
+enum AutomationRunStatus {
+  running
+  completed
+  failed
+}
+
+enum BroadcastStatus {
+  draft
+  queued
+  sending
+  sent
+  failed
+}
+
+enum JobStatus {
+  queued
+  running
+  completed
+  failed
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  name         String
+  role         UserRole       @default(admin)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  conversations Conversation[]
+}
+
+model Channel {
+  id            String         @id @default(cuid())
+  type          ChannelType
+  name          String
+  enabled       Boolean        @default(false)
+  configJson    Json
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  contacts      Contact[]
+  conversations Conversation[]
+  messages      Message[]
+
+  @@unique([type, name])
+}
+
+model Contact {
+  id             String         @id @default(cuid())
+  channelId      String
+  externalId     String
+  displayName    String
+  username       String?
+  email          String?
+  phone          String?
+  locale         String?
+  timezone       String?
+  lastInboundAt  DateTime?
+  lastOutboundAt DateTime?
+  consentStatus  ConsentStatus  @default(unknown)
+  metadataJson   Json
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  channel        Channel        @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  conversations  Conversation[]
+  messages       Message[]
+  tags           ContactTag[]
+  automationRuns AutomationRun[]
+
+  @@unique([channelId, externalId])
+  @@index([displayName])
+  @@index([lastInboundAt])
+}
+
+model Conversation {
+  id            String             @id @default(cuid())
+  contactId     String
+  channelId     String
+  status        ConversationStatus @default(open)
+  assignedToId  String?
+  lastMessageAt DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  contact       Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  channel       Channel            @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  assignedTo    User?              @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  messages      Message[]
+  automationRuns AutomationRun[]
+
+  @@index([status])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id                String           @id @default(cuid())
+  conversationId    String
+  contactId         String
+  channelId         String
+  direction         MessageDirection
+  messageType       MessageType      @default(text)
+  text              String?
+  payloadJson       Json
+  providerMessageId String?
+  createdAt         DateTime         @default(now())
+  conversation      Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact           Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  channel           Channel          @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+}
+
+model Tag {
+  id        String       @id @default(cuid())
+  name      String       @unique
+  color     String       @default("#2563eb")
+  createdAt DateTime     @default(now())
+  contacts  ContactTag[]
+}
+
+model ContactTag {
+  contactId String
+  tagId     String
+  createdAt DateTime @default(now())
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+}
+
+model Automation {
+  id                String            @id @default(cuid())
+  name              String
+  enabled           Boolean           @default(true)
+  triggerType       TriggerType
+  triggerConfigJson Json
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  steps             AutomationStep[]
+  runs              AutomationRun[]
+}
+
+model AutomationStep {
+  id           String             @id @default(cuid())
+  automationId String
+  order        Int
+  type         AutomationStepType
+  configJson   Json
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  automation   Automation         @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@unique([automationId, order])
+}
+
+model AutomationRun {
+  id             String              @id @default(cuid())
+  automationId   String
+  contactId      String
+  conversationId String
+  status         AutomationRunStatus @default(running)
+  currentStep    Int                 @default(0)
+  logsJson       Json
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  automation     Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  contact        Contact             @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  conversation   Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Broadcast {
+  id               String          @id @default(cuid())
+  name             String
+  status           BroadcastStatus @default(draft)
+  targetConfigJson Json
+  messageJson      Json
+  scheduledAt      DateTime?
+  sentCount        Int             @default(0)
+  failedCount      Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  type        String
+  status      JobStatus @default(queued)
+  payloadJson Json
+  runAt       DateTime  @default(now())
+  attempts    Int       @default(0)
+  lastError   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, runAt])
+}
+
+model KnowledgeBaseItem {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
