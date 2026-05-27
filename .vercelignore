@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+.manychat-browser-profile/
+.manychat-playwright-profile/
+*.log
+*.png
+videos/
