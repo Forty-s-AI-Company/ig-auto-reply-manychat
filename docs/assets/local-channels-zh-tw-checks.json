@@ -1,0 +1,10 @@
+{
+  "zhSettingsPath": true,
+  "zhNewAccount": true,
+  "zhGeneral": true,
+  "zhInboxBehavior": true,
+  "zhTokenExpires": true,
+  "oldNewAccount": false,
+  "oldSettingsPath": false,
+  "oldInboxBehavior": false
+}

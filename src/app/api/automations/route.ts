@@ -1,15 +1,29 @@
 import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
+import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
 import { automationSchema } from "@/lib/validation";
+import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function GET() {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
+  const workspaceId = await getCurrentWorkspaceId();
 
   const automations = await getDb().automation.findMany({
+    where: { workspaceId },
     orderBy: { updatedAt: "desc" },
-    include: { steps: { orderBy: { order: "asc" } } },
+    include: {
+      steps: { orderBy: { order: "asc" } },
+      runs: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          contact: { select: { id: true, displayName: true, username: true } },
+          conversation: { select: { id: true, status: true } },
+        },
+      },
+    },
   });
 
   return NextResponse.json(automations);
@@ -20,11 +34,21 @@ export async function POST(request: Request) {
   if (auth.response) return auth.response;
   const parsed = automationSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid automation." }, { status: 400 });
+    return NextResponse.json({ error: "自動化資料格式不正確。" }, { status: 400 });
+  }
+  const workspaceId = await getCurrentWorkspaceId();
+  try {
+    await assertWorkspaceLimit(workspaceId, "automations");
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "已超過方案限制。" },
+      { status: 402 },
+    );
   }
 
   const automation = await getDb().automation.create({
     data: {
+      workspaceId,
       name: parsed.data.name,
       enabled: parsed.data.enabled,
       triggerType: parsed.data.triggerType,
@@ -37,7 +61,17 @@ export async function POST(request: Request) {
         })),
       },
     },
-    include: { steps: { orderBy: { order: "asc" } } },
+    include: {
+      steps: { orderBy: { order: "asc" } },
+      runs: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          contact: { select: { id: true, displayName: true, username: true } },
+          conversation: { select: { id: true, status: true } },
+        },
+      },
+    },
   });
 
   return NextResponse.json(automation);

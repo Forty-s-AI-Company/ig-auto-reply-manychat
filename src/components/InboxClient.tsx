@@ -1,69 +1,238 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  Bell,
+  Bot,
+  CalendarClock,
+  CheckCheck,
+  ChevronDown,
+  Clock,
+  Filter,
+  Heart,
+  ImageIcon,
+  Inbox,
+  MessageCircle,
+  Mic,
+  MoreVertical,
+  Send,
+  Smile,
+  User,
+  Users,
+  Video,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 
 type Tag = { id: string; name: string; color: string };
+type TeamMember = { id: string; name: string; email: string };
+type ContactFieldDefinition = { id: string; key: string; label: string; type: string };
+type ContactFieldValue = { id: string; value: string; definition: ContactFieldDefinition };
 type Conversation = {
   id: string;
   status: string;
+  assignedToId?: string | null;
+  reminderAt?: string | null;
+  isFavorite?: boolean;
+  assignedTo?: TeamMember | null;
   contact: {
     id: string;
     displayName: string;
     externalId: string;
+    username?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    consentStatus?: string;
     tags: { tag: Tag }[];
+    fieldValues?: ContactFieldValue[];
   };
-  channel: { type: string; name: string };
-  messages: { id: string; direction: string; text: string | null; createdAt: string }[];
+  channel: { id: string; type: string; name: string };
+  unreadCount?: number;
+  lastReadAt?: string | null;
+  messages: {
+    id: string;
+    direction: string;
+    messageType?: string;
+    text: string | null;
+    createdAt: string;
+    payloadJson?: unknown;
+  }[];
 };
+
+type InboxCategory = "all" | "unassigned" | "assigned" | "reminders" | "favorites" | "hot" | "partners";
+type StatusFilter = "open" | "all";
+
+const NOT_SET = "未設定";
+const HOT_TAG = "熱門名單";
+const PARTNER_TAG = "合作夥伴";
+
+function latestMessage(conversation: Conversation) {
+  return conversation.messages[conversation.messages.length - 1]?.text || "尚無訊息";
+}
+
+function latestAt(conversation: Conversation) {
+  const value = conversation.messages[conversation.messages.length - 1]?.createdAt;
+  if (!value) return "";
+  return new Intl.DateTimeFormat("zh-TW", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+
+function dateLabel(value: string) {
+  return new Intl.DateTimeFormat("zh-TW", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function initials(name: string) {
+  return name.trim().slice(0, 1).toUpperCase() || "U";
+}
+
+function hasInboundUnread(conversation: Conversation) {
+  return Number(conversation.unreadCount || 0) > 0;
+}
+
+function hasTag(conversation: Conversation, tagName: string) {
+  return conversation.contact.tags.some(({ tag }) => tag.name === tagName);
+}
 
 export function InboxClient({
   initialConversations,
   tags,
+  teamMembers,
+  contactFields,
+  currentUserId,
 }: {
   initialConversations: Conversation[];
   tags: Tag[];
+  teamMembers: TeamMember[];
+  contactFields: ContactFieldDefinition[];
+  currentUserId: string;
 }) {
   const [conversations, setConversations] = useState(initialConversations);
+  const [fieldDefinitions, setFieldDefinitions] = useState(contactFields);
   const [selectedId, setSelectedId] = useState(initialConversations[0]?.id || "");
+  const [query, setQuery] = useState("");
   const [text, setText] = useState("");
+  const [activeTab, setActiveTab] = useState<"reply" | "note">("reply");
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [category, setCategory] = useState<InboxCategory>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("open");
+  const [unreadOnly, setUnreadOnly] = useState(false);
+  const [sortNewest, setSortNewest] = useState(true);
+  const [channelFilter, setChannelFilter] = useState<"all" | "instagram">("all");
+  const [showFilterHint, setShowFilterHint] = useState(false);
+
+  const hotTag = tags.find((tag) => tag.name === HOT_TAG);
+  const partnerTag = tags.find((tag) => tag.name === PARTNER_TAG);
+
+  useEffect(() => {
+    function handleSearch(event: Event) {
+      setQuery(String((event as CustomEvent).detail || ""));
+    }
+    window.addEventListener("inbox-search", handleSearch);
+    return () => window.removeEventListener("inbox-search", handleSearch);
+  }, []);
+
+  const counts = useMemo(() => {
+    return {
+      all: conversations.length,
+      unassigned: conversations.filter((conversation) => !conversation.assignedToId).length,
+      assigned: conversations.filter((conversation) => conversation.assignedToId === currentUserId).length,
+      reminders: conversations.filter((conversation) => Boolean(conversation.reminderAt)).length,
+      favorites: conversations.filter((conversation) => conversation.isFavorite).length,
+      hot: conversations.filter((conversation) => hasTag(conversation, HOT_TAG)).length,
+      partners: conversations.filter((conversation) => hasTag(conversation, PARTNER_TAG)).length,
+      unread: conversations.filter(hasInboundUnread).length,
+    };
+  }, [conversations, currentUserId]);
+
+  const filteredConversations = useMemo(() => {
+    const keyword = query.trim().toLowerCase();
+    return conversations
+      .filter((conversation) => {
+        if (category === "unassigned" && conversation.assignedToId) return false;
+        if (category === "assigned" && conversation.assignedToId !== currentUserId) return false;
+        if (category === "reminders" && !conversation.reminderAt) return false;
+        if (category === "favorites" && !conversation.isFavorite) return false;
+        if (category === "hot" && !hasTag(conversation, HOT_TAG)) return false;
+        if (category === "partners" && !hasTag(conversation, PARTNER_TAG)) return false;
+        if (statusFilter === "open" && conversation.status !== "open") return false;
+        if (unreadOnly && !hasInboundUnread(conversation)) return false;
+        if (channelFilter === "instagram" && conversation.channel.type.toLowerCase() !== "instagram") return false;
+        if (!keyword) return true;
+        return (
+          conversation.contact.displayName.toLowerCase().includes(keyword) ||
+          conversation.contact.externalId.toLowerCase().includes(keyword) ||
+          latestMessage(conversation).toLowerCase().includes(keyword)
+        );
+      })
+      .sort((a, b) => {
+        const aTime = new Date(a.messages.at(-1)?.createdAt || 0).getTime();
+        const bTime = new Date(b.messages.at(-1)?.createdAt || 0).getTime();
+        return sortNewest ? bTime - aTime : aTime - bTime;
+      });
+  }, [category, channelFilter, conversations, currentUserId, query, sortNewest, statusFilter, unreadOnly]);
+
   const selected = useMemo(
-    () => conversations.find((conversation) => conversation.id === selectedId),
-    [conversations, selectedId],
+    () =>
+      filteredConversations.find((conversation) => conversation.id === selectedId) ||
+      filteredConversations[0] ||
+      conversations[0],
+    [filteredConversations, conversations, selectedId],
   );
 
-  async function refresh(id = selectedId) {
-    const response = await fetch(`/api/conversations/${id}`);
-    if (!response.ok) return;
-    const updated = await response.json();
+  function replaceConversation(updated: Conversation) {
     setConversations((current) =>
       current.map((conversation) => (conversation.id === updated.id ? updated : conversation)),
     );
   }
 
+  async function refresh(id = selected?.id) {
+    if (!id) return;
+    const response = await fetch(`/api/conversations/${id}`);
+    if (!response.ok) return;
+    replaceConversation(await response.json());
+  }
+
+  async function updateConversation(payload: Partial<Pick<Conversation, "status" | "assignedToId" | "reminderAt" | "isFavorite" | "lastReadAt">>) {
+    if (!selected) return;
+    const response = await fetch(`/api/conversations/${selected.id}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      alert(data.error || "對話更新失敗。");
+      return;
+    }
+    replaceConversation(await response.json());
+  }
+
   async function sendMessage() {
     if (!selected || !text.trim()) return;
-    const response = await fetch(`/api/conversations/${selected.id}/messages`, {
+    const endpoint =
+      activeTab === "note"
+        ? `/api/conversations/${selected.id}/notes`
+        : `/api/conversations/${selected.id}/messages`;
+    const response = await fetch(endpoint, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ text }),
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      alert(data.error || "送出失敗");
+      alert(data.error || "訊息傳送失敗，請確認 Instagram 連線狀態。");
       return;
     }
     setText("");
     await refresh(selected.id);
   }
 
-  async function updateStatus(status: string) {
+  async function markRead() {
     if (!selected) return;
-    await fetch(`/api/conversations/${selected.id}`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    await refresh(selected.id);
+    await updateConversation({ lastReadAt: new Date().toISOString() });
   }
 
   async function addTag(tagId: string) {
@@ -82,115 +251,593 @@ export function InboxClient({
     await refresh(selected.id);
   }
 
+  async function toggleSystemTag(tag: Tag | undefined) {
+    if (!selected || !tag) return;
+    if (selected.contact.tags.some((item) => item.tag.id === tag.id)) {
+      await removeTag(tag.id);
+    } else {
+      await addTag(tag.id);
+    }
+  }
+
+  function addReminder(minutes: number) {
+    // 由使用者點擊提醒選單時才計算時間，並立即寫回後端保存。
+    // eslint-disable-next-line react-hooks/purity
+    const reminderAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
+    updateConversation({ reminderAt });
+    setReminderOpen(false);
+    setCategory("reminders");
+  }
+
   return (
-    <div className="grid min-h-[70vh] gap-4 lg:grid-cols-[320px_1fr]">
-      <aside className="rounded-lg border border-zinc-800 bg-zinc-900">
-        <div className="border-b border-zinc-800 px-4 py-3 font-medium">Conversations</div>
-        <div className="divide-y divide-zinc-800">
-          {conversations.map((conversation) => (
-            <button
-              key={conversation.id}
-              type="button"
-              onClick={() => setSelectedId(conversation.id)}
-              className={`block w-full px-4 py-3 text-left text-sm hover:bg-zinc-800 ${
-                selectedId === conversation.id ? "bg-zinc-800" : ""
-              }`}
-            >
-              <div className="flex justify-between">
-                <span className="font-medium">{conversation.contact.displayName}</span>
-                <span className="text-xs text-zinc-500">{conversation.status}</span>
-              </div>
-              <p className="mt-1 truncate text-zinc-400">
-                {conversation.messages[0]?.text || "沒有訊息"}
-              </p>
-            </button>
-          ))}
-        </div>
-      </aside>
-      <section className="rounded-lg border border-zinc-800 bg-zinc-900">
-        {selected ? (
-          <div className="flex h-full flex-col">
-            <div className="border-b border-zinc-800 px-4 py-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h2 className="font-semibold">{selected.contact.displayName}</h2>
-                  <p className="text-sm text-zinc-400">
-                    {selected.channel.type} · {selected.contact.externalId}
-                  </p>
-                </div>
-                <select
-                  value={selected.status}
-                  onChange={(event) => updateStatus(event.target.value)}
-                  className="rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm"
-                >
-                  <option value="open">open</option>
-                  <option value="pending">pending</option>
-                  <option value="closed">closed</option>
-                </select>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                {selected.contact.tags.map(({ tag }) => (
-                  <button
-                    key={tag.id}
-                    type="button"
-                    onClick={() => removeTag(tag.id)}
-                    className="rounded-full px-2 py-1 text-xs"
-                    style={{ backgroundColor: tag.color }}
-                    title="點擊移除 tag"
-                  >
-                    {tag.name}
-                  </button>
-                ))}
-                <select
-                  onChange={(event) => addTag(event.target.value)}
-                  value=""
-                  className="rounded-md border border-zinc-700 bg-zinc-950 px-2 py-1 text-xs"
-                >
-                  <option value="">加 tag</option>
-                  {tags.map((tag) => (
-                    <option key={tag.id} value={tag.id}>
-                      {tag.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+    <div className="flex h-[calc(100vh-100px)] min-h-0 flex-col overflow-hidden rounded-lg border border-[#d7dbe0] bg-white text-[#111827]">
+      <div className="grid min-h-0 flex-1 grid-cols-[224px_minmax(0,1fr)]">
+        <aside className="border-r border-[#d7dbe0] bg-[#f7f7f7]">
+          <div className="space-y-1 p-3 text-sm">
+            <InboxNavItem active={category === "all"} icon={<Inbox className="h-4 w-4" />} label="全部對話" count={counts.all} onClick={() => setCategory("all")} />
+            <InboxNavItem active={category === "unassigned"} icon={<Bell className="h-4 w-4" />} label="未指派" count={counts.unassigned} dot onClick={() => setCategory("unassigned")} />
+            <InboxNavItem active={category === "assigned"} icon={<User className="h-4 w-4" />} label="指派給我" count={counts.assigned} onClick={() => setCategory("assigned")} />
+            <InboxNavItem active={category === "reminders"} icon={<Clock className="h-4 w-4" />} label="提醒" count={counts.reminders} onClick={() => setCategory("reminders")} />
+          </div>
+
+          <div className="border-t border-[#e4e7ec] px-3 py-4">
+            <div className="mb-2 flex items-center justify-between text-xs font-medium text-[#667085]">
+              <span>標籤</span>
+              <span className="text-base leading-none">+</span>
             </div>
-            <div className="flex-1 space-y-3 overflow-auto p-4">
-              {[...selected.messages].map((message) => (
-                <div
-                  key={message.id}
-                  className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-                    message.direction === "outbound"
-                      ? "ml-auto bg-cyan-600 text-white"
-                      : "bg-zinc-800 text-zinc-100"
-                  }`}
-                >
-                  <p>{message.text}</p>
-                  <p className="mt-1 text-xs opacity-70">
-                    {new Date(message.createdAt).toLocaleString("zh-TW")}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-2 border-t border-zinc-800 p-4">
-              <input
-                value={text}
-                onChange={(event) => setText(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") sendMessage();
-                }}
-                className="flex-1 rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2"
-                placeholder="輸入手動回覆"
-              />
-              <button onClick={sendMessage} className="rounded-md bg-cyan-500 px-4 py-2 text-zinc-950">
-                送出
-              </button>
+            <div className="space-y-1 text-sm">
+              <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => setCategory("favorites")} />
+              <InboxNavItem active={category === "hot"} icon={<span className="text-base">🔥</span>} label="熱門名單" count={counts.hot} onClick={() => setCategory("hot")} />
+              <InboxNavItem active={category === "partners"} icon={<span className="text-base">🤝</span>} label="合作夥伴" count={counts.partners} onClick={() => setCategory("partners")} />
             </div>
           </div>
-        ) : (
-          <p className="p-6 text-sm text-zinc-500">目前沒有 conversation。</p>
-        )}
-      </section>
+
+          <div className="border-t border-[#e4e7ec] px-3 py-4">
+            <p className="mb-2 text-xs font-medium text-[#667085]">團隊</p>
+            <div className="space-y-1 text-sm">
+              <InboxNavItem icon={<Users className="h-4 w-4" />} label="所有人" count={teamMembers.length} onClick={() => setCategory("all")} />
+              {teamMembers.map((member) => (
+                <InboxNavItem
+                  key={member.id}
+                  icon={<User className="h-4 w-4" />}
+                  label={member.name || member.email}
+                  count={conversations.filter((conversation) => conversation.assignedToId === member.id).length}
+                  onClick={() => {
+                    if (member.id === currentUserId) setCategory("assigned");
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <div className="flex min-h-0 min-w-0 flex-col">
+          <header className="relative flex h-14 shrink-0 items-center gap-2 border-b border-[#d7dbe0] bg-white px-5">
+            <input type="checkbox" className="mr-3 h-4 w-4 rounded border-[#d7dbe0]" aria-label="選取全部對話" />
+            <ToolbarButton active={statusFilter === "open"} icon={<MessageCircle className="h-4 w-4" />} onClick={() => setStatusFilter((current) => (current === "open" ? "all" : "open"))}>
+              {statusFilter === "open" ? "開啟對話" : "全部狀態"}
+            </ToolbarButton>
+            <ToolbarButton active={unreadOnly} onClick={() => setUnreadOnly((current) => !current)}>
+              未讀 {counts.unread > 0 ? counts.unread : ""}
+            </ToolbarButton>
+            <ToolbarButton onClick={() => setSortNewest((current) => !current)}>
+              {sortNewest ? "最新排序" : "最舊排序"}
+            </ToolbarButton>
+            <ToolbarButton active={channelFilter === "instagram"} onClick={() => setChannelFilter((current) => (current === "instagram" ? "all" : "instagram"))}>
+              {channelFilter === "instagram" ? "Instagram" : "所有渠道"}
+            </ToolbarButton>
+            <ToolbarButton active={showFilterHint} icon={<Filter className="h-4 w-4" />} onClick={() => setShowFilterHint((current) => !current)}>
+              篩選
+            </ToolbarButton>
+            {showFilterHint ? (
+              <div className="absolute left-[468px] top-11 z-20 rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-xs text-[#667085] shadow-lg">
+                目前支援狀態、未讀、排序、渠道、指派、提醒與標籤篩選。
+              </div>
+            ) : null}
+          </header>
+
+          <div className="grid min-h-0 flex-1 grid-cols-[320px_minmax(420px,1fr)_300px]">
+            <aside className="min-h-0 overflow-auto border-r border-[#d7dbe0] bg-white">
+              <div className="divide-y divide-[#eef0f2]">
+                {filteredConversations.map((conversation) => (
+                  <button
+                    key={conversation.id}
+                    type="button"
+                    onClick={() => setSelectedId(conversation.id)}
+                    className={`flex w-full gap-3 px-4 py-4 text-left hover:bg-[#f6f8fb] ${
+                      selected?.id === conversation.id ? "bg-[#f2f4f7]" : ""
+                    }`}
+                  >
+                    <Avatar name={conversation.contact.displayName} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="truncate text-sm font-semibold text-[#111827]">{conversation.contact.displayName}</p>
+                        <span className="text-xs text-[#667085]">{latestAt(conversation)}</span>
+                      </div>
+                      <p className="mt-1 truncate text-sm text-[#667085]">{latestMessage(conversation)}</p>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-[#006fe6]">
+                        <span>Instagram</span>
+                        {conversation.isFavorite ? <Heart className="h-3.5 w-3.5 fill-red-500 text-red-500" /> : null}
+                        {conversation.reminderAt ? <Clock className="h-3.5 w-3.5 text-[#667085]" /> : null}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+                {filteredConversations.length === 0 ? (
+                  <p className="px-4 py-8 text-sm text-[#667085]">目前沒有符合條件的對話。</p>
+                ) : null}
+              </div>
+            </aside>
+
+            <section className="flex min-h-0 min-w-0 flex-col bg-white">
+              {selected ? (
+                <>
+                  <div className="flex h-[58px] items-center justify-between border-b border-[#d7dbe0] px-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={selected.contact.displayName} small />
+                      <select
+                        value={selected.assignedToId || ""}
+                        onChange={(event) => updateConversation({ assignedToId: event.target.value || null })}
+                        className="rounded-md border-0 bg-transparent px-1 py-1 text-sm text-[#667085] outline-none"
+                        aria-label="指派對象"
+                      >
+                        <option value="">未指派</option>
+                        {teamMembers.map((member) => (
+                          <option key={member.id} value={member.id}>
+                            {member.name || member.email}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="h-4 w-4 text-[#98a2b3]" />
+                    </div>
+
+                    <div className="relative flex items-center gap-3 text-[#667085]">
+                      <Video className="h-5 w-5" />
+                      <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
+                        <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReminderOpen((current) => !current)}
+                        className={reminderOpen ? "rounded border border-red-500 p-1 text-[#111827]" : "p-1"}
+                        title="提醒"
+                      >
+                        <CalendarClock className="h-5 w-5" />
+                      </button>
+                      <button type="button" onClick={markRead} className="p-1" title="標記已讀">
+                        <CheckCheck className="h-5 w-5" />
+                      </button>
+                      <MoreVertical className="h-5 w-5" />
+
+                      {reminderOpen ? (
+                        <div className="absolute right-6 top-9 z-20 w-48 rounded-md border border-[#d7dbe0] bg-white py-2 text-sm shadow-xl">
+                          <p className="px-3 py-2 text-[#667085]">提醒我</p>
+                          {[
+                            { label: "20 分鐘", minutes: 20 },
+                            { label: "1 小時", minutes: 60 },
+                            { label: "6 小時", minutes: 360 },
+                            { label: "12 小時", minutes: 720 },
+                          ].map((item) => (
+                            <button key={item.label} type="button" className="block w-full px-3 py-2 text-left hover:bg-[#f2f4f7]" onClick={() => addReminder(item.minutes)}>
+                              {item.label}
+                            </button>
+                          ))}
+                          <button type="button" className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-[#f2f4f7]" onClick={() => addReminder(1440)}>
+                            <CalendarClock className="h-4 w-4" />
+                            選擇日期與時間
+                          </button>
+                          {selected.reminderAt ? (
+                            <button type="button" className="block w-full px-3 py-2 text-left text-red-600 hover:bg-[#fff1f2]" onClick={() => updateConversation({ reminderAt: null })}>
+                              清除提醒
+                            </button>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="border-b border-[#d7dbe0] px-5 py-3">
+                    <div className="inline-flex items-center gap-2 border-b-2 border-[#006fe6] pb-2 text-sm font-semibold">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-[10px] text-white">
+                        IG
+                      </span>
+                      Instagram
+                    </div>
+                  </div>
+
+                  <div className="min-h-0 flex-1 overflow-auto px-6 py-5">
+                    <p className="mb-5 text-center text-xs text-[#98a2b3]">今天</p>
+                    <div className="space-y-4">
+                      {selected.messages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={
+                            message.messageType === "system"
+                              ? "flex justify-center"
+                              : message.direction === "outbound"
+                                ? "flex justify-end"
+                                : "flex justify-start"
+                          }
+                        >
+                          <div
+                            className={`max-w-[72%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                              message.messageType === "system"
+                                ? "border border-amber-200 bg-amber-50 text-amber-900"
+                                : message.direction === "outbound"
+                                  ? "bg-[#eaf3ff] text-[#111827]"
+                                  : "bg-[#f2f4f7] text-[#111827]"
+                            }`}
+                          >
+                            {message.messageType === "system" ? (
+                              <p className="mb-1 text-xs font-semibold text-amber-700">內部備註</p>
+                            ) : null}
+                            <p className="whitespace-pre-wrap">{message.text || "空白訊息"}</p>
+                            <p className="mt-1 text-right text-[11px] text-[#98a2b3]">{dateLabel(message.createdAt)}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#d7dbe0] bg-white">
+                    <div className="flex border-b border-[#eef0f2] px-4">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("reply")}
+                        className={`px-3 py-3 text-sm ${activeTab === "reply" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                      >
+                        回覆
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("note")}
+                        className={`px-3 py-3 text-sm ${activeTab === "note" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                      >
+                        備註
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <textarea
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}
+                        className="h-20 w-full resize-none border-0 bg-white text-sm outline-none"
+                        placeholder={activeTab === "reply" ? "在這裡回覆" : "輸入內部備註"}
+                      />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-[#667085]">
+                          <Smile className="h-5 w-5" />
+                          <ImageIcon className="h-5 w-5" />
+                          <Mic className="h-5 w-5" />
+                          <Bot className="h-5 w-5" />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={sendMessage}
+                          disabled={!text.trim()}
+                          className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:bg-[#cfe2ff] disabled:text-white"
+                        >
+                          {activeTab === "note" ? "儲存內部備註" : "傳送到 Instagram"}
+                          <Send className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="p-6 text-sm text-[#667085]">目前沒有可顯示的對話。</p>
+              )}
+            </section>
+
+            <aside className="min-h-0 overflow-auto border-l border-[#d7dbe0] bg-white">
+              {selected ? (
+                <ContactPanel
+                  key={`${selected.id}:${(selected.contact.fieldValues || []).map((item) => `${item.definition.id}:${item.value}`).join("|")}`}
+                  selected={selected}
+                  tags={tags}
+                  fieldDefinitions={fieldDefinitions}
+                  hotTag={hotTag}
+                  partnerTag={partnerTag}
+                  addTag={addTag}
+                  removeTag={removeTag}
+                  toggleSystemTag={toggleSystemTag}
+                  onFieldDefinitionsChange={setFieldDefinitions}
+                  onRefresh={() => refresh(selected.id)}
+                />
+              ) : null}
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InboxNavItem({
+  icon,
+  label,
+  count,
+  active = false,
+  dot = false,
+  onClick,
+}: {
+  icon: ReactNode;
+  label: string;
+  count?: number;
+  active?: boolean;
+  dot?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left ${
+        active ? "bg-[#d7d7d7] font-semibold text-[#111827]" : "text-[#4b5563] hover:bg-[#eceff3]"
+      }`}
+    >
+      <span className="text-[#667085]">{icon}</span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {dot ? <span className="h-1.5 w-1.5 rounded-full bg-[#006fe6]" /> : null}
+      {typeof count === "number" ? <span className="text-xs text-[#667085]">{count}</span> : null}
+    </button>
+  );
+}
+
+function ToolbarButton({
+  children,
+  icon,
+  active = false,
+  onClick,
+}: {
+  children: ReactNode;
+  icon?: ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs ${
+        active
+          ? "border-[#006fe6] bg-[#eef6ff] text-[#006fe6]"
+          : "border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
+      }`}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+}
+
+function Avatar({ name, small = false }: { name: string; small?: boolean }) {
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-300 to-amber-500 font-bold text-white ${
+        small ? "h-7 w-7 text-xs" : "h-10 w-10 text-sm"
+      }`}
+    >
+      {initials(name)}
+    </div>
+  );
+}
+
+function ContactPanel({
+  selected,
+  tags,
+  fieldDefinitions,
+  hotTag,
+  partnerTag,
+  addTag,
+  removeTag,
+  toggleSystemTag,
+  onFieldDefinitionsChange,
+  onRefresh,
+}: {
+  selected: Conversation;
+  tags: Tag[];
+  fieldDefinitions: ContactFieldDefinition[];
+  hotTag?: Tag;
+  partnerTag?: Tag;
+  addTag: (tagId: string) => void;
+  removeTag: (tagId: string) => void;
+  toggleSystemTag: (tag: Tag | undefined) => void;
+  onFieldDefinitionsChange: (fields: ContactFieldDefinition[]) => void;
+  onRefresh: () => void;
+}) {
+  const selectedTagIds = new Set(selected.contact.tags.map(({ tag }) => tag.id));
+  const [newFieldLabel, setNewFieldLabel] = useState("");
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries((selected.contact.fieldValues || []).map((item) => [item.definition.id, item.value])),
+  );
+
+  async function createField() {
+    const label = newFieldLabel.trim();
+    if (!label) return;
+    const asciiKey = label
+      .normalize("NFKD")
+      .replace(/[^\w]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 40);
+    const key = /^[a-zA-Z]/.test(asciiKey) ? asciiKey : `field_${Date.now().toString(36)}`;
+    const response = await fetch("/api/contact-fields", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ key, label, type: "text" }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      alert(data.error || "新增自訂欄位失敗。");
+      return;
+    }
+    onFieldDefinitionsChange([...fieldDefinitions, data]);
+    setNewFieldLabel("");
+  }
+
+  async function saveField(definitionId: string) {
+    const response = await fetch(`/api/contacts/${selected.contact.id}/fields`, {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ definitionId, value: fieldValues[definitionId] || "" }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      alert(data.error || "儲存自訂欄位失敗。");
+      return;
+    }
+    onRefresh();
+  }
+
+  return (
+    <div className="h-full overflow-auto">
+      <div className="border-b border-[#d7dbe0] p-4 text-right">
+        <MoreVertical className="ml-auto h-5 w-5 text-[#667085]" />
+      </div>
+
+      <div className="border-b border-[#d7dbe0] px-4 py-6 text-center">
+        <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-lg bg-[#f9aa2b] text-4xl">🤖</div>
+        <p className="mt-4 text-sm text-green-700">
+          已訂閱 <span className="text-[#667085]">(取消訂閱)</span>
+        </p>
+        <p className="mt-2 text-sm text-[#667085]">聯絡時間：未知</p>
+        <p className="mt-2 text-sm text-[#667085]">{selected.contact.externalId}</p>
+        <p className="mt-2 text-sm text-[#667085]">透過 Instagram 訂閱</p>
+        <p className="mt-1 text-sm font-medium text-[#006fe6]">
+          {selected.contact.username ? `@${selected.contact.username}` : selected.contact.displayName}
+        </p>
+        <button type="button" className="mt-4 rounded-md border border-[#d7dbe0] px-3 py-2 text-xs text-[#006fe6]">
+          所有渠道紀錄
+        </button>
+      </div>
+
+      <PanelSection title="自動化">
+        <button type="button" className="h-9 w-full rounded-md border border-[#d7dbe0] text-sm">
+          暫停
+        </button>
+      </PanelSection>
+
+      <PanelSection title="快速分類">
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={() => toggleSystemTag(hotTag)} className="rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]">
+            🔥 {hotTag && selectedTagIds.has(hotTag.id) ? "移出熱門" : "加入熱門"}
+          </button>
+          <button type="button" onClick={() => toggleSystemTag(partnerTag)} className="rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]">
+            🤝 {partnerTag && selectedTagIds.has(partnerTag.id) ? "移出夥伴" : "加入夥伴"}
+          </button>
+        </div>
+      </PanelSection>
+
+      <PanelSection
+        title="聯絡人標籤"
+        action={
+          <select value="" onChange={(event) => addTag(event.target.value)} className="text-xs text-[#006fe6]">
+            <option value="">+ 新增標籤</option>
+            {tags.map((tag) => (
+              <option key={tag.id} value={tag.id}>
+                {tag.name}
+              </option>
+            ))}
+          </select>
+        }
+      >
+        <div className="flex flex-wrap gap-2">
+          {selected.contact.tags.map(({ tag }) => (
+            <button
+              key={tag.id}
+              type="button"
+              onClick={() => removeTag(tag.id)}
+              className="rounded-full px-2 py-1 text-xs text-white"
+              style={{ backgroundColor: tag.color }}
+              title="移除標籤"
+            >
+              {tag.name}
+            </button>
+          ))}
+          {selected.contact.tags.length === 0 ? <p className="text-sm text-[#98a2b3]">尚未加入標籤</p> : null}
+        </div>
+      </PanelSection>
+
+      <PanelSection title="訂閱到序列" action={<button className="text-xs text-[#006fe6]">訂閱</button>}>
+        <p className="text-sm text-[#98a2b3]">尚未訂閱序列</p>
+      </PanelSection>
+
+      <PanelSection title="訂閱來源">
+        <span className="rounded-full bg-[#eef6ff] px-3 py-1 text-sm text-[#667085]">Instagram</span>
+      </PanelSection>
+
+      <PanelSection title="系統欄位">
+        <SystemField label="名字" value={selected.contact.displayName || NOT_SET} />
+        <SystemField label="姓氏" value={NOT_SET} />
+        <SystemField label="電子郵件" value={selected.contact.email || NOT_SET} />
+        <SystemField label="電話" value={selected.contact.phone || NOT_SET} />
+      </PanelSection>
+      <PanelSection title="自訂欄位">
+        <div className="space-y-3">
+          {fieldDefinitions.map((field) => (
+            <label key={field.id} className="block text-sm">
+              <span className="mb-1 block text-[#667085]">{field.label}</span>
+              <div className="flex gap-2">
+                <input
+                  value={fieldValues[field.id] || ""}
+                  onChange={(event) => setFieldValues((current) => ({ ...current, [field.id]: event.target.value }))}
+                  className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6]"
+                />
+                <button
+                  type="button"
+                  onClick={() => saveField(field.id)}
+                  className="rounded-md border border-[#d7dbe0] px-2 py-1.5 text-xs text-[#006fe6] hover:bg-[#f8fafc]"
+                >
+                  儲存
+                </button>
+              </div>
+            </label>
+          ))}
+          {fieldDefinitions.length === 0 ? <p className="text-sm text-[#98a2b3]">尚未建立自訂欄位。</p> : null}
+          <div className="flex gap-2 border-t border-[#eef0f2] pt-3">
+            <input
+              value={newFieldLabel}
+              onChange={(event) => setNewFieldLabel(event.target.value)}
+              placeholder="新增欄位，例如：課程興趣"
+              className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6]"
+            />
+            <button
+              type="button"
+              onClick={createField}
+              className="rounded-md bg-[#006fe6] px-2 py-1.5 text-xs font-medium text-white"
+            >
+              新增
+            </button>
+          </div>
+        </div>
+      </PanelSection>
+    </div>
+  );
+}
+
+function PanelSection({
+  title,
+  action,
+  children,
+}: {
+  title: string;
+  action?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="border-b border-[#d7dbe0] p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h3 className="font-medium text-[#111827]">{title}</h3>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function SystemField({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="mb-2 rounded-full border border-[#d7dbe0] px-3 py-1.5 text-sm text-[#667085]">
+      {label}: <span className={value === NOT_SET ? "text-[#b3c7e8]" : "text-[#111827]"}>{value}</span>
     </div>
   );
 }

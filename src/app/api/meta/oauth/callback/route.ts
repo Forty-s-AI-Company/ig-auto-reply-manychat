@@ -1,0 +1,512 @@
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import {
+  buildInstagramChannelName,
+  getMetaChannelConfig,
+  toPrismaJson,
+  type MetaChannelConfig,
+} from "@/lib/channels/meta";
+import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
+import { getDb } from "@/lib/db";
+import { getDefaultWorkspaceId } from "@/lib/workspaces";
+
+export const runtime = "nodejs";
+
+const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
+const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
+const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
+const DEFAULT_GRAPH_API_VERSION = "v25.0";
+
+type MetaGraphError = {
+  error?: {
+    message?: string;
+    code?: number;
+    type?: string;
+    error_subcode?: number;
+    fbtrace_id?: string;
+  };
+};
+
+type MetaTokenResponse = MetaGraphError & {
+  access_token?: string;
+  expires_in?: number;
+};
+
+type MetaOauthMode = "instagram" | "facebook";
+
+type InstagramTokenResponse = MetaGraphError & {
+  access_token?: string;
+  user_id?: number | string;
+  expires_in?: number;
+};
+
+type InstagramProfile = MetaGraphError & {
+  id?: string;
+  user_id?: string;
+  username?: string;
+  name?: string;
+  account_type?: string;
+  profile_picture_url?: string;
+  profile_pic?: string;
+  oauthUserId?: string;
+  profileReadWarning?: string;
+};
+
+type MetaAccountPage = {
+  id: string;
+  name: string;
+  access_token?: string;
+  tasks?: string[];
+  instagram_business_account?: {
+    id: string;
+    username?: string;
+    name?: string;
+    profile_picture_url?: string;
+  };
+  connected_instagram_account?: {
+    id: string;
+    username?: string;
+  };
+};
+
+function getAppUrl(request: Request) {
+  const requestOrigin = new URL(request.url).origin;
+  const hostname = new URL(requestOrigin).hostname;
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return requestOrigin;
+  }
+  return (process.env.APP_URL || requestOrigin).replace(/\/$/, "");
+}
+
+function requiredEnv(name: string) {
+  const value = process.env[name]?.trim();
+  if (!value) {
+    throw new Error(`${name} is not configured.`);
+  }
+  return value;
+}
+
+function getOptionalEnv(...names: string[]) {
+  for (const name of names) {
+    const value = process.env[name]?.trim();
+    if (value) return value;
+  }
+  return "";
+}
+
+function requiredAnyEnv(...names: string[]) {
+  const value = getOptionalEnv(...names);
+  if (!value) throw new Error(`${names.join(" or ")} is not configured.`);
+  return value;
+}
+
+export function getInstagramAppSecret() {
+  const instagramAppId = process.env.META_INSTAGRAM_APP_ID?.trim();
+  const facebookAppId = process.env.META_APP_ID?.trim();
+  const instagramSecret = process.env.META_INSTAGRAM_APP_SECRET?.trim();
+
+  if (instagramSecret) return instagramSecret;
+  if (!instagramAppId || instagramAppId === facebookAppId) {
+    return requiredAnyEnv("META_INSTAGRAM_APP_SECRET", "META_APP_SECRET");
+  }
+
+  throw new Error("META_INSTAGRAM_APP_SECRET is required for Instagram Login because META_INSTAGRAM_APP_ID is different from META_APP_ID.");
+}
+
+async function graphGet<T>(path: string, params: Record<string, string>) {
+  const version = process.env.META_GRAPH_API_VERSION || DEFAULT_GRAPH_API_VERSION;
+  const url = new URL(`https://graph.facebook.com/${version}/${path}`);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+
+  const response = await fetch(url);
+  const data = (await response.json()) as T & MetaGraphError;
+  if (!response.ok || data.error) {
+    throw new Error(data.error?.message || "Meta Graph API request failed.");
+  }
+  return data;
+}
+
+async function instagramGraphGet<T>(path: string, params: Record<string, string>) {
+  const version = process.env.META_GRAPH_API_VERSION || DEFAULT_GRAPH_API_VERSION;
+  const url = new URL(`https://graph.instagram.com/${version}/${path}`);
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+
+  const response = await fetch(url);
+  const data = (await response.json()) as T & MetaGraphError;
+  if (!response.ok || data.error) {
+    throw new Error(data.error?.message || "Instagram Graph API request failed.");
+  }
+  return data;
+}
+
+async function instagramFormPost<T>(url: string, params: Record<string, string>) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(params),
+  });
+  const data = (await response.json()) as T & MetaGraphError;
+  if (!response.ok || data.error) {
+    const detail = data.error?.message || "Instagram OAuth request failed.";
+    const trace = data.error?.fbtrace_id ? ` fbtrace_id=${data.error.fbtrace_id}` : "";
+    throw new Error(`${detail}${trace}`);
+  }
+  return data;
+}
+
+async function graphPost<T>(path: string, params: Record<string, string>) {
+  const version = process.env.META_GRAPH_API_VERSION || DEFAULT_GRAPH_API_VERSION;
+  const response = await fetch(`https://graph.facebook.com/${version}/${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(params),
+  });
+  const data = (await response.json()) as T & MetaGraphError;
+  if (!response.ok || data.error) {
+    throw new Error(data.error?.message || "Meta Graph API request failed.");
+  }
+  return data;
+}
+
+async function exchangeCodeForInstagramToken(request: Request, code: string) {
+  const appId = requiredAnyEnv("META_INSTAGRAM_APP_ID", "META_APP_ID");
+  const appSecret = getInstagramAppSecret();
+  const redirectUri = `${getAppUrl(request)}/api/meta/oauth/callback`;
+
+  const shortToken = await instagramFormPost<InstagramTokenResponse>("https://api.instagram.com/oauth/access_token", {
+    client_id: appId,
+    client_secret: appSecret,
+    grant_type: "authorization_code",
+    redirect_uri: redirectUri,
+    code,
+  });
+
+  if (!shortToken.access_token) {
+    throw new Error("Instagram OAuth did not return an access token.");
+  }
+
+  let longToken: InstagramTokenResponse | null = null;
+  try {
+    longToken = await instagramFormPost<InstagramTokenResponse>("https://graph.instagram.com/access_token", {
+      grant_type: "ig_exchange_token",
+      client_secret: appSecret,
+      access_token: shortToken.access_token,
+    });
+  } catch {
+    longToken = null;
+  }
+
+  return {
+    accessToken: longToken?.access_token || shortToken.access_token,
+    userId: String(shortToken.user_id || ""),
+    expiresAt: new Date(Date.now() + (longToken?.expires_in || shortToken.expires_in || 60 * 24 * 60 * 60) * 1000),
+  };
+}
+
+async function getInstagramProfile(accessToken: string) {
+  const fieldAttempts = [
+    "id,user_id,username,name,account_type,profile_picture_url",
+    "id,user_id,username,name,account_type,profile_pic",
+    "id,user_id,username,name,account_type",
+  ];
+
+  let lastError: unknown;
+  for (const fields of fieldAttempts) {
+    try {
+      return await instagramGraphGet<InstagramProfile>("me", {
+        fields,
+        access_token: accessToken,
+      });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("Instagram profile request failed.");
+}
+
+async function getInstagramProfileOrFallback(accessToken: string, tokenUserId: string) {
+  try {
+    const profile = await getInstagramProfile(accessToken);
+    return { ...profile, oauthUserId: tokenUserId } satisfies InstagramProfile;
+  } catch (error) {
+    if (!tokenUserId) throw error;
+    const message = error instanceof Error ? error.message : "Instagram profile request failed.";
+    return {
+      id: tokenUserId,
+      user_id: tokenUserId,
+      oauthUserId: tokenUserId,
+      name: `ID ${tokenUserId}`,
+      profileReadWarning: message,
+    } satisfies InstagramProfile;
+  }
+}
+
+async function exchangeCodeForUserToken(request: Request, code: string) {
+  const appId = requiredEnv("META_APP_ID");
+  const appSecret = requiredEnv("META_APP_SECRET");
+  const redirectUri = `${getAppUrl(request)}/api/meta/oauth/callback`;
+
+  const shortToken = await graphGet<MetaTokenResponse>("oauth/access_token", {
+    client_id: appId,
+    client_secret: appSecret,
+    redirect_uri: redirectUri,
+    code,
+  });
+
+  if (!shortToken.access_token) {
+    throw new Error("Meta OAuth did not return a user access token.");
+  }
+
+  const longToken = await graphGet<MetaTokenResponse>("oauth/access_token", {
+    grant_type: "fb_exchange_token",
+    client_id: appId,
+    client_secret: appSecret,
+    fb_exchange_token: shortToken.access_token,
+  });
+
+  return {
+    accessToken: longToken.access_token || shortToken.access_token,
+    expiresAt: new Date(Date.now() + (longToken.expires_in || shortToken.expires_in || 60 * 24 * 60 * 60) * 1000),
+  };
+}
+
+async function getInstagramPages(userAccessToken: string) {
+  const fieldAttempts = [
+    "name,id,access_token,tasks,instagram_business_account{id,username,name,profile_picture_url},connected_instagram_account{id,username}",
+    "name,id,access_token,tasks,instagram_business_account{id,username,name},connected_instagram_account{id,username}",
+  ];
+
+  let data: { data?: MetaAccountPage[] } | null = null;
+  let lastError: unknown;
+  for (const fields of fieldAttempts) {
+    try {
+      data = await graphGet<{ data?: MetaAccountPage[] }>("me/accounts", {
+        fields,
+        access_token: userAccessToken,
+      });
+      break;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (!data) throw lastError instanceof Error ? lastError : new Error("Meta pages request failed.");
+
+  return (data.data || []).filter(
+    (page) =>
+      page.access_token &&
+      (page.instagram_business_account?.id || page.connected_instagram_account?.id),
+  );
+}
+
+async function subscribeMetaWebhooks(page: MetaAccountPage) {
+  const appId = requiredEnv("META_APP_ID");
+  const appSecret = requiredEnv("META_APP_SECRET");
+  const callbackUrl = `${(process.env.APP_URL || "").replace(/\/$/, "")}/api/webhooks/meta`;
+  const verifyToken = process.env.META_VERIFY_TOKEN || "";
+  if (!callbackUrl.startsWith("https://") || !verifyToken || !page.access_token) return;
+
+  await graphPost<{ success?: boolean }>(`${appId}/subscriptions`, {
+    object: "instagram",
+    callback_url: callbackUrl,
+    verify_token: verifyToken,
+    fields: "comments,messages,messaging_postbacks,message_reactions,messaging_seen",
+    include_values: "true",
+    access_token: `${appId}|${appSecret}`,
+  });
+
+  await graphPost<{ success?: boolean }>(`${page.id}/subscribed_apps`, {
+    subscribed_fields: "comments,messages,messaging_postbacks,message_reactions,message_reads,message_echoes",
+    access_token: page.access_token,
+  });
+}
+
+function buildChannelConfig(page: MetaAccountPage, userAccessToken: string, userTokenExpiresAt: Date): MetaChannelConfig {
+  const instagram = page.instagram_business_account || page.connected_instagram_account;
+  return {
+    loginProvider: "facebook",
+    pageId: page.id,
+    pageName: page.name,
+    userAccessToken,
+    pageAccessToken: page.access_token,
+    instagramBusinessAccountId: instagram?.id,
+    instagramUsername: instagram?.username,
+    instagramName: page.instagram_business_account?.name,
+    instagramProfilePictureUrl: page.instagram_business_account?.profile_picture_url,
+    connectedAt: new Date().toISOString(),
+    userTokenExpiresAt: userTokenExpiresAt.toISOString(),
+  };
+}
+
+function buildInstagramLoginChannelConfig(
+  profile: InstagramProfile,
+  accessToken: string,
+  userTokenExpiresAt: Date,
+): MetaChannelConfig {
+  const instagramId = String(profile.user_id || profile.id || "");
+  return {
+    loginProvider: "instagram",
+    userAccessToken: accessToken,
+    pageAccessToken: accessToken,
+    instagramBusinessAccountId: instagramId,
+    instagramOauthUserId: profile.oauthUserId,
+    instagramUsername: profile.username,
+    instagramName: profile.name,
+    instagramProfilePictureUrl: profile.profile_picture_url || profile.profile_pic,
+    profileReadWarning: profile.profileReadWarning,
+    connectedAt: new Date().toISOString(),
+    userTokenExpiresAt: userTokenExpiresAt.toISOString(),
+  };
+}
+
+async function upsertInstagramChannels(
+  pages: MetaAccountPage[],
+  userAccessToken: string,
+  userTokenExpiresAt: Date,
+  workspaceId: string,
+) {
+  const db = getDb();
+  const channels = [];
+
+  for (const page of pages) {
+    const instagram = page.instagram_business_account || page.connected_instagram_account;
+    if (!instagram || !page.access_token) continue;
+    const name = buildInstagramChannelName(instagram.username || "", page.name);
+    const existing = await db.channel.findUnique({
+      where: {
+        workspaceId_type_name: {
+          workspaceId,
+          type: "instagram",
+          name,
+        },
+      },
+      select: { id: true },
+    });
+    if (!existing) await assertWorkspaceLimit(workspaceId, "igAccounts");
+
+    const channel = await db.channel.upsert({
+      where: {
+        workspaceId_type_name: {
+          workspaceId,
+          type: "instagram",
+          name,
+        },
+      },
+      update: {
+        enabled: true,
+        configJson: toPrismaJson(buildChannelConfig(page, userAccessToken, userTokenExpiresAt)),
+      },
+      create: {
+        workspaceId,
+        type: "instagram",
+        name,
+        enabled: true,
+        configJson: toPrismaJson(buildChannelConfig(page, userAccessToken, userTokenExpiresAt)),
+      },
+    });
+    channels.push(channel);
+
+    try {
+      await subscribeMetaWebhooks(page);
+    } catch {
+      // The connection remains usable locally; surface detailed webhook issues in Meta setup logs instead.
+    }
+  }
+
+  if (channels.length > 0) {
+    await db.channel.updateMany({
+      where: { workspaceId, type: "mock" },
+      data: {
+        enabled: false,
+        configJson: { mode: "disabled_after_instagram_connection" } as Prisma.InputJsonValue,
+      },
+    });
+  }
+
+  return channels;
+}
+
+async function upsertInstagramLoginChannel(profile: InstagramProfile, accessToken: string, expiresAt: Date, workspaceId: string) {
+  const db = getDb();
+  const instagramId = String(profile.user_id || profile.id || "");
+  if (!instagramId) throw new Error("Instagram OAuth did not return an Instagram user ID.");
+
+  const name = buildInstagramChannelName(profile.username || "", profile.name || "Instagram Login");
+  const existingByName = await db.channel.findUnique({
+    where: { workspaceId_type_name: { workspaceId, type: "instagram", name } },
+    select: { id: true },
+  });
+  const instagramChannels = await db.channel.findMany({
+    where: { workspaceId, type: "instagram" },
+    select: { id: true, configJson: true },
+  });
+  const existingByInstagramId = instagramChannels.find((channel) => {
+    const config = getMetaChannelConfig(channel.configJson);
+    return (
+      config.instagramBusinessAccountId === instagramId ||
+      config.instagramBusinessAccountId === profile.oauthUserId ||
+      config.instagramOauthUserId === profile.oauthUserId
+    );
+  });
+  const existing = existingByInstagramId || existingByName;
+  if (!existing) await assertWorkspaceLimit(workspaceId, "igAccounts");
+
+  const configJson = toPrismaJson(buildInstagramLoginChannelConfig(profile, accessToken, expiresAt));
+  const channel = existing
+    ? await db.channel.update({
+        where: { id: existing.id },
+        data: { name, enabled: true, configJson },
+      })
+    : await db.channel.create({
+        data: { workspaceId, type: "instagram", name, enabled: true, configJson },
+      });
+
+  await db.channel.updateMany({
+    where: { workspaceId, type: "mock" },
+    data: {
+      enabled: false,
+      configJson: { mode: "disabled_after_instagram_connection" } as Prisma.InputJsonValue,
+    },
+  });
+
+  return channel;
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const cookieStore = await cookies();
+  const expectedState = cookieStore.get(META_OAUTH_STATE_COOKIE)?.value;
+  const workspaceId = cookieStore.get(META_OAUTH_WORKSPACE_COOKIE)?.value || (await getDefaultWorkspaceId());
+  const mode = (cookieStore.get(META_OAUTH_MODE_COOKIE)?.value === "facebook" ? "facebook" : "instagram") as MetaOauthMode;
+  cookieStore.delete(META_OAUTH_STATE_COOKIE);
+  cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
+  cookieStore.delete(META_OAUTH_MODE_COOKIE);
+
+  if (!code || !state || !expectedState || state !== expectedState) {
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=invalid_state`);
+  }
+
+  try {
+    if (mode === "instagram") {
+      const token = await exchangeCodeForInstagramToken(request, code);
+      const profile = await getInstagramProfileOrFallback(token.accessToken, token.userId);
+      const channel = await upsertInstagramLoginChannel(profile, token.accessToken, token.expiresAt, workspaceId);
+      return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=1&mode=instagram&channel=${channel.id}`);
+    }
+
+    const userToken = await exchangeCodeForUserToken(request, code);
+    const pages = await getInstagramPages(userToken.accessToken);
+    const channels = await upsertInstagramChannels(pages, userToken.accessToken, userToken.expiresAt, workspaceId);
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Meta connection failed.";
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=${encodeURIComponent(message)}`);
+  }
+}

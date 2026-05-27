@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -18,6 +19,9 @@ enum ChannelType {
   instagram
   messenger
   whatsapp
+  tiktok
+  sms
+  email
 }
 
 enum ConsentStatus {
@@ -82,53 +86,314 @@ enum JobStatus {
   failed
 }
 
+enum BillingInterval {
+  month
+  year
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  canceled
+}
+
+enum InvoiceStatus {
+  draft
+  open
+  pending_payment
+  paid
+  failed
+  void
+  refunded
+}
+
+enum InvoiceItemType {
+  plan
+  addon
+  overage
+  setup_fee
+  discount
+  credit
+  tax_adjustment
+  manual_adjustment
+}
+
+enum WalletLedgerType {
+  credit
+  debit
+}
+
+enum WalletLedgerSource {
+  referral_credit
+  affiliate_commission
+  invoice_credit
+  payout
+  adjustment
+  expiry
+  clawback
+}
+
+enum WalletLedgerStatus {
+  pending
+  available
+  used
+  expired
+  cancelled
+  payout_requested
+  paid
+  failed
+}
+
+enum ReferralAttributionStatus {
+  pending
+  activated
+  paid
+  invalid
+}
+
+enum ReferralRewardType {
+  trial_day
+  trial_events
+  credit
+}
+
+enum ReferralRewardStatus {
+  pending
+  granted
+  cancelled
+}
+
+enum AffiliateProfileStatus {
+  not_applied
+  pending
+  approved
+  rejected
+  suspended
+}
+
+enum AffiliateLevel {
+  partner
+  silver
+  gold
+  agency
+}
+
+enum IdentityType {
+  individual
+  company
+}
+
+enum AffiliateCommissionStatus {
+  pending
+  available
+  payout_requested
+  paid
+  cancelled
+  clawback
+}
+
+enum PayoutRequestStatus {
+  requested
+  approved
+  rejected
+  batched
+  paid
+  failed
+  cancelled
+}
+
+enum PayoutBatchStatus {
+  draft
+  exported
+  processing
+  paid
+  partially_failed
+  cancelled
+}
+
+enum PayoutBatchItemStatus {
+  pending
+  paid
+  failed
+}
+
+enum CouponStatus {
+  active
+  disabled
+  expired
+}
+
 model User {
-  id           String         @id @default(cuid())
-  email        String         @unique
-  passwordHash String
-  name         String
-  role         UserRole       @default(admin)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  conversations Conversation[]
+  id                        String                @id @default(cuid())
+  email                     String                @unique
+  emailVerifiedAt           DateTime?
+  passwordHash              String
+  name                      String
+  role                      UserRole              @default(admin)
+  createdAt                 DateTime              @default(now())
+  updatedAt                 DateTime              @updatedAt
+  conversations             Conversation[]
+  workspaces                WorkspaceUser[]
+  paymentOrders             PaymentOrder[]
+  subscriptions             Subscription[]
+  invoices                  Invoice[]
+  referralCodes             ReferralCode[]
+  referralsMade             ReferralAttribution[] @relation("ReferralReferrer")
+  referralsReceived         ReferralAttribution[] @relation("ReferralReferred")
+  referralRewardsGiven      ReferralReward[]      @relation("ReferralRewardReferrer")
+  referralRewardsReceived   ReferralReward[]      @relation("ReferralRewardReferred")
+  walletLedgers             WalletLedger[]
+  affiliateProfile          AffiliateProfile?
+  affiliateCommissions      AffiliateCommission[] @relation("AffiliateCommissionAffiliate")
+  referredCommissions       AffiliateCommission[] @relation("AffiliateCommissionReferred")
+  payoutRequests            PayoutRequest[]
+  reviewedAffiliateProfiles AffiliateProfile[]    @relation("AffiliateProfileReviewer")
+  reviewedPayoutRequests    PayoutRequest[]       @relation("PayoutRequestReviewer")
+  createdPayoutBatches      PayoutBatch[]         @relation("PayoutBatchCreator")
+  createdCoupons            Coupon[]              @relation("CouponCreator")
+}
+
+model Workspace {
+  id                      String                   @id @default(cuid())
+  name                    String
+  slug                    String                   @unique
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  users                   WorkspaceUser[]
+  channels                Channel[]
+  tags                    Tag[]
+  segments                Segment[]
+  automations             Automation[]
+  broadcasts              Broadcast[]
+  jobs                    Job[]
+  knowledgeBaseItems      KnowledgeBaseItem[]
+  aiSetting               WorkspaceAiSetting?
+  aiCredentials           WorkspaceAiCredential[]
+  subscriptions           Subscription[]
+  paymentOrders           PaymentOrder[]
+  invoices                Invoice[]
+  usagePeriods            UsagePeriod[]
+  messageEventLedgers     MessageEventLedger[]
+  walletLedgers           WalletLedger[]
+  subscriptionAddons      SubscriptionAddon[]
+  usageOverrides          WorkspaceUsageOverride[]
+  coupons                 Coupon[]
+  contactFieldDefinitions ContactFieldDefinition[]
+  sequences               Sequence[]
+}
+
+model WorkspaceAiSetting {
+  id              String    @id @default(cuid())
+  workspaceId     String    @unique
+  provider        String    @default("chatgpt")
+  model           String    @default("gpt-4o-mini")
+  reasoningEffort String?
+  thinkingLevel   String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model WorkspaceAiCredential {
+  id              String    @id @default(cuid())
+  workspaceId     String
+  provider        String
+  encryptedApiKey String?
+  testStatus      String    @default("untested")
+  testError       String?
+  testedModel     String?
+  lastTestedAt    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, provider])
+  @@index([provider])
+}
+
+model AiModelCache {
+  id                String   @id @default(cuid())
+  provider          String
+  modelId           String
+  label             String
+  intelligenceTier  String   @default("standard")
+  speedTier         String   @default("standard")
+  supportsReasoning Boolean  @default(false)
+  supportsThinking  Boolean  @default(false)
+  enabled           Boolean  @default(true)
+  rawJson           Json
+  fetchedAt         DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([provider, modelId])
+  @@index([provider])
+  @@index([fetchedAt])
+}
+
+model WorkspaceUser {
+  workspaceId String
+  userId      String
+  role        UserRole  @default(admin)
+  createdAt   DateTime  @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([workspaceId, userId])
+  @@index([userId])
 }
 
 model Channel {
   id            String         @id @default(cuid())
+  workspaceId   String?
   type          ChannelType
   name          String
   enabled       Boolean        @default(false)
   configJson    Json
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+  workspace     Workspace?     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   contacts      Contact[]
   conversations Conversation[]
   messages      Message[]
 
-  @@unique([type, name])
+  @@unique([workspaceId, type, name])
+  @@index([workspaceId])
 }
 
 model Contact {
-  id             String         @id @default(cuid())
-  channelId      String
-  externalId     String
-  displayName    String
-  username       String?
-  email          String?
-  phone          String?
-  locale         String?
-  timezone       String?
-  lastInboundAt  DateTime?
-  lastOutboundAt DateTime?
-  consentStatus  ConsentStatus  @default(unknown)
-  metadataJson   Json
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  channel        Channel        @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  conversations  Conversation[]
-  messages       Message[]
-  tags           ContactTag[]
-  automationRuns AutomationRun[]
+  id                    String                 @id @default(cuid())
+  channelId             String
+  externalId            String
+  displayName           String
+  username              String?
+  email                 String?
+  phone                 String?
+  locale                String?
+  timezone              String?
+  lastInboundAt         DateTime?
+  lastOutboundAt        DateTime?
+  consentStatus         ConsentStatus          @default(unknown)
+  metadataJson          Json
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  channel               Channel                @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  conversations         Conversation[]
+  messages              Message[]
+  tags                  ContactTag[]
+  automationRuns        AutomationRun[]
+  fieldValues           ContactFieldValue[]
+  sequenceSubscriptions SequenceSubscription[]
+  messageEventLedgers   MessageEventLedger[]
 
   @@unique([channelId, externalId])
   @@index([displayName])
@@ -136,21 +401,29 @@ model Contact {
 }
 
 model Conversation {
-  id            String             @id @default(cuid())
-  contactId     String
-  channelId     String
-  status        ConversationStatus @default(open)
-  assignedToId  String?
-  lastMessageAt DateTime?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  contact       Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  channel       Channel            @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  assignedTo    User?              @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
-  messages      Message[]
+  id             String             @id @default(cuid())
+  contactId      String
+  channelId      String
+  status         ConversationStatus @default(open)
+  assignedToId   String?
+  reminderAt     DateTime?
+  isFavorite     Boolean            @default(false)
+  unreadCount    Int                @default(0)
+  lastReadAt     DateTime?
+  lastMessageAt  DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  contact        Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  channel        Channel            @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  assignedTo     User?              @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  messages       Message[]
   automationRuns AutomationRun[]
 
   @@index([status])
+  @@index([assignedToId])
+  @@index([reminderAt])
+  @@index([isFavorite])
+  @@index([unreadCount])
   @@index([lastMessageAt])
 }
 
@@ -172,12 +445,46 @@ model Message {
   @@index([createdAt])
 }
 
+model ContactFieldDefinition {
+  id          String              @id @default(cuid())
+  workspaceId String
+  key         String
+  label       String
+  type        String              @default("text")
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  workspace   Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  values      ContactFieldValue[]
+
+  @@unique([workspaceId, key])
+  @@index([workspaceId])
+}
+
+model ContactFieldValue {
+  id           String                 @id @default(cuid())
+  contactId    String
+  definitionId String
+  value        String
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  contact      Contact                @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  definition   ContactFieldDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, definitionId])
+  @@index([definitionId])
+}
+
 model Tag {
-  id        String       @id @default(cuid())
-  name      String       @unique
-  color     String       @default("#2563eb")
-  createdAt DateTime     @default(now())
-  contacts  ContactTag[]
+  id          String       @id @default(cuid())
+  workspaceId String?
+  name        String
+  color       String       @default("#2563eb")
+  createdAt   DateTime     @default(now())
+  workspace   Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contacts    ContactTag[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
 }
 
 model ContactTag {
@@ -190,16 +497,34 @@ model ContactTag {
   @@id([contactId, tagId])
 }
 
+model Segment {
+  id          String    @id @default(cuid())
+  workspaceId String
+  name        String
+  description String?
+  filterJson  Json
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+}
+
 model Automation {
-  id                String            @id @default(cuid())
+  id                String           @id @default(cuid())
+  workspaceId       String?
   name              String
-  enabled           Boolean           @default(true)
+  enabled           Boolean          @default(true)
   triggerType       TriggerType
   triggerConfigJson Json
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  workspace         Workspace?       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   steps             AutomationStep[]
   runs              AutomationRun[]
+
+  @@index([workspaceId])
 }
 
 model AutomationStep {
@@ -232,6 +557,7 @@ model AutomationRun {
 
 model Broadcast {
   id               String          @id @default(cuid())
+  workspaceId      String?
   name             String
   status           BroadcastStatus @default(draft)
   targetConfigJson Json
@@ -241,27 +567,460 @@ model Broadcast {
   failedCount      Int             @default(0)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
+  workspace        Workspace?      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
 }
 
 model Job {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
+  workspaceId String?
   type        String
-  status      JobStatus @default(queued)
+  status      JobStatus  @default(queued)
   payloadJson Json
-  runAt       DateTime  @default(now())
-  attempts    Int       @default(0)
+  runAt       DateTime   @default(now())
+  attempts    Int        @default(0)
   lastError   String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([status, runAt])
+  @@index([workspaceId])
+}
+
+model Sequence {
+  id            String                 @id @default(cuid())
+  workspaceId   String
+  name          String
+  enabled       Boolean                @default(true)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  workspace     Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  steps         SequenceStep[]
+  subscriptions SequenceSubscription[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+}
+
+model SequenceStep {
+  id           String   @id @default(cuid())
+  sequenceId   String
+  order        Int
+  delaySeconds Int      @default(0)
+  messageJson  Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sequence     Sequence @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+
+  @@unique([sequenceId, order])
+}
+
+model SequenceSubscription {
+  id          String    @id @default(cuid())
+  sequenceId  String
+  contactId   String
+  currentStep Int       @default(0)
+  active      Boolean   @default(true)
+  nextRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sequence    Sequence  @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([sequenceId, contactId])
+  @@index([active, nextRunAt])
 }
 
 model KnowledgeBaseItem {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  enabled   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String     @id @default(cuid())
+  workspaceId String?
+  title       String
+  content     String
+  enabled     Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+}
+
+model Subscription {
+  id                 String              @id @default(cuid())
+  workspaceId        String
+  userId             String?
+  planKey            String
+  status             SubscriptionStatus  @default(trialing)
+  interval           BillingInterval     @default(month)
+  amount             Int
+  currency           String              @default("TWD")
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  trialEndsAt        DateTime?
+  trialEventsLimit   Int?
+  canceledAt         DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  workspace          Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user               User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  paymentOrders      PaymentOrder[]
+  invoices           Invoice[]
+  addons             SubscriptionAddon[]
+
+  @@index([workspaceId])
+  @@index([userId])
+  @@index([status])
+}
+
+model PaymentOrder {
+  id              String                @id @default(cuid())
+  workspaceId     String
+  userId          String?
+  subscriptionId  String?
+  invoiceId       String?
+  provider        String                @default("payuni")
+  planKey         String
+  merTradeNo      String                @unique
+  tradeNo         String?
+  status          PaymentStatus         @default(pending)
+  amount          Int
+  currency        String                @default("TWD")
+  checkoutPayload Json
+  resultPayload   Json?
+  paidAt          DateTime?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  workspace       Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user            User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  subscription    Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  invoice         Invoice?              @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  walletLedgers   WalletLedger[]
+  commissions     AffiliateCommission[]
+
+  @@index([workspaceId])
+  @@index([subscriptionId])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+model SubscriptionAddon {
+  id             String        @id @default(cuid())
+  workspaceId    String
+  subscriptionId String?
+  addonKey       String
+  quantity       Int           @default(1)
+  amount         Int
+  periodStart    DateTime
+  periodEnd      DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  workspace      Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, periodStart, periodEnd])
+  @@index([addonKey])
+}
+
+model WorkspaceUsageOverride {
+  id          String    @id @default(cuid())
+  workspaceId String
+  resource    String
+  limit       Int
+  reason      String?
+  startsAt    DateTime  @default(now())
+  endsAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, resource])
+  @@index([endsAt])
+}
+
+model UsagePeriod {
+  id                   String    @id @default(cuid())
+  workspaceId          String
+  periodStart          DateTime
+  periodEnd            DateTime
+  activeContactsCount  Int       @default(0)
+  messageEventsCount   Int       @default(0)
+  webhookEventsCount   Int       @default(0)
+  broadcastEventsCount Int       @default(0)
+  warning80SentAt      DateTime?
+  limit100ReachedAt    DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  workspace            Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, periodStart, periodEnd])
+  @@index([workspaceId])
+}
+
+model MessageEventLedger {
+  id           String    @id @default(cuid())
+  workspaceId  String
+  contactId    String?
+  type         String
+  source       String
+  amount       Int       @default(1)
+  metadataJson Json
+  createdAt    DateTime  @default(now())
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact      Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, createdAt])
+  @@index([contactId])
+  @@index([type])
+}
+
+model ReferralCode {
+  id         String    @id @default(cuid())
+  userId     String
+  code       String    @unique
+  createdAt  DateTime  @default(now())
+  disabledAt DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ReferralAttribution {
+  id             String                    @id @default(cuid())
+  referrerUserId String
+  referredUserId String                    @unique
+  referralCode   String
+  status         ReferralAttributionStatus @default(pending)
+  riskFlagsJson  Json
+  createdAt      DateTime                  @default(now())
+  activatedAt    DateTime?
+  firstPaidAt    DateTime?
+  referrer       User                      @relation("ReferralReferrer", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referred       User                      @relation("ReferralReferred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@index([referrerUserId])
+  @@index([status])
+}
+
+model ReferralReward {
+  id             String               @id @default(cuid())
+  referrerUserId String
+  referredUserId String
+  type           ReferralRewardType
+  amount         Int
+  status         ReferralRewardStatus @default(pending)
+  expiresAt      DateTime?
+  createdAt      DateTime             @default(now())
+  referrer       User                 @relation("ReferralRewardReferrer", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referred       User                 @relation("ReferralRewardReferred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@index([referrerUserId])
+  @@index([referredUserId])
+  @@index([status])
+}
+
+model WalletLedger {
+  id                    String               @id @default(cuid())
+  userId                String
+  workspaceId           String?
+  type                  WalletLedgerType
+  source                WalletLedgerSource
+  amount                Int
+  status                WalletLedgerStatus
+  relatedInvoiceId      String?
+  relatedPaymentOrderId String?
+  relatedCommissionId   String?
+  relatedPayoutId       String?
+  availableAt           DateTime?
+  expiresAt             DateTime?
+  createdAt             DateTime             @default(now())
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace             Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  relatedInvoice        Invoice?             @relation(fields: [relatedInvoiceId], references: [id], onDelete: SetNull)
+  relatedPaymentOrder   PaymentOrder?        @relation(fields: [relatedPaymentOrderId], references: [id], onDelete: SetNull)
+  relatedCommission     AffiliateCommission? @relation(fields: [relatedCommissionId], references: [id], onDelete: SetNull)
+  relatedPayout         PayoutRequest?       @relation(fields: [relatedPayoutId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([workspaceId])
+  @@index([relatedInvoiceId])
+  @@index([relatedCommissionId])
+  @@index([relatedPayoutId])
+}
+
+model AffiliateProfile {
+  id                   String                 @id @default(cuid())
+  userId               String                 @unique
+  status               AffiliateProfileStatus @default(not_applied)
+  level                AffiliateLevel         @default(partner)
+  customCommissionRate Int?
+  legalName            String?
+  identityType         IdentityType?
+  taxIdEncrypted       String?
+  bankCode             String?
+  bankBranchCode       String?
+  bankAccountEncrypted String?
+  bankAccountLast4     String?
+  bankAccountName      String?
+  phone                String?
+  email                String?
+  address              String?
+  taxResidentCountry   String?
+  reviewedAt           DateTime?
+  reviewedBy           String?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewer             User?                  @relation("AffiliateProfileReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([level])
+}
+
+model AffiliateCommission {
+  id               String                    @id @default(cuid())
+  affiliateUserId  String
+  referredUserId   String
+  invoiceId        String
+  paymentOrderId   String?
+  commissionBase   Int
+  commissionRate   Int
+  commissionAmount Int
+  status           AffiliateCommissionStatus @default(pending)
+  holdUntil        DateTime
+  createdAt        DateTime                  @default(now())
+  availableAt      DateTime?
+  paidAt           DateTime?
+  cancelledAt      DateTime?
+  affiliate        User                      @relation("AffiliateCommissionAffiliate", fields: [affiliateUserId], references: [id], onDelete: Cascade)
+  referred         User                      @relation("AffiliateCommissionReferred", fields: [referredUserId], references: [id], onDelete: Cascade)
+  invoice          Invoice                   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  paymentOrder     PaymentOrder?             @relation(fields: [paymentOrderId], references: [id], onDelete: SetNull)
+  walletLedgers    WalletLedger[]
+
+  @@unique([invoiceId, affiliateUserId])
+  @@index([affiliateUserId, status])
+  @@index([holdUntil])
+}
+
+model Invoice {
+  id               String                @id @default(cuid())
+  invoiceNumber    String                @unique
+  userId           String
+  workspaceId      String
+  subscriptionId   String?
+  periodStart      DateTime
+  periodEnd        DateTime
+  subtotalAmount   Int
+  discountAmount   Int                   @default(0)
+  creditUsedAmount Int                   @default(0)
+  totalAmount      Int
+  currency         String                @default("TWD")
+  status           InvoiceStatus         @default(draft)
+  createdAt        DateTime              @default(now())
+  dueAt            DateTime?
+  paidAt           DateTime?
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace        Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  subscription     Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  items            InvoiceItem[]
+  paymentOrders    PaymentOrder[]
+  walletLedgers    WalletLedger[]
+  commissions      AffiliateCommission[]
+
+  @@index([userId, status])
+  @@index([workspaceId, status])
+  @@index([subscriptionId])
+  @@index([periodStart, periodEnd])
+}
+
+model InvoiceItem {
+  id           String          @id @default(cuid())
+  invoiceId    String
+  type         InvoiceItemType
+  description  String
+  quantity     Int             @default(1)
+  unitAmount   Int
+  amount       Int
+  metadataJson Json
+  invoice      Invoice         @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([type])
+}
+
+model PayoutRequest {
+  id              String              @id @default(cuid())
+  affiliateUserId String
+  amount          Int
+  status          PayoutRequestStatus @default(requested)
+  requestedAt     DateTime            @default(now())
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  failureReason   String?
+  affiliate       User                @relation(fields: [affiliateUserId], references: [id], onDelete: Cascade)
+  reviewer        User?               @relation("PayoutRequestReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+  walletLedgers   WalletLedger[]
+  batchItems      PayoutBatchItem[]
+
+  @@index([affiliateUserId, status])
+  @@index([requestedAt])
+}
+
+model PayoutBatch {
+  id          String            @id @default(cuid())
+  periodStart DateTime
+  periodEnd   DateTime
+  status      PayoutBatchStatus @default(draft)
+  totalAmount Int               @default(0)
+  itemCount   Int               @default(0)
+  csvFormat   String            @default("generic_csv")
+  bankFormat  String?
+  exportedAt  DateTime?
+  paidAt      DateTime?
+  createdAt   DateTime          @default(now())
+  createdBy   String?
+  creator     User?             @relation("PayoutBatchCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+  items       PayoutBatchItem[]
+
+  @@index([status])
+  @@index([periodStart, periodEnd])
+}
+
+model PayoutBatchItem {
+  id                   String                @id @default(cuid())
+  batchId              String
+  payoutRequestId      String                @unique
+  affiliateUserId      String
+  amount               Int
+  bankCode             String
+  bankBranchCode       String?
+  bankAccountEncrypted String
+  bankAccountLast4     String?
+  bankAccountName      String
+  status               PayoutBatchItemStatus @default(pending)
+  failureReason        String?
+  paidAt               DateTime?
+  batch                PayoutBatch           @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  payoutRequest        PayoutRequest         @relation(fields: [payoutRequestId], references: [id], onDelete: Cascade)
+
+  @@index([batchId, status])
+  @@index([affiliateUserId])
+}
+
+model Coupon {
+  id          String       @id @default(cuid())
+  workspaceId String?
+  code        String       @unique
+  percentOff  Int?
+  amountOff   Int?
+  status      CouponStatus @default(active)
+  expiresAt   DateTime?
+  createdBy   String?
+  createdAt   DateTime     @default(now())
+  workspace   Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  creator     User?        @relation("CouponCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([status])
 }

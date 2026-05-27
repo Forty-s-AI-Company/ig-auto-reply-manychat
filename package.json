@@ -1,24 +1,29 @@
 {
-  "name": "personal-chat-automation-hub",
+  "name": "inboxpilot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev -p 3041",
+    "dev:ngrok": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev-ngrok.ps1",
+    "build": "node scripts/prisma-generate-safe.mjs && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:generate": "prisma generate",
+    "test": "node scripts/run-tests.mjs",
+    "prisma:migrate": "node scripts/prisma-env.mjs db push",
+    "prisma:push": "node scripts/prisma-env.mjs db push",
+    "prisma:generate": "node scripts/prisma-env.mjs generate",
     "prisma:seed": "tsx prisma/seed.ts",
+    "admin:ensure": "tsx scripts/ensure-admin.ts",
+    "data:import-legacy": "node scripts/import-legacy-sqlite.mjs",
+    "payuni:smoke": "tsx scripts/payuni-smoke-test.mjs",
+    "ai-models:refresh": "tsx scripts/refresh-ai-models.ts",
+    "meta:refresh-token": "node scripts/refresh-meta-token.mjs",
     "worker": "tsx scripts/worker.ts",
     "reset-db": "prisma migrate reset --force"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "6.19.3",
+    "@xyflow/react": "^12.10.2",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "jose": "^6.2.3",
@@ -27,6 +32,7 @@
     "openai": "^6.38.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "simple-icons": "^16.20.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -37,6 +43,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "playwright": "^1.60.0",
     "prettier": "^3.8.3",
     "prisma": "6.19.3",
     "tailwindcss": "^4",

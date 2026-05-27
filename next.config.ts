@@ -1,17 +1,37 @@
 import type { NextConfig } from "next";
 
 function getAllowedDevOrigins() {
-  if (!process.env.APP_URL) return [];
+  const urls = [
+    process.env.APP_URL,
+    process.env.NGROK_URL,
+    "https://superman-undiluted-hastily.ngrok-free.dev",
+  ].filter(Boolean);
 
-  try {
-    return [new URL(process.env.APP_URL).host];
-  } catch {
-    return [];
-  }
+  return [...new Set(
+    urls.flatMap((url) => {
+      try {
+        const parsed = new URL(String(url));
+        return [parsed.host, `${parsed.protocol}//${parsed.host}`];
+      } catch {
+        return [];
+      }
+    }),
+  )];
 }
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: getAllowedDevOrigins(),
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
+  outputFileTracingExcludes: {
+    "/*": ["./next.config.ts"],
+  },
 };
 
 export default nextConfig;

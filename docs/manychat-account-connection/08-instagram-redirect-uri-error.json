@@ -1,0 +1,23 @@
+{
+  "url": "https://www.instagram.com/oauth/oidc/error/?error=%E8%A6%81%E6%B1%82%E7%84%A1%E6%95%88%3A%20%E9%87%8D%E6%96%B0%E5%B0%8E%E5%90%91%20URI%20%E7%84%A1%E6%95%88%E3%80%82",
+  "title": "Instagram",
+  "pages": [
+    {
+      "url": "https://www.instagram.com/oauth/oidc/error/?error=%E8%A6%81%E6%B1%82%E7%84%A1%E6%95%88%3A%20%E9%87%8D%E6%96%B0%E5%B0%8E%E5%90%91%20URI%20%E7%84%A1%E6%95%88%E3%80%82"
+    },
+    {
+      "url": "https://superman-undiluted-hastily.ngrok-free.dev/dashboard"
+    },
+    {
+      "url": "https://app.manychat.com/registration/channelConnection/instagram"
+    },
+    {
+      "url": "https://www.instagram.com/accounts/manage_access/"
+    },
+    {
+      "url": "https://developers.facebook.com/apps/924285843989683/dashboard/?business_id=1098456978116700"
+    }
+  ],
+  "text": "要求無效: 重新導向 URI 無效。",
+  "screenshot": "C:\\Users\\eden\\Downloads\\AI\\ig-auto-reply-manychat\\docs\\manychat-account-connection\\08-instagram-redirect-uri-error.png"
+}

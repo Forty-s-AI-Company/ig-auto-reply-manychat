@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { automationSchema } from "@/lib/validation";
+import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -9,12 +10,23 @@ export async function GET(_request: Request, { params }: Params) {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const { id } = await params;
-  const automation = await getDb().automation.findUnique({
-    where: { id },
-    include: { steps: { orderBy: { order: "asc" } }, runs: { orderBy: { createdAt: "desc" }, take: 10 } },
+  const workspaceId = await getCurrentWorkspaceId();
+  const automation = await getDb().automation.findFirst({
+    where: { id, workspaceId },
+    include: {
+      steps: { orderBy: { order: "asc" } },
+      runs: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          contact: { select: { id: true, displayName: true, username: true } },
+          conversation: { select: { id: true, status: true } },
+        },
+      },
+    },
   });
 
-  if (!automation) return NextResponse.json({ error: "Automation not found." }, { status: 404 });
+  if (!automation) return NextResponse.json({ error: "找不到指定的自動化。" }, { status: 404 });
   return NextResponse.json(automation);
 }
 
@@ -23,9 +35,13 @@ export async function PUT(request: Request, { params }: Params) {
   if (auth.response) return auth.response;
   const { id } = await params;
   const parsed = automationSchema.safeParse(await request.json().catch(() => null));
-  if (!parsed.success) return NextResponse.json({ error: "Invalid automation." }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: "自動化資料格式不正確。" }, { status: 400 });
 
+  const workspaceId = await getCurrentWorkspaceId();
   const db = getDb();
+  const existing = await db.automation.findFirst({ where: { id, workspaceId }, select: { id: true } });
+  if (!existing) return NextResponse.json({ error: "找不到指定的自動化。" }, { status: 404 });
+
   await db.automationStep.deleteMany({ where: { automationId: id } });
   const automation = await db.automation.update({
     where: { id },
@@ -42,7 +58,17 @@ export async function PUT(request: Request, { params }: Params) {
         })),
       },
     },
-    include: { steps: { orderBy: { order: "asc" } } },
+    include: {
+      steps: { orderBy: { order: "asc" } },
+      runs: {
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        include: {
+          contact: { select: { id: true, displayName: true, username: true } },
+          conversation: { select: { id: true, status: true } },
+        },
+      },
+    },
   });
 
   return NextResponse.json(automation);
@@ -52,6 +78,10 @@ export async function DELETE(_request: Request, { params }: Params) {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const { id } = await params;
+  const workspaceId = await getCurrentWorkspaceId();
+  const existing = await getDb().automation.findFirst({ where: { id, workspaceId }, select: { id: true } });
+  if (!existing) return NextResponse.json({ error: "找不到指定的自動化。" }, { status: 404 });
+
   await getDb().automation.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

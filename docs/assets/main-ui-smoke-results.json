@@ -1,0 +1,368 @@
+{
+  "generatedAt": "2026-05-25T20:04:38.874Z",
+  "base": "http://localhost:3041",
+  "total": 59,
+  "failed": [],
+  "consoleErrors": [],
+  "responseErrors": [],
+  "blockingConsoleErrors": [],
+  "blockingResponseErrors": [],
+  "checks": [
+    {
+      "label": "首頁 顯示：首頁",
+      "ok": true
+    },
+    {
+      "label": "首頁 顯示：自動化",
+      "ok": true
+    },
+    {
+      "label": "首頁 顯示：帳號連線狀態",
+      "ok": true
+    },
+    {
+      "label": "首頁 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "首頁 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "首頁 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "首頁 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 3,
+        "clicked": [],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "聯絡人 顯示：聯絡人",
+      "ok": true
+    },
+    {
+      "label": "聯絡人 顯示：全部聯絡人",
+      "ok": true
+    },
+    {
+      "label": "聯絡人 顯示：已訂閱",
+      "ok": true
+    },
+    {
+      "label": "聯絡人 顯示：新增標籤",
+      "ok": true
+    },
+    {
+      "label": "聯絡人 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "聯絡人 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "聯絡人 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "聯絡人 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 9,
+        "clicked": [
+          "全部聯絡人\n1",
+          "已訂閱\n1",
+          "未知狀態\n0",
+          "合作夥伴",
+          "熱門名單",
+          "篩選"
+        ],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "自動化 顯示：自動化",
+      "ok": true
+    },
+    {
+      "label": "自動化 顯示：流程編輯器",
+      "ok": true
+    },
+    {
+      "label": "自動化 顯示：點選節點即可編輯",
+      "ok": true
+    },
+    {
+      "label": "自動化 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "自動化 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "自動化 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": [
+        {
+          "text": "React Flow",
+          "href": "https://reactflow.dev"
+        }
+      ]
+    },
+    {
+      "label": "自動化 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 29,
+        "clicked": [
+          "Preview",
+          "指定貼文或 Reels\n只在你選定的貼文留言時觸發。",
+          "沿用目前設定\n保留既有貼文範圍，繼續下一步設定。",
+          "全部",
+          "啟用中",
+          "已停止",
+          "新增節點",
+          "自動排列",
+          "加入標籤\n替聯絡人加上指定標籤。"
+        ],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "儲存",
+          "button-4",
+          "button-5",
+          "抓取貼文",
+          "所有貼文或 Reels\nPRO\n所有現有與未來貼文留言都可觸發。",
+          "下一篇貼文或 Reels\nPRO\n下一次發布的內容留言才啟動。",
+          "傳送訊息\n文字、連結、圖片說明或 CTA。",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "收件匣 顯示：收件匣",
+      "ok": true
+    },
+    {
+      "label": "收件匣 顯示：全部對話",
+      "ok": true
+    },
+    {
+      "label": "收件匣 顯示：未指派",
+      "ok": true
+    },
+    {
+      "label": "收件匣 顯示：指派給我",
+      "ok": true
+    },
+    {
+      "label": "收件匣 顯示：提醒",
+      "ok": true
+    },
+    {
+      "label": "收件匣 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "收件匣 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "收件匣 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "收件匣 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 30,
+        "clicked": [],
+        "skipped": [
+          "Inbox 另由 scripts/test-inbox-ui.mjs 做完整互動測試"
+        ]
+      }
+    },
+    {
+      "label": "設定 顯示：設定",
+      "ok": true
+    },
+    {
+      "label": "設定 顯示：新增平台帳號",
+      "ok": true
+    },
+    {
+      "label": "設定 顯示：Instagram",
+      "ok": true
+    },
+    {
+      "label": "設定 顯示：Facebook Messenger",
+      "ok": true
+    },
+    {
+      "label": "設定 顯示：開發中",
+      "ok": true
+    },
+    {
+      "label": "設定 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "設定 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "設定 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": [
+        {
+          "text": "開啟 Instagram 應用程式權限",
+          "href": "https://www.instagram.com/accounts/manage_access/"
+        }
+      ]
+    },
+    {
+      "label": "設定 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 8,
+        "clicked": [],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "重新讀取帳號名稱",
+          "解除綁定 Instagram @carry.digital.nomad",
+          "抓取貼文",
+          "同步留言觸發",
+          "更新長效權杖",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "我的個人檔案 顯示：我的個人檔案",
+      "ok": true
+    },
+    {
+      "label": "我的個人檔案 顯示：基本資料",
+      "ok": true
+    },
+    {
+      "label": "我的個人檔案 顯示：已連結平台帳號",
+      "ok": true
+    },
+    {
+      "label": "我的個人檔案 顯示：繁體中文",
+      "ok": true
+    },
+    {
+      "label": "我的個人檔案 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "我的個人檔案 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "我的個人檔案 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "我的個人檔案 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 3,
+        "clicked": [],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "AI 顯示：AI 模型設定",
+      "ok": true
+    },
+    {
+      "label": "AI 顯示：AI 供應商",
+      "ok": true
+    },
+    {
+      "label": "AI 顯示：儲存設定",
+      "ok": true
+    },
+    {
+      "label": "AI 沒有英文 Workspace",
+      "ok": true
+    },
+    {
+      "label": "AI 連結有 href",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "AI 外部/OAuth 連結只檢查不執行",
+      "ok": true,
+      "details": []
+    },
+    {
+      "label": "AI 已掃描按鈕",
+      "ok": true,
+      "details": {
+        "total": 9,
+        "clicked": [
+          "改用 ChatGPT API 連接 Codex 模型",
+          "改用 Gemini API 連接 Antigravity 模型"
+        ],
+        "skipped": [
+          "PRO\n\nCarry凱睿｜IG x AI x 不露臉起號",
+          "A\n我的個人檔案",
+          "儲存設定",
+          "清除 Key",
+          "Open Next.js Dev Tools"
+        ]
+      }
+    },
+    {
+      "label": "新增平台帳號流程：平台選項會進入 Instagram 連線頁",
+      "ok": true,
+      "details": "/channels/connect/instagram"
+    },
+    {
+      "label": "左上角選單顯示新增平台帳號",
+      "ok": true
+    },
+    {
+      "label": "左上角選單維持 ManyChat 帳號清單樣式",
+      "ok": true
+    },
+    {
+      "label": "左上角選單不再顯示工作區切換",
+      "ok": true
+    }
+  ]
+}

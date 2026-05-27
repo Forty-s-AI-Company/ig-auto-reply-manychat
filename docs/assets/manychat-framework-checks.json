@@ -1,0 +1,17 @@
+{
+  "inboxChecks": {
+    "hasHeaderInbox": 1,
+    "hasHeaderSearch": 1,
+    "oldHeaderTextGone": true,
+    "logoutInHeader": 0,
+    "hasFluidInbox": true
+  },
+  "profileChecks": {
+    "hasManageAccounts": true,
+    "hasMessageReports": true,
+    "hasApiSettings": true,
+    "hasLanguage": true,
+    "hasLogout": true
+  },
+  "consoleErrors": []
+}

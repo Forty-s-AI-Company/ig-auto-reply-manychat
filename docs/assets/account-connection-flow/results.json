@@ -1,0 +1,65 @@
+{
+  "checks": [
+    {
+      "label": "左上角下拉顯示新增平台帳號",
+      "ok": true,
+      "text": "新增平台帳號"
+    },
+    {
+      "label": "左上角下拉顯示 PRO",
+      "ok": true,
+      "text": "PRO"
+    },
+    {
+      "label": "Channel Connection 標題",
+      "ok": true,
+      "text": "你想從哪個平台開始？"
+    },
+    {
+      "label": "Channel Connection 有 Instagram",
+      "ok": true,
+      "text": "Instagram"
+    },
+    {
+      "label": "Channel Connection 有 Facebook Messenger",
+      "ok": true,
+      "text": "Facebook Messenger"
+    },
+    {
+      "label": "Instagram 連線頁標題",
+      "ok": true,
+      "text": "連接 Instagram"
+    },
+    {
+      "label": "Instagram 連線頁主按鈕",
+      "ok": true,
+      "text": "透過 Meta 連接"
+    },
+    {
+      "label": "Instagram 連線頁更多選項",
+      "ok": true,
+      "text": "查看更多選項"
+    },
+    {
+      "label": "更多選項有透過 Instagram 連接",
+      "ok": true,
+      "text": "透過 Instagram 連接"
+    },
+    {
+      "label": "更多選項有 Meta Business Suite",
+      "ok": true,
+      "text": "Meta Business Suite"
+    },
+    {
+      "label": "成功頁顯示已成功連接",
+      "ok": true,
+      "text": "已成功連接"
+    },
+    {
+      "label": "成功頁顯示前往帳號管理",
+      "ok": true,
+      "text": "前往帳號管理"
+    }
+  ],
+  "failed": []
+}

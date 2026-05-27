@@ -1,0 +1,17 @@
+{
+  "url": "https://app.manychat.com/registration/channelConnection",
+  "title": "Select Channel",
+  "text": "language\nWhere would you like to start?\nDon’t worry, you can connect other channels later.\nBack\nInstagram\nSupercharge your social media marketing with Instagram Automation.\nTikTok\nElevate your marketing with TikTok’s seamless automation.\nWhatsApp\nReach a global audience on the most popular messaging app.\nFacebook Messenger\nCreate Facebook Messenger automation to keep customers happy.\nTelegram\nPower up your business with Telegram automation.",
+  "interactives": [
+    {
+      "i": 0,
+      "tag": "A",
+      "role": "",
+      "text": "Back",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _ghostPrimary_1u8qg_120 _defaultSize_1u8qg_79 _leftIcon_1u8qg_209 d-inline-flex flex-row align-center text-primary"
+    }
+  ]
+}

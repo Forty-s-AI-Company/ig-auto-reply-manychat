@@ -1,0 +1,128 @@
+{
+  "url": "https://www.instagram.com/consent/?flow=ig_biz_login_oauth&params_json=%7B%22client_id%22%3A%22692337945017934%22%2C%22redirect_uri%22%3A%22https%3A%5C%2F%5C%2Fapp.manychat.com%5C%2Ffb%22%2C%22response_type%22%3A%22code%22%2C%22state%22%3A%22auth_state%3A%3Ac67098ee00d649e259092158eef0558ae5d17409%22%2C%22scope%22%3A%22instagram_business_basic-instagram_business_manage_comments-instagram_business_manage_messages-instagram_business_manage_insights%22%2C%22logger_id%22%3A%22d01f6318-d945-4d94-ba47-bf565055dc3c%22%2C%22app_id%22%3A%22692337945017934%22%2C%22platform_app_id%22%3A%22692337945017934%22%7D&source=oauth_permissions_page_www",
+  "title": "Instagram",
+  "text": "Manychat-IG 要求以下用戶的存取權限：carry.digital.nomad 。若你選擇「允許」，Manychat-IG 將可以：\n查看個人檔案和使用影音素材（必要）\n存取和管理留言\n存取和管理訊息\n存取和管理洞察報告\n允許即表示 Manychat-IG 將獲得長期存取權限，可取得你的資訊，且 Instagram 會在 Manychat-IG 存取資訊時留下紀錄。深入瞭解這些分享資訊以及你可使用的設定。\n你可能會收到 Instagram for Business 的訊息。\nManychat-IG 《隱私政策》和《服務條款》。\n允許\n取消",
+  "interactives": [
+    {
+      "i": 0,
+      "tag": "DIV",
+      "role": "button",
+      "type": "",
+      "text": "更多",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 1,
+      "tag": "A",
+      "role": "link",
+      "type": "",
+      "text": "Manychat-IG",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 2,
+      "tag": "A",
+      "role": "link",
+      "type": "",
+      "text": "Manychat-IG",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 3,
+      "tag": "INPUT",
+      "role": "switch",
+      "type": "checkbox",
+      "text": "",
+      "aria": "查看個人檔案和使用影音素材（必要）",
+      "value": "",
+      "disabled": true
+    },
+    {
+      "i": 4,
+      "tag": "INPUT",
+      "role": "switch",
+      "type": "checkbox",
+      "text": "",
+      "aria": "存取和管理留言",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 5,
+      "tag": "INPUT",
+      "role": "switch",
+      "type": "checkbox",
+      "text": "",
+      "aria": "存取和管理訊息",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 6,
+      "tag": "INPUT",
+      "role": "switch",
+      "type": "checkbox",
+      "text": "",
+      "aria": "存取和管理洞察報告",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 7,
+      "tag": "A",
+      "role": "link",
+      "type": "",
+      "text": "深入瞭解",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 8,
+      "tag": "A",
+      "role": "link",
+      "type": "",
+      "text": "《隱私政策》",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 9,
+      "tag": "A",
+      "role": "link",
+      "type": "",
+      "text": "《服務條款》",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 10,
+      "tag": "DIV",
+      "role": "button",
+      "type": "",
+      "text": "允許",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    },
+    {
+      "i": 11,
+      "tag": "DIV",
+      "role": "button",
+      "type": "",
+      "text": "取消",
+      "aria": "",
+      "value": "",
+      "disabled": false
+    }
+  ],
+  "screenshot": "C:\\Users\\eden\\Downloads\\AI\\ig-auto-reply-manychat\\docs\\manychat-account-connection\\11-instagram-consent-page.png"
+}

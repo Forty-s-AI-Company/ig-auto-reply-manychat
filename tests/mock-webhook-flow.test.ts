@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { getDb } from "@/lib/db";
 import { handleInboundMessage } from "@/lib/messages";
+import { ensureDefaultWorkspace } from "@/lib/workspaces";
 
 const db = getDb();
 
@@ -21,19 +22,21 @@ async function cleanDb() {
 describe("mock inbound webhook flow", () => {
   beforeEach(async () => {
     await cleanDb();
+    const workspace = await ensureDefaultWorkspace();
     await db.channel.create({
-      data: { type: "mock", name: "Local Mock", enabled: true, configJson: {} },
+      data: { workspaceId: workspace.id, type: "mock", name: "Local Mock", enabled: true, configJson: {} },
     });
-    await db.tag.create({ data: { name: "lead", color: "#2563eb" } });
+    await db.tag.create({ data: { workspaceId: workspace.id, name: "lead", color: "#2563eb" } });
     await db.knowledgeBaseItem.create({
-      data: { title: "領取資料", content: "提供 demo link 給使用者。", enabled: true },
+      data: { workspaceId: workspace.id, title: "產品資料", content: "請提供 demo link。", enabled: true },
     });
     await db.automation.create({
       data: {
+        workspaceId: workspace.id,
         name: "keyword",
         enabled: true,
         triggerType: "keyword",
-        triggerConfigJson: { keywords: ["領取"], match: "contains" },
+        triggerConfigJson: { keywords: ["資料"], match: "contains" },
         steps: {
           create: [
             { order: 1, type: "send_message", configJson: { text: "資料連結：{{demo_link}}" } },
@@ -51,7 +54,7 @@ describe("mock inbound webhook flow", () => {
       channelName: "Local Mock",
       externalId: "mock-test",
       displayName: "Mock Test",
-      text: "我要領取資料",
+      text: "請給我資料",
       consentStatus: "opted_in",
     });
 

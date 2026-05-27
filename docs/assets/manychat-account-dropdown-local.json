@@ -1,0 +1,7 @@
+{
+  "hasConnectedAccounts": true,
+  "hasNewAccount": true,
+  "hasDirectInstagramAuth": true,
+  "consoleErrors": [],
+  "newAccountUrl": "http://localhost:3041/channels#connect"
+}

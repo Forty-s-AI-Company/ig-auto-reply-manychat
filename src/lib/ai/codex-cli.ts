@@ -1,15 +1,17 @@
-import { spawn } from "child_process";
-import { mkdtemp, readFile, rm } from "fs/promises";
-import { tmpdir } from "os";
-import { sep } from "path";
+import { spawn } from "node:child_process";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-function runCodexCli(prompt: string, outputPath: string) {
+function runCodexCli(prompt: string, outputPath: string, model: string) {
   const timeoutMs = Number(process.env.CODEX_CLI_TIMEOUT_MS || 45000);
+  const modelArgs = model && model !== "auto" ? ["--model", model] : [];
   const child = spawn(
     process.env.CODEX_CLI_COMMAND || "codex",
     [
       "exec",
       "--ephemeral",
+      ...modelArgs,
       "--skip-git-repo-check",
       "--sandbox",
       "read-only",
@@ -45,12 +47,12 @@ function runCodexCli(prompt: string, outputPath: string) {
   });
 }
 
-export async function generateCodexCliReply(prompt: string) {
-  const workspace = await mkdtemp(`${tmpdir()}${sep}pca-codex-`);
-  const outputPath = `${workspace}${sep}reply.txt`;
+export async function generateCodexCliReply(prompt: string, model = "auto") {
+  const workspace = await mkdtemp(join(tmpdir(), "pca-codex-"));
+  const outputPath = join(workspace, "reply.txt");
 
   try {
-    await runCodexCli(prompt, outputPath);
+    await runCodexCli(prompt, outputPath, model);
     return (await readFile(outputPath, "utf8")).trim();
   } finally {
     await rm(workspace, { recursive: true, force: true });

@@ -1,0 +1,42 @@
+{
+  "capturedAt": "2026-05-21T19:59:10.269Z",
+  "notes": [
+    {
+      "title": "ManyChat 入口頁",
+      "file": "docs/assets/manychat-account-connection/01-manychat-entry.png",
+      "url": "https://app.manychat.com/signin"
+    },
+    {
+      "title": "登入狀態",
+      "file": "",
+      "url": "https://app.manychat.com/signin",
+      "note": "自動化 Chrome 沒有沿用使用者 in-app browser 的 ManyChat 登入狀態，因此只能記錄到登入牆。"
+    },
+    {
+      "title": "左上角帳號下拉選單",
+      "file": "docs/assets/manychat-account-connection/02-account-dropdown-attempt.png",
+      "url": "https://app.manychat.com/signin"
+    },
+    {
+      "title": "New Account 頻道連結頁",
+      "file": "docs/assets/manychat-account-connection/03-channel-connection.png",
+      "url": "https://app.manychat.com/registration/channelConnection"
+    },
+    {
+      "title": "Instagram 頻道連結頁",
+      "file": "docs/assets/manychat-account-connection/04-instagram-channel.png",
+      "url": "https://app.manychat.com/registration/channelConnection/instagram"
+    },
+    {
+      "title": "點擊 Connect via Meta 後",
+      "file": "docs/assets/manychat-account-connection/05-connect-via-meta-clicked.png",
+      "url": "https://app.manychat.com/signin?return=%2Fregistration%2FchannelConnection%2Finstagram"
+    },
+    {
+      "title": "Meta popup",
+      "file": "",
+      "url": "https://app.manychat.com/signin?return=%2Fregistration%2FchannelConnection%2Finstagram",
+      "note": "沒有找到 Connect via Meta 按鈕，可能停在登入牆或 ManyChat UI 已變更。"
+    }
+  ]
+}

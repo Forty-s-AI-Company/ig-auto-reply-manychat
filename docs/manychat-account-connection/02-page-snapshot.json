@@ -1,0 +1,259 @@
+{
+  "url": "https://app.manychat.com/fb4356719/dashboard",
+  "title": "(2) Home tab",
+  "text": "language\nSkip to main content\nPRO\nPro indicator: A premium offering that requires a paid subscription.\nAmson安生｜數位行銷 x IG變現\nHome\nContacts\nAutomation\nManychat AI\nInbox\n2\nSettings\nMy Profile\nHelp\nHome\nTikTok × Manychat. Now we're talking\nDiscover new opportunities for your audience in TikTok\nDiscover\nHello, 零元兄弟!\n1 connected channel\nSee Insights\nStart here\nExplore all Templates\nAuto-DM links from comments\nQuick Automation\nPOPULAR\nPopular choice: Frequently selected or widely recognized among users.\nGenerate leads with stories\nQuick Automation\nRespond to all your DMs\nQuick Automation\nYour next best moves\nFirst steps\nYou’re nailing it! Keep your audience’s attention with the remaining automations\n1 of 3 completed\nSend Affiliate Product Links\nGrow Followers From Comments\nSet Up Default Reply\nYour last 7 days\nHow your automation’s doing, updated May 21\nEngagement winners\nChecking who loves you the most...check back soon\nTime saved\nNo data. Launch an automation and check back in 24h\nExplore templates\nLeads collected\nNo data. Automate lead collection and check back in 24h\nExplore templates\nTop lead-collector\nNo data. Automate lead collection and check back in 24h\nExplore templates",
+  "interactives": [
+    {
+      "i": 0,
+      "tag": "NAV",
+      "text": "Skip to main contentPROPro indicator: A premium offering that requires a paid subscription.Amson安生｜數位行銷 x IG變現HomeContac",
+      "aria": "Main navigation",
+      "title": "",
+      "href": "",
+      "cls": "_primaryNavigation_sma85_1 _expanded_sma85_17"
+    },
+    {
+      "i": 1,
+      "tag": "A",
+      "text": "Skip to main content",
+      "aria": "",
+      "title": "",
+      "href": "#appContent",
+      "cls": "_btn_1u8qg_1 _primary_1u8qg_96 _defaultSize_1u8qg_79 _fullWidth_1u8qg_27 _skipToContent_sma85_36"
+    },
+    {
+      "i": 2,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Close",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _ghostLight_1u8qg_121 _defaultSize_1u8qg_79 _onlyIcon_1u8qg_214 _closeButton_sma85_100"
+    },
+    {
+      "i": 3,
+      "tag": "BUTTON",
+      "text": "PROPro indicator: A premium offering that requires a paid subscription.Amson安生｜數位行銷 x IG變現",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_select_1p521_1"
+    },
+    {
+      "i": 4,
+      "tag": "A",
+      "text": "Home",
+      "aria": "Home",
+      "title": "",
+      "href": "/fb4356719/dashboard",
+      "cls": "_link_1d5b5_31 _link--selected_1d5b5_67"
+    },
+    {
+      "i": 5,
+      "tag": "A",
+      "text": "Contacts",
+      "aria": "Contacts",
+      "title": "",
+      "href": "/fb4356719/subscribers",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 6,
+      "tag": "A",
+      "text": "Automation",
+      "aria": "Automation",
+      "title": "",
+      "href": "/fb4356719/cms",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 7,
+      "tag": "A",
+      "text": "Manychat AI",
+      "aria": "Manychat AI",
+      "title": "",
+      "href": "/fb4356719/ai",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 8,
+      "tag": "A",
+      "text": "Inbox2",
+      "aria": "Inbox",
+      "title": "",
+      "href": "/fb4356719/chat",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 9,
+      "tag": "A",
+      "text": "Settings",
+      "aria": "Settings",
+      "title": "",
+      "href": "/fb4356719/settings",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 10,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Collapse navigation",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _ghostLight_1u8qg_121 _defaultSize_1u8qg_79 _onlyIcon_1u8qg_214 _toggleButton_sma85_105"
+    },
+    {
+      "i": 11,
+      "tag": "BUTTON",
+      "text": "My Profile",
+      "aria": "My Profile",
+      "title": "",
+      "href": "",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 12,
+      "tag": "BUTTON",
+      "text": "Help",
+      "aria": "Help",
+      "title": "",
+      "href": "",
+      "cls": "_link_1d5b5_31"
+    },
+    {
+      "i": 13,
+      "tag": "A",
+      "text": "Home",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_preview_98d9p_47 text-heading text-ellipsis d-flex align-center"
+    },
+    {
+      "i": 14,
+      "tag": "A",
+      "text": "Discover",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_button_1gqdv_28 _button_14h2p_5 c-pointer p-y-xs p-r-sm p-l d-flex align-center flex-shrink-0"
+    },
+    {
+      "i": 15,
+      "tag": "A",
+      "text": "See Insights",
+      "aria": "",
+      "title": "",
+      "href": "/fb4356719/insights",
+      "cls": "_link_eg4a5_1 _body_eg4a5_54 font-medium"
+    },
+    {
+      "i": 16,
+      "tag": "BUTTON",
+      "text": "Explore all Templates",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_link_eg4a5_1 _body_eg4a5_54 text-primary c-pointer font-medium"
+    },
+    {
+      "i": 17,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Install the template",
+      "title": "",
+      "href": "",
+      "cls": "_cardTrigger_fkss8_49"
+    },
+    {
+      "i": 18,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Install the template",
+      "title": "",
+      "href": "",
+      "cls": "_cardTrigger_fkss8_49"
+    },
+    {
+      "i": 19,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Install the template",
+      "title": "",
+      "href": "",
+      "cls": "_cardTrigger_fkss8_49"
+    },
+    {
+      "i": 20,
+      "tag": "BUTTON",
+      "text": "Send affiliate product links",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _defaultSize_1u8qg_79 _rightIcon_1u8qg_210 _listItem_rb3pl_1"
+    },
+    {
+      "i": 21,
+      "tag": "BUTTON",
+      "text": "Grow followers from comments",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _defaultSize_1u8qg_79 _rightIcon_1u8qg_210 _listItem_rb3pl_1"
+    },
+    {
+      "i": 22,
+      "tag": "BUTTON",
+      "text": "Set up default reply",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _defaultSize_1u8qg_79 _disabled_1u8qg_42 _listItem_rb3pl_1 _completed_rb3pl_30"
+    },
+    {
+      "i": 23,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Scroll left",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _small_1u8qg_73 _onlyIcon_1u8qg_214 _disabled_1u8qg_42 _scrollButton_yrlep_22"
+    },
+    {
+      "i": 24,
+      "tag": "BUTTON",
+      "text": "",
+      "aria": "Scroll right",
+      "title": "",
+      "href": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _small_1u8qg_73 _onlyIcon_1u8qg_214 _scrollButton_yrlep_22"
+    },
+    {
+      "i": 25,
+      "tag": "A",
+      "text": "Explore templates",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_link_eg4a5_1 _small_eg4a5_62"
+    },
+    {
+      "i": 26,
+      "tag": "A",
+      "text": "Explore templates",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_link_eg4a5_1 _small_eg4a5_62"
+    },
+    {
+      "i": 27,
+      "tag": "A",
+      "text": "Explore templates",
+      "aria": "",
+      "title": "",
+      "href": "",
+      "cls": "_link_eg4a5_1 _small_eg4a5_62"
+    }
+  ]
+}

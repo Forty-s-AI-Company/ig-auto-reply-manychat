@@ -1,0 +1,21 @@
+{
+  "dashboard": {
+    "url": "http://localhost:3041/dashboard?manychat=1779404278430",
+    "hasManychatLogo": true,
+    "textPreview": "Manychat\nIG\n\nDefault Workspace\n\n1 個 IG 已連線\n\n首頁\n聯絡人\n自動化\nAI\n收件匣\n設定\n\n工具\n\n知識庫\n群發訊息\n標籤\n分眾\n帳務方案\n測試工具\n我的個人檔案\n說明中心\n\n自動回覆工作台\n\nAdmin / admin@example.com\n\n工作區\nDefault Workspace\nIG 帳號\n全部 IG 帳號\nInstagram @carry.digital.nomad\n+ 新增帳號\n登出\n\n首頁\n\nIG 自動回覆工作台\n\n從這裡檢查帳號連線、建立自動化、測試預設回覆，讓整個操作更像 ManyChat 的日常工作流。\n\n設定預設回覆\n\n聯絡人\n\n1\n\n訊息\n\n4\n\n待處理對話\n\n1\n\n自動化\n\n1\n\n帳號連線狀態\n\nInstagram 連線狀態\n\n已連線 IG 帳號\n1\n\n免費方案聯絡人用量：1/1000\n\n連接 Instagram 帳號\n建立第一個自動化\n送一則測試訊息並查看收件匣\n快速建立自動化\n\n先把最常用的 IG 自動回覆流程做好。\n\n查看全部\nInstagram 預設回覆\n\n設定未命中關鍵字時的預設回覆。\n\n設定預設回覆\n\n私訊關鍵字回覆\n\n收到指定關鍵字後，自動回覆訊息並加標籤。\n\n建立關鍵字流程\n\nAI 常見問題回覆\n\n用知識庫回答常見問題，減少人工處理。\n\n整理知識庫\n\n最近訊息\nlin.s.luo / Instag",
+    "screenshot": "docs/assets/manychat-ui-dashboard.png"
+  },
+  "channels": {
+    "url": "http://localhost:3041/channels?manychat=1779404281803",
+    "hasManychatLogo": true,
+    "textPreview": "Manychat\nIG\n\nDefault Workspace\n\n1 個 IG 已連線\n\n首頁\n聯絡人\n自動化\nAI\n收件匣\n設定\n\n工具\n\n知識庫\n群發訊息\n標籤\n分眾\n帳務方案\n測試工具\n我的個人檔案\n說明中心\n\n自動回覆工作台\n\nAdmin / admin@example.com\n\n工作區\nDefault Workspace\nIG 帳號\n全部 IG 帳號\nInstagram @carry.digital.nomad\n+ 新增帳號\n登出\n\n設定\n\n總設定\n\n主要設定\n\n一般設定\n通知設定\n團隊成員\n操作紀錄\n顯示設定\n\n帳務\n\n訂閱方案\n發票紀錄\n付款資料\n\n收件匣\n\n收件匣行為\n自動指派\n\n連線渠道\n\nInstagram\nTikTok\nWhatsApp\nMessenger\n簡訊\n電子郵件\nTelegram\n\n自動化\n\n自訂欄位\n標籤\n轉換事件\n\n擴充整合\n\nAPI\n應用程式\n第三方整合\n付款整合\n已安裝模板\n追蹤像素\n\n設定 / 連線渠道\n\n帳號與整體設定\n\n這裡整理成接近 ManyChat 的設定結構：左側是總設定頁籤，右側集中管理新增帳號、Instagram 權限、收件匣、自動化資料與整合入口。\n\n+ 新增帳號\n一般設定\n\n已連結 IG\n\n1\n\n聯絡人\n\n2\n\n自動化\n\n1\n\n標籤\n\n0\n\n新增帳號\n\n對照 ManyChat 的連線渠道頁，先提供 Instagram 與 F",
+    "screenshot": "docs/assets/manychat-ui-channels.png"
+  },
+  "automations": {
+    "url": "http://localhost:3041/automations?manychat=1779404286503",
+    "hasManychatLogo": true,
+    "textPreview": "Manychat\nIG\n\nDefault Workspace\n\n1 個 IG 已連線\n\n首頁\n聯絡人\n自動化\nAI\n收件匣\n設定\n\n工具\n\n知識庫\n群發訊息\n標籤\n分眾\n帳務方案\n測試工具\n我的個人檔案\n說明中心\n\n自動回覆工作台\n\nAdmin / admin@example.com\n\n工作區\nDefault Workspace\nIG 帳號\n全部 IG 帳號\nInstagram @carry.digital.nomad\n+ 新增帳號\n登出\nAutomations\n/\nFlow Builder\nLIVE\n草稿\nPreview\n儲存\n\nWhen 留言於貼文/Reels\n\n點選畫布節點即可編輯\n\nSTEP 1 OF 3\n\nWhen 留言觸發\n\n選擇哪些 IG 貼文或 Reels 的留言要進入這個自動化。\n\n自動化名稱\n\n貼文範圍\n\n抓取貼文\n指定貼文或 Reels\n只在你選定的貼文留言時觸發。\n所有貼文或 Reels\nPRO\n所有現有與未來貼文留言都可觸發。\n下一篇貼文或 Reels\nPRO\n下一次發布的內容留言才啟動。\n沿用目前設定\n保留既有貼文範圍，繼續下一步設定。\n選擇貼文\n請選擇一篇貼文或 Reels\n留言關鍵字\n比對方式\n包含任一關鍵字\n完全符合\n延遲秒數\n延遲後再執行自動化\n自動幫符合條件的留言按讚\n自動公開回覆留言\n公開回覆內容\n啟用這個自動化\n全部\n啟用中\n已停止\n\nCa",
+    "screenshot": "docs/assets/manychat-ui-automations.png"
+  },
+  "consoleErrors": []
+}

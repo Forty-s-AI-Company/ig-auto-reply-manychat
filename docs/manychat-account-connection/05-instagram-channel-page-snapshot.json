@@ -1,0 +1,57 @@
+{
+  "url": "https://app.manychat.com/registration/channelConnection/instagram",
+  "title": "Select Channel",
+  "text": "language\nConnect Instagram\nUse your Instagram account to connect to Manychat.\nChoose another channel\nA few steps in\nWe’ll take you to Meta to connect. Just set your permissions, and your Instagram account will be linked to Manychat.\nConnect Via Meta\nManychat is a trusted\nMeta Business Partner\nSee More Options",
+  "interactives": [
+    {
+      "i": 0,
+      "tag": "A",
+      "role": "",
+      "text": "Choose another channel",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _ghostPrimary_1u8qg_120 _defaultSize_1u8qg_79 _leftIcon_1u8qg_209 d-inline-flex flex-row align-center text-primary"
+    },
+    {
+      "i": 1,
+      "tag": "BUTTON",
+      "role": "",
+      "text": "Connect via Meta",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _primary_1u8qg_96 _defaultSize_1u8qg_79 _fullWidth_1u8qg_27 m-t"
+    },
+    {
+      "i": 2,
+      "tag": "BUTTON",
+      "role": "",
+      "text": "See more options",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _ghostPrimary_1u8qg_120 _small_1u8qg_73 _rightIcon_1u8qg_210"
+    },
+    {
+      "i": 3,
+      "tag": "BUTTON",
+      "role": "",
+      "text": "Connect via Instagram",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _defaultSize_1u8qg_79 flex-grow-1"
+    },
+    {
+      "i": 4,
+      "tag": "BUTTON",
+      "role": "",
+      "text": "Meta Business Suite",
+      "aria": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "_btn_1u8qg_1 _default_1u8qg_79 _defaultSize_1u8qg_79 flex-grow-1"
+    }
+  ]
+}

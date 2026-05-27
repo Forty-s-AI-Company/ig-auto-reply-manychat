@@ -7,7 +7,7 @@ export default async function LoginPage() {
   if (user) redirect("/dashboard");
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 text-zinc-100">
+    <main className="flex min-h-screen items-center justify-center bg-[#f5f6f7] px-4 text-[#111827]">
       <LoginForm />
     </main>
   );

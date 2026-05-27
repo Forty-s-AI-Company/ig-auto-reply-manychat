@@ -1,0 +1,18 @@
+[
+  {
+    "step": 1,
+    "name": "manychat-dashboard-or-login",
+    "note": "Opened ManyChat dashboard or login page.",
+    "url": "https://app.manychat.com/signin?return=%2Ffb4356719%2Fdashboard",
+    "title": "Sign In",
+    "file": "C:\\Users\\eden\\Downloads\\AI\\ig-auto-reply-manychat\\docs\\manychat-account-connection\\01-manychat-dashboard-or-login.png"
+  },
+  {
+    "step": 2,
+    "name": "blocked-login",
+    "note": "Automated Chrome has no ManyChat login session, blocked at login page.",
+    "url": "https://app.manychat.com/signin?return=%2Ffb4356719%2Fdashboard",
+    "title": "Sign In",
+    "file": ""
+  }
+]

@@ -1,0 +1,147 @@
+{
+  "url": "http://localhost:3041/inbox",
+  "checks": [
+    {
+      "label": "頁面標題：收件匣",
+      "ok": true
+    },
+    {
+      "label": "搜尋欄：搜尋收件匣對話",
+      "ok": true
+    },
+    {
+      "label": "左側 aside：全部對話",
+      "ok": true
+    },
+    {
+      "label": "左側 aside：未指派",
+      "ok": true
+    },
+    {
+      "label": "左側 aside：指派給我",
+      "ok": true
+    },
+    {
+      "label": "左側 aside：提醒",
+      "ok": true
+    },
+    {
+      "label": "工具列：開啟對話",
+      "ok": true
+    },
+    {
+      "label": "工具列：未讀",
+      "ok": true
+    },
+    {
+      "label": "工具列：最新排序",
+      "ok": true
+    },
+    {
+      "label": "工具列：所有渠道",
+      "ok": true
+    },
+    {
+      "label": "工具列：篩選",
+      "ok": true
+    },
+    {
+      "label": "回覆分頁",
+      "ok": true
+    },
+    {
+      "label": "備註分頁",
+      "ok": true
+    },
+    {
+      "label": "右側：自動化",
+      "ok": true
+    },
+    {
+      "label": "右側：聯絡人標籤",
+      "ok": true
+    },
+    {
+      "label": "右側：系統欄位",
+      "ok": true
+    },
+    {
+      "label": "篩選說明浮層",
+      "ok": true
+    },
+    {
+      "label": "排序切換：最舊排序",
+      "ok": true
+    },
+    {
+      "label": "渠道切換：Instagram",
+      "ok": true
+    },
+    {
+      "label": "未讀篩選可點擊",
+      "ok": true
+    },
+    {
+      "label": "提醒分類可點擊",
+      "ok": true
+    },
+    {
+      "label": "全部對話可返回",
+      "ok": true
+    },
+    {
+      "label": "提醒選單：20 分鐘",
+      "ok": true
+    },
+    {
+      "label": "建立提醒後左側提醒",
+      "ok": true
+    },
+    {
+      "label": "收藏功能可寫入並顯示",
+      "ok": true
+    },
+    {
+      "label": "收藏分類可篩選",
+      "ok": true
+    },
+    {
+      "label": "熱門名單可加入",
+      "ok": true
+    },
+    {
+      "label": "熱門名單分類可篩選",
+      "ok": true
+    },
+    {
+      "label": "合作夥伴可加入",
+      "ok": true
+    },
+    {
+      "label": "合作夥伴分類可篩選",
+      "ok": true
+    },
+    {
+      "label": "團隊指派選單有成員",
+      "ok": true
+    },
+    {
+      "label": "指派給我分類可顯示",
+      "ok": true
+    },
+    {
+      "label": "備註分頁會停用 Instagram 傳送",
+      "ok": true
+    },
+    {
+      "label": "回覆分頁輸入文字後可按傳送",
+      "ok": true
+    },
+    {
+      "label": "Inbox 主要 UI 無指定英文殘留",
+      "ok": true,
+      "details": []
+    }
+  ],
+  "consoleErrors": []
+}

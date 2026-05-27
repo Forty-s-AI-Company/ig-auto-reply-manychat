@@ -1,9 +1,20 @@
 import type { Automation, AutomationStep, Prisma } from "@prisma/client";
 import { generateFaqReply } from "@/lib/ai/faq";
+import { recordMessageEvent } from "@/lib/billing/usage-service";
 import { getDb } from "@/lib/db";
 import { sendOutboundMessage } from "@/lib/messages";
+import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 type AutomationWithSteps = Automation & { steps: AutomationStep[] };
+type StepResult =
+  | { status: "completed" }
+  | { status: "paused" }
+  | { status: "stop" }
+  | { status: "skip"; nextOrder: number };
+type ConditionContact = {
+  consentStatus: string;
+  tags: Array<{ tag: { name: string } }>;
+} | null;
 
 function asRecord(value: unknown) {
   return (value || {}) as Record<string, unknown>;
@@ -31,13 +42,18 @@ async function runStep(input: {
   contactId: string;
   conversationId: string;
   inboundText: string;
-}) {
+}): Promise<StepResult> {
   const db = getDb();
   const config = asRecord(input.step.configJson);
+  const contact = await db.contact.findUnique({
+    where: { id: input.contactId },
+    include: { channel: { select: { workspaceId: true } }, tags: { include: { tag: true } } },
+  });
+  const workspaceId = contact?.channel.workspaceId || (await getDefaultWorkspaceId());
 
   if (input.step.type === "send_message") {
     const text = interpolate(String(config.text || ""));
-    if (text) await sendOutboundMessage(input.conversationId, text);
+    if (text) await sendOutboundMessage(input.conversationId, text, { source: "automation", eventType: "auto_dm_sent" });
   }
 
   if (input.step.type === "add_tag") {
@@ -47,9 +63,9 @@ async function runStep(input: {
       ? await db.tag.findUnique({ where: { id: tagId } })
       : tagName
         ? await db.tag.upsert({
-            where: { name: tagName },
+            where: { workspaceId_name: { workspaceId, name: tagName } },
             update: {},
-            create: { name: tagName, color: "#2563eb" },
+            create: { workspaceId, name: tagName, color: "#2563eb" },
           })
         : null;
     if (tag) {
@@ -65,9 +81,9 @@ async function runStep(input: {
     const tagName = String(config.tagName || "");
     const tagId = String(config.tagId || "");
     const tag = tagId
-      ? await db.tag.findUnique({ where: { id: tagId } })
+        ? await db.tag.findUnique({ where: { id: tagId } })
       : tagName
-        ? await db.tag.findUnique({ where: { name: tagName } })
+        ? await db.tag.findUnique({ where: { workspaceId_name: { workspaceId, name: tagName } } })
         : null;
     if (tag) {
       await db.contactTag.deleteMany({
@@ -87,12 +103,42 @@ async function runStep(input: {
       },
     });
     await appendRunLog(input.runId, { step: input.step.order, type: input.step.type, queued: true });
-    return "paused";
+    return { status: "paused" };
+  }
+
+  if (input.step.type === "condition") {
+    const passed = evaluateCondition({
+      config,
+      inboundText: input.inboundText,
+      contact,
+    });
+    await appendRunLog(input.runId, {
+      step: input.step.order,
+      type: input.step.type,
+      passed,
+    });
+
+    if (passed) return { status: "completed" };
+
+    const falseAction = String(config.falseAction || "stop");
+    if (falseAction === "continue") return { status: "completed" };
+    if (falseAction === "skip") {
+      const nextOrder = Math.max(1, Number(config.skipToOrder || input.step.order + 1));
+      return { status: "skip", nextOrder };
+    }
+    return { status: "stop" };
   }
 
   if (input.step.type === "ai_reply") {
-    const reply = await generateFaqReply(input.inboundText, String(config.prompt || ""));
-    await sendOutboundMessage(input.conversationId, reply);
+    await recordMessageEvent({
+      workspaceId,
+      contactId: input.contactId,
+      type: "ai_faq_executed",
+      source: "automation:ai_reply",
+      metadata: { runId: input.runId, stepId: input.step.id },
+    });
+    const reply = await generateFaqReply(input.inboundText, String(config.prompt || ""), workspaceId);
+    await sendOutboundMessage(input.conversationId, reply, { source: "automation", eventType: "dm_auto_replied" });
   }
 
   if (input.step.type === "set_field") {
@@ -108,7 +154,47 @@ async function runStep(input: {
   }
 
   await appendRunLog(input.runId, { step: input.step.order, type: input.step.type, completed: true });
-  return "completed";
+  return { status: "completed" };
+}
+
+function evaluateCondition(input: {
+  config: Record<string, unknown>;
+  inboundText: string;
+  contact: ConditionContact;
+}) {
+  const source = String(input.config.source || "inboundText");
+  const operator = String(input.config.operator || "contains");
+  const value = String(input.config.value || "");
+  const values = value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  function textMatches(text: string) {
+    const normalizedText = text.toLowerCase();
+    const candidates = values.length ? values : [value.trim()];
+    if (operator === "equals") return candidates.some((item) => normalizedText.trim() === item.toLowerCase());
+    if (operator === "not_contains") return candidates.every((item) => !normalizedText.includes(item.toLowerCase()));
+    if (operator === "not_equals") return candidates.every((item) => normalizedText.trim() !== item.toLowerCase());
+    return candidates.some((item) => normalizedText.includes(item.toLowerCase()));
+  }
+
+  if (source === "inboundText" || source === "commentText") {
+    return textMatches(input.inboundText);
+  }
+
+  if (source === "tag") {
+    const tagNames = input.contact?.tags.map((item) => item.tag.name) || [];
+    const hasTag = tagNames.includes(value);
+    return operator === "not_equals" ? !hasTag : hasTag;
+  }
+
+  if (source === "consentStatus") {
+    const status = input.contact?.consentStatus || "unknown";
+    return operator === "not_equals" ? status !== value : status === value;
+  }
+
+  return false;
 }
 
 export async function executeAutomation(input: {
@@ -142,11 +228,18 @@ export async function continueAutomationRun(runId: string, inboundText = "") {
   if (!run || run.status !== "running") return run;
 
   try {
-    for (const step of run.automation.steps.filter((item) => item.order > run.currentStep)) {
+    let currentStep = run.currentStep;
+    const steps = run.automation.steps;
+
+    while (true) {
+      const step = steps.find((item) => item.order > currentStep);
+      if (!step) break;
+
       await db.automationRun.update({
         where: { id: run.id },
         data: { currentStep: step.order },
       });
+      currentStep = step.order;
 
       const result = await runStep({
         runId: run.id,
@@ -156,7 +249,15 @@ export async function continueAutomationRun(runId: string, inboundText = "") {
         inboundText,
       });
 
-      if (result === "paused") return run;
+      if (result.status === "paused") return run;
+      if (result.status === "stop") break;
+      if (result.status === "skip") {
+        currentStep = result.nextOrder - 1;
+        await db.automationRun.update({
+          where: { id: run.id },
+          data: { currentStep },
+        });
+      }
     }
 
     return db.automationRun.update({

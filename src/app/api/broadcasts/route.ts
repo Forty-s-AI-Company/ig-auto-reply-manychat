@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
+import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
 import { broadcastSchema } from "@/lib/validation";
+import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function GET() {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
-  return NextResponse.json(await getDb().broadcast.findMany({ orderBy: { updatedAt: "desc" } }));
+  const workspaceId = await getCurrentWorkspaceId();
+  return NextResponse.json(
+    await getDb().broadcast.findMany({ where: { workspaceId }, orderBy: { updatedAt: "desc" } }),
+  );
 }
 
 export async function POST(request: Request) {
@@ -14,11 +19,21 @@ export async function POST(request: Request) {
   if (auth.response) return auth.response;
   const parsed = broadcastSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid broadcast." }, { status: 400 });
+    return NextResponse.json({ error: "廣播資料格式不正確。" }, { status: 400 });
+  }
+  const workspaceId = await getCurrentWorkspaceId();
+  try {
+    await assertWorkspaceLimit(workspaceId, "broadcasts");
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "已達方案限制。" },
+      { status: 402 },
+    );
   }
 
   const broadcast = await getDb().broadcast.create({
     data: {
+      workspaceId,
       name: parsed.data.name,
       targetConfigJson: parsed.data.targetConfigJson,
       messageJson: parsed.data.messageJson,

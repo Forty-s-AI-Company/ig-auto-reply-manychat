@@ -1,0 +1,51 @@
+{
+  "url": "https://business.facebook.com/business/loginpage/?next=https%3A%2F%2Fbusiness.facebook.com%2Fdialog%2Foauth%3Fclient_id%3D532160876956612%26config_id%3D1112026417119023%26response_type%3Dcode%26override_default_response_type%3D1%26state%3Dauth_state%253A%253Ac2532ce120ab621c448084b05bf26d5a45dd9b67%26redirect_uri%3Dhttps%253A%252F%252Fapp.manychat.com%252Ffb%26display%3Dpopup%26ret%3Dlogin%26fbapp_pres%3D0%26logger_id%3D019e4c30-fcd4-76ed-8362-60dcabf70215%26tp%3Dunspecified&login_options[0]=IG&app=436761779744620&cma_account_switch=1&is_ig_oidc_with_redirect=1&display=popup&full_page_redirect_experimental=1&show_back_button=0",
+  "title": "Meta for Business（舊稱為 Facebook for Business）",
+  "text": "登入 Meta 商業工具\n使用 Instagram 帳號繼續",
+  "interactives": [
+    {
+      "i": 0,
+      "tag": "DIV",
+      "role": "button",
+      "text": "使用 Instagram 帳號繼續",
+      "aria": "",
+      "value": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "x1i10hfl xjbqb8w x1ejq31n x18oe1m7 x1sy0etr xstzfhl x972fbf x10w94by x1qhh985 x14e42zd x1ypdohk x3ct3a4 xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x16tdsg8 x1hl2dhg xggy1nq x1fmog5m xu25z0z x140muxe xo1y3bh x87ps6o x1lku1pv x1a2a7pz x9f619 x3nfvp2 xdt5ytf xl56j7k x1n2onr6 xh8yej3"
+    },
+    {
+      "i": 1,
+      "tag": "A",
+      "role": "button",
+      "text": "鍵盤快速鍵說明鍵盤快速鍵說明",
+      "aria": "鍵盤快速鍵說明",
+      "value": "",
+      "href": "",
+      "placeholder": "",
+      "cls": "fbNubButton"
+    },
+    {
+      "i": 2,
+      "tag": "BUTTON",
+      "role": "",
+      "text": "關閉",
+      "aria": "",
+      "value": "1",
+      "href": "",
+      "placeholder": "",
+      "cls": "_42ft _5upp _2dv8"
+    },
+    {
+      "i": 3,
+      "tag": "A",
+      "role": "",
+      "text": "",
+      "aria": "翻譯工具",
+      "value": "",
+      "href": "https://www.facebook.com/translations/?ref=trans_nub",
+      "placeholder": "",
+      "cls": "fbNubButton"
+    }
+  ]
+}

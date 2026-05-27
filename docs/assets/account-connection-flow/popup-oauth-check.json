@@ -1,0 +1,5 @@
+{
+  "parentStayedOn": "http://localhost:3041/channels/connect/instagram",
+  "metaHost": "www.facebook.com",
+  "instagramHost": "www.instagram.com"
+}

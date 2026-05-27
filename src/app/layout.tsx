@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Personal Chat Automation Hub",
-  description: "Self-hosted message automation MVP",
+  title: "InboxPilot",
+  description: "Instagram 多帳號訊息管理與自動回覆平台",
 };
 
 export default function RootLayout({

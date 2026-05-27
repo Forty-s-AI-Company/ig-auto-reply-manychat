@@ -1,0 +1,9 @@
+{
+  "devStatusCount": 8,
+  "instagramActions": true,
+  "fetchMedia": true,
+  "syncComments": true,
+  "refreshToken": true,
+  "oldUnavailable": false,
+  "consoleErrors": []
+}
