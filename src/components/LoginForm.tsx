@@ -6,7 +6,11 @@ import { useState } from "react";
 export function LoginForm() {
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("admin123456");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const googleError = new URLSearchParams(window.location.search).get("google_error");
+    return googleError ? "Google 登入失敗，請再試一次或改用 Email 登入。" : "";
+  });
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,6 +40,20 @@ export function LoginForm() {
       </div>
 
       {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+
+      <a
+        href="/api/auth/google/start"
+        className="flex w-full items-center justify-center gap-3 rounded-md border border-[#d7dbe0] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#f8fafc]"
+      >
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4285f4] text-xs font-bold text-white">G</span>
+        使用 Google 繼續
+      </a>
+
+      <div className="flex items-center gap-3 text-xs text-[#98a2b3]">
+        <span className="h-px flex-1 bg-[#eaecf0]" />
+        或使用 Email 登入
+        <span className="h-px flex-1 bg-[#eaecf0]" />
+      </div>
 
       <label className="block text-sm">
         <span className="text-[#344054]">電子郵件</span>

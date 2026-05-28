@@ -57,7 +57,7 @@ export default async function ProfilePage() {
                 <h3 className="font-semibold text-[#111827]">登入與安全</h3>
               </div>
               <p className="text-sm leading-6 text-[#667085]">
-                目前支援 Email / 密碼登入。Google、Apple、Telegram 登入方式先保留入口，正式串接後會顯示在這裡。
+                目前支援 Email / 密碼登入與 Google 登入。Apple、Telegram 登入方式先保留入口，正式串接後會顯示在這裡。
               </p>
             </section>
 
