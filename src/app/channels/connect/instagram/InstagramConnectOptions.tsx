@@ -34,8 +34,8 @@ export function InstagramConnectOptions({
         </DismissibleNoticeToast>
       ) : null}
 
-      <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram">
-        透過 Instagram 連接
+      <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook">
+        透過 Meta 連接 Instagram
       </OAuthPopupButton>
 
       <div className="mt-5 flex min-h-[94px] items-center justify-between rounded-md bg-[#f1f1f1] px-5">
@@ -63,8 +63,8 @@ export function InstagramConnectOptions({
 
       {expanded ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook" variant="secondary">
-            Meta Business Suite
+          <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram" variant="secondary">
+            Instagram 直接登入
           </OAuthPopupButton>
         </div>
       ) : null}
