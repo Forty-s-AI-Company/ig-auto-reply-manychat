@@ -1,4 +1,5 @@
 import { AdminShell } from "@/components/AdminShell";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { ManualActionNotice } from "@/components/ManualActionNotice";
 import { billingAddons, billingPlans, formatTwd } from "@/lib/billing";
 import { getWorkspaceEntitlement } from "@/lib/billing/entitlements";
@@ -50,13 +51,17 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
     <AdminShell title="付款與用量">
       <div className="space-y-6">
         {params?.payment === "success" ? (
-          <p className="rounded-md border border-green-800 bg-green-950 px-4 py-3 text-sm text-green-100">付款已完成，帳單與訂閱已更新。</p>
+          <DismissibleNoticeToast title="付款已完成" tone="success">
+            帳單與訂閱已更新。
+          </DismissibleNoticeToast>
         ) : null}
         {params?.payment === "failed" ? (
-          <p className="rounded-md border border-red-900 bg-red-950 px-4 py-3 text-sm text-red-100">付款未完成，請重新確認訂單。</p>
+          <DismissibleNoticeToast title="付款未完成" tone="danger">
+            請重新確認訂單。
+          </DismissibleNoticeToast>
         ) : null}
 
-        <ManualActionNotice title="需要你操作：PayUNI 付款" tone="cyan">
+        <ManualActionNotice title="需要你操作：PayUNI 付款" tone="cyan" stackIndex={params?.payment ? 1 : 0}>
           <p>信用卡資料、OTP、3D 驗證都會在 PayUNI 頁面完成；系統只接收回傳結果，不會保存卡號。</p>
         </ManualActionNotice>
 

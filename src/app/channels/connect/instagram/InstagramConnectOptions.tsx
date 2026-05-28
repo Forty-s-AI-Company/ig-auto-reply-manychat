@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { OAuthPopupButton } from "./OAuthPopupButton";
 
 type InstagramConnectOptionsProps = {
@@ -17,6 +18,8 @@ export function InstagramConnectOptions({
 }: InstagramConnectOptionsProps) {
   const [expanded, setExpanded] = useState(false);
   const isLocalCallback = callbackUrl.includes("://localhost") || callbackUrl.includes("://127.0.0.1");
+  const hasAppUrlMismatch = Boolean(configuredAppUrl && !callbackUrl.startsWith(configuredAppUrl));
+  const showSetupNotice = isLocalCallback || hasAppUrlMismatch;
 
   return (
     <div>
@@ -26,30 +29,13 @@ export function InstagramConnectOptions({
       </p>
 
       {metaError ? (
-        <div className="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          Meta 授權失敗：{metaError}
-        </div>
+        <DismissibleNoticeToast title="Meta 授權失敗" tone="danger" stackIndex={showSetupNotice ? 1 : 0}>
+          {metaError}
+        </DismissibleNoticeToast>
       ) : null}
 
-      <div className="mt-5 rounded-md border border-[#d7dbe2] bg-[#f8fafc] px-4 py-3 text-sm leading-6 text-[#344054]">
-        <p className="font-semibold text-[#17191c]">Meta 後台需要允許這個 Callback URL</p>
-        <code className="mt-2 block overflow-x-auto rounded bg-white px-3 py-2 text-xs text-[#17191c]">
-          {callbackUrl}
-        </code>
-        {isLocalCallback ? (
-          <p className="mt-2 text-xs text-[#667085]">
-            目前你正在使用 localhost，Meta App 的 Valid OAuth Redirect URIs 必須加入上面這一條。
-          </p>
-        ) : null}
-        {configuredAppUrl && !callbackUrl.startsWith(configuredAppUrl) ? (
-          <p className="mt-2 text-xs text-[#b45309]">
-            .env 的 APP_URL 是 {configuredAppUrl}，但目前頁面不是從這個網域開啟。OAuth 會以目前瀏覽器網域為準，避免 cookie 網域不一致。
-          </p>
-        ) : null}
-      </div>
-
-      <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook">
-        透過 Meta 連接
+      <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram">
+        透過 Instagram 連接
       </OAuthPopupButton>
 
       <div className="mt-5 flex min-h-[94px] items-center justify-between rounded-md bg-[#f1f1f1] px-5">
@@ -77,13 +63,28 @@ export function InstagramConnectOptions({
 
       {expanded ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram" variant="secondary">
-            透過 Instagram 連接
-          </OAuthPopupButton>
           <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook" variant="secondary">
             Meta Business Suite
           </OAuthPopupButton>
         </div>
+      ) : null}
+
+      {showSetupNotice ? (
+        <DismissibleNoticeToast title="Meta Callback URL 提醒" tone="warning">
+          <code className="mt-2 block overflow-x-auto rounded bg-[#f8fafc] px-3 py-2 text-xs text-[#17191c]">
+            {callbackUrl}
+          </code>
+          {isLocalCallback ? (
+            <p className="mt-2 text-xs text-[#667085]">
+              目前使用 localhost，Meta App 的 Valid OAuth Redirect URIs 需要加入上面這一條。
+            </p>
+          ) : null}
+          {hasAppUrlMismatch ? (
+            <p className="mt-2 text-xs text-[#b45309]">
+              .env 的 APP_URL 是 {configuredAppUrl}，但目前頁面不是從這個網域開啟。
+            </p>
+          ) : null}
+        </DismissibleNoticeToast>
       ) : null}
     </div>
   );

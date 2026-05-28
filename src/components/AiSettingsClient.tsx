@@ -13,6 +13,7 @@ import {
   TestTube2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { ManualActionNotice } from "@/components/ManualActionNotice";
 
 type ProviderId = "chatgpt" | "gemini" | "deepseek" | "xai" | "codex_cli" | "antigravity_cli";
@@ -330,9 +331,13 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
         </div>
       </div>
 
-      {message ? <p className="rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-200">{message}</p> : null}
+      {message ? (
+        <DismissibleNoticeToast key={message} title="AI 設定提醒" tone="info">
+          {message}
+        </DismissibleNoticeToast>
+      ) : null}
 
-      <ManualActionNotice title="SaaS 連接方式：API Key" tone="cyan">
+      <ManualActionNotice title="SaaS 連接方式：API Key" tone="cyan" stackIndex={message ? 1 : 0}>
         <p>
           ChatGPT、Gemini、DeepSeek、XAI 由目前帳號自行填入 API Key。Codex / Antigravity 不是雲端 SaaS 可直接讀取的使用者登入狀態；
           正式站請使用 OpenAI 或 Gemini API 連接。自架或本機開發才適合啟用 CLI 橋接。

@@ -15,6 +15,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { DisconnectChannelButton } from "@/components/DisconnectChannelButton";
 import { InstagramChannelActions } from "@/components/InstagramChannelActions";
 import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProfileButton";
@@ -199,8 +200,16 @@ export default async function ChannelsPage({ searchParams }: Props) {
             </Link>
           </header>
 
-          {params.connected ? <Notice tone="success">已連結 {params.connected} 個 Instagram 帳號。</Notice> : null}
-          {params.meta_error ? <Notice tone="danger">Meta 授權失敗：{params.meta_error}</Notice> : null}
+          {params.connected ? (
+            <Notice title="Instagram 已連結" tone="success">
+              已連結 {params.connected} 個 Instagram 帳號。
+            </Notice>
+          ) : null}
+          {params.meta_error ? (
+            <Notice title="Meta 授權失敗" tone="danger">
+              {params.meta_error}
+            </Notice>
+          ) : null}
 
           <section id="general" className="grid gap-3 md:grid-cols-5">
             <Metric label="已連結 IG" value={instagramChannels.length} />
@@ -280,7 +289,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <Info label="連結時間" value={formatDate(config.connectedAt)} />
                       <Info label="權杖到期" value={formatDate(config.userTokenExpiresAt)} />
                     </dl>
-                    {config.profileReadWarning ? <Notice tone="warning">{config.profileReadWarning}</Notice> : null}
+                    {config.profileReadWarning ? (
+                      <Notice title="Instagram 帳號資料提醒" tone="warning">
+                        {config.profileReadWarning}
+                      </Notice>
+                    ) : null}
                     <InstagramChannelActions channelId={channel.id} />
                   </article>
                 );
@@ -423,13 +436,20 @@ function StatusBadge({ children }: { children: ReactNode }) {
   );
 }
 
-function Notice({ tone, children }: { tone: "success" | "danger" | "warning"; children: ReactNode }) {
-  const styles = {
-    success: "border-green-200 bg-green-50 text-green-800",
-    danger: "border-red-200 bg-red-50 text-red-800",
-    warning: "border-amber-200 bg-amber-50 text-amber-800",
-  };
-  return <div className={`rounded-md border px-4 py-3 text-sm ${styles[tone]}`}>{children}</div>;
+function Notice({
+  title,
+  tone,
+  children,
+}: {
+  title: string;
+  tone: "success" | "danger" | "warning";
+  children: ReactNode;
+}) {
+  return (
+    <DismissibleNoticeToast title={title} tone={tone}>
+      {children}
+    </DismissibleNoticeToast>
+  );
 }
 
 function EmptyState({ children }: { children: ReactNode }) {
