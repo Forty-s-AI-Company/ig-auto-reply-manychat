@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Settings, Sparkles, Users, Wallet } from "lucide-react";
+import { AdminMobileNav } from "@/components/AdminMobileNav";
 import { InboxPilotAccountDropdown } from "@/components/InboxPilotAccountDropdown";
 import { InboxPilotProfileMenu } from "@/components/InboxPilotProfileMenu";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
@@ -57,6 +58,15 @@ export async function AdminShell({
     })
     .filter((channel) => Boolean(channel.username || channel.avatarUrl || channel.displayName.startsWith("Carry") || channel.name.startsWith("Instagram @")))
     .sort((a, b) => Number(Boolean(b.username)) - Number(Boolean(a.username)) || a.displayName.localeCompare(b.displayName, "zh-TW"));
+  const serializedWorkspaces = JSON.parse(JSON.stringify(workspaces));
+  const serializedAccountChannels = JSON.parse(JSON.stringify(accountChannels));
+  const mobileUser = user
+    ? {
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+      }
+    : null;
 
   return (
     <div className="manychat-shell min-h-screen bg-[#f5f5f5] text-[#101828]">
@@ -70,9 +80,9 @@ export async function AdminShell({
 
           <div className="border-b border-[#d8d8d8] px-3 py-4">
             <InboxPilotAccountDropdown
-              workspaces={JSON.parse(JSON.stringify(workspaces))}
+              workspaces={serializedWorkspaces}
               selectedWorkspaceId={workspace.id}
-              channels={JSON.parse(JSON.stringify(accountChannels))}
+              channels={serializedAccountChannels}
               selectedChannelId={selectedChannelId}
             />
           </div>
@@ -109,10 +119,19 @@ export async function AdminShell({
       </aside>
 
       <div className="lg:pl-[216px]">
-        <header className="sticky top-0 z-10 h-[60px] border-b border-[#d8d8d8] bg-[#f5f5f5]/95 px-6 backdrop-blur">
-          <div className="grid h-full grid-cols-[minmax(180px,1fr)_auto_minmax(180px,1fr)] items-center gap-4">
-            <h1 className="truncate text-2xl font-semibold text-[#111827]">{title}</h1>
-            <div className="justify-self-center">{headerCenter}</div>
+        <header className="sticky top-0 z-10 h-[60px] border-b border-[#d8d8d8] bg-[#f5f5f5]/95 px-4 backdrop-blur lg:px-6">
+          <div className="grid h-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 lg:grid-cols-[minmax(180px,1fr)_auto_minmax(180px,1fr)] lg:gap-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <AdminMobileNav
+                workspaces={serializedWorkspaces}
+                selectedWorkspaceId={workspace.id}
+                channels={serializedAccountChannels}
+                selectedChannelId={selectedChannelId}
+                user={mobileUser}
+              />
+              <h1 className="truncate text-2xl font-semibold text-[#111827]">{title}</h1>
+            </div>
+            <div className="hidden justify-self-center sm:block">{headerCenter}</div>
             <div className="justify-self-end">{headerRight}</div>
           </div>
         </header>
