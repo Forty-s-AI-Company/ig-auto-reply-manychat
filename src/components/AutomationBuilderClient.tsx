@@ -916,11 +916,11 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
     });
   }, [items, search, statusFilter]);
 
-  function selectNode(nodeId: string) {
+  const selectNode = useCallback((nodeId: string) => {
     setSelectedNodeId(nodeId);
     setEditorOpen(true);
     setNodes((current) => current.map((node) => ({ ...node, selected: node.id === nodeId })));
-  }
+  }, [setNodes]);
 
   useEffect(() => {
     function handleNodeSelect(event: Event) {
@@ -930,7 +930,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
 
     window.addEventListener("automation-flow-node-select", handleNodeSelect);
     return () => window.removeEventListener("automation-flow-node-select", handleNodeSelect);
-  });
+  }, [selectNode]);
 
   useEffect(() => {
     setNodes((current) =>
@@ -1265,7 +1265,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
             </div>
           ) : null}
 
-          <div className="h-full" onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
+          <div className="h-full min-h-[520px]" onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -1276,7 +1276,8 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
               onNodeClick={(_, node) => selectNode(node.id)}
               onNodeDragStart={(_, node) => selectNode(node.id)}
               onSelectionChange={({ nodes: selectedNodes }) => {
-                if (selectedNodes[0]) setSelectedNodeId(selectedNodes[0].id);
+                const nextSelectedId = selectedNodes[0]?.id;
+                if (nextSelectedId && nextSelectedId !== selectedNodeId) setSelectedNodeId(nextSelectedId);
               }}
               nodeClickDistance={8}
               nodesDraggable

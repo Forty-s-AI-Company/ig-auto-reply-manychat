@@ -444,15 +444,34 @@ function VideoFrame({
 }) {
   return (
     <div className={`relative overflow-hidden rounded-lg border border-[#111] bg-[#111] shadow-[12px_12px_0_rgba(17,17,17,0.16)] ${className}`}>
-      <video
-        className={`block h-full w-full bg-[#111] ${portrait ? "aspect-[9/16] object-cover" : "aspect-video object-cover"}`}
-        src={src}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-      />
+      <div
+        className={`relative block h-full w-full overflow-hidden bg-[#111] ${portrait ? "aspect-[9/16]" : "aspect-video"}`}
+        data-demo-src={src}
+      >
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,#141414_0%,#252525_42%,#0f172a_100%)]" />
+        <div className="absolute inset-x-4 top-4 flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+          <span className="ml-2 h-2 flex-1 rounded-full bg-white/12" />
+        </div>
+        <div className={`${portrait ? "inset-x-5 top-16" : "left-8 top-16 w-[44%]"} absolute rounded-lg border border-white/10 bg-white p-4 text-[#111] shadow-2xl`}>
+          <p className="text-xs font-black uppercase text-[#2f6df6]">InboxPilot</p>
+          <p className="mt-2 text-lg font-black leading-tight">Comment to DM Flow</p>
+          <div className="mt-4 space-y-2">
+            {["留言關鍵字", "自動私訊", "標籤與接手"].map((item) => (
+              <div key={item} className="flex items-center gap-2 rounded-md bg-[#f2f6ff] px-3 py-2 text-xs font-bold">
+                <CheckCircle2 className="h-3.5 w-3.5 text-[#00a876]" />
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`${portrait ? "bottom-7 left-6 right-6" : "bottom-8 right-8 w-[42%]"} absolute rounded-xl bg-[#2f6df6] p-4 text-white shadow-2xl`}>
+          <p className="text-xs font-black uppercase opacity-80">Live Preview</p>
+          <p className="mt-2 text-sm font-bold leading-6">有人留言「價格」後，自動送出 DM 並建立可追蹤名單。</p>
+        </div>
+      </div>
       <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-[#111]">
         <Play className="h-3.5 w-3.5 fill-[#111]" />
         {label}
@@ -875,7 +894,7 @@ export function OfficialV2LandingPage() {
           </div>
         </div>
 
-        <div className="relative border-y border-black/10 bg-white/78 py-4 backdrop-blur">
+        <div className="relative overflow-hidden border-y border-black/10 bg-white/78 py-4 backdrop-blur">
           <div className="official-v2-marquee flex gap-3 whitespace-nowrap text-sm font-black text-[#111]">
             {[...channels, ...channels].map((channel, index) => (
               <span key={`${channel.label}-${index}`} className="mx-2 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2">

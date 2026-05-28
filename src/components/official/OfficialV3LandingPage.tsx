@@ -36,9 +36,6 @@ type Locale = "zhTW" | "zhCN" | "en";
 type IconComponent = ComponentType<{ className?: string }>;
 type SimpleIconShape = { path: string; title: string };
 
-const productTourVideo = "/videos/official-v2/inboxpilot-product-tour.mp4";
-const mobileStoryVideo = "/videos/official-v2/inboxpilot-mobile-story.mp4";
-
 const heroImage =
   "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=2200&q=85";
 const sectionImage =
@@ -549,7 +546,7 @@ function Hero({ t }: { t: Copy }) {
                 </div>
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">LIVE</span>
               </div>
-              <video className="aspect-[9/16] w-full rounded-2xl bg-zinc-900 object-cover" src={mobileStoryVideo} autoPlay muted loop playsInline />
+              <ProductDemoPanel portrait compact />
               <div className="official-v3-flow-message mt-4 rounded-2xl bg-zinc-950 p-4 text-sm font-semibold leading-6 text-white">
                 {t.hero.dm}
               </div>
@@ -571,12 +568,42 @@ function SectionTitle({ eyebrow, title, body, light = false }: { eyebrow?: strin
   );
 }
 
+function ProductDemoPanel({ portrait = false, compact = false }: { portrait?: boolean; compact?: boolean }) {
+  return (
+    <div className={`relative overflow-hidden bg-zinc-950 ${portrait ? "aspect-[9/16] rounded-2xl" : "aspect-video"}`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,0,212,0.34),transparent_28%),linear-gradient(135deg,#09090b,#1e1b4b_48%,#0f172a)]" />
+      <div className="absolute inset-x-4 top-4 flex items-center gap-1.5">
+        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#ffbd2e]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+        <span className="ml-2 h-2 flex-1 rounded-full bg-white/15" />
+      </div>
+      <div className={`${portrait ? "inset-x-5 top-16" : "left-8 top-16 w-[42%]"} absolute rounded-2xl bg-white p-5 text-zinc-950 shadow-2xl`}>
+        <p className="text-xs font-black uppercase text-[#ff00d4]">InboxPilot Flow</p>
+        <p className={`${compact ? "text-lg" : "text-2xl"} mt-2 font-black leading-tight`}>留言觸發 AI 私訊</p>
+        <div className="mt-5 space-y-3">
+          {["偵測 IG 關鍵字", "送出優惠與表單", "交給真人跟進"].map((item) => (
+            <div key={item} className="flex items-center gap-3 rounded-xl bg-zinc-100 px-3 py-2 text-sm font-bold">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={`${portrait ? "bottom-6 left-5 right-5" : "bottom-8 right-8 w-[40%]"} absolute rounded-2xl bg-[#0057ff] p-5 text-white shadow-2xl`}>
+        <p className="text-xs font-black uppercase opacity-80">Live Inbox</p>
+        <p className="mt-2 text-sm font-semibold leading-6">自動化先回覆，團隊可從同一個收件匣接手高意願對話。</p>
+      </div>
+    </div>
+  );
+}
+
 function ActionVideoSection({ t }: { t: Copy }) {
   return (
     <section id="video" className="bg-white px-5 py-24 lg:px-8">
       <SectionTitle eyebrow={t.action.eyebrow} title={t.action.title} body={t.action.body} />
       <div className="mx-auto mt-12 max-w-6xl overflow-hidden rounded-[2rem] border border-zinc-200 bg-zinc-950 shadow-2xl">
-        <video className="aspect-video w-full object-cover" src={productTourVideo} autoPlay muted loop playsInline controls />
+        <ProductDemoPanel />
       </div>
     </section>
   );
@@ -861,7 +888,7 @@ function CompareTable({ title, body, headers, rows }: { title: string; body?: st
         {body ? <p className="mt-3 leading-7 text-zinc-300">{body}</p> : null}
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] text-left text-sm">
+        <table className="w-full min-w-full text-left text-sm md:min-w-[520px]">
           <thead className="bg-zinc-100 text-zinc-600">
             <tr>
               {headers.map((header) => (
