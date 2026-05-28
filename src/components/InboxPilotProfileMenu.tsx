@@ -44,11 +44,11 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl }: InboxPilotProf
       </button>
 
       {open ? (
-        <div className="absolute bottom-full left-0 z-50 mb-2 w-[292px] rounded-md border border-[#d7dbe0] bg-white shadow-xl">
+        <div className="absolute bottom-full left-0 z-50 mb-2 max-h-[min(620px,calc(100vh-92px))] w-full overflow-y-auto rounded-md border border-[#d7dbe0] bg-white shadow-xl">
           <div className="flex items-center gap-3 p-4">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="lg" />
             <div className="min-w-0">
-              <p className="truncate text-lg font-semibold text-[#111827]">{displayName}</p>
+              <p className="truncate text-base font-semibold text-[#111827]">{displayName}</p>
               <p className="truncate text-xs text-[#667085]">{displayEmail}</p>
             </div>
           </div>
@@ -126,7 +126,7 @@ function ProfileAvatar({ avatarUrl, displayName, size }: { avatarUrl?: string | 
 function MenuLink({ href, icon, label }: { href: string; icon?: React.ReactNode; label: string }) {
   return (
     <Link href={href} prefetch={false} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
-      <span className="text-[#667085]">{icon}</span>
+      <span className="shrink-0 text-[#667085]">{icon}</span>
       <span className="min-w-0 flex-1">{label}</span>
     </Link>
   );
@@ -151,7 +151,7 @@ function MenuButton({
         disabled ? "cursor-not-allowed opacity-70" : "hover:bg-[#f2f4f7]"
       }`}
     >
-      <span className="text-[#667085]">{icon}</span>
+      <span className="shrink-0 text-[#667085]">{icon}</span>
       <span className="min-w-0 flex-1">{label}</span>
       {right}
     </button>
