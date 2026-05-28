@@ -68,7 +68,7 @@ export const getCurrentUser = cache(async function getCurrentUser() {
     if (typeof payload.userId !== "string") return null;
     return getDb().user.findUnique({
       where: { id: payload.userId },
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, email: true, name: true, avatarUrl: true, role: true },
     });
   } catch {
     return null;

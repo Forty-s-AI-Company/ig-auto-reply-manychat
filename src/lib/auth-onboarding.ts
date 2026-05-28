@@ -13,6 +13,7 @@ export async function createUserWorkspaceSubscription(params: {
   name: string;
   workspaceName: string;
   password?: string;
+  avatarUrl?: string | null;
   emailVerifiedAt?: Date | null;
   referralCode?: string | null;
   ip?: string | null;
@@ -26,6 +27,7 @@ export async function createUserWorkspaceSubscription(params: {
       data: {
         email: params.email.toLowerCase(),
         name: params.name,
+        avatarUrl: params.avatarUrl || null,
         passwordHash,
         emailVerifiedAt: params.emailVerifiedAt || null,
         role: "admin",

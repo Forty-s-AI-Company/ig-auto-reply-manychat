@@ -7,9 +7,10 @@ import { useEffect, useRef, useState } from "react";
 type InboxPilotProfileMenuProps = {
   name?: string | null;
   email?: string | null;
+  avatarUrl?: string | null;
 };
 
-export function InboxPilotProfileMenu({ name, email }: InboxPilotProfileMenuProps) {
+export function InboxPilotProfileMenu({ name, email, avatarUrl }: InboxPilotProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState("zh-TW");
   const rootRef = useRef<HTMLDivElement>(null);
@@ -37,9 +38,7 @@ export function InboxPilotProfileMenu({ name, email }: InboxPilotProfileMenuProp
         onClick={() => setOpen((current) => !current)}
         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4b5563] hover:bg-[#e2e2e2]"
       >
-        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#d1d5db] text-[10px] font-semibold text-[#344054]">
-          {displayName.slice(0, 1).toUpperCase()}
-        </div>
+        <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" />
         <span className="min-w-0 flex-1 truncate text-left">我的個人檔案</span>
         <ChevronDown className={`h-3.5 w-3.5 transition ${open ? "rotate-180" : ""}`} />
       </button>
@@ -47,9 +46,7 @@ export function InboxPilotProfileMenu({ name, email }: InboxPilotProfileMenuProp
       {open ? (
         <div className="absolute bottom-full left-0 z-50 mb-2 w-[292px] rounded-md border border-[#d7dbe0] bg-white shadow-xl">
           <div className="flex items-center gap-3 p-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#d1d5db] text-lg font-semibold text-[#344054]">
-              {displayName.slice(0, 1).toUpperCase()}
-            </div>
+            <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="lg" />
             <div className="min-w-0">
               <p className="truncate text-lg font-semibold text-[#111827]">{displayName}</p>
               <p className="truncate text-xs text-[#667085]">{displayEmail}</p>
@@ -108,9 +105,27 @@ export function InboxPilotProfileMenu({ name, email }: InboxPilotProfileMenuProp
   );
 }
 
+function ProfileAvatar({ avatarUrl, displayName, size }: { avatarUrl?: string | null; displayName: string; size: "sm" | "lg" }) {
+  const className =
+    size === "sm"
+      ? "h-5 w-5 text-[10px]"
+      : "h-12 w-12 text-lg";
+
+  return (
+    <div className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#d1d5db] font-semibold text-[#344054] ${className}`}>
+      {avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+      ) : (
+        displayName.slice(0, 1).toUpperCase()
+      )}
+    </div>
+  );
+}
+
 function MenuLink({ href, icon, label }: { href: string; icon?: React.ReactNode; label: string }) {
   return (
-    <Link href={href} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
+    <Link href={href} prefetch={false} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
       <span className="text-[#667085]">{icon}</span>
       <span className="min-w-0 flex-1">{label}</span>
     </Link>

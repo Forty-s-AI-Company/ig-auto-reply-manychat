@@ -20,6 +20,7 @@ type GoogleIdTokenPayload = {
   email_verified?: boolean;
   name?: string;
   given_name?: string;
+  picture?: string;
 };
 
 const googleJwks = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
@@ -83,13 +84,21 @@ export async function GET(request: Request) {
     }
 
     const email = profile.email.toLowerCase();
-    const existing = await getDb().user.findUnique({ where: { email }, select: { id: true } });
+    const existing = await getDb().user.findUnique({ where: { email }, select: { id: true, avatarUrl: true } });
+    if (existing && profile.picture && existing.avatarUrl !== profile.picture) {
+      await getDb().user.update({
+        where: { id: existing.id },
+        data: { avatarUrl: profile.picture },
+        select: { id: true },
+      });
+    }
     const user =
       existing ||
       (await createUserWorkspaceSubscription({
         email,
         name: profile.name || profile.given_name || email.split("@")[0] || "Google User",
         workspaceName: `${profile.name || profile.given_name || "InboxPilot"} Workspace`,
+        avatarUrl: profile.picture || null,
         emailVerifiedAt: new Date(),
         referralCode,
         ip: request.headers.get("x-forwarded-for"),

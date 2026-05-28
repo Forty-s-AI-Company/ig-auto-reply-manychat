@@ -84,6 +84,7 @@ export async function AdminShell({
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={false}
                   className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[#4b5563] hover:bg-[#e2e2e2] hover:text-[#111827]"
                 >
                   <Icon className="h-5 w-5 text-[#667085]" />
@@ -94,9 +95,10 @@ export async function AdminShell({
           </nav>
 
           <div className="mt-auto border-t border-[#d8d8d8] px-2 py-3">
-            <InboxPilotProfileMenu name={user?.name} email={user?.email} />
+            <InboxPilotProfileMenu name={user?.name} email={user?.email} avatarUrl={user?.avatarUrl} />
             <Link
               href="/channels#reference"
+              prefetch={false}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4b5563] hover:bg-[#e2e2e2]"
             >
               <CircleHelp className="h-5 w-5 text-[#667085]" />
