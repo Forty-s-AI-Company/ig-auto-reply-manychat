@@ -93,7 +93,6 @@ export async function GET(request: Request) {
     redirect_uri: redirectUri,
     response_type: "code",
     state,
-    display: "popup",
     scope: [
       "pages_show_list",
       "pages_read_engagement",
