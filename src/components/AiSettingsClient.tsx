@@ -161,6 +161,14 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
     : activeModel?.supportsThinking
       ? (["low", "medium", "high"] satisfies ThinkingLevel[])
       : ([] as ThinkingLevel[]);
+  const showReasoningControl = reasoningOptions.length > 0;
+  const showThinkingControl = thinkingOptions.length > 0;
+  const effectiveReasoningEffort = showReasoningControl && reasoningOptions.includes(reasoningEffort)
+    ? reasoningEffort
+    : reasoningOptions[0] || "medium";
+  const effectiveThinkingLevel = showThinkingControl && thinkingOptions.includes(thinkingLevel)
+    ? thinkingLevel
+    : thinkingOptions[0] || "none";
   const isApiProvider = activeProvider?.kind === "api";
   const isLocalCliProvider = activeProvider?.kind === "cli" && initialState.localCliEnabled;
   const canSaveSetting = Boolean(isApiProvider || isLocalCliProvider);
@@ -244,7 +252,12 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       const response = await fetch("/api/ai-settings", {
         method: "PUT",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ provider, model, reasoningEffort, thinkingLevel }),
+        body: JSON.stringify({
+          provider,
+          model,
+          reasoningEffort: effectiveReasoningEffort,
+          thinkingLevel: effectiveThinkingLevel,
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "儲存 AI 設定失敗。");
@@ -289,7 +302,12 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       const response = await fetch("/api/ai-model-test", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ provider, model, reasoningEffort, thinkingLevel }),
+        body: JSON.stringify({
+          provider,
+          model,
+          reasoningEffort: effectiveReasoningEffort,
+          thinkingLevel: effectiveThinkingLevel,
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "模型測試失敗。");
@@ -397,40 +415,42 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             </label>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="block text-sm">
-              <span className="mb-1 block text-[#667085]">智慧程度</span>
-              <select
-                value={reasoningOptions.length ? reasoningEffort : "medium"}
-                onChange={(event) => setReasoningEffort(event.target.value as ReasoningEffort)}
-                disabled={!activeModel?.supportsReasoning}
-                className={lightFieldClass}
-              >
-                {reasoningOptions.length === 0 ? <option value="medium">依模型預設</option> : null}
-                {reasoningOptions.includes("minimal") ? <option value="minimal">基礎，最快</option> : null}
-                {reasoningOptions.includes("low") ? <option value="low">標準，偏快</option> : null}
-                {reasoningOptions.includes("medium") ? <option value="medium">進階，平衡</option> : null}
-                {reasoningOptions.includes("high") ? <option value="high">高智慧，較慢</option> : null}
-                {reasoningOptions.includes("xhigh") ? <option value="xhigh">最高智慧</option> : null}
-              </select>
-            </label>
+          {showReasoningControl || showThinkingControl ? (
+            <div className="grid gap-4 md:grid-cols-2">
+              {showReasoningControl ? (
+                <label className="block text-sm">
+                  <span className="mb-1 block text-[#667085]">智慧程度</span>
+                  <select
+                    value={effectiveReasoningEffort}
+                    onChange={(event) => setReasoningEffort(event.target.value as ReasoningEffort)}
+                    className={lightFieldClass}
+                  >
+                    {reasoningOptions.includes("minimal") ? <option value="minimal">基礎，最快</option> : null}
+                    {reasoningOptions.includes("low") ? <option value="low">標準，偏快</option> : null}
+                    {reasoningOptions.includes("medium") ? <option value="medium">進階，平衡</option> : null}
+                    {reasoningOptions.includes("high") ? <option value="high">高智慧，較慢</option> : null}
+                    {reasoningOptions.includes("xhigh") ? <option value="xhigh">最高智慧</option> : null}
+                  </select>
+                </label>
+              ) : null}
 
-            <label className="block text-sm">
-              <span className="mb-1 block text-[#667085]">思考程度</span>
-              <select
-                value={thinkingOptions.length ? thinkingLevel : "none"}
-                onChange={(event) => setThinkingLevel(event.target.value as ThinkingLevel)}
-                disabled={!activeModel?.supportsThinking}
-                className={lightFieldClass}
-              >
-                {thinkingOptions.length === 0 ? <option value="none">不支援</option> : null}
-                {thinkingOptions.includes("none") ? <option value="none">關閉</option> : null}
-                {thinkingOptions.includes("low") ? <option value="low">Low，較快</option> : null}
-                {thinkingOptions.includes("medium") ? <option value="medium">Medium，平衡</option> : null}
-                {thinkingOptions.includes("high") ? <option value="high">High，較深思考</option> : null}
-              </select>
-            </label>
-          </div>
+              {showThinkingControl ? (
+                <label className="block text-sm">
+                  <span className="mb-1 block text-[#667085]">思考程度</span>
+                  <select
+                    value={effectiveThinkingLevel}
+                    onChange={(event) => setThinkingLevel(event.target.value as ThinkingLevel)}
+                    className={lightFieldClass}
+                  >
+                    {thinkingOptions.includes("none") ? <option value="none">關閉</option> : null}
+                    {thinkingOptions.includes("low") ? <option value="low">Low，較快</option> : null}
+                    {thinkingOptions.includes("medium") ? <option value="medium">Medium，平衡</option> : null}
+                    {thinkingOptions.includes("high") ? <option value="high">High，較深思考</option> : null}
+                  </select>
+                </label>
+              ) : null}
+            </div>
+          ) : null}
 
           {isApiProvider ? (
             <div className="rounded-lg border border-[#d7dbe0] bg-[#f8fafc] p-4">
