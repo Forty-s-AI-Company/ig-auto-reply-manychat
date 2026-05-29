@@ -97,7 +97,7 @@ const settingsGroups = [
 ];
 
 const channelCards = [
-  ["Instagram", "選擇 Instagram 後會開啟 Meta Business 登入，成功後新增平台帳號。", true, "/api/meta/oauth/start?mode=facebook&login=instagram"],
+  ["Instagram", "選擇 Instagram 後會開啟 Instagram 登入，成功後新增平台帳號。", true, "/api/meta/oauth/start?mode=instagram"],
   ["Facebook Messenger", "選擇 Messenger 後會開啟 Meta 登入，成功後新增粉專訊息渠道。", true, "/api/meta/oauth/start?mode=facebook"],
   ["TikTok", "參考入口，正式 API 尚未接入。", false, ""],
   ["WhatsApp", "預留 WhatsApp Business Cloud API 設定。", false, ""],
