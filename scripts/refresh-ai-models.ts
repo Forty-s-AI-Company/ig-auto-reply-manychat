@@ -5,9 +5,18 @@ import { loadProjectEnv } from "./load-env.mjs";
 loadProjectEnv();
 
 async function main() {
-  const workspace = await getDb().workspace.findFirst({ orderBy: { createdAt: "asc" } });
-  const counts = await refreshAllAiModels(workspace?.id);
-  console.log(`[ai-models] refreshed ${JSON.stringify(counts)}`);
+  const workspaces = await getDb().workspace.findMany({
+    select: { id: true },
+    orderBy: { createdAt: "asc" },
+  });
+  const workspaceIds = workspaces.length ? workspaces.map((workspace) => workspace.id) : [null];
+  const results: Record<string, Awaited<ReturnType<typeof refreshAllAiModels>>> = {};
+
+  for (const workspaceId of workspaceIds) {
+    results[workspaceId || "default"] = await refreshAllAiModels(workspaceId);
+  }
+
+  console.log(`[ai-models] refreshed ${JSON.stringify(results)}`);
 }
 
 main()

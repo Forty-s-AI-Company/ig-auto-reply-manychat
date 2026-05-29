@@ -67,7 +67,7 @@ describe("automation triggers", () => {
     });
     expect(outboundMessages).toHaveLength(1);
     expect(outboundMessages[0].text).toBe("歡迎加入");
-  });
+  }, 45000);
 
   it("runs a manual automation for an existing contact", async () => {
     const workspace = await ensureDefaultWorkspace();

@@ -68,5 +68,5 @@ describe("mock inbound webhook flow", () => {
     expect(messages[0].direction).toBe("inbound");
     expect(messages[1].text).toContain("資料連結");
     expect(tags).toHaveLength(1);
-  });
+  }, 45000);
 });

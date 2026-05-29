@@ -91,7 +91,7 @@ describe("AI provider credentials", () => {
 
     await expect(getWorkspaceAiSetting(workspace.id)).resolves.toMatchObject({
       provider: "chatgpt",
-      model: "gpt-5.2",
+      model: "gpt-5.5",
     });
   });
 

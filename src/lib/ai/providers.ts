@@ -30,27 +30,35 @@ export const AI_PROVIDERS: Array<{ id: AiProviderId; label: string; kind: "api" 
 
 export const DEFAULT_MODELS: Record<AiProviderId, AiModelOption[]> = {
   chatgpt: [
-    modelOption("chat-latest", "advanced", "balanced", false, false, {
-      label: "chat-latest",
-      description: "OpenAI ChatGPT latest alias for chat use.",
+    modelOption("gpt-5.5", "frontier", "balanced", true, false, {
+      description: "OpenAI newest frontier GPT model for general API use.",
     }),
-    modelOption("gpt-5.2", "frontier", "balanced", true, false, {
-      description: "OpenAI frontier text model with configurable reasoning effort.",
+    modelOption("gpt-5.5-pro", "frontier", "slower", true, false, {
+      description: "OpenAI newest pro GPT model for deeper professional work.",
     }),
-    modelOption("gpt-5.2-pro", "frontier", "slower", true, false, {
-      description: "OpenAI pro model for deeper professional work.",
+    modelOption("gpt-5.4", "frontier", "balanced", true, false, {
+      description: "OpenAI GPT-5.4 frontier model with configurable reasoning effort.",
     }),
-    modelOption("gpt-5.1", "advanced", "balanced", true, false, {
-      description: "OpenAI GPT-5.1 text model with configurable reasoning effort.",
+    modelOption("gpt-5.4-pro", "frontier", "slower", true, false, {
+      description: "OpenAI GPT-5.4 Pro model for deeper professional work.",
     }),
-    modelOption("gpt-4.1-mini", "standard", "fast", false, false, {
-      description: "Smaller GPT-4.1 model for fast focused tasks.",
+    modelOption("gpt-5.4-mini", "advanced", "fast", true, false, {
+      description: "Smaller GPT-5.4 model for fast focused tasks.",
     }),
-    modelOption("gpt-4o", "advanced", "balanced", false, false, {
-      description: "Fast multimodal GPT model.",
+    modelOption("gpt-5.4-nano", "standard", "fast", true, false, {
+      description: "Lightweight GPT-5.4 model for low-latency tasks.",
     }),
-    modelOption("gpt-4o-mini", "standard", "fast", false, false, {
-      description: "Affordable small GPT model.",
+    modelOption("gpt-5-mini", "standard", "fast", true, false, {
+      description: "Fast GPT-5 model for everyday automation tasks.",
+    }),
+    modelOption("gpt-5-nano", "basic", "fast", true, false, {
+      description: "Small GPT-5 model for simple low-latency tasks.",
+    }),
+    modelOption("gpt-5", "advanced", "balanced", true, false, {
+      description: "GPT-5 general-purpose API model.",
+    }),
+    modelOption("gpt-4.1", "advanced", "balanced", false, false, {
+      description: "GPT-4.1 stable text model.",
     }),
   ],
   gemini: [
@@ -331,8 +339,10 @@ function isDeprecatedOrUnsupportedModel(provider: AiProviderId, id: string) {
   if (unsupported) return true;
 
   if (provider === "chatgpt") {
-    if (/codex|o1|o3|o4|gpt-3\.5|gpt-4\.5|gpt-4-turbo|gpt-5-chat|gpt-5\.1-chat/i.test(id)) return true;
-    return !/^(chat-latest|gpt-5\.2(-pro)?|gpt-5\.1|gpt-4\.1-mini|gpt-4o(-mini)?)$/i.test(id);
+    if (/chat-latest|codex|o1|o3|o4|gpt-3\.5|gpt-4\.5|gpt-4-turbo|gpt-5-chat|gpt-5\.\d+-chat/i.test(id)) {
+      return true;
+    }
+    return !/^(gpt-5\.5(-pro)?|gpt-5\.4(-pro|-mini|-nano)?|gpt-5(-mini|-nano)?|gpt-4\.1)$/i.test(id);
   }
 
   if (provider === "gemini" || provider === "antigravity_cli") {
@@ -663,6 +673,7 @@ function toModelCacheData(model: AiModelOption) {
 export async function refreshAllAiModels(workspaceId?: string | null) {
   const result: Record<string, number> = {};
   for (const provider of AI_PROVIDERS) {
+    if (!canUseAiProvider(provider.id)) continue;
     result[provider.id] = (await refreshAiModels(provider.id, workspaceId)).length;
   }
   return result;

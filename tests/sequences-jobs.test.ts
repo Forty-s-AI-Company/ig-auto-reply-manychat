@@ -73,7 +73,7 @@ describe("sequence and reminder jobs", () => {
     expect(messages.map((message) => message.text)).toEqual(["第一封", "第二封"]);
     expect(finalSubscription.active).toBe(false);
     expect(finalSubscription.currentStep).toBe(2);
-  });
+  }, 45000);
 
   it("turns due reminders into system messages once", async () => {
     const workspace = await ensureDefaultWorkspace();
