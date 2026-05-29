@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Camera, Mail, ShieldCheck, UserRound } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { requireUser } from "@/lib/auth";
@@ -25,8 +26,12 @@ export default async function ProfilePage() {
       <div className="mx-auto max-w-5xl space-y-5">
         <section className="rounded-lg border border-[#d7dbe0] bg-white p-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#e5e7eb] text-2xl font-semibold text-[#344054]">
-              {(user.name || user.email).slice(0, 1).toUpperCase()}
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#e5e7eb] text-2xl font-semibold text-[#344054]">
+              {user.avatarUrl ? (
+                <Image src={user.avatarUrl} alt={user.name || user.email} width={64} height={64} className="h-full w-full object-cover" />
+              ) : (
+                (user.name || user.email).slice(0, 1).toUpperCase()
+              )}
             </div>
             <div>
               <h2 className="text-2xl font-semibold text-[#111827]">{user.name || "管理員"}</h2>

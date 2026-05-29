@@ -15,6 +15,7 @@ export default async function AiSettingsPage() {
   const workspaceId = await getCurrentWorkspaceId();
   const setting = await getWorkspaceAiSetting(workspaceId);
   const localCliEnabled = isLocalAiCliEnabled();
+  const visibleProviders = AI_PROVIDERS.filter((provider) => provider.kind === "api" || localCliEnabled);
   const [initialModels, credentials] = await Promise.all([
     listAiModels(setting.provider, workspaceId),
     getCredentialsStatus(workspaceId),
@@ -25,7 +26,7 @@ export default async function AiSettingsPage() {
       <AiSettingsClient
         initialState={{
           setting,
-          providers: AI_PROVIDERS,
+          providers: visibleProviders,
           credentials,
           initialModels,
           localCliEnabled,

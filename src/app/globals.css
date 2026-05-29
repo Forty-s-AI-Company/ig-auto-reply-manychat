@@ -82,6 +82,11 @@ textarea {
   pointer-events: all;
 }
 
+.react-flow__attribution,
+.react-flow__attribution a {
+  color: #344054 !important;
+}
+
 .manychat-shell .bg-zinc-950 {
   background-color: #f5f5f5;
 }
@@ -99,9 +104,14 @@ textarea {
   border-color: #d7dbe0;
 }
 
-.manychat-shell .text-white,
 .manychat-shell .text-zinc-100,
 .manychat-shell .text-zinc-200 {
+  color: #111827;
+}
+
+.manychat-shell .bg-zinc-950.text-white,
+.manychat-shell .bg-zinc-900.text-white,
+.manychat-shell .bg-zinc-800.text-white {
   color: #111827;
 }
 

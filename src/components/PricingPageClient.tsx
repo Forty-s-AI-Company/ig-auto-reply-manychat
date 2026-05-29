@@ -53,7 +53,7 @@ export function PricingPageClient() {
               </ul>
               <Link
                 href="/signup"
-                className="mt-auto inline-flex items-center justify-center gap-2 rounded-md bg-zinc-950 px-4 py-3 text-sm font-bold text-white"
+                className="mt-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#111827] px-4 py-3 text-sm font-bold text-white"
               >
                 開始使用
                 <ArrowRight className="h-4 w-4" />

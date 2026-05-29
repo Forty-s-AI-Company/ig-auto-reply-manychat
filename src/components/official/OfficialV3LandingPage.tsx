@@ -473,7 +473,7 @@ function Header({
                 type="button"
                 onClick={() => setLocale(item)}
                 className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                  locale === item ? "bg-zinc-950 text-white" : "text-zinc-600 hover:text-zinc-950"
+                  locale === item ? "bg-[#111827] text-white" : "text-zinc-600 hover:text-zinc-950"
                 }`}
               >
                 {localeLabels[item]}
@@ -492,8 +492,8 @@ function DealButton({ t, variant = "pink" }: { t: Copy; variant?: "pink" | "blue
     variant === "blue"
       ? "bg-[#0057ff] text-white shadow-blue-200 hover:bg-[#0049d8]"
       : variant === "dark"
-        ? "bg-zinc-950 text-white shadow-zinc-300 hover:bg-zinc-800"
-        : "bg-[#ff00d4] text-white shadow-fuchsia-200 hover:bg-[#df00bb]";
+        ? "bg-[#111827] text-white shadow-zinc-300 hover:bg-zinc-800"
+        : "bg-[#ff00d4] text-[#111827] shadow-fuchsia-200 hover:bg-[#df00bb]";
 
   return (
     <a
@@ -527,7 +527,7 @@ function Hero({ t }: { t: Copy }) {
           <p className="mt-7 max-w-2xl text-lg leading-8 text-zinc-100 md:text-xl">{t.hero.body}</p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <DealButton t={t} variant="blue" />
-            <a href="#video" className="inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-3 text-sm font-black text-white backdrop-blur transition hover:bg-white/10">
+            <a href="#video" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-[#111827] px-5 py-3 text-sm font-black text-white backdrop-blur transition hover:bg-black">
               <Zap className="h-4 w-4" />
               {t.deal.title}
             </a>
@@ -883,7 +883,7 @@ function CompareSection({ t }: { t: Copy }) {
 function CompareTable({ title, body, headers, rows }: { title: string; body?: string; headers: readonly string[]; rows: readonly (readonly string[])[] }) {
   return (
     <div className="overflow-hidden rounded-3xl border border-zinc-200 shadow-sm">
-      <div className="bg-zinc-950 p-6 text-white">
+      <div className="bg-[#111827] p-6 text-white">
         <h3 className="text-2xl font-black">{title}</h3>
         {body ? <p className="mt-3 leading-7 text-zinc-300">{body}</p> : null}
       </div>
@@ -929,7 +929,7 @@ function LifetimePlans({ t }: { t: Copy }) {
       </div>
       <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2">
         {t.plans.cards.map(([name, price, oldPrice, credits, body], index) => (
-          <article key={name} className={`rounded-[2rem] border p-8 shadow-sm ${index === 1 ? "border-[#ff00d4] bg-zinc-950 text-white" : "border-zinc-200 bg-white"}`}>
+          <article key={name} className={`rounded-[2rem] border p-8 shadow-sm ${index === 1 ? "border-[#ff00d4] bg-[#111827] text-white" : "border-zinc-200 bg-white"}`}>
             <p className={`text-sm font-black uppercase tracking-[0.18em] ${index === 1 ? "text-[#00f0ff]" : "text-[#ff00d4]"}`}>{credits}</p>
             <h3 className="mt-4 text-3xl font-black">{name}</h3>
             <div className="mt-6 flex items-end gap-3">
@@ -937,7 +937,7 @@ function LifetimePlans({ t }: { t: Copy }) {
               <span className={`pb-2 text-xl font-bold line-through ${index === 1 ? "text-zinc-400" : "text-zinc-400"}`}>{oldPrice}</span>
             </div>
             <p className={`mt-5 leading-7 ${index === 1 ? "text-zinc-300" : "text-zinc-600"}`}>{body}</p>
-            <a href="#faq" className={`mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-black transition ${index === 1 ? "bg-[#ff00d4] text-white hover:bg-[#df00bb]" : "bg-[#0057ff] text-white hover:bg-[#0049d8]"}`}>
+            <a href="#faq" className={`mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 text-sm font-black transition ${index === 1 ? "bg-[#ff00d4] text-[#111827] hover:bg-[#df00bb]" : "bg-[#0057ff] text-white hover:bg-[#0049d8]"}`}>
               {t.deal.choose}
               <ArrowRight className="h-4 w-4" />
             </a>
@@ -1014,7 +1014,7 @@ function FloatingMenu({ t }: { t: Copy }) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex items-center gap-2 rounded-full bg-[#ff00d4] px-5 py-4 text-sm font-black text-white shadow-2xl"
+        className="inline-flex items-center gap-2 rounded-full bg-[#ff00d4] px-5 py-4 text-sm font-black text-[#111827] shadow-2xl"
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         {t.menu}

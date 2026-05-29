@@ -30,39 +30,69 @@ export const AI_PROVIDERS: Array<{ id: AiProviderId; label: string; kind: "api" 
 
 export const DEFAULT_MODELS: Record<AiProviderId, AiModelOption[]> = {
   chatgpt: [
-    modelOption("gpt-5.2", "frontier", "balanced", true),
-    modelOption("gpt-5.2-pro", "frontier", "slower", true),
-    modelOption("gpt-5.2-codex", "frontier", "balanced", true),
-    modelOption("gpt-5.1", "advanced", "balanced", true),
-    modelOption("gpt-5.1-codex", "advanced", "balanced", true),
-    modelOption("gpt-5.1-codex-max", "frontier", "slower", true),
-    modelOption("gpt-5", "advanced", "balanced", true),
-    modelOption("gpt-5-mini", "standard", "fast", true),
-    modelOption("gpt-5-nano", "basic", "fast", true),
-    modelOption("gpt-4.1", "advanced", "balanced", false),
-    modelOption("gpt-4.1-mini", "standard", "fast", false),
-    modelOption("gpt-4o", "advanced", "balanced", false),
-    modelOption("gpt-4o-mini", "standard", "fast", false),
+    modelOption("chat-latest", "advanced", "balanced", false, false, {
+      label: "chat-latest",
+      description: "OpenAI ChatGPT latest alias for chat use.",
+    }),
+    modelOption("gpt-5.2", "frontier", "balanced", true, false, {
+      description: "OpenAI frontier text model with configurable reasoning effort.",
+    }),
+    modelOption("gpt-5.2-pro", "frontier", "slower", true, false, {
+      description: "OpenAI pro model for deeper professional work.",
+    }),
+    modelOption("gpt-5.1", "advanced", "balanced", true, false, {
+      description: "OpenAI GPT-5.1 text model with configurable reasoning effort.",
+    }),
+    modelOption("gpt-4.1-mini", "standard", "fast", false, false, {
+      description: "Smaller GPT-4.1 model for fast focused tasks.",
+    }),
+    modelOption("gpt-4o", "advanced", "balanced", false, false, {
+      description: "Fast multimodal GPT model.",
+    }),
+    modelOption("gpt-4o-mini", "standard", "fast", false, false, {
+      description: "Affordable small GPT model.",
+    }),
   ],
   gemini: [
-    modelOption("gemini-3.5-flash", "advanced", "fast", false, true),
-    modelOption("gemini-3.1-pro", "frontier", "slower", false, true),
-    modelOption("gemini-3-flash", "advanced", "fast", false, true),
-    modelOption("gemini-2.5-pro", "frontier", "slower", false, true),
-    modelOption("gemini-2.5-flash", "advanced", "fast", false, true),
-    modelOption("gemini-2.0-flash", "standard", "fast", false, false),
+    modelOption("gemini-3.5-flash", "frontier", "fast", false, true, {
+      description: "Gemini 3 stable flash model for agent and coding tasks.",
+    }),
+    modelOption("gemini-3.1-pro", "frontier", "slower", false, true, {
+      description: "Gemini 3.1 Pro preview model for complex reasoning tasks.",
+    }),
+    modelOption("gemini-3-flash", "advanced", "fast", false, true, {
+      description: "Gemini 3 Flash preview model.",
+    }),
+    modelOption("gemini-3.1-flash-lite", "standard", "fast", false, true, {
+      description: "Gemini 3.1 Flash-Lite stable cost-efficient model.",
+    }),
+    modelOption("gemini-2.5-pro", "frontier", "slower", false, true, {
+      description: "Gemini 2.5 Pro model for deep reasoning and coding.",
+    }),
+    modelOption("gemini-2.5-flash", "advanced", "fast", false, true, {
+      description: "Gemini 2.5 Flash low-latency reasoning-capable model.",
+    }),
+    modelOption("gemini-2.5-flash-lite", "standard", "fast", false, true, {
+      description: "Gemini 2.5 Flash-Lite lightweight model.",
+    }),
   ],
   deepseek: [
-    modelOption("deepseek-v4-flash", "advanced", "fast", false),
-    modelOption("deepseek-v4-pro", "frontier", "slower", true),
-    modelOption("deepseek-chat", "standard", "balanced", false),
-    modelOption("deepseek-reasoner", "advanced", "slower", true),
+    modelOption("deepseek-v4-flash", "advanced", "fast", false, true, {
+      thinkingLevels: ["none", "low", "medium", "high"],
+      description: "DeepSeek V4 Flash supports non-thinking and thinking modes.",
+    }),
+    modelOption("deepseek-v4-pro", "frontier", "slower", false, true, {
+      thinkingLevels: ["none", "low", "medium", "high"],
+      description: "DeepSeek V4 Pro supports non-thinking and thinking modes.",
+    }),
   ],
   xai: [
-    modelOption("grok-4", "frontier", "balanced", true),
-    modelOption("grok-4-fast", "advanced", "fast", true),
-    modelOption("grok-3", "advanced", "balanced", false),
-    modelOption("grok-3-mini", "standard", "fast", false),
+    modelOption("grok-4.3", "frontier", "balanced", true, false, {
+      description: "xAI recommended general-purpose chat model.",
+    }),
+    modelOption("grok-build-0.1", "advanced", "fast", false, false, {
+      description: "xAI fast coding model for agentic coding workflows.",
+    }),
   ],
   codex_cli: [
     modelOption("auto", "standard", "balanced", true),
@@ -277,8 +307,8 @@ async function fetchJson(url: string, init?: RequestInit) {
 
 function classifyModel(provider: AiProviderId, id: string): AiModelOption {
   const lower = id.toLowerCase();
-  const supportsReasoning = /reason|r1|o\d|gpt-5|grok-4|pro|max|codex/.test(lower);
-  const supportsThinking = provider === "gemini" || provider === "antigravity_cli";
+  const supportsReasoning = provider === "chatgpt" || (provider === "xai" && /grok-4/.test(lower));
+  const supportsThinking = provider === "gemini" || provider === "deepseek" || provider === "antigravity_cli";
   const speedTier: AiModelOption["speedTier"] =
     /nano|mini|flash|fast|lite/.test(lower) ? "fast" : /pro|max|reason|r1/.test(lower) ? "slower" : "balanced";
   const intelligenceTier: AiModelOption["intelligenceTier"] =
@@ -290,6 +320,46 @@ function classifyModel(provider: AiProviderId, id: string): AiModelOption {
           ? "standard"
           : "basic";
   return modelOption(id, intelligenceTier, speedTier, supportsReasoning, supportsThinking);
+}
+
+function isDeprecatedOrUnsupportedModel(provider: AiProviderId, id: string) {
+  const lower = id.toLowerCase();
+  const unsupported =
+    /deprecated|embedding|moderation|realtime|audio|tts|transcribe|whisper|image|imagen|veo|lyria|banana|vision|search|babbage|davinci|computer-use/.test(
+      lower,
+    );
+  if (unsupported) return true;
+
+  if (provider === "chatgpt") {
+    if (/codex|o1|o3|o4|gpt-3\.5|gpt-4\.5|gpt-4-turbo|gpt-5-chat|gpt-5\.1-chat/i.test(id)) return true;
+    return !/^(chat-latest|gpt-5\.2(-pro)?|gpt-5\.1|gpt-4\.1-mini|gpt-4o(-mini)?)$/i.test(id);
+  }
+
+  if (provider === "gemini" || provider === "antigravity_cli") {
+    if (/gemini-2\.0|gemini-1\.|gemma|learnlm|aqa|embedding|exp|experimental/i.test(id)) return true;
+    return !/^gemini-(3(\.5-flash|\.1-pro|\.1-flash-lite|-flash)|2\.5-(pro|flash|flash-lite))$/i.test(id);
+  }
+
+  if (provider === "deepseek") {
+    if (/deepseek-(chat|reasoner|r1|v3)/i.test(id)) return true;
+    return /^deepseek-v4-(flash|pro)$/i.test(id) === false;
+  }
+
+  if (provider === "xai") {
+    return !/^(grok-4\.3|grok-build-0\.1)$/i.test(id);
+  }
+
+  return false;
+}
+
+function sanitizeModels(provider: AiProviderId, models: AiModelOption[]) {
+  const map = new Map<string, AiModelOption>();
+  for (const model of models) {
+    if (!isDeprecatedOrUnsupportedModel(provider, model.id)) {
+      map.set(model.id, model);
+    }
+  }
+  return [...map.values()];
 }
 
 function asReasoningEffort(value: unknown): ReasoningEffort | null {
@@ -427,13 +497,12 @@ async function readGeminiCliModelsFromBundle() {
 }
 
 function parseOpenAiCompatibleModels(provider: AiProviderId, value: unknown, matcher: RegExp) {
-  const blocked = /image|audio|tts|transcribe|realtime|embedding|moderation|search|babbage|davinci/i;
   const data = (value as { data?: Array<{ id?: string }> }).data || [];
   return data
     .map((model) => model.id)
     .filter((id): id is string => Boolean(id))
     .filter((id) => matcher.test(id))
-    .filter((id) => !blocked.test(id))
+    .filter((id) => !isDeprecatedOrUnsupportedModel(provider, id))
     .sort()
     .map((id) => classifyModel(provider, id));
 }
@@ -444,6 +513,7 @@ function parseGeminiModels(value: unknown) {
     .filter((model) => model.supportedGenerationMethods?.includes("generateContent"))
     .map((model) => model.name?.replace(/^models\//, ""))
     .filter((id): id is string => Boolean(id))
+    .filter((id) => !isDeprecatedOrUnsupportedModel("gemini", id))
     .sort()
     .map((id) => classifyModel("gemini", id));
 }
@@ -551,7 +621,7 @@ function mergeDefaults(provider: AiProviderId, models: AiModelOption[]) {
   const map = new Map<string, AiModelOption>();
   for (const model of DEFAULT_MODELS[provider]) map.set(model.id, model);
   for (const model of models) map.set(model.id, model);
-  return [...map.values()];
+  return sanitizeModels(provider, [...map.values()]);
 }
 
 export async function refreshAiModels(provider: AiProviderId, workspaceId?: string | null) {
@@ -570,6 +640,10 @@ export async function refreshAiModels(provider: AiProviderId, workspaceId?: stri
       create: { provider, modelId: model.id, ...toModelCacheData(model) },
     });
   }
+  await db.aiModelCache.updateMany({
+    where: { provider, modelId: { notIn: models.map((model) => model.id) } },
+    data: { enabled: false },
+  });
   return models;
 }
 
@@ -601,7 +675,7 @@ export async function listAiModels(provider: AiProviderId, workspaceId?: string 
     orderBy: [{ intelligenceTier: "desc" }, { speedTier: "asc" }, { modelId: "asc" }],
   });
   if (cached.length) {
-    return cached.map((model) => ({
+    return mergeDefaults(provider, cached.map((model) => ({
       id: model.modelId,
       label: model.label,
       intelligenceTier: model.intelligenceTier as AiModelOption["intelligenceTier"],
@@ -611,7 +685,7 @@ export async function listAiModels(provider: AiProviderId, workspaceId?: string 
       reasoningEfforts: (model.rawJson as { reasoningEfforts?: ReasoningEffort[] } | null)?.reasoningEfforts || [],
       thinkingLevels: (model.rawJson as { thinkingLevels?: ThinkingLevel[] } | null)?.thinkingLevels || [],
       description: (model.rawJson as { description?: string } | null)?.description || "",
-    }));
+    })));
   }
   return refreshAiModels(provider, workspaceId);
 }

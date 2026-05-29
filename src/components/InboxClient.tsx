@@ -600,7 +600,7 @@ function ToolbarButton({
       onClick={onClick}
       className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs ${
         active
-          ? "border-[#006fe6] bg-[#eef6ff] text-[#006fe6]"
+          ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
           : "border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
       }`}
     >

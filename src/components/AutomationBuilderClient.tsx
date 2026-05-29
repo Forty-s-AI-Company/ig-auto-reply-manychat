@@ -1116,7 +1116,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
             type="button"
             disabled={saving}
             onClick={saveFlow}
-            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
             <Save className="h-4 w-4" />
             {saving ? "儲存中..." : "儲存"}
@@ -1182,7 +1182,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
                     type="button"
                     onClick={() => setStatusFilter(value as typeof statusFilter)}
                     className={`rounded-md px-2 py-1 ${
-                      statusFilter === value ? "bg-blue-600 text-white" : "bg-zinc-100 text-zinc-500"
+                      statusFilter === value ? "bg-[#006fe6] text-white" : "bg-zinc-100 text-zinc-500"
                     }`}
                   >
                     {label}
@@ -1225,7 +1225,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
             type="button"
             onClick={() => setLibraryOpen((value) => !value)}
             data-testid="flow-add-node"
-            className="absolute right-8 top-20 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-xl hover:bg-blue-700"
+            className="absolute right-8 top-20 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#006fe6] text-white shadow-xl hover:bg-[#0057b8]"
             aria-label="新增節點"
           >
             <Plus className="h-7 w-7" />
@@ -1319,7 +1319,7 @@ function FlowBuilderInner({ initialItems }: { initialItems: AutomationItem[] }) 
               <MousePointer2 className="h-4 w-4 text-blue-600" />
             </div>
             <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
-              <div className="ml-auto max-w-[78%] rounded-2xl rounded-br-md bg-blue-600 px-3 py-2 text-sm text-white">
+              <div className="ml-auto max-w-[78%] rounded-2xl rounded-br-md bg-[#006fe6] px-3 py-2 text-sm text-white">
                 {draft.keywords.split(",")[0] || "價格"}
               </div>
               <div className="mt-3 max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-bl-md bg-white px-3 py-2 text-sm leading-6 text-zinc-900 shadow-sm">

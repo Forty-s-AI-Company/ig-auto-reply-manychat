@@ -17,12 +17,13 @@ export async function GET() {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const workspaceId = await getCurrentWorkspaceId();
+  const localCliEnabled = isLocalAiCliEnabled();
 
   return NextResponse.json({
     setting: await getWorkspaceAiSetting(workspaceId),
-    providers: AI_PROVIDERS,
+    providers: AI_PROVIDERS.filter((provider) => provider.kind === "api" || localCliEnabled),
     credentials: await getCredentialsStatus(workspaceId),
-    localCliEnabled: isLocalAiCliEnabled(),
+    localCliEnabled,
   });
 }
 
