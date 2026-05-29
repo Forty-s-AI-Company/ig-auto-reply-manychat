@@ -29,7 +29,8 @@ function getInstagramAppId() {
 }
 
 function buildMetaBusinessLoginUrl(nextUrl: string, loginPreference: MetaBusinessLoginPreference) {
-  const url = new URL("https://business.facebook.com/business/loginpage/");
+  const loginPagePath = loginPreference === "instagram" ? "https://business.facebook.com/business/loginpage/new/" : "https://business.facebook.com/business/loginpage/";
+  const url = new URL(loginPagePath);
   const loginOptions = loginPreference === "instagram" ? ["IG"] : ["FB", "IG", "SSO"];
   url.searchParams.set("next", nextUrl);
   loginOptions.forEach((option, index) => {
