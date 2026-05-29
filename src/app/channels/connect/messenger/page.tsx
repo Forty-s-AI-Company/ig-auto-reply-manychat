@@ -28,6 +28,7 @@ export default async function MessengerConnectionPage({ searchParams }: Props) {
         metaError={params.meta_error}
         callbackUrl={`${origin}/api/meta/oauth/callback`}
         configuredAppUrl={configuredAppUrl}
+        loginPreference="facebook"
       />
     </ChannelConnectionShell>
   );

@@ -9,12 +9,14 @@ type InstagramConnectOptionsProps = {
   metaError?: string;
   callbackUrl: string;
   configuredAppUrl: string;
+  loginPreference?: "facebook" | "instagram";
 };
 
 export function InstagramConnectOptions({
   metaError,
   callbackUrl,
   configuredAppUrl,
+  loginPreference = "instagram",
 }: InstagramConnectOptionsProps) {
   const [expanded, setExpanded] = useState(false);
   const isLocalCallback = callbackUrl.includes("://localhost") || callbackUrl.includes("://127.0.0.1");
@@ -34,7 +36,7 @@ export function InstagramConnectOptions({
         </DismissibleNoticeToast>
       ) : null}
 
-      <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook">
+      <OAuthPopupButton href={`/api/meta/oauth/start?mode=facebook&login=${loginPreference}`}>
         透過 Meta Business 連接
       </OAuthPopupButton>
 

@@ -11,6 +11,7 @@ const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
 type MetaOAuthMode = "facebook" | "instagram";
+type MetaBusinessLoginPreference = "facebook" | "instagram";
 
 const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "facebook";
 
@@ -27,9 +28,14 @@ function getInstagramAppId() {
   return process.env.META_INSTAGRAM_APP_ID?.trim() || process.env.META_APP_ID?.trim() || "";
 }
 
-function buildMetaBusinessLoginUrl(nextUrl: string) {
+function buildMetaBusinessLoginUrl(nextUrl: string, loginPreference: MetaBusinessLoginPreference) {
   const url = new URL("https://business.facebook.com/business/loginpage/");
+  const loginOptions = loginPreference === "instagram" ? ["IG", "FB", "SSO"] : ["FB", "IG", "SSO"];
   url.searchParams.set("next", nextUrl);
+  loginOptions.forEach((option, index) => {
+    url.searchParams.set(`login_options[${index}]`, option);
+  });
+  url.searchParams.set("config_ref", "biz_login_tool_flavor_mbs");
   return url.toString();
 }
 
@@ -40,6 +46,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const requestedMode = url.searchParams.get("mode");
   const mode: MetaOAuthMode = requestedMode === "instagram" || requestedMode === "facebook" ? requestedMode : DEFAULT_META_OAUTH_MODE;
+  const loginPreference: MetaBusinessLoginPreference = url.searchParams.get("login") === "instagram" ? "instagram" : "facebook";
   const appId = mode === "instagram" ? getInstagramAppId() : process.env.META_APP_ID?.trim();
 
   if (!appId) {
@@ -112,5 +119,5 @@ export async function GET(request: Request) {
 
   const oauthUrl = `https://www.facebook.com/${graphVersion}/dialog/oauth?${params}`;
 
-  return NextResponse.redirect(buildMetaBusinessLoginUrl(oauthUrl));
+  return NextResponse.redirect(buildMetaBusinessLoginUrl(oauthUrl, loginPreference));
 }
