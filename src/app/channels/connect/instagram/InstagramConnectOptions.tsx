@@ -35,7 +35,7 @@ export function InstagramConnectOptions({
       ) : null}
 
       <OAuthPopupButton href="/api/meta/oauth/start?mode=facebook">
-        透過 Meta 連接 Instagram
+        透過 Meta Business 連接
       </OAuthPopupButton>
 
       <div className="mt-5 flex min-h-[94px] items-center justify-between rounded-md bg-[#f1f1f1] px-5">
@@ -66,6 +66,9 @@ export function InstagramConnectOptions({
           <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram" variant="secondary">
             Instagram 直接登入
           </OAuthPopupButton>
+          <p className="text-xs leading-5 text-[#667085] sm:col-span-2">
+            Instagram 直接登入需要另一組 Instagram App 設定。若出現 Invalid redirect_uri，請先改用 Meta Business 連接。
+          </p>
         </div>
       ) : null}
 

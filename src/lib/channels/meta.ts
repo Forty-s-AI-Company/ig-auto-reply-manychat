@@ -51,6 +51,7 @@ type MetaMessagingEvent = {
 
 export type MetaChannelConfig = {
   loginProvider?: "instagram" | "facebook";
+  businessId?: string;
   pageId?: string;
   pageName?: string;
   userAccessToken?: string;

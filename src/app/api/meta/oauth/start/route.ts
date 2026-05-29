@@ -10,7 +10,9 @@ const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
 const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
-const DEFAULT_META_OAUTH_MODE = "instagram";
+type MetaOAuthMode = "facebook" | "instagram";
+
+const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "facebook";
 
 function getAppUrl(request: Request) {
   const requestOrigin = new URL(request.url).origin;
@@ -30,7 +32,8 @@ export async function GET(request: Request) {
   if (auth.response) return auth.response;
 
   const url = new URL(request.url);
-  const mode = url.searchParams.get("mode") === "facebook" ? "facebook" : DEFAULT_META_OAUTH_MODE;
+  const requestedMode = url.searchParams.get("mode");
+  const mode: MetaOAuthMode = requestedMode === "instagram" || requestedMode === "facebook" ? requestedMode : DEFAULT_META_OAUTH_MODE;
   const appId = mode === "instagram" ? getInstagramAppId() : process.env.META_APP_ID?.trim();
 
   if (!appId) {
@@ -96,7 +99,6 @@ export async function GET(request: Request) {
       "pages_manage_metadata",
       "pages_messaging",
       "instagram_basic",
-      "instagram_manage_comments",
       "instagram_manage_messages",
       "business_management",
     ].join(","),

@@ -70,6 +70,20 @@ type MetaAccountPage = {
   };
 };
 
+type MetaInstagramBusinessAsset = {
+  id: string;
+  username?: string;
+  name?: string;
+  profile_picture_url?: string;
+};
+
+type MetaBusiness = {
+  id: string;
+  name?: string;
+  owned_instagram_accounts?: { data?: MetaInstagramBusinessAsset[] };
+  client_instagram_accounts?: { data?: MetaInstagramBusinessAsset[] };
+};
+
 function getAppUrl(request: Request) {
   const requestOrigin = new URL(request.url).origin;
   const hostname = new URL(requestOrigin).hostname;
@@ -304,6 +318,34 @@ async function getInstagramPages(userAccessToken: string) {
   );
 }
 
+async function getBusinessInstagramAccounts(userAccessToken: string) {
+  const data = await graphGet<{ data?: MetaBusiness[] }>("me/businesses", {
+    fields: [
+      "id",
+      "name",
+      "owned_instagram_accounts{id,username,name,profile_picture_url}",
+      "client_instagram_accounts{id,username,name,profile_picture_url}",
+    ].join(","),
+    access_token: userAccessToken,
+  });
+
+  const seen = new Set<string>();
+  const accounts: Array<MetaInstagramBusinessAsset & { businessId: string; businessName?: string }> = [];
+  for (const business of data.data || []) {
+    const instagramAccounts = [
+      ...(business.owned_instagram_accounts?.data || []),
+      ...(business.client_instagram_accounts?.data || []),
+    ];
+    for (const account of instagramAccounts) {
+      if (!account.id || seen.has(account.id)) continue;
+      seen.add(account.id);
+      accounts.push({ ...account, businessId: business.id, businessName: business.name });
+    }
+  }
+
+  return accounts;
+}
+
 async function subscribeMetaWebhooks(page: MetaAccountPage) {
   const appId = requiredEnv("META_APP_ID");
   const appSecret = requiredEnv("META_APP_SECRET");
@@ -431,6 +473,72 @@ async function upsertInstagramChannels(
   return channels;
 }
 
+async function upsertBusinessInstagramChannels(
+  accounts: Array<MetaInstagramBusinessAsset & { businessId: string; businessName?: string }>,
+  userAccessToken: string,
+  userTokenExpiresAt: Date,
+  workspaceId: string,
+) {
+  const db = getDb();
+  const channels = [];
+
+  for (const account of accounts) {
+    const name = buildInstagramChannelName(account.username || "", account.name || account.businessName || "Meta Business");
+    const existingChannels = await db.channel.findMany({
+      where: { workspaceId, type: "instagram" },
+      select: { id: true, configJson: true },
+    });
+    const existingByInstagramId = existingChannels.find((channel) => {
+      const config = getMetaChannelConfig(channel.configJson);
+      return config.instagramBusinessAccountId === account.id || config.instagramOauthUserId === account.id;
+    });
+    const existingByName = existingByInstagramId
+      ? null
+      : await db.channel.findUnique({
+          where: { workspaceId_type_name: { workspaceId, type: "instagram", name } },
+          select: { id: true },
+        });
+    const existing = existingByInstagramId || existingByName;
+    if (!existing) await assertWorkspaceLimit(workspaceId, "igAccounts");
+
+    const configJson = toPrismaJson({
+      loginProvider: "facebook",
+      businessId: account.businessId,
+      pageName: account.businessName,
+      userAccessToken,
+      instagramBusinessAccountId: account.id,
+      instagramOauthUserId: account.id,
+      instagramUsername: account.username,
+      instagramName: account.name,
+      instagramProfilePictureUrl: account.profile_picture_url,
+      connectedAt: new Date().toISOString(),
+      userTokenExpiresAt: userTokenExpiresAt.toISOString(),
+    } satisfies MetaChannelConfig);
+
+    const channel = existing
+      ? await db.channel.update({
+          where: { id: existing.id },
+          data: { name, enabled: true, configJson },
+        })
+      : await db.channel.create({
+          data: { workspaceId, type: "instagram", name, enabled: true, configJson },
+        });
+    channels.push(channel);
+  }
+
+  if (channels.length > 0) {
+    await db.channel.updateMany({
+      where: { workspaceId, type: "mock" },
+      data: {
+        enabled: false,
+        configJson: { mode: "disabled_after_instagram_connection" } as Prisma.InputJsonValue,
+      },
+    });
+  }
+
+  return channels;
+}
+
 async function upsertInstagramLoginChannel(profile: InstagramProfile, accessToken: string, expiresAt: Date, workspaceId: string) {
   const db = getDb();
   const instagramId = String(profile.user_id || profile.id || "");
@@ -503,7 +611,18 @@ export async function GET(request: Request) {
 
     const userToken = await exchangeCodeForUserToken(request, code);
     const pages = await getInstagramPages(userToken.accessToken);
-    const channels = await upsertInstagramChannels(pages, userToken.accessToken, userToken.expiresAt, workspaceId);
+    let channels = await upsertInstagramChannels(pages, userToken.accessToken, userToken.expiresAt, workspaceId);
+    if (channels.length === 0) {
+      try {
+        const businessAccounts = await getBusinessInstagramAccounts(userToken.accessToken);
+        channels = await upsertBusinessInstagramChannels(businessAccounts, userToken.accessToken, userToken.expiresAt, workspaceId);
+      } catch {
+        channels = [];
+      }
+    }
+    if (channels.length === 0) {
+      throw new Error("Meta 沒有回傳可連線的 Instagram 商業帳號。請在 Meta 視窗點「編輯設定」，確認已勾選粉絲專頁、商家與 Instagram 帳號，且該 IG 已連到 Facebook 粉絲專頁。");
+    }
     return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook`);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Meta connection failed.";
