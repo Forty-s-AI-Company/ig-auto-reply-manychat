@@ -27,6 +27,12 @@ function getInstagramAppId() {
   return process.env.META_INSTAGRAM_APP_ID?.trim() || process.env.META_APP_ID?.trim() || "";
 }
 
+function buildMetaBusinessLoginUrl(nextUrl: string) {
+  const url = new URL("https://business.facebook.com/business/loginpage/");
+  url.searchParams.set("next", nextUrl);
+  return url.toString();
+}
+
 export async function GET(request: Request) {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
@@ -104,5 +110,7 @@ export async function GET(request: Request) {
     ].join(","),
   });
 
-  return NextResponse.redirect(`https://www.facebook.com/${graphVersion}/dialog/oauth?${params}`);
+  const oauthUrl = `https://www.facebook.com/${graphVersion}/dialog/oauth?${params}`;
+
+  return NextResponse.redirect(buildMetaBusinessLoginUrl(oauthUrl));
 }
