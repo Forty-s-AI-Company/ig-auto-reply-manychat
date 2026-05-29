@@ -31,11 +31,8 @@ export function OAuthPopupButton({ href, children, variant = "primary" }: OAuthP
     const height = 760;
     const left = Math.max(0, window.screenX + (window.outerWidth - width) / 2);
     const top = Math.max(0, window.screenY + (window.outerHeight - height) / 2);
-    const popup = window.open(
-      href,
-      "instagram-account-connection",
-      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
-    );
+    const popupName = `platform-account-connection-${Date.now()}`;
+    const popup = window.open(href, popupName, `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`);
 
     if (!popup) {
       window.location.href = href;
