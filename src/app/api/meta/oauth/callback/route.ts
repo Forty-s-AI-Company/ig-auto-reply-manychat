@@ -17,6 +17,7 @@ const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
 const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
+const DEFAULT_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
 
 type MetaGraphError = {
   error?: {
@@ -91,6 +92,15 @@ function getAppUrl(request: Request) {
     return requestOrigin;
   }
   return (process.env.APP_URL || requestOrigin).replace(/\/$/, "");
+}
+
+function getOAuthRedirectUri(request: Request, mode: MetaOauthMode) {
+  const configuredRedirect =
+    mode === "instagram"
+      ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
+      : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
+  if (configuredRedirect) return configuredRedirect;
+  return `${getAppUrl(request)}${DEFAULT_OAUTH_CALLBACK_PATH}`;
 }
 
 function requiredEnv(name: string) {
@@ -190,7 +200,7 @@ async function graphPost<T>(path: string, params: Record<string, string>) {
 async function exchangeCodeForInstagramToken(request: Request, code: string) {
   const appId = requiredAnyEnv("META_INSTAGRAM_APP_ID", "META_APP_ID");
   const appSecret = getInstagramAppSecret();
-  const redirectUri = `${getAppUrl(request)}/api/meta/oauth/callback`;
+  const redirectUri = getOAuthRedirectUri(request, "instagram");
 
   const shortToken = await instagramFormPost<InstagramTokenResponse>("https://api.instagram.com/oauth/access_token", {
     client_id: appId,
@@ -263,7 +273,7 @@ async function getInstagramProfileOrFallback(accessToken: string, tokenUserId: s
 async function exchangeCodeForUserToken(request: Request, code: string) {
   const appId = requiredEnv("META_APP_ID");
   const appSecret = requiredEnv("META_APP_SECRET");
-  const redirectUri = `${getAppUrl(request)}/api/meta/oauth/callback`;
+  const redirectUri = getOAuthRedirectUri(request, "facebook");
 
   const shortToken = await graphGet<MetaTokenResponse>("oauth/access_token", {
     client_id: appId,

@@ -14,6 +14,7 @@ type MetaOAuthMode = "facebook" | "instagram";
 type MetaBusinessLoginPreference = "facebook" | "instagram";
 
 const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "facebook";
+const DEFAULT_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
 
 function getAppUrl(request: Request) {
   const requestOrigin = new URL(request.url).origin;
@@ -26,6 +27,15 @@ function getAppUrl(request: Request) {
 
 function getInstagramAppId() {
   return process.env.META_INSTAGRAM_APP_ID?.trim() || process.env.META_APP_ID?.trim() || "";
+}
+
+function getOAuthRedirectUri(request: Request, mode: MetaOAuthMode) {
+  const configuredRedirect =
+    mode === "instagram"
+      ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
+      : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
+  if (configuredRedirect) return configuredRedirect;
+  return `${getAppUrl(request)}${DEFAULT_OAUTH_CALLBACK_PATH}`;
 }
 
 function buildMetaBusinessLoginUrl(nextUrl: string, loginPreference: MetaBusinessLoginPreference) {
@@ -58,7 +68,7 @@ export async function GET(request: Request) {
   }
 
   const graphVersion = process.env.META_GRAPH_API_VERSION || DEFAULT_GRAPH_API_VERSION;
-  const redirectUri = `${getAppUrl(request)}/api/meta/oauth/callback`;
+  const redirectUri = getOAuthRedirectUri(request, mode);
   const state = randomBytes(24).toString("hex");
   const workspaceId = await getCurrentWorkspaceId();
   const cookieStore = await cookies();
