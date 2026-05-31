@@ -47,7 +47,11 @@ export default async function ContactsPage({
           : {}),
       },
       orderBy: [{ lastInboundAt: "desc" }, { updatedAt: "desc" }],
-      include: { channel: { select: publicChannelSelect }, tags: { include: { tag: true } }, conversations: true },
+      include: {
+        channel: { select: publicChannelSelect },
+        tags: { include: { tag: true } },
+        _count: { select: { conversations: true } },
+      },
     }),
     getDb().tag.findMany({ where: { workspaceId }, orderBy: { name: "asc" } }),
     getDb().contact.count({ where: channelWhere }),
@@ -146,7 +150,7 @@ export default async function ContactsPage({
                         {contact.tags.length === 0 ? <span className="text-[#98a2b3]">-</span> : null}
                       </div>
                     </td>
-                    <td className="px-4 py-4 text-[#667085]">{contact.conversations.length}</td>
+                    <td className="px-4 py-4 text-[#667085]">{contact._count.conversations}</td>
                     <td className="px-4 py-4 text-[#667085]">{formatDate(contact.lastInboundAt || contact.lastOutboundAt)}</td>
                   </tr>
                 ))}

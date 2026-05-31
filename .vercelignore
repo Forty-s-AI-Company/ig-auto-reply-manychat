@@ -5,4 +5,5 @@
 .manychat-playwright-profile/
 *.log
 *.png
+!public/inboxpilot-logo.png
 videos/

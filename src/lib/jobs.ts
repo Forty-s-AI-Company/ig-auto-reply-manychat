@@ -26,13 +26,19 @@ export async function queueBroadcast(broadcastId: string) {
   const db = getDb();
   const broadcast = await db.broadcast.findUnique({ where: { id: broadcastId } });
   if (!broadcast) throw new Error("找不到廣播任務。");
+  if (broadcast.status === "queued" || broadcast.status === "sending") {
+    return db.job.count({
+      where: { workspaceId: broadcast.workspaceId, type: "broadcast_send", status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
+    });
+  }
+  if (!broadcast.workspaceId) throw new Error("廣播缺少工作區，無法排程。");
 
   const target = asRecord(broadcast.targetConfigJson);
   const tagId = String(target.tagId || "");
   const segmentId = String(target.segmentId || "");
   if (!tagId && !segmentId) throw new Error("廣播需要指定標籤或分群。");
 
-  const workspaceId = broadcast.workspaceId || "";
+  const workspaceId = broadcast.workspaceId;
   const contacts = segmentId
     ? await resolveSegmentContacts(workspaceId, segmentId)
     : await db.contact.findMany({
@@ -43,36 +49,41 @@ export async function queueBroadcast(broadcastId: string) {
     ? contacts.filter((contact) => contact.consentStatus === "opted_in")
     : filterBroadcastRecipients(contacts, tagId);
 
-  await db.broadcast.update({
-    where: { id: broadcastId },
-    data: { status: "queued", sentCount: 0, failedCount: 0 },
-  });
-
   const runAt = broadcast.scheduledAt || new Date();
-  for (const contact of recipients) {
-    await db.job.create({
-      data: {
-        workspaceId: broadcast.workspaceId,
-        type: "broadcast_send",
-        status: "queued",
-        runAt,
-        payloadJson: { broadcastId, contactId: contact.id },
-      },
+  await db.$transaction(async (tx) => {
+    await tx.job.deleteMany({
+      where: { workspaceId, type: "broadcast_send", status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
     });
-  }
+    await tx.broadcast.update({
+      where: { id: broadcastId },
+      data: { status: "queued", sentCount: 0, failedCount: 0 },
+    });
+    if (recipients.length) {
+      await tx.job.createMany({
+        data: recipients.map((contact) => ({
+          workspaceId,
+          type: "broadcast_send",
+          status: "queued",
+          runAt,
+          payloadJson: { broadcastId, contactId: contact.id },
+        })),
+      });
+    }
+  });
 
   return recipients.length;
 }
 
 export async function processJob(jobId: string) {
   const db = getDb();
-  const job = await db.job.findUnique({ where: { id: jobId } });
-  if (!job || job.status !== "queued") return;
-
-  await db.job.update({
-    where: { id: job.id },
-    data: { status: "running", attempts: { increment: 1 } },
+  const claimed = await db.job.updateMany({
+    where: { id: jobId, status: "queued" },
+    data: { status: "running", lockedAt: new Date(), attempts: { increment: 1 } },
   });
+  if (claimed.count !== 1) return;
+
+  const job = await db.job.findUnique({ where: { id: jobId } });
+  if (!job) return;
 
   try {
     const payload = asRecord(job.payloadJson);
@@ -162,13 +173,13 @@ export async function processJob(jobId: string) {
 
     await db.job.update({
       where: { id: job.id },
-      data: { status: "completed", lastError: null },
+      data: { status: "completed", lockedAt: null, lastError: null },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown job error";
     await db.job.update({
       where: { id: job.id },
-      data: { status: job.attempts + 1 >= 3 ? "failed" : "queued", lastError: message },
+      data: { status: job.attempts >= 3 ? "failed" : "queued", lockedAt: null, lastError: message },
     });
 
     const payload = asRecord(job.payloadJson);
@@ -183,6 +194,7 @@ export async function processJob(jobId: string) {
 
 export async function processDueJobs(limit = 10) {
   const db = getDb();
+  const staleLockCutoff = new Date(Date.now() - 10 * 60 * 1000);
   try {
     const commentResults = await syncInstagramCommentsFromWorker();
     const processedComments = commentResults.filter((result) => result.status === "processed").length;
@@ -192,6 +204,16 @@ export async function processDueJobs(limit = 10) {
   } catch (error) {
     console.error("[worker] Instagram comment sync failed", error);
   }
+
+  await db.job.updateMany({
+    where: { status: "running", lockedAt: { lt: staleLockCutoff }, attempts: { lt: 3 } },
+    data: { status: "queued", lockedAt: null, lastError: "Job lock timed out and was re-queued." },
+  });
+
+  await db.job.updateMany({
+    where: { status: "running", lockedAt: { lt: staleLockCutoff }, attempts: { gte: 3 } },
+    data: { status: "failed", lockedAt: null, lastError: "Job lock timed out after maximum attempts." },
+  });
 
   const jobs = await db.job.findMany({
     where: { status: "queued", runAt: { lte: new Date() } },

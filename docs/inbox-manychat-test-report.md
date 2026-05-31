@@ -2,7 +2,7 @@
 
 測試日期：2026-05-22  
 測試頁面：`http://localhost:3041/inbox`  
-測試帳號：`admin@example.com`  
+測試帳號：由 `ADMIN_EMAIL` / `ADMIN_PASSWORD` 提供
 測試方式：使用 Playwright 啟動本機 Google Chrome，登入後實際操作 Inbox 頁面。
 
 ## 截圖

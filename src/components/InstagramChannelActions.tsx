@@ -36,7 +36,7 @@ export function InstagramChannelActions({ channelId }: InstagramChannelActionsPr
             });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(typeof data.error === "string" ? data.error : "Instagram 操作失敗。");
+        throw new Error(typeof data.message === "string" ? data.message : typeof data.error === "string" ? data.error : "Instagram 操作失敗。");
       }
 
       if (action === "media") {

@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin123456");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(() => {
     if (typeof window === "undefined") return "";
     const googleError = new URLSearchParams(window.location.search).get("google_error");

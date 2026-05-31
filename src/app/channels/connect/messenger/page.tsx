@@ -18,10 +18,10 @@ export default async function MessengerConnectionPage({ searchParams }: Props) {
 
   return (
     <ChannelConnectionShell
-      title="Connect Facebook Messenger"
-      description="Use your Facebook Page to connect Messenger automation."
+      title="連接 Facebook Messenger"
+      description="使用你的 Facebook 粉絲專頁連接 Messenger 自動化。"
       backHref="/channels/connect"
-      backLabel="Choose another channel"
+      backLabel="選擇其他平台"
       visual={<InstagramVisual />}
     >
       <InstagramConnectOptions

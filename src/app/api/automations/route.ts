@@ -14,6 +14,7 @@ export async function GET() {
     where: { workspaceId },
     orderBy: { updatedAt: "desc" },
     include: {
+      folder: { select: { id: true, name: true } },
       steps: { orderBy: { order: "asc" } },
       runs: {
         orderBy: { createdAt: "desc" },
@@ -37,6 +38,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "自動化資料格式不正確。" }, { status: 400 });
   }
   const workspaceId = await getCurrentWorkspaceId();
+  const folderId = parsed.data.folderId || null;
+  if (folderId) {
+    const folder = await getDb().automationFolder.findFirst({ where: { id: folderId, workspaceId }, select: { id: true } });
+    if (!folder) return NextResponse.json({ error: "找不到指定的資料夾。" }, { status: 404 });
+  }
   try {
     await assertWorkspaceLimit(workspaceId, "automations");
   } catch (error) {
@@ -49,6 +55,7 @@ export async function POST(request: Request) {
   const automation = await getDb().automation.create({
     data: {
       workspaceId,
+      folderId,
       name: parsed.data.name,
       enabled: parsed.data.enabled,
       triggerType: parsed.data.triggerType,
@@ -62,6 +69,7 @@ export async function POST(request: Request) {
       },
     },
     include: {
+      folder: { select: { id: true, name: true } },
       steps: { orderBy: { order: "asc" } },
       runs: {
         orderBy: { createdAt: "desc" },

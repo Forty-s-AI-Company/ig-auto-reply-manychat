@@ -2,9 +2,20 @@ import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { setSessionCookie } from "@/lib/auth";
 import { createUserWorkspaceSubscription } from "@/lib/auth-onboarding";
+import { assertRateLimit, assertSameOriginRequest, getClientIp } from "@/lib/security";
 import { signupSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
+  const rateLimitFailure = assertRateLimit({
+    key: `signup:${getClientIp(request)}`,
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   const parsed = signupSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "註冊資料不完整或格式不正確。" }, { status: 400 });

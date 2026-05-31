@@ -13,9 +13,12 @@ export default async function InstagramConnectionPage({ searchParams }: Props) {
   const headerStore = await headers();
   const host = headerStore.get("host") || "localhost:3041";
   const proto = headerStore.get("x-forwarded-proto") || (host.startsWith("localhost") || host.startsWith("127.0.0.1") ? "http" : "https");
-  const origin = `${proto}://${host}`;
+  const requestOrigin = `${proto}://${host}`;
+  const isLocal = host.startsWith("localhost") || host.startsWith("127.0.0.1");
+  const origin = isLocal ? requestOrigin : process.env.APP_URL?.replace(/\/$/, "");
+  if (!origin) throw new Error("APP_URL must be configured for Instagram OAuth outside localhost.");
   const configuredAppUrl = process.env.APP_URL?.replace(/\/$/, "") || "";
-  const callbackUrl = `${origin}/api/meta/oauth/callback`;
+  const callbackUrl = `${origin}/api/instagram/oauth/callback`;
 
   return (
     <ChannelConnectionShell

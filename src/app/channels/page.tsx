@@ -64,20 +64,15 @@ const settingsGroups = [
     title: "連線渠道",
     items: [
       { label: "Instagram", href: "#instagram" },
-      { label: "TikTok", href: "#platform-connect" },
-      { label: "WhatsApp", href: "#platform-connect" },
-      { label: "Messenger", href: "#platform-connect" },
-      { label: "簡訊", href: "#platform-connect" },
-      { label: "電子郵件", href: "#platform-connect" },
-      { label: "Telegram", href: "#platform-connect" },
+      { label: "其他平台", href: "#platform-connect" },
     ],
   },
   {
     title: "自動化",
     items: [
-      { label: "My Automations", href: "#automation-settings" },
-      { label: "Basic", href: "#automation-settings" },
-      { label: "Sequences", href: "#automation-settings" },
+      { label: "自動化清單", href: "#automation-settings" },
+      { label: "基礎規則", href: "#automation-settings" },
+      { label: "序列設定", href: "#automation-settings" },
       { label: "自訂欄位", href: "#automation-data" },
       { label: "標籤", href: "#automation-data" },
       { label: "轉換事件", href: "#automation-data" },
@@ -86,7 +81,7 @@ const settingsGroups = [
   {
     title: "擴充整合",
     items: [
-      { label: "API", href: "#extensions" },
+      { label: "API 存取", href: "#extensions" },
       { label: "應用程式", href: "#extensions" },
       { label: "第三方整合", href: "#extensions" },
       { label: "付款整合", href: "#extensions" },
@@ -99,11 +94,11 @@ const settingsGroups = [
 const channelCards = [
   ["Instagram", "選擇 Instagram 後會開啟 Instagram 登入，成功後新增平台帳號。", true, "/api/meta/oauth/start?mode=instagram"],
   ["Facebook Messenger", "選擇 Messenger 後會開啟 Meta 登入，成功後新增粉專訊息渠道。", true, "/api/meta/oauth/start?mode=facebook"],
-  ["TikTok", "參考入口，正式 API 尚未接入。", false, ""],
-  ["WhatsApp", "預留 WhatsApp Business Cloud API 設定。", false, ""],
-  ["簡訊", "預留簡訊供應商與地區規則。", false, ""],
-  ["電子郵件", "預留寄件網域與寄件者驗證。", false, ""],
-  ["Telegram", "預留 Telegram Bot token 與 webhook。", false, ""],
+  ["TikTok", "可先規劃平台入口，正式連線開放後會顯示授權按鈕。", false, ""],
+  ["WhatsApp", "WhatsApp Business 連線入口會集中在此管理。", false, ""],
+  ["簡訊", "簡訊供應商與地區規則會集中在此管理。", false, ""],
+  ["電子郵件", "寄件網域與寄件者驗證會集中在此管理。", false, ""],
+  ["Telegram", "Telegram Bot 與 webhook 會集中在此管理。", false, ""],
 ] as const;
 
 function statusLabel(enabled: boolean) {
@@ -167,7 +162,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
         <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-64 shrink-0 overflow-y-auto border-r border-[#d7dbe0] pr-4 lg:block">
           <div className="mb-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-[#667085]">設定</p>
-            <h2 className="mt-1 text-xl font-semibold text-[#111827]">總設定</h2>
+            <h2 className="mt-1 text-xl font-semibold text-[#111827]">工作區設定</h2>
           </div>
           <nav className="space-y-5 text-sm">
             {settingsGroups.map((group) => (
@@ -188,10 +183,10 @@ export default async function ChannelsPage({ searchParams }: Props) {
         <div className="min-w-0 flex-1 space-y-5">
           <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[#d7dbe0] pb-5">
             <div>
-              <p className="text-sm font-medium text-[#006fe6]">設定 / 總設定</p>
+              <p className="text-sm font-medium text-[#006fe6]">設定</p>
               <h1 className="mt-1 text-2xl font-semibold text-[#111827]">帳號、渠道與自動化設定</h1>
               <p className="mt-2 max-w-3xl text-sm text-[#667085]">
-                依照主流訊息自動化後台的資訊架構整理：主要設定、帳務、收件匣、連線渠道、自動化與擴充整合集中在同一頁。
+                管理工作區、通知、收件匣行為、平台連線、帳務與整合。低頻設定集中在這裡，主選單保留日常操作。
               </p>
             </div>
             <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
@@ -226,8 +221,8 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
               目前共有 {teamCount} 位成員。Inbox 已支援將對話指派給團隊成員。
             </SettingPanel>
-            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="開發中">
-              預留設定變更、登入、權限刷新、自動化發布紀錄。
+            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="設定入口">
+              設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
               目前介面固定使用繁體中文與 InboxPilot 淺色版面。
@@ -251,7 +246,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       登入並連線
                     </Link>
                   ) : (
-                    <StatusBadge>開發中</StatusBadge>
+                    <StatusBadge>未啟用</StatusBadge>
                   )}
                 </div>
               ))}
@@ -306,35 +301,35 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<Inbox className="h-5 w-5" />} title="收件匣行為">
               已支援未指派、指派給我、提醒、收藏、熱門名單、合作夥伴與團隊指派。
             </SettingPanel>
-            <SettingPanel id="assignment" icon={<Users className="h-5 w-5" />} title="自動指派" badge="部分完成">
-              目前支援手動指派；自動輪派、工作時段與條件分派仍保留 [開發中]。
+            <SettingPanel id="assignment" icon={<Users className="h-5 w-5" />} title="自動指派" badge="部分啟用">
+              目前支援手動指派；自動輪派、工作時段與條件分派會在此管理。
             </SettingPanel>
           </section>
 
           <section id="automation-settings" className="space-y-3">
             <SectionTitle title="自動化設定" description="整理自動化清單、基礎規則與序列設定。" />
             <div className="grid gap-3 md:grid-cols-3">
-              <SettingPanel icon={<Workflow className="h-5 w-5" />} title="My Automations">
+              <SettingPanel icon={<Workflow className="h-5 w-5" />} title="自動化清單">
                 顯示平台帳號的自動化數量、啟用狀態，實際編輯入口在「自動化」頁。
               </SettingPanel>
-              <SettingPanel icon={<Bot className="h-5 w-5" />} title="Basic">
+              <SettingPanel icon={<Bot className="h-5 w-5" />} title="基礎規則">
                 預設回覆、關鍵字、留言觸發、延遲、公開回覆與按讚設定已接在自動化流程中。
               </SettingPanel>
-              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="Sequences" badge="開發中">
-                序列推播、訂閱序列與時間間隔尚未正式實作。
+              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="設定入口">
+                序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
               </SettingPanel>
             </div>
           </section>
 
           <section id="automation-data" className="grid gap-3 md:grid-cols-3">
             <SettingPanel icon={<Bot className="h-5 w-5" />} title="自訂欄位">
-              使用者欄位可先使用聯絡人的 email、phone、locale、source；自訂欄位管理頁 [開發中]。
+              使用者欄位可先使用聯絡人的 email、phone、locale、source；欄位管理會集中在此。
             </SettingPanel>
             <SettingPanel icon={<Tags className="h-5 w-5" />} title="標籤">
               目前有 {tagCount} 個標籤，可用於分眾、條件判斷與 Inbox 快速分類。
             </SettingPanel>
-            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="開發中">
-              預留 Meta CAPI 與購買、預約、領取等轉換事件。
+            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="設定入口">
+              Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
             </SettingPanel>
           </section>
 
@@ -347,7 +342,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                 </Link>
               </div>
             </SettingPanel>
-            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="開發中">
+            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="設定入口">
               API、應用程式、第三方整合、付款整合、已安裝模板、追蹤像素先集中保留入口。
             </SettingPanel>
           </section>
@@ -355,17 +350,10 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <section id="extensions" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold text-[#111827]">擴充整合</h2>
-              <StatusBadge>開發中</StatusBadge>
+              <StatusBadge>設定入口</StatusBadge>
             </div>
             <p className="mt-1 text-sm leading-6 text-[#667085]">
-              API、Apps、Integrations、Payments、Installed Templates、Pixel 統一放在同一組，避免低頻工具擠在左側主選單。
-            </p>
-          </section>
-
-          <section id="reference" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
-            <h2 className="text-lg font-semibold text-[#111827]">參考截圖紀錄</h2>
-            <p className="mt-1 text-sm leading-6 text-[#667085]">
-              外部參考工具的 Settings 截圖與頁籤整理已保存於 `docs/manychat-settings-screenshots`，本頁依照那些截圖重建資訊架構。
+              API、應用程式、第三方整合、付款整合、模板與追蹤像素統一放在同一組，避免低頻工具擠在左側主選單。
             </p>
           </section>
         </div>
@@ -430,8 +418,8 @@ function SettingPanel({
 
 function StatusBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="mt-4 inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
-      [{children}]
+    <span className="inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+      {children}
     </span>
   );
 }

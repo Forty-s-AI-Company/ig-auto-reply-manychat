@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { getAppUrl } from "@/lib/app-url";
 import {
   buildInstagramChannelName,
   getMetaChannelConfig,
@@ -17,7 +18,8 @@ const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
 const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
-const DEFAULT_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
+const DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
+const DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH = "/api/instagram/oauth/callback";
 
 type MetaGraphError = {
   error?: {
@@ -85,22 +87,15 @@ type MetaBusiness = {
   client_instagram_accounts?: { data?: MetaInstagramBusinessAsset[] };
 };
 
-function getAppUrl(request: Request) {
-  const requestOrigin = new URL(request.url).origin;
-  const hostname = new URL(requestOrigin).hostname;
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return requestOrigin;
-  }
-  return (process.env.APP_URL || requestOrigin).replace(/\/$/, "");
-}
-
 function getOAuthRedirectUri(request: Request, mode: MetaOauthMode) {
   const configuredRedirect =
     mode === "instagram"
       ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
       : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
   if (configuredRedirect) return configuredRedirect;
-  return `${getAppUrl(request)}${DEFAULT_OAUTH_CALLBACK_PATH}`;
+  const callbackPath =
+    mode === "instagram" ? DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH : DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH;
+  return `${getAppUrl(request)}${callbackPath}`;
 }
 
 function requiredEnv(name: string) {
@@ -595,6 +590,13 @@ async function upsertInstagramLoginChannel(profile: InstagramProfile, accessToke
   return channel;
 }
 
+export function getCallbackMode(request: Request, cookieValue?: string): MetaOauthMode {
+  if (cookieValue === "facebook" || cookieValue === "instagram") return cookieValue;
+  return new URL(request.url).pathname.startsWith(DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH)
+    ? "instagram"
+    : "facebook";
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
@@ -602,7 +604,7 @@ export async function GET(request: Request) {
   const cookieStore = await cookies();
   const expectedState = cookieStore.get(META_OAUTH_STATE_COOKIE)?.value;
   const workspaceId = cookieStore.get(META_OAUTH_WORKSPACE_COOKIE)?.value || (await getDefaultWorkspaceId());
-  const mode = (cookieStore.get(META_OAUTH_MODE_COOKIE)?.value === "facebook" ? "facebook" : "instagram") as MetaOauthMode;
+  const mode = getCallbackMode(request, cookieStore.get(META_OAUTH_MODE_COOKIE)?.value);
   cookieStore.delete(META_OAUTH_STATE_COOKIE);
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);

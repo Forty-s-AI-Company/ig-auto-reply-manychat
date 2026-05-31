@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import { handleInboundMessage } from "@/lib/messages";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 import { hasValidSharedSecret } from "@/lib/webhook-security";
 
 export async function POST(request: Request) {
+  const rateLimitFailure = assertRateLimit({
+    key: `webhook:telegram:${getClientIp(request)}`,
+    limit: 300,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   if (!process.env.TELEGRAM_BOT_TOKEN) {
     return NextResponse.json({ error: "TELEGRAM_BOT_TOKEN is not configured." }, { status: 400 });
   }

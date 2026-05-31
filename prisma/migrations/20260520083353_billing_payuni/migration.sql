@@ -7,11 +7,11 @@ CREATE TABLE "Subscription" (
     "interval" TEXT NOT NULL DEFAULT 'month',
     "amount" INTEGER NOT NULL,
     "currency" TEXT NOT NULL DEFAULT 'TWD',
-    "currentPeriodStart" DATETIME,
-    "currentPeriodEnd" DATETIME,
-    "canceledAt" DATETIME,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "currentPeriodStart" TIMESTAMP(3),
+    "currentPeriodEnd" TIMESTAMP(3),
+    "canceledAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "Subscription_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -30,113 +30,31 @@ CREATE TABLE "PaymentOrder" (
     "currency" TEXT NOT NULL DEFAULT 'TWD',
     "checkoutPayload" JSONB NOT NULL,
     "resultPayload" JSONB,
-    "paidAt" DATETIME,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "paidAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     CONSTRAINT "PaymentOrder_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "PaymentOrder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "PaymentOrder_subscriptionId_fkey" FOREIGN KEY ("subscriptionId") REFERENCES "Subscription" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
--- RedefineTables
-PRAGMA defer_foreign_keys=ON;
-PRAGMA foreign_keys=OFF;
-CREATE TABLE "new_Automation" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "name" TEXT NOT NULL,
-    "enabled" BOOLEAN NOT NULL DEFAULT true,
-    "triggerType" TEXT NOT NULL,
-    "triggerConfigJson" JSONB NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Automation_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_Automation" ("createdAt", "enabled", "id", "name", "triggerConfigJson", "triggerType", "updatedAt", "workspaceId") SELECT "createdAt", "enabled", "id", "name", "triggerConfigJson", "triggerType", "updatedAt", "workspaceId" FROM "Automation";
-DROP TABLE "Automation";
-ALTER TABLE "new_Automation" RENAME TO "Automation";
-CREATE INDEX "Automation_workspaceId_idx" ON "Automation"("workspaceId");
-CREATE TABLE "new_Broadcast" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "name" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'draft',
-    "targetConfigJson" JSONB NOT NULL,
-    "messageJson" JSONB NOT NULL,
-    "scheduledAt" DATETIME,
-    "sentCount" INTEGER NOT NULL DEFAULT 0,
-    "failedCount" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Broadcast_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_Broadcast" ("createdAt", "failedCount", "id", "messageJson", "name", "scheduledAt", "sentCount", "status", "targetConfigJson", "updatedAt", "workspaceId") SELECT "createdAt", "failedCount", "id", "messageJson", "name", "scheduledAt", "sentCount", "status", "targetConfigJson", "updatedAt", "workspaceId" FROM "Broadcast";
-DROP TABLE "Broadcast";
-ALTER TABLE "new_Broadcast" RENAME TO "Broadcast";
-CREATE INDEX "Broadcast_workspaceId_idx" ON "Broadcast"("workspaceId");
-CREATE TABLE "new_Channel" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "type" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "enabled" BOOLEAN NOT NULL DEFAULT false,
-    "configJson" JSONB NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Channel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_Channel" ("configJson", "createdAt", "enabled", "id", "name", "type", "updatedAt", "workspaceId") SELECT "configJson", "createdAt", "enabled", "id", "name", "type", "updatedAt", "workspaceId" FROM "Channel";
-DROP TABLE "Channel";
-ALTER TABLE "new_Channel" RENAME TO "Channel";
-CREATE INDEX "Channel_workspaceId_idx" ON "Channel"("workspaceId");
-CREATE UNIQUE INDEX "Channel_workspaceId_type_name_key" ON "Channel"("workspaceId", "type", "name");
-CREATE TABLE "new_Job" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "type" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'queued',
-    "payloadJson" JSONB NOT NULL,
-    "runAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "attempts" INTEGER NOT NULL DEFAULT 0,
-    "lastError" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Job_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_Job" ("attempts", "createdAt", "id", "lastError", "payloadJson", "runAt", "status", "type", "updatedAt", "workspaceId") SELECT "attempts", "createdAt", "id", "lastError", "payloadJson", "runAt", "status", "type", "updatedAt", "workspaceId" FROM "Job";
-DROP TABLE "Job";
-ALTER TABLE "new_Job" RENAME TO "Job";
-CREATE INDEX "Job_status_runAt_idx" ON "Job"("status", "runAt");
-CREATE INDEX "Job_workspaceId_idx" ON "Job"("workspaceId");
-CREATE TABLE "new_KnowledgeBaseItem" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "title" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "enabled" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "KnowledgeBaseItem_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_KnowledgeBaseItem" ("content", "createdAt", "enabled", "id", "title", "updatedAt", "workspaceId") SELECT "content", "createdAt", "enabled", "id", "title", "updatedAt", "workspaceId" FROM "KnowledgeBaseItem";
-DROP TABLE "KnowledgeBaseItem";
-ALTER TABLE "new_KnowledgeBaseItem" RENAME TO "KnowledgeBaseItem";
-CREATE INDEX "KnowledgeBaseItem_workspaceId_idx" ON "KnowledgeBaseItem"("workspaceId");
-CREATE TABLE "new_Tag" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "workspaceId" TEXT,
-    "name" TEXT NOT NULL,
-    "color" TEXT NOT NULL DEFAULT '#2563eb',
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Tag_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-INSERT INTO "new_Tag" ("color", "createdAt", "id", "name", "workspaceId") SELECT "color", "createdAt", "id", "name", "workspaceId" FROM "Tag";
-DROP TABLE "Tag";
-ALTER TABLE "new_Tag" RENAME TO "Tag";
-CREATE INDEX "Tag_workspaceId_idx" ON "Tag"("workspaceId");
-CREATE UNIQUE INDEX "Tag_workspaceId_name_key" ON "Tag"("workspaceId", "name");
-PRAGMA foreign_keys=ON;
-PRAGMA defer_foreign_keys=OFF;
+-- AddForeignKey
+ALTER TABLE "Automation" ADD CONSTRAINT "Automation_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Broadcast" ADD CONSTRAINT "Broadcast_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Channel" ADD CONSTRAINT "Channel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Job" ADD CONSTRAINT "Job_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "KnowledgeBaseItem" ADD CONSTRAINT "KnowledgeBaseItem_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Tag" ADD CONSTRAINT "Tag_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- CreateIndex
 CREATE INDEX "Subscription_workspaceId_idx" ON "Subscription"("workspaceId");

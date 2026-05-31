@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyWhatsAppWebhook } from "@/lib/channels/whatsapp";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 
 export async function GET(request: Request) {
   const challenge = verifyWhatsAppWebhook(new URL(request.url).searchParams);
@@ -9,10 +10,16 @@ export async function GET(request: Request) {
   return new Response(challenge, { status: 200 });
 }
 
-export async function POST() {
-  return NextResponse.json({
-    ok: true,
-    scaffold: true,
-    note: "WhatsApp webhook scaffold only. Configure official WhatsApp Business Cloud API handlers before production use.",
+export async function POST(request: Request) {
+  const rateLimitFailure = assertRateLimit({
+    key: `webhook:whatsapp:${getClientIp(request)}`,
+    limit: 120,
+    windowMs: 60 * 1000,
   });
+  if (rateLimitFailure) return rateLimitFailure;
+
+  return NextResponse.json(
+    { error: "WhatsApp webhook is not enabled for this deployment." },
+    { status: 501 },
+  );
 }

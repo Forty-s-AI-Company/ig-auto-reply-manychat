@@ -1,26 +1,31 @@
 import Link from "next/link";
 import { Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Settings, Sparkles, Users, Wallet } from "lucide-react";
+import { cookies } from "next/headers";
 import { AdminMobileNav } from "@/components/AdminMobileNav";
+import { AdminSidebarLink } from "@/components/AdminSidebarLink";
 import { InboxPilotAccountDropdown } from "@/components/InboxPilotAccountDropdown";
+import { InboxPilotLogo } from "@/components/InboxPilotLogo";
 import { InboxPilotProfileMenu } from "@/components/InboxPilotProfileMenu";
-import { getSelectedInstagramChannelId } from "@/lib/account-scope";
+import { ALL_IG_ACCOUNTS, IG_ACCOUNT_SCOPE_COOKIE } from "@/lib/account-scope";
 import { getCurrentUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspace, getUserWorkspaces } from "@/lib/workspaces";
 
 const primaryNavItems = [
-  { label: "儀表板", href: "/dashboard", icon: Home },
-  { label: "聯絡人", href: "/contacts", icon: Users },
-  { label: "自動化", href: "/automations", icon: Sparkles },
-  { label: "序列", href: "/sequences", icon: Clock },
-  { label: "AI", href: "/ai-settings", icon: Bot },
-  { label: "收件匣", href: "/inbox", icon: Inbox },
-  { label: "付款", href: "/billing", icon: CreditCard },
-  { label: "推薦", href: "/referrals", icon: Gift },
-  { label: "錢包", href: "/wallet", icon: Wallet },
-  { label: "IG 設定", href: "/channels", icon: Settings },
-];
+  { label: "儀表板", href: "/dashboard", icon: Home, iconName: "home" },
+  { label: "收件匣", href: "/inbox", icon: Inbox, iconName: "inbox" },
+  { label: "聯絡人", href: "/contacts", icon: Users, iconName: "users" },
+  { label: "廣播活動", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
+  { label: "自動化", href: "/automations", icon: Sparkles, iconName: "sparkles" },
+  { label: "序列", href: "/sequences", icon: Clock, iconName: "clock" },
+  { label: "AI", href: "/ai-settings", icon: Bot, iconName: "bot" },
+  { label: "分析", href: "/analytics", icon: Sparkles, iconName: "barChart3" },
+  { label: "付款", href: "/billing", icon: CreditCard, iconName: "creditCard" },
+  { label: "推薦", href: "/referrals", icon: Gift, iconName: "gift" },
+  { label: "錢包", href: "/wallet", icon: Wallet, iconName: "wallet" },
+  { label: "設定", href: "/channels", icon: Settings, iconName: "settings" },
+] as const;
 
 export async function AdminShell({
   children,
@@ -34,14 +39,14 @@ export async function AdminShell({
   headerRight?: React.ReactNode;
 }) {
   const workspace = await getCurrentWorkspace();
-  const [user, instagramChannels, selectedChannelId] = await Promise.all([
+  const [user, instagramChannels, cookieStore] = await Promise.all([
     getCurrentUser(),
     getDb().channel.findMany({
       where: { workspaceId: workspace.id, type: "instagram", enabled: true },
       orderBy: [{ name: "asc" }],
       select: { id: true, name: true, configJson: true },
     }),
-    getSelectedInstagramChannelId(),
+    cookies(),
   ]);
   const workspaces = user ? await getUserWorkspaces(user.id) : [workspace];
   const accountChannels = instagramChannels
@@ -60,6 +65,11 @@ export async function AdminShell({
     .sort((a, b) => Number(Boolean(b.username)) - Number(Boolean(a.username)) || a.displayName.localeCompare(b.displayName, "zh-TW"));
   const serializedWorkspaces = JSON.parse(JSON.stringify(workspaces));
   const serializedAccountChannels = JSON.parse(JSON.stringify(accountChannels));
+  const selectedChannelCookie = cookieStore.get(IG_ACCOUNT_SCOPE_COOKIE)?.value;
+  const selectedChannelId =
+    selectedChannelCookie && selectedChannelCookie !== ALL_IG_ACCOUNTS && accountChannels.some((channel) => channel.id === selectedChannelCookie)
+      ? selectedChannelCookie
+      : undefined;
   const mobileUser = user
     ? {
         name: user.name,
@@ -69,16 +79,16 @@ export async function AdminShell({
     : null;
 
   return (
-    <div className="manychat-shell min-h-screen bg-[#f5f5f5] text-[#101828]">
-      <aside className="fixed inset-y-0 left-0 hidden w-[216px] border-r border-[#d8d8d8] bg-[#f4f4f4] lg:block">
-        <div className="flex h-full flex-col">
-          <div className="flex h-[60px] items-center border-b border-[#d8d8d8] px-6">
-            <Link href="/dashboard" className="text-[25px] font-black tracking-[-0.04em] text-[#202124]">
-              InboxPilot
+    <div className="manychat-shell min-h-screen bg-[var(--ip-bg)] text-[var(--ip-text)]">
+      <aside className="ip-sidebar-visual fixed inset-y-0 left-0 z-40 hidden text-white lg:block">
+        <div className="ip-sidebar-content flex h-full flex-col">
+          <div className="flex h-[64px] items-center border-b border-white/10 px-5">
+            <Link href="/dashboard" aria-label="InboxPilot 首頁">
+              <InboxPilotLogo tone="light" />
             </Link>
           </div>
 
-          <div className="border-b border-[#d8d8d8] px-3 py-4">
+          <div className="ip-sidebar-account-layer border-b border-white/10 bg-[var(--sidebar-bg-dark)]/35 px-3 py-4">
             <InboxPilotAccountDropdown
               workspaces={serializedWorkspaces}
               selectedWorkspaceId={workspace.id}
@@ -87,39 +97,38 @@ export async function AdminShell({
             />
           </div>
 
-          <nav className="px-2 py-4">
+          <nav className="ip-sidebar-nav-layer space-y-1 px-2.5 py-4">
             {primaryNavItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  prefetch={false}
-                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[#4b5563] hover:bg-[#e2e2e2] hover:text-[#111827]"
-                >
-                  <Icon className="h-5 w-5 text-[#667085]" />
-                  {item.label}
-                </Link>
-              );
+              return <AdminSidebarLink key={item.href} href={item.href} label={item.label} iconName={item.iconName} />;
             })}
           </nav>
 
-          <div className="mt-auto border-t border-[#d8d8d8] px-2 py-3">
+          <div className="mt-auto border-t border-white/10 bg-[var(--sidebar-bg-dark)]/30 px-2 py-3">
             <InboxPilotProfileMenu name={user?.name} email={user?.email} avatarUrl={user?.avatarUrl} />
             <Link
-              href="/channels#reference"
-              prefetch={false}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4b5563] hover:bg-[#e2e2e2]"
+              href="/help-center"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
             >
-              <CircleHelp className="h-5 w-5 text-[#667085]" />
+              <CircleHelp className="h-5 w-5 text-[#81b6ba]" />
               說明文件
             </Link>
           </div>
         </div>
+        <svg
+          className="sidebar-lines"
+          aria-hidden="true"
+          viewBox="0 0 280 220"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M-40 190 C 70 130, 120 220, 300 80" stroke="rgba(25, 211, 216, 0.22)" strokeWidth="1" />
+          <path d="M-30 210 C 80 150, 150 210, 310 110" stroke="rgba(25, 211, 216, 0.14)" strokeWidth="1" />
+          <path d="M-60 170 C 80 90, 150 180, 320 40" stroke="rgba(25, 211, 216, 0.1)" strokeWidth="1" />
+        </svg>
       </aside>
 
-      <div className="lg:pl-[216px]">
-        <header className="sticky top-0 z-10 h-[60px] border-b border-[#d8d8d8] bg-[#f5f5f5]/95 px-4 backdrop-blur lg:px-6">
+      <div className="ip-main-visual min-h-screen lg:pl-[280px]">
+        <header className="sticky top-0 z-10 h-[64px] border-b border-transparent bg-[var(--ip-bg)]/70 px-4 backdrop-blur lg:px-6">
           <div className="grid h-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 lg:grid-cols-[minmax(180px,1fr)_auto_minmax(180px,1fr)] lg:gap-4">
             <div className="flex min-w-0 items-center gap-3">
               <AdminMobileNav
@@ -129,13 +138,13 @@ export async function AdminShell({
                 selectedChannelId={selectedChannelId}
                 user={mobileUser}
               />
-              <h1 className="truncate text-2xl font-semibold text-[#111827]">{title}</h1>
+              <h1 className="truncate text-[24px] font-semibold text-[var(--ip-text)]">{title}</h1>
             </div>
             <div className="hidden justify-self-center sm:block">{headerCenter}</div>
             <div className="justify-self-end">{headerRight}</div>
           </div>
         </header>
-        <main className="w-full px-5 py-5">{children}</main>
+        <main className="ip-main-content w-full px-5 py-5 lg:px-6">{children}</main>
       </div>
     </div>
   );

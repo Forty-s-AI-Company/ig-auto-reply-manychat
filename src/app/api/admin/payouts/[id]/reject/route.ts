@@ -3,7 +3,7 @@ import { requireAdminApiUser } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
-  const auth = await requireAdminApiUser();
+  const auth = await requireAdminApiUser(request);
   if (auth.response) return auth.response;
   const { id } = await context.params;
   const body = await request.json().catch(() => ({}));

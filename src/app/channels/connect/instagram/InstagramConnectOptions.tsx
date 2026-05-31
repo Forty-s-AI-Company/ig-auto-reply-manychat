@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { OAuthPopupButton } from "./OAuthPopupButton";
@@ -32,7 +33,7 @@ export function InstagramConnectOptions({
       <h2 className="text-lg font-bold text-[#17191c]">只需要幾個步驟</h2>
       <p className="mt-3 max-w-[390px] text-base leading-6 text-[#17191c]">
         {isInstagramOnlyLogin
-          ? "我們會開啟 Instagram 登入視窗。完成授權後，你的 Instagram 帳號就會連接到系統。"
+          ? "我們會開啟 Instagram 登入視窗。完成權限設定後，你的 Instagram 帳號就會連接到系統。"
           : "我們會開啟 Meta 授權視窗。完成權限設定後，你的 Messenger 帳號就會連接到系統。"}
       </p>
 
@@ -45,6 +46,20 @@ export function InstagramConnectOptions({
       <OAuthPopupButton href={primaryOauthHref}>
         {isInstagramOnlyLogin ? "使用 Instagram 帳號繼續" : "透過 Meta Business 連接"}
       </OAuthPopupButton>
+
+      {isInstagramOnlyLogin ? (
+        <div className="mt-3 rounded-md border border-[#dcecef] bg-[#f8fcfd] p-3">
+          <Link
+            href="/channels/connect/instagram/switch-account"
+            className="flex h-11 items-center justify-center rounded-md border border-[#d2d6dc] bg-white px-4 text-sm font-bold text-[#17191c] hover:bg-[#f6f7f9]"
+          >
+            新增其他 Instagram 帳號
+          </Link>
+          <p className="mt-2 text-xs leading-5 text-[#667085]">
+            如果授權視窗仍顯示原本帳號，我們會引導你先切換 Instagram 網頁登入狀態，再繼續新增。
+          </p>
+        </div>
+      ) : null}
 
       <div className="mt-5 flex min-h-[94px] items-center justify-between rounded-md bg-[#f1f1f1] px-5">
         <p className="max-w-[210px] text-base leading-6 text-[#17191c]">

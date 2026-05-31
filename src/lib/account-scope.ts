@@ -1,11 +1,12 @@
 import { cookies } from "next/headers";
+import { cache } from "react";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export const IG_ACCOUNT_SCOPE_COOKIE = "selected_ig_channel_id";
 export const ALL_IG_ACCOUNTS = "all";
 
-export async function getSelectedInstagramChannelId() {
+export const getSelectedInstagramChannelId = cache(async function getSelectedInstagramChannelId() {
   const workspaceId = await getCurrentWorkspaceId();
   const cookieStore = await cookies();
   const selected = cookieStore.get(IG_ACCOUNT_SCOPE_COOKIE)?.value;
@@ -17,7 +18,7 @@ export async function getSelectedInstagramChannelId() {
   });
 
   return channel?.id;
-}
+});
 
 export function instagramChannelWhere(channelId: string | undefined, workspaceId?: string) {
   return channelId

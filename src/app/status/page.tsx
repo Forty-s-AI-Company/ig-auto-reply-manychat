@@ -28,8 +28,8 @@ export default function StatusPage() {
           body: "PayUni 付款流程已保留 Return URL 與 Notify URL 的串接位置。若商店後台只提供一組網址，InboxPilot 會以同一個商店對應目前的方案付款流程。",
         },
         {
-          title: "開發中項目",
-          body: "非 Instagram 相關平台會先標示為開發中；Instagram 留言關鍵字、收件匣、帳號連接與自動化流程會優先補齊到可操作狀態。",
+          title: "平台支援範圍",
+          body: "目前以 Instagram 留言關鍵字、收件匣、帳號連接與自動化流程為正式支援範圍；其他平台會在官方 API、合規與客服流程完成後才開放。",
         },
       ]}
     />

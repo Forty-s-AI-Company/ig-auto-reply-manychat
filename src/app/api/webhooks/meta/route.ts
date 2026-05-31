@@ -10,7 +10,7 @@ import {
 import { getDb } from "@/lib/db";
 import { processInstagramCommentEvent } from "@/lib/instagram/comments-sync";
 import { getOrCreateChannel, handleInboundMessage } from "@/lib/messages";
-import { getDefaultWorkspaceId } from "@/lib/workspaces";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 
 export const runtime = "nodejs";
 
@@ -52,11 +52,22 @@ async function ensureChannelEnabled(
 }
 
 export async function POST(request: Request) {
+  const rateLimitFailure = assertRateLimit({
+    key: `webhook:meta:${getClientIp(request)}`,
+    limit: 300,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   const rawBody = await request.text();
   const signature = request.headers.get("x-hub-signature-256");
+  const configuredSecrets = [process.env.META_APP_SECRET, process.env.META_INSTAGRAM_APP_SECRET].filter(
+    (secret): secret is string => Boolean(secret?.trim()),
+  );
   const signatureValid =
-    verifyMetaSignature(rawBody, signature, process.env.META_APP_SECRET) ||
-    verifyMetaSignature(rawBody, signature, process.env.META_INSTAGRAM_APP_SECRET);
+    configuredSecrets.length > 0
+      ? configuredSecrets.some((secret) => verifyMetaSignature(rawBody, signature, secret))
+      : verifyMetaSignature(rawBody, signature);
   if (!signatureValid) {
     return NextResponse.json({ error: "Invalid Meta webhook signature." }, { status: 401 });
   }
@@ -85,8 +96,12 @@ export async function POST(request: Request) {
 
   for (const inbound of inboundMessages) {
     const configuredChannel = await findMetaChannelForInbound(inbound);
+    if (!configuredChannel?.workspaceId) {
+      duplicated += 1;
+      continue;
+    }
     const channelName = configuredChannel?.name || inbound.channelName;
-    const workspaceId = configuredChannel?.workspaceId || (await getDefaultWorkspaceId());
+    const workspaceId = configuredChannel.workspaceId;
     const channel = await ensureChannelEnabled(inbound.channelType, channelName, workspaceId);
     if (inbound.providerMessageId) {
       const existing = await getDb().message.findFirst({

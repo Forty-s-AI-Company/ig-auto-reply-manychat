@@ -11,7 +11,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = await requireAdminApiUser();
+  const auth = await requireAdminApiUser(request);
   if (auth.response) return auth.response;
   const body = await request.json().catch(() => ({}));
   const now = new Date();

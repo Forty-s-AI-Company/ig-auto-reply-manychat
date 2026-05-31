@@ -274,6 +274,7 @@ model Workspace {
   tags                    Tag[]
   segments                Segment[]
   automations             Automation[]
+  automationFolders       AutomationFolder[]
   broadcasts              Broadcast[]
   jobs                    Job[]
   knowledgeBaseItems      KnowledgeBaseItem[]
@@ -355,14 +356,14 @@ model WorkspaceUser {
 
 model Channel {
   id            String         @id @default(cuid())
-  workspaceId   String?
+  workspaceId   String
   type          ChannelType
   name          String
   enabled       Boolean        @default(false)
   configJson    Json
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  workspace     Workspace?     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   contacts      Contact[]
   conversations Conversation[]
   messages      Message[]
@@ -444,6 +445,9 @@ model Message {
   channel           Channel          @relation(fields: [channelId], references: [id], onDelete: Cascade)
 
   @@index([createdAt])
+  @@index([conversationId, createdAt])
+  @@index([contactId, createdAt])
+  @@index([channelId, providerMessageId])
 }
 
 model ContactFieldDefinition {
@@ -515,6 +519,7 @@ model Segment {
 model Automation {
   id                String           @id @default(cuid())
   workspaceId       String?
+  folderId          String?
   name              String
   enabled           Boolean          @default(true)
   triggerType       TriggerType
@@ -522,9 +527,24 @@ model Automation {
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   workspace         Workspace?       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  folder            AutomationFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
   steps             AutomationStep[]
   runs              AutomationRun[]
 
+  @@index([workspaceId])
+  @@index([folderId])
+}
+
+model AutomationFolder {
+  id          String       @id @default(cuid())
+  workspaceId String
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  automations Automation[]
+
+  @@unique([workspaceId, name])
   @@index([workspaceId])
 }
 
@@ -554,11 +574,15 @@ model AutomationRun {
   automation     Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
   contact        Contact             @relation(fields: [contactId], references: [id], onDelete: Cascade)
   conversation   Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([automationId, status])
+  @@index([contactId, status])
+  @@index([conversationId, createdAt])
 }
 
 model Broadcast {
   id               String          @id @default(cuid())
-  workspaceId      String?
+  workspaceId      String
   name             String
   status           BroadcastStatus @default(draft)
   targetConfigJson Json
@@ -568,26 +592,29 @@ model Broadcast {
   failedCount      Int             @default(0)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  workspace        Workspace?      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace        Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId])
+  @@index([workspaceId, status, scheduledAt])
 }
 
 model Job {
   id          String     @id @default(cuid())
-  workspaceId String?
+  workspaceId String
   type        String
   status      JobStatus  @default(queued)
   payloadJson Json
   runAt       DateTime   @default(now())
   attempts    Int        @default(0)
+  lockedAt    DateTime?
   lastError   String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@index([status, runAt])
   @@index([workspaceId])
+  @@index([workspaceId, type, status, runAt])
 }
 
 model Sequence {

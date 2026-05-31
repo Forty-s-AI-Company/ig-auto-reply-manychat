@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ChevronLeft } from "lucide-react";
+import { InboxPilotLogo } from "@/components/InboxPilotLogo";
 
 type ChannelConnectionShellProps = {
   title: string;
@@ -20,11 +21,11 @@ export function ChannelConnectionShell({
   children,
 }: ChannelConnectionShellProps) {
   return (
-    <main className="min-h-screen bg-white text-[#111827]">
+    <main className="min-h-screen bg-white text-[var(--text-primary)]">
       <div className="grid min-h-screen lg:grid-cols-[44%_56%]">
-        <section className="relative flex min-h-[42vh] flex-col bg-[#f6f6f6] px-8 py-10 lg:min-h-screen lg:px-[9vw]">
-          <Link href="/dashboard" className="text-[25px] font-black tracking-[-0.04em] text-[#202124]">
-            InboxPilot
+        <section className="relative flex min-h-[42vh] flex-col bg-[var(--page-bg)] px-8 py-10 lg:min-h-screen lg:px-[9vw]">
+          <Link href="/dashboard" aria-label="InboxPilot 首頁">
+            <InboxPilotLogo />
           </Link>
 
           <div className="flex flex-1 flex-col justify-center">
@@ -35,10 +36,7 @@ export function ChannelConnectionShell({
             <p className="mt-6 max-w-[430px] text-base leading-7 text-[#5d6470]">{description}</p>
           </div>
 
-          <Link
-            href={backHref}
-            className="mb-5 inline-flex w-fit items-center gap-2 text-sm font-medium text-[#006fe6] hover:text-[#0057b8]"
-          >
+          <Link href={backHref} className="mb-5 inline-flex w-fit items-center gap-2 text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)]">
             <ChevronLeft className="h-4 w-4" />
             {backLabel}
           </Link>

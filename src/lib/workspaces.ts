@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import type { UserRole } from "@prisma/client";
 import { cookies } from "next/headers";
+import { cache } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 
@@ -84,14 +85,14 @@ export async function createWorkspaceForUser(user: WorkspaceUser, name: string) 
   return workspace;
 }
 
-export async function getUserWorkspaces(userId: string) {
+export const getUserWorkspaces = cache(async function getUserWorkspaces(userId: string) {
   return getDb().workspace.findMany({
     where: { users: { some: { userId } } },
     orderBy: { createdAt: "asc" },
   });
-}
+});
 
-export async function getCurrentWorkspace() {
+export const getCurrentWorkspace = cache(async function getCurrentWorkspace() {
   const user = await getCurrentUser();
   if (!user) return ensureDefaultWorkspace();
 
@@ -115,12 +116,12 @@ export async function getCurrentWorkspace() {
   if (firstMembership) return firstMembership.workspace;
 
   return ensureDefaultWorkspace(user);
-}
+});
 
-export async function getCurrentWorkspaceId() {
+export const getCurrentWorkspaceId = cache(async function getCurrentWorkspaceId() {
   const workspace = await getCurrentWorkspace();
   return workspace.id;
-}
+});
 
 export async function getDefaultWorkspaceId() {
   const workspace = await ensureDefaultWorkspace();

@@ -8,12 +8,22 @@ import {
 } from "@/lib/ai/providers";
 import { generateFaqReply } from "@/lib/ai/faq";
 import { requireApiUser } from "@/lib/auth";
+import { assertRateLimit, assertSameOriginRequest } from "@/lib/security";
 import { aiModelTestSchema } from "@/lib/validation";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function POST(request: Request) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
+  const rateLimitFailure = assertRateLimit({
+    key: `ai-model-test:${auth.user.id}`,
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
 
   const parsed = aiModelTestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {

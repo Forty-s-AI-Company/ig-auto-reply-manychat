@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { getAppUrl } from "@/lib/app-url";
 import { requireApiUser } from "@/lib/auth";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -14,16 +15,8 @@ type MetaOAuthMode = "facebook" | "instagram";
 type MetaBusinessLoginPreference = "facebook" | "instagram";
 
 const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "facebook";
-const DEFAULT_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
-
-function getAppUrl(request: Request) {
-  const requestOrigin = new URL(request.url).origin;
-  const hostname = new URL(requestOrigin).hostname;
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return requestOrigin;
-  }
-  return (process.env.APP_URL || requestOrigin).replace(/\/$/, "");
-}
+const DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
+const DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH = "/api/instagram/oauth/callback";
 
 function getInstagramAppId() {
   return process.env.META_INSTAGRAM_APP_ID?.trim() || process.env.META_APP_ID?.trim() || "";
@@ -35,11 +28,23 @@ function getOAuthRedirectUri(request: Request, mode: MetaOAuthMode) {
       ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
       : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
   if (configuredRedirect) return configuredRedirect;
-  return `${getAppUrl(request)}${DEFAULT_OAUTH_CALLBACK_PATH}`;
+  const callbackPath =
+    mode === "instagram" ? DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH : DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH;
+  return `${getAppUrl(request)}${callbackPath}`;
+}
+
+export function getMetaBusinessLoginPreference(
+  mode: MetaOAuthMode,
+  requestedLogin: string | null,
+): MetaBusinessLoginPreference {
+  return requestedLogin === "instagram" || requestedLogin === "facebook" ? requestedLogin : mode;
 }
 
 function buildMetaBusinessLoginUrl(nextUrl: string, loginPreference: MetaBusinessLoginPreference) {
-  const loginPagePath = loginPreference === "instagram" ? "https://business.facebook.com/business/loginpage/new/" : "https://business.facebook.com/business/loginpage/";
+  const loginPagePath =
+    loginPreference === "instagram"
+      ? "https://business.facebook.com/business/loginpage/new/"
+      : "https://business.facebook.com/business/loginpage/";
   const url = new URL(loginPagePath);
   const loginOptions = loginPreference === "instagram" ? ["IG"] : ["FB", "IG", "SSO"];
   url.searchParams.set("next", nextUrl);
@@ -56,8 +61,11 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const requestedMode = url.searchParams.get("mode");
-  const mode: MetaOAuthMode = requestedMode === "instagram" || requestedMode === "facebook" ? requestedMode : DEFAULT_META_OAUTH_MODE;
-  const loginPreference: MetaBusinessLoginPreference = url.searchParams.get("login") === "instagram" ? "instagram" : "facebook";
+  const mode: MetaOAuthMode =
+    requestedMode === "instagram" || requestedMode === "facebook" ? requestedMode : DEFAULT_META_OAUTH_MODE;
+  const requestedLogin = url.searchParams.get("login");
+  const switchAccount = url.searchParams.get("switch_account") === "1";
+  const loginPreference = getMetaBusinessLoginPreference(mode, requestedLogin);
   const appId = mode === "instagram" ? getInstagramAppId() : process.env.META_APP_ID?.trim();
 
   if (!appId) {
@@ -108,8 +116,12 @@ export async function GET(request: Request) {
         "instagram_business_manage_messages",
       ].join(","),
     });
+    if (switchAccount) {
+      params.set("prompt", "login");
+      params.set("auth_type", "reauthenticate");
+    }
 
-    return NextResponse.redirect(`https://www.instagram.com/oauth/authorize?${params}`);
+    return NextResponse.redirect(`https://api.instagram.com/oauth/authorize?${params}`);
   }
 
   const params = new URLSearchParams({
@@ -127,6 +139,11 @@ export async function GET(request: Request) {
       "business_management",
     ].join(","),
   });
+
+  if (loginPreference === "instagram") {
+    params.set("display", "page");
+    params.set("extras", JSON.stringify({ setup: { channel: "IG_API_ONBOARDING" } }));
+  }
 
   const oauthUrl = `https://www.facebook.com/${graphVersion}/dialog/oauth?${params}`;
 

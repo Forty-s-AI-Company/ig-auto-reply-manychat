@@ -58,7 +58,7 @@ export default async function ChannelConnectionPage() {
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
                 <p className="mt-2 max-w-[330px] text-sm leading-5 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">[開發中]</p>
+                <p className="mt-2 text-xs font-medium text-amber-700">需完成正式 API 設定</p>
               </div>
             </div>
           ) : (

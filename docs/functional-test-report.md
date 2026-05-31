@@ -21,18 +21,18 @@
 
 ## 測試帳號
 
-本機預設管理員帳號：
+本機測試管理員帳號由環境變數提供；不得使用或記錄預設密碼：
 
 ```text
-Email: admin@example.com
-Password: admin123456
+Email: ADMIN_EMAIL
+Password: ADMIN_PASSWORD
 ```
 
 ## 功能測試結果
 
 | 功能 | 方法 | 路徑 | 結果 | 備註 |
 |---|---:|---|---:|---|
-| 登入 API | POST | `/api/auth/login` | 200 | 預設管理員帳密登入成功 |
+| 登入 API | POST | `/api/auth/login` | 200 | 環境變數測試管理員登入成功 |
 | 首頁 | GET | `/` | 200 | 可載入 |
 | Dashboard | GET | `/dashboard` | 200 | 可載入 |
 | Inbox | GET | `/inbox` | 200 | 可載入 |
@@ -224,7 +224,7 @@ Invoke-WebRequest `
   -Method Post `
   -WebSession $session `
   -ContentType "application/json" `
-  -Body '{"email":"admin@example.com","password":"admin123456"}'
+  -Body (@{ email = $env:ADMIN_EMAIL; password = $env:ADMIN_PASSWORD } | ConvertTo-Json)
 
 Invoke-WebRequest -UseBasicParsing -Uri "$base/dashboard" -WebSession $session
 Invoke-WebRequest -UseBasicParsing -Uri "$base/api/conversations" -WebSession $session

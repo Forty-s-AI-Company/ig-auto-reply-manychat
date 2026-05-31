@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
 prisma/dev.db
 prisma/dev.db-journal
 prisma/test.db
@@ -39,12 +41,14 @@ yarn-error.log*
 .ngrok.*.log
 .project-dev-ngrok.*.log
 *.png
+!public/inboxpilot-logo.png
 .manychat-browser-profile/
 .manychat-playwright-profile/
 videos/
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel

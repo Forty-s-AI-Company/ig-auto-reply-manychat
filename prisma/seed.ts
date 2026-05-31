@@ -6,8 +6,11 @@ const prisma = new PrismaClient();
 const DEFAULT_WORKSPACE_ID = "default-workspace";
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "admin@example.com";
-  const password = process.env.ADMIN_PASSWORD || "admin123456";
+  const email = process.env.ADMIN_EMAIL?.trim();
+  const password = process.env.ADMIN_PASSWORD?.trim();
+  if (!email || !password) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be set before seeding an admin user.");
+  }
   const passwordHash = await bcrypt.hash(password, 12);
 
   const user = await prisma.user.upsert({

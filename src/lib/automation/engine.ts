@@ -96,6 +96,7 @@ async function runStep(input: {
     const seconds = Math.max(1, Number(config.seconds || 5));
     await db.job.create({
       data: {
+        workspaceId,
         type: "automation_continue",
         status: "queued",
         runAt: new Date(Date.now() + seconds * 1000),

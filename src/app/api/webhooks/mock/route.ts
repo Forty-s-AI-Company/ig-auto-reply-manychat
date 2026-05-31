@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
 import { handleInboundMessage } from "@/lib/messages";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 import { mockInboundSchema } from "@/lib/validation";
 import { hasValidSharedSecret } from "@/lib/webhook-security";
 
 export async function POST(request: Request) {
+  const rateLimitFailure = assertRateLimit({
+    key: `webhook:mock:${getClientIp(request)}`,
+    limit: 120,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   const hasSecret = hasValidSharedSecret(request, "x-mock-webhook-secret", process.env.MOCK_WEBHOOK_SECRET);
   if (!hasSecret && process.env.NODE_ENV === "production") {
     const auth = await requireApiUser();

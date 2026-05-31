@@ -7,7 +7,13 @@ loadProjectEnv();
 
 const base = "http://localhost:3041";
 const outDir = path.resolve("docs/assets/account-connection-flow");
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPassword = process.env.ADMIN_PASSWORD;
 fs.mkdirSync(outDir, { recursive: true });
+
+if (!adminEmail || !adminPassword) {
+  throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required for account connection flow tests.");
+}
 
 function cookieFromSetCookie(setCookie) {
   const match = String(setCookie || "").match(/pca_session=([^;]+)/);
@@ -22,15 +28,12 @@ function cookieFromSetCookie(setCookie) {
   };
 }
 
-const browser = await chromium.launch({
-  executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-  headless: true,
-});
+const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1920, height: 960 }, locale: "zh-TW" });
 const login = await fetch(`${base}/api/auth/login`, {
   method: "POST",
   headers: { "content-type": "application/json" },
-  body: JSON.stringify({ email: "admin@example.com", password: "admin123456" }),
+  body: JSON.stringify({ email: adminEmail, password: adminPassword }),
 });
 if (!login.ok) throw new Error(`登入失敗：${login.status}`);
 await context.addCookies([cookieFromSetCookie(login.headers.get("set-cookie"))]);

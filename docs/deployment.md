@@ -1,0 +1,128 @@
+# 部署文件
+
+InboxPilot 可部署到 Vercel 或任何支援 Node.js 的平台。正式環境需搭配 PostgreSQL 與背景 worker。
+
+## 架構
+
+```text
+Browser
+  |
+  v
+Next.js Web App
+  |
+  +-- PostgreSQL / Supabase Postgres
+  +-- External APIs: Meta, Telegram, PayUNI, AI providers
+  |
+  v
+Worker process
+  |
+  +-- Job table: broadcast_send, automation_wait, sequence_send
+```
+
+## Vercel 部署
+
+1. 在 Vercel 建立專案並連接 repository。
+   - 專案名必須是 `inboxpilot`。
+2. 設定 Build Command：
+
+```bash
+npm run build
+```
+
+3. 設定環境變數。最少需要：
+
+```env
+DATABASE_URL
+DIRECT_URL
+AUTH_SECRET
+APP_URL
+ADMIN_EMAIL
+ADMIN_PASSWORD
+ADMIN_NAME
+```
+
+完整列表請看 [environment-variables.md](./environment-variables.md)。
+
+4. 部署後執行 DB migration：
+
+```bash
+npx prisma migrate deploy
+```
+
+依部署平台不同，可在 release job、CI pipeline 或本機指向 production DB 執行。
+正式執行前請先照 [database-migration-runbook.md](./database-migration-runbook.md) 做 staging dry-run 與 rollback 準備。
+
+## Worker 部署
+
+Next.js web process 不會常駐處理 job。正式環境需另外部署 worker：
+
+```bash
+npm run worker
+```
+
+Worker 會處理：
+
+- 廣播發送
+- automation wait continuation
+- sequence send
+
+若平台不支援長駐 worker，可改用 cron 觸發 worker script，或把 `Job` table 接到正式 queue provider。
+
+## Cron
+
+目前有 API route 可供平台 cron 呼叫：
+
+```text
+GET /api/cron/refresh-ai-models
+GET /api/cron/refresh-instagram-tokens
+GET /api/cron/worker
+```
+
+建議在 Vercel Cron 或外部 scheduler 設定。
+
+## Webhook URLs
+
+正式環境必須使用公開 HTTPS URL：
+
+```text
+https://your-domain.com/api/webhooks/meta
+https://your-domain.com/api/webhooks/telegram
+https://your-domain.com/api/webhooks/whatsapp
+https://your-domain.com/api/billing/payuni/return
+https://your-domain.com/api/billing/payuni/notify
+```
+
+## Supabase
+
+Supabase 專案名必須是 `IG Auto Reply ManyChat`。
+
+建議使用 Supabase pooler 作為 Prisma `DATABASE_URL`，direct connection 作為 `DIRECT_URL`：
+
+```env
+DATABASE_URL="postgresql://postgres.<ref>:<password>@...pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require"
+DIRECT_URL="postgresql://postgres.<ref>:<password>@...pooler.supabase.com:5432/postgres?sslmode=require"
+```
+
+RLS SQL 參考：
+
+```text
+docs/security/supabase-rls-fix.sql
+```
+
+## Production checklist
+
+- 操作 Chrome / Facebook / Meta / Vercel / Supabase 後台前，必須先確認是否需要使用 `@chrome`。
+- Facebook Business 帳號名必須是 `林元`。
+- Vercel 專案名必須是 `inboxpilot`。
+- Supabase 專案名必須是 `IG Auto Reply ManyChat`。
+- PayUNI 目前使用測試站；正式站仍在審核中，不得切換正式金流。
+- `AUTH_SECRET` 至少 32 字元，且不可使用開發值。
+- 所有 API key/token 只放 server env。
+- `APP_URL` 設為正式 HTTPS domain。
+- PayUNI return/notify URL 與商店後台一致。
+- Meta OAuth redirect URL 與 Meta App 後台一致。
+- Worker 已部署且能連 DB。
+- Cron 已設定。
+- DB migration 已執行。
+- Supabase RLS 已套用並測試。
+- 壓測方案與結果請記錄在 [performance-load-test-plan.md](./performance-load-test-plan.md)。

@@ -5,7 +5,7 @@ import { requireUser } from "@/lib/auth";
 export default async function MockTesterPage() {
   await requireUser();
   return (
-    <AdminShell title="Test Tool">
+    <AdminShell title="Webhook 測試工具">
       <MockTesterClient />
     </AdminShell>
   );

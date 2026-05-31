@@ -4,6 +4,7 @@ function getAllowedDevOrigins() {
   const urls = [
     process.env.APP_URL,
     process.env.NGROK_URL,
+    "http://127.0.0.1:3041",
     "https://superman-undiluted-hastily.ngrok-free.dev",
   ].filter(Boolean);
 
@@ -11,7 +12,7 @@ function getAllowedDevOrigins() {
     urls.flatMap((url) => {
       try {
         const parsed = new URL(String(url));
-        return [parsed.host, `${parsed.protocol}//${parsed.host}`];
+        return [parsed.hostname, parsed.host, `${parsed.protocol}//${parsed.host}`];
       } catch {
         return [];
       }

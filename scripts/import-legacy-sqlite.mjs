@@ -71,9 +71,10 @@ async function main() {
       create: { id: workspace.id, name: workspace.name, slug: workspace.slug },
     });
 
-    const admin = await prisma.user.findUnique({
-      where: { email: process.env.ADMIN_EMAIL || "admin@example.com" },
-    });
+    const adminEmail = process.env.ADMIN_EMAIL?.trim();
+    const admin = adminEmail
+      ? await prisma.user.findUnique({ where: { email: adminEmail } })
+      : null;
     if (admin) {
       await prisma.workspaceUser.upsert({
         where: { workspaceId_userId: { workspaceId: workspace.id, userId: admin.id } },
