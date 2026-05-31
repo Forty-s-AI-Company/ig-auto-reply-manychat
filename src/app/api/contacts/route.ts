@@ -11,6 +11,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q") || undefined;
+  const limit = Math.min(Math.max(Number(searchParams.get("limit") || "50"), 1), 100);
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
@@ -28,10 +29,11 @@ export async function GET(request: Request) {
         : {}),
     },
     orderBy: { updatedAt: "desc" },
+    take: limit,
     include: {
       channel: { select: publicChannelSelect },
       tags: { include: { tag: true } },
-      conversations: { orderBy: { updatedAt: "desc" }, take: 3 },
+      _count: { select: { conversations: true } },
     },
   });
 

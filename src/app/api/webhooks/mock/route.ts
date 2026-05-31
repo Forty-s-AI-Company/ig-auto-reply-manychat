@@ -31,7 +31,8 @@ export async function POST(request: Request) {
     displayName: parsed.data.displayName,
     text: parsed.data.text,
     consentStatus: parsed.data.consentStatus,
+    deferAutomations: true,
   });
 
-  return NextResponse.json({ ok: true, conversationId: result.conversation.id });
+  return NextResponse.json({ ok: true, queued: true, conversationId: result.conversation.id }, { status: 202 });
 }

@@ -1,5 +1,5 @@
 import { continueAutomationRun } from "@/lib/automation/engine";
-import { filterBroadcastRecipients } from "@/lib/compliance";
+import { runKeywordAutomations, runNewContactAutomations, runWebhookAutomations } from "@/lib/automation/triggers";
 import { getDb } from "@/lib/db";
 import { syncInstagramCommentsFromWorker } from "@/lib/instagram/comments-sync";
 import { findOrCreateOpenConversation, sendOutboundMessage } from "@/lib/messages";
@@ -9,16 +9,39 @@ function asRecord(value: unknown) {
   return (value || {}) as Record<string, unknown>;
 }
 
-async function resolveSegmentContacts(workspaceId: string, segmentId: string) {
+async function getBroadcastRecipientPage(input: {
+  workspaceId: string;
+  tagId: string;
+  segmentId: string;
+  cursor?: string;
+  take: number;
+}) {
   const db = getDb();
-  const segment = await db.segment.findFirst({
-    where: { id: segmentId, workspaceId },
-  });
-  if (!segment) throw new Error("找不到這個工作區的分群。");
+  const segment = input.segmentId
+    ? await db.segment.findFirst({
+        where: { id: input.segmentId, workspaceId: input.workspaceId },
+        select: { filterJson: true },
+      })
+    : null;
+  if (input.segmentId && !segment) throw new Error("找不到這個工作區的分群。");
+
+  const where = segment
+    ? segmentContactWhere(input.workspaceId, segment.filterJson)
+    : {
+        channel: { workspaceId: input.workspaceId },
+        consentStatus: "opted_in" as const,
+        tags: { some: { tagId: input.tagId } },
+      };
 
   return db.contact.findMany({
-    where: segmentContactWhere(workspaceId, segment.filterJson),
-    include: { tags: true, channel: true },
+    where: {
+      ...where,
+      ...(input.segmentId ? { consentStatus: "opted_in" as const } : {}),
+    },
+    orderBy: { id: "asc" },
+    ...(input.cursor ? { cursor: { id: input.cursor }, skip: 1 } : {}),
+    take: input.take,
+    select: { id: true },
   });
 }
 
@@ -28,7 +51,7 @@ export async function queueBroadcast(broadcastId: string) {
   if (!broadcast) throw new Error("找不到廣播任務。");
   if (broadcast.status === "queued" || broadcast.status === "sending") {
     return db.job.count({
-      where: { workspaceId: broadcast.workspaceId, type: "broadcast_send", status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
+      where: { workspaceId: broadcast.workspaceId, type: { in: ["broadcast_expand", "broadcast_send"] }, status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
     });
   }
   if (!broadcast.workspaceId) throw new Error("廣播缺少工作區，無法排程。");
@@ -38,40 +61,27 @@ export async function queueBroadcast(broadcastId: string) {
   const segmentId = String(target.segmentId || "");
   if (!tagId && !segmentId) throw new Error("廣播需要指定標籤或分群。");
 
-  const workspaceId = broadcast.workspaceId;
-  const contacts = segmentId
-    ? await resolveSegmentContacts(workspaceId, segmentId)
-    : await db.contact.findMany({
-        where: { channel: { workspaceId } },
-        include: { tags: true, channel: true },
-      });
-  const recipients = segmentId
-    ? contacts.filter((contact) => contact.consentStatus === "opted_in")
-    : filterBroadcastRecipients(contacts, tagId);
-
   const runAt = broadcast.scheduledAt || new Date();
   await db.$transaction(async (tx) => {
     await tx.job.deleteMany({
-      where: { workspaceId, type: "broadcast_send", status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
+      where: { workspaceId: broadcast.workspaceId, type: { in: ["broadcast_expand", "broadcast_send"] }, status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
     });
     await tx.broadcast.update({
       where: { id: broadcastId },
       data: { status: "queued", sentCount: 0, failedCount: 0 },
     });
-    if (recipients.length) {
-      await tx.job.createMany({
-        data: recipients.map((contact) => ({
-          workspaceId,
-          type: "broadcast_send",
-          status: "queued",
-          runAt,
-          payloadJson: { broadcastId, contactId: contact.id },
-        })),
-      });
-    }
+    await tx.job.create({
+      data: {
+        workspaceId: broadcast.workspaceId,
+        type: "broadcast_expand",
+        status: "queued",
+        runAt,
+        payloadJson: { broadcastId, tagId, segmentId, cursor: null, batchSize: 250 },
+      },
+    });
   });
 
-  return recipients.length;
+  return 1;
 }
 
 export async function processJob(jobId: string) {
@@ -113,8 +123,74 @@ export async function processJob(jobId: string) {
       });
     }
 
+    if (job.type === "broadcast_expand") {
+      const broadcastId = String(payload.broadcastId || "");
+      const tagId = String(payload.tagId || "");
+      const segmentId = String(payload.segmentId || "");
+      const cursor = typeof payload.cursor === "string" ? payload.cursor : undefined;
+      const batchSize = Math.min(Math.max(Number(payload.batchSize || 250), 50), 500);
+      const recipients = await getBroadcastRecipientPage({
+        workspaceId: job.workspaceId,
+        tagId,
+        segmentId,
+        cursor,
+        take: batchSize + 1,
+      });
+      const batch = recipients.slice(0, batchSize);
+      const nextCursor = recipients.length > batchSize ? batch[batch.length - 1]?.id : null;
+
+      if (batch.length) {
+        await db.job.createMany({
+          data: batch.map((contact) => ({
+            workspaceId: job.workspaceId,
+            type: "broadcast_send",
+            status: "queued",
+            runAt: new Date(),
+            payloadJson: { broadcastId, contactId: contact.id },
+          })),
+        });
+        await db.broadcast.update({
+          where: { id: broadcastId },
+          data: { status: "queued" },
+        });
+      }
+
+      if (nextCursor) {
+        await db.job.create({
+          data: {
+            workspaceId: job.workspaceId,
+            type: "broadcast_expand",
+            status: "queued",
+            runAt: new Date(),
+            payloadJson: { broadcastId, tagId, segmentId, cursor: nextCursor, batchSize },
+          },
+        });
+      }
+    }
+
     if (job.type === "automation_continue") {
       await continueAutomationRun(String(payload.runId || ""));
+    }
+
+    if (job.type === "inbound_automation") {
+      const triggerType = String(payload.triggerType || "");
+      const contactId = String(payload.contactId || "");
+      const conversationId = String(payload.conversationId || "");
+      const text = String(payload.text || "");
+      if (triggerType === "new_contact") {
+        await runNewContactAutomations({ contactId, conversationId, text });
+      }
+      if (triggerType === "keyword") {
+        await runKeywordAutomations({ contactId, conversationId, text });
+      }
+      if (triggerType === "webhook") {
+        await runWebhookAutomations({
+          webhookKey: String(payload.webhookKey || ""),
+          contactId,
+          conversationId,
+          text,
+        });
+      }
     }
 
     if (job.type === "sequence_send") {
@@ -269,7 +345,7 @@ export async function markFinishedBroadcasts() {
     const jobs = await db.job.findMany({
       where: {
         workspaceId: broadcast.workspaceId,
-        type: "broadcast_send",
+        type: { in: ["broadcast_expand", "broadcast_send"] },
         status: { in: ["queued", "running"] },
       },
       select: { payloadJson: true },

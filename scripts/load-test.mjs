@@ -25,7 +25,7 @@ const cleanup = process.env.LOAD_TEST_CLEANUP !== "0";
 const deleteLoadTestUser = process.env.LOAD_TEST_DELETE_USER === "1";
 
 const prisma = new PrismaClient();
-const startedAt = Date.now();
+let startedAt = Date.now();
 const histograms = new Map();
 const counters = new Map();
 const failures = [];
@@ -320,6 +320,7 @@ async function workerPump(cookie, broadcastId) {
 
 const dataset = await ensureDataset();
 const cookie = await loginCookie();
+startedAt = Date.now();
 await Promise.all([
   workerPump(cookie, dataset.broadcast.id),
   ...Array.from({ length: users }, (_, index) => virtualUser(index + 1, cookie)),

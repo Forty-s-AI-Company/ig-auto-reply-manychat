@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import type { UserRole } from "@prisma/client";
+import type { UserRole, Workspace } from "@prisma/client";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { getCurrentUser } from "@/lib/auth";
@@ -8,8 +8,10 @@ import { getDb } from "@/lib/db";
 export const DEFAULT_WORKSPACE_ID = "default-workspace";
 export const DEFAULT_WORKSPACE_SLUG = "default";
 export const WORKSPACE_SCOPE_COOKIE = "selected_workspace_id";
+const WORKSPACE_CACHE_TTL_MS = 5_000;
 
 type WorkspaceUser = { id: string; name?: string | null; role?: UserRole };
+const userWorkspaceCache = new Map<string, { expiresAt: number; workspace: Workspace }>();
 
 function slugify(value: string) {
   const slug = value
@@ -98,6 +100,10 @@ export const getCurrentWorkspace = cache(async function getCurrentWorkspace() {
 
   const cookieStore = await cookies();
   const selectedWorkspaceId = cookieStore.get(WORKSPACE_SCOPE_COOKIE)?.value;
+  const cacheKey = `${user.id}:${selectedWorkspaceId || ""}`;
+  const cached = userWorkspaceCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) return cached.workspace;
+
   if (selectedWorkspaceId) {
     const selected = await getDb().workspace.findFirst({
       where: {
@@ -105,7 +111,10 @@ export const getCurrentWorkspace = cache(async function getCurrentWorkspace() {
         users: { some: { userId: user.id } },
       },
     });
-    if (selected) return selected;
+    if (selected) {
+      userWorkspaceCache.set(cacheKey, { workspace: selected, expiresAt: Date.now() + WORKSPACE_CACHE_TTL_MS });
+      return selected;
+    }
   }
 
   const firstMembership = await getDb().workspaceUser.findFirst({
@@ -113,9 +122,14 @@ export const getCurrentWorkspace = cache(async function getCurrentWorkspace() {
     orderBy: { createdAt: "asc" },
     include: { workspace: true },
   });
-  if (firstMembership) return firstMembership.workspace;
+  if (firstMembership) {
+    userWorkspaceCache.set(cacheKey, { workspace: firstMembership.workspace, expiresAt: Date.now() + WORKSPACE_CACHE_TTL_MS });
+    return firstMembership.workspace;
+  }
 
-  return ensureDefaultWorkspace(user);
+  const workspace = await ensureDefaultWorkspace(user);
+  userWorkspaceCache.set(cacheKey, { workspace, expiresAt: Date.now() + WORKSPACE_CACHE_TTL_MS });
+  return workspace;
 });
 
 export const getCurrentWorkspaceId = cache(async function getCurrentWorkspaceId() {

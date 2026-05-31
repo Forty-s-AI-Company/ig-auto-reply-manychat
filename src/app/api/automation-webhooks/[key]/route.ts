@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleInboundMessage } from "@/lib/messages";
-import { runWebhookAutomations } from "@/lib/automation/triggers";
+import { getDb } from "@/lib/db";
 import { automationWebhookRunSchema } from "@/lib/validation";
 import { verifyHmacSignature } from "@/lib/webhook-security";
 
@@ -43,16 +43,25 @@ export async function POST(request: Request, { params }: Params) {
     skipAutomations: true,
   });
 
-  const matched = await runWebhookAutomations({
-    webhookKey: key,
-    contactId: inbound.contact.id,
-    conversationId: inbound.conversation.id,
-    text: parsed.data.text,
+  await getDb().job.create({
+    data: {
+      workspaceId: inbound.channel.workspaceId,
+      type: "inbound_automation",
+      status: "queued",
+      runAt: new Date(),
+      payloadJson: {
+        triggerType: "webhook",
+        webhookKey: key,
+        contactId: inbound.contact.id,
+        conversationId: inbound.conversation.id,
+        text: parsed.data.text,
+      },
+    },
   });
 
   return NextResponse.json({
     ok: true,
-    matched,
+    queued: true,
     conversationId: inbound.conversation.id,
-  });
+  }, { status: 202 });
 }

@@ -8,7 +8,9 @@ import { getCurrentWorkspaceId } from "@/lib/workspaces";
 export async function GET(request: Request) {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
-  const channelId = new URL(request.url).searchParams.get("channelId") || undefined;
+  const searchParams = new URL(request.url).searchParams;
+  const channelId = searchParams.get("channelId") || undefined;
+  const limit = Math.min(Math.max(Number(searchParams.get("limit") || "50"), 1), 100);
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = channelId || (await getSelectedInstagramChannelId());
   const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
@@ -16,6 +18,7 @@ export async function GET(request: Request) {
   const conversations = await getDb().conversation.findMany({
     where: channelWhere,
     orderBy: [{ lastMessageAt: "desc" }, { updatedAt: "desc" }],
+    take: limit,
     include: {
       contact: { include: { tags: { include: { tag: true } } } },
       channel: { select: publicChannelSelect },

@@ -17,6 +17,7 @@ export type InboundMessageInput = {
   metadataJson?: Record<string, unknown>;
   workspaceId?: string;
   skipAutomations?: boolean;
+  deferAutomations?: boolean;
 };
 
 export async function getOrCreateChannel(type: ChannelType, name?: string, workspaceId?: string) {
@@ -120,6 +121,43 @@ export async function handleInboundMessage(input: InboundMessageInput) {
   }
 
   if (!input.skipAutomations) {
+    if (input.deferAutomations && channel.workspaceId) {
+      const jobs = [
+        !existingContact
+          ? {
+              workspaceId: channel.workspaceId,
+              type: "inbound_automation",
+              status: "queued" as const,
+              runAt: new Date(),
+              payloadJson: {
+                triggerType: "new_contact",
+                contactId: contact.id,
+                conversationId: conversation.id,
+                text: input.text,
+              },
+            }
+          : null,
+        {
+          workspaceId: channel.workspaceId,
+          type: "inbound_automation",
+          status: "queued" as const,
+          runAt: new Date(),
+          payloadJson: {
+            triggerType: "keyword",
+            contactId: contact.id,
+            conversationId: conversation.id,
+            text: input.text,
+          },
+        },
+      ].filter((job): job is NonNullable<typeof job> => Boolean(job));
+
+      if (jobs.length) {
+        await db.job.createMany({ data: jobs });
+      }
+
+      return { channel, contact, conversation, message };
+    }
+
     const { runKeywordAutomations, runNewContactAutomations } = await import("@/lib/automation/triggers");
     if (!existingContact) {
       await runNewContactAutomations({

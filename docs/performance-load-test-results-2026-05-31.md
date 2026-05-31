@@ -92,3 +92,41 @@ Endpoint summary:
 6. Prisma pool 設定需依 runtime 調整；目前 Supabase pooler + local dev 在高 concurrency 下會快速排隊。
 7. 對 webhook / inbound API 做 backpressure：per workspace queue depth limit、429/202 retry-after、idempotency key。
 8. 建立 production-like staging 壓測：Vercel preview/staging + staging Supabase + pgbouncer pool metrics + DB slow query log。
+
+## Optimization Pass 1
+
+已完成：
+
+- `PRISMA_CONNECTION_LIMIT` 預設由 1 調整為 dev 10 / production 5，仍可用 env 覆寫。
+- `mock.inbound` 與 `automation.webhook` 改為 queue-first，request 只建立 inbound/event/job，automation 由 worker 執行。
+- `broadcast.queue` 改為快速建立 `broadcast_expand` job，再由 worker 以 batch 展開 recipients，不再於 request 中同步建立大量 `broadcast_send` jobs。
+- `contacts` / `conversations` API 加上 limit，預設 50、最高 100。
+- Contacts page 初始只取 100 筆；Inbox page 初始只取 50 個 conversations 與每個 conversation 最近 30 則 messages。
+- Authenticated user / workspace lookup 加入短 TTL server-side cache，降低同一波 request 對 DB 的重複讀取。
+
+20-user smoke retest:
+
+```bash
+LOAD_TEST_USERS=20 LOAD_TEST_DURATION_MS=10000 LOAD_TEST_SEED_CONTACTS=100 LOAD_TEST_THINK_MIN_MS=100 LOAD_TEST_THINK_MAX_MS=400 LOAD_TEST_REQUEST_TIMEOUT_MS=30000 node scripts/load-test.mjs
+```
+
+Result:
+
+- Total requests: 50
+- Total errors/timeouts: 0
+- Error rate: 0%
+- RPS: 3.5
+- `api.contacts` p95: 3624 ms
+- `api.conversations` p95: 3625 ms
+- `page.dashboard` p95: 6447 ms
+- `mock.inbound` p95: 10937 ms
+- `automation.webhook` p95: 10769 ms
+
+1000-user retest after the first queue/pool pass still failed under local dev + remote Supabase:
+
+- Total requests: 1452
+- Total errors/timeouts: 891
+- Error rate: 61.36%
+- RPS: 33.1
+
+Interpretation: 第一波優化已解掉小流量 timeout，並提高吞吐，但 1000 simultaneous single-wave 仍會讓 local Next dev + remote Supabase connection pool 飽和。下一步需把 worker 移出 request runtime、加 Redis/queue backend，並將 dashboard/inbox/analytics summary 改為 materialized/cache-first。

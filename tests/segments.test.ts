@@ -88,7 +88,7 @@ describe("segments", () => {
         configJson: {},
       },
     });
-    const contact = await db.contact.create({
+    await db.contact.create({
       data: {
         channelId: channel.id,
         externalId: "recipient",
@@ -119,6 +119,7 @@ describe("segments", () => {
 
     expect(queued).toBe(1);
     expect(jobs).toHaveLength(1);
-    expect((jobs[0].payloadJson as { contactId: string }).contactId).toBe(contact.id);
+    expect(jobs[0].type).toBe("broadcast_expand");
+    expect((jobs[0].payloadJson as { broadcastId: string }).broadcastId).toBe(broadcast.id);
   });
 });

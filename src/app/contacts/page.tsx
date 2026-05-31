@@ -47,6 +47,7 @@ export default async function ContactsPage({
           : {}),
       },
       orderBy: [{ lastInboundAt: "desc" }, { updatedAt: "desc" }],
+      take: 100,
       include: {
         channel: { select: publicChannelSelect },
         tags: { include: { tag: true } },
