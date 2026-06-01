@@ -58,6 +58,18 @@ https://your-domain.com/api/auth/google/callback
 | `MOCK_WEBHOOK_SECRET`       | 若設定，`/api/webhooks/mock` 需帶 shared secret。         |
 | `AUTOMATION_WEBHOOK_SECRET` | 若設定，`/api/automation-webhooks/[key]` 需帶 HMAC 簽名。 |
 
+## Queue / Worker
+
+正式環境建議設定 Redis，讓 job 透過 BullMQ 分發到 dedicated worker。系統仍會先寫入 PostgreSQL `Job` table 作為 source of truth；未設定 `REDIS_URL` 時，worker 會退回 DB polling。
+
+| 變數                   | 說明                                              |
+| ---------------------- | ------------------------------------------------- |
+| `REDIS_URL`            | Redis connection URL。設定後啟用 BullMQ queue。   |
+| `JOB_QUEUE_NAME`       | BullMQ queue 名稱，預設 `inboxpilot-jobs`。       |
+| `WORKER_CONCURRENCY`   | BullMQ worker 同時處理 job 數，預設 `5`。         |
+| `WORKER_INTERVAL_MS`   | DB fallback polling interval，預設 `5000` ms。    |
+| `WORKER_DB_BATCH_SIZE` | DB fallback 每次處理 job 數，預設 `10`。          |
+
 ### Telegram
 
 | 變數                      | 說明                       |

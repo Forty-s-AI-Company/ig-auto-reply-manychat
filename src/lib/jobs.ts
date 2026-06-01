@@ -3,6 +3,7 @@ import { runKeywordAutomations, runNewContactAutomations, runWebhookAutomations 
 import { getDb } from "@/lib/db";
 import { syncInstagramCommentsFromWorker } from "@/lib/instagram/comments-sync";
 import { findOrCreateOpenConversation, sendOutboundMessage } from "@/lib/messages";
+import { enqueueJob, enqueueJobs, mirrorJobToExternalQueue } from "@/lib/queue";
 import { segmentContactWhere } from "@/lib/segments";
 
 function asRecord(value: unknown) {
@@ -62,6 +63,7 @@ export async function queueBroadcast(broadcastId: string) {
   if (!tagId && !segmentId) throw new Error("廣播需要指定標籤或分群。");
 
   const runAt = broadcast.scheduledAt || new Date();
+  let queuedJob: { id: string; type: string; runAt: Date } | null = null;
   await db.$transaction(async (tx) => {
     await tx.job.deleteMany({
       where: { workspaceId: broadcast.workspaceId, type: { in: ["broadcast_expand", "broadcast_send"] }, status: "queued", payloadJson: { path: ["broadcastId"], equals: broadcastId } },
@@ -70,7 +72,7 @@ export async function queueBroadcast(broadcastId: string) {
       where: { id: broadcastId },
       data: { status: "queued", sentCount: 0, failedCount: 0 },
     });
-    await tx.job.create({
+    queuedJob = await tx.job.create({
       data: {
         workspaceId: broadcast.workspaceId,
         type: "broadcast_expand",
@@ -80,6 +82,9 @@ export async function queueBroadcast(broadcastId: string) {
       },
     });
   });
+  if (queuedJob) {
+    await mirrorJobToExternalQueue(queuedJob);
+  }
 
   return 1;
 }
@@ -140,15 +145,15 @@ export async function processJob(jobId: string) {
       const nextCursor = recipients.length > batchSize ? batch[batch.length - 1]?.id : null;
 
       if (batch.length) {
-        await db.job.createMany({
-          data: batch.map((contact) => ({
+        await enqueueJobs(
+          batch.map((contact) => ({
             workspaceId: job.workspaceId,
             type: "broadcast_send",
             status: "queued",
             runAt: new Date(),
             payloadJson: { broadcastId, contactId: contact.id },
           })),
-        });
+        );
         await db.broadcast.update({
           where: { id: broadcastId },
           data: { status: "queued" },
@@ -156,14 +161,12 @@ export async function processJob(jobId: string) {
       }
 
       if (nextCursor) {
-        await db.job.create({
-          data: {
-            workspaceId: job.workspaceId,
-            type: "broadcast_expand",
-            status: "queued",
-            runAt: new Date(),
-            payloadJson: { broadcastId, tagId, segmentId, cursor: nextCursor, batchSize },
-          },
+        await enqueueJob({
+          workspaceId: job.workspaceId,
+          type: "broadcast_expand",
+          status: "queued",
+          runAt: new Date(),
+          payloadJson: { broadcastId, tagId, segmentId, cursor: nextCursor, batchSize },
         });
       }
     }
@@ -234,14 +237,12 @@ export async function processJob(jobId: string) {
         });
 
         if (nextStep && nextRunAt) {
-          await db.job.create({
-            data: {
-              workspaceId: job.workspaceId,
-              type: "sequence_send",
-              status: "queued",
-              runAt: nextRunAt,
-              payloadJson: { subscriptionId: subscription.id },
-            },
+          await enqueueJob({
+            workspaceId: job.workspaceId,
+            type: "sequence_send",
+            status: "queued",
+            runAt: nextRunAt,
+            payloadJson: { subscriptionId: subscription.id },
           });
         }
       }

@@ -2,6 +2,7 @@ import type { Automation, AutomationStep, Prisma } from "@prisma/client";
 import { generateFaqReply } from "@/lib/ai/faq";
 import { recordMessageEvent } from "@/lib/billing/usage-service";
 import { getDb } from "@/lib/db";
+import { enqueueJob } from "@/lib/queue";
 import { sendOutboundMessage } from "@/lib/messages";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
@@ -94,14 +95,12 @@ async function runStep(input: {
 
   if (input.step.type === "wait") {
     const seconds = Math.max(1, Number(config.seconds || 5));
-    await db.job.create({
-      data: {
-        workspaceId,
-        type: "automation_continue",
-        status: "queued",
-        runAt: new Date(Date.now() + seconds * 1000),
-        payloadJson: { runId: input.runId },
-      },
+    await enqueueJob({
+      workspaceId,
+      type: "automation_continue",
+      status: "queued",
+      runAt: new Date(Date.now() + seconds * 1000),
+      payloadJson: { runId: input.runId },
     });
     await appendRunLog(input.runId, { step: input.step.order, type: input.step.type, queued: true });
     return { status: "paused" };

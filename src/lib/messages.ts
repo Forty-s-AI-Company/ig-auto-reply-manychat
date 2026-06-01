@@ -2,6 +2,7 @@ import { Prisma, type ChannelType, type ConsentStatus } from "@prisma/client";
 import { assertCanSendAutomation, recordMessageEvent } from "@/lib/billing/usage-service";
 import { getChannelAdapter } from "@/lib/channels";
 import { getDb } from "@/lib/db";
+import { enqueueJobs } from "@/lib/queue";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export type InboundMessageInput = {
@@ -152,7 +153,7 @@ export async function handleInboundMessage(input: InboundMessageInput) {
       ].filter((job): job is NonNullable<typeof job> => Boolean(job));
 
       if (jobs.length) {
-        await db.job.createMany({ data: jobs });
+        await enqueueJobs(jobs);
       }
 
       return { channel, contact, conversation, message };
