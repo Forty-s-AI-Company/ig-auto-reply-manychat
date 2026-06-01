@@ -12,11 +12,10 @@ import {
   Users,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
-import { publicChannelSelect } from "@/lib/channels/public";
-import { getDb } from "@/lib/db";
+import { getDashboardSummary } from "@/lib/dashboard-summary";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 function directionLabel(direction: string) {
@@ -34,12 +33,10 @@ function formatDate(value: Date) {
 
 export default async function DashboardPage() {
   await requireUser();
-  const db = getDb();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
 
-  const [
+  const {
     contacts,
     messages,
     openConversations,
@@ -47,25 +44,7 @@ export default async function DashboardPage() {
     connectedInstagramChannelRows,
     recentMessages,
     recentAutomations,
-  ] = await Promise.all([
-    db.contact.count({ where: channelWhere }),
-    db.message.count({ where: channelWhere }),
-    db.conversation.count({ where: { status: "open", ...channelWhere } }),
-    db.automation.count({ where: { workspaceId } }),
-    db.channel.findMany({ where: { workspaceId, type: "instagram", enabled: true }, select: { configJson: true, name: true } }),
-    db.message.findMany({
-      where: channelWhere,
-      orderBy: { createdAt: "desc" },
-      take: 6,
-      include: { contact: true, channel: { select: publicChannelSelect } },
-    }),
-    db.automation.findMany({
-      where: { workspaceId },
-      orderBy: { updatedAt: "desc" },
-      take: 4,
-      include: { steps: true },
-    }),
-  ]);
+  } = await getDashboardSummary({ workspaceId, selectedChannelId });
   const connectedInstagramChannels = connectedInstagramChannelRows.filter((channel) => {
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
@@ -294,7 +273,7 @@ export default async function DashboardPage() {
                       {automation.enabled ? "啟用中" : "已停止"}
                     </span>
                   </div>
-                  <p className="mt-1 text-[var(--text-muted)]">{automation.steps.length} 個步驟</p>
+                  <p className="mt-1 text-[var(--text-muted)]">{automation._count.steps} 個步驟</p>
                 </Link>
               ))}
               {recentAutomations.length === 0 ? (

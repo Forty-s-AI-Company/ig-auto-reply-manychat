@@ -130,3 +130,97 @@ Result:
 - RPS: 33.1
 
 Interpretation: 第一波優化已解掉小流量 timeout，並提高吞吐，但 1000 simultaneous single-wave 仍會讓 local Next dev + remote Supabase connection pool 飽和。下一步需把 worker 移出 request runtime、加 Redis/queue backend，並將 dashboard/inbox/analytics summary 改為 materialized/cache-first。
+
+## Optimization Pass 2
+
+已完成：
+
+- Dashboard / Analytics summary 改為 5 秒 server-side promise cache，同一波請求共用同一個 DB loader。
+- AdminShell 的 workspace list / Instagram channel list 改為 5 秒 server-side cache，降低每頁共用殼層的重複查詢。
+- Dashboard 最近自動化改用 `_count.steps`，不再載入完整 steps。
+- Inbox 預設 tags 的 `upsert` 改為每 workspace 每小時最多執行一次。
+- Inbox 初始 payload 從 50 個 conversations x 30 則 messages 降為 25 個 conversations x 10 則 messages。
+- Contacts / Conversations API 在無搜尋條件時加入 5 秒 short cache。
+- Broadcasts page 的 broadcasts/tags/segments 加入 5 秒 short cache，broadcasts 初始列表限制 100 筆。
+- Load test script 修正：只有 HTTP 2xx/3xx 算成功；production mock webhook 可用 `MOCK_WEBHOOK_SECRET` 測試，避免 401 被誤判為成功。
+
+Local dev 20-user retest after pass 2:
+
+- Total requests: 89
+- Total errors/timeouts: 0
+- Error rate: 0%
+- RPS: 6.6
+- `page.dashboard` p95: 4328 ms
+- `page.analytics` p95: 4321 ms
+- `api.contacts` p95: 3433 ms
+- `api.conversations` p95: 3085 ms
+- `mock.inbound` p95: 8707 ms
+- `automation.webhook` p95: 9917 ms
+
+Local dev 1000-user retest after pass 2:
+
+- Total requests: 1465
+- Total errors/timeouts: 1016
+- Error rate: 69.35%
+- RPS: 33.4
+- Runtime: 43.8 s
+
+Interpretation: dev mode 下 pass 2 沒有改善 1000 simultaneous single-wave，因為 server request queue / DB pool 已在第一波首請求被打滿；多數請求在 client 30s timeout 後 server 仍繼續處理。
+
+## Production-Mode Local Retest
+
+為了避免 Next dev server / Turbopack logging 影響判讀，已用 `next build` + `next start -p 3041` 重跑。Production mode 需要正式安全設定；本機測試用臨時 `AUTH_SECRET`、`APP_URL=http://localhost:3041`、`CRON_SECRET`、`MOCK_WEBHOOK_SECRET` 啟動，未寫入檔案。
+
+20-user production smoke:
+
+```bash
+LOAD_TEST_BASE_URL=http://localhost:3041 CRON_SECRET=... MOCK_WEBHOOK_SECRET=... LOAD_TEST_USERS=20 LOAD_TEST_DURATION_MS=10000 LOAD_TEST_SEED_CONTACTS=100 LOAD_TEST_THINK_MIN_MS=100 LOAD_TEST_THINK_MAX_MS=400 LOAD_TEST_REQUEST_TIMEOUT_MS=30000 node scripts/load-test.mjs
+```
+
+Result:
+
+- Total requests: 58
+- Total errors/timeouts: 0
+- Error rate: 0%
+- RPS: 3.0
+- `page.inbox` p95: 2875 ms
+- `api.conversations` p95: 4241 ms
+- `api.contacts` p95: 4258 ms
+- `page.dashboard` p95: 5269 ms
+- `broadcast.queue`: 7017 ms
+- `mock.inbound` p95: 13490 ms
+- `automation.webhook` p95: 14001 ms
+- `cron.worker`: 11609 ms
+
+1000-user production single-wave:
+
+```bash
+LOAD_TEST_BASE_URL=http://localhost:3041 CRON_SECRET=... MOCK_WEBHOOK_SECRET=... LOAD_TEST_USERS=1000 LOAD_TEST_DURATION_MS=15000 LOAD_TEST_SEED_CONTACTS=1000 LOAD_TEST_THINK_MIN_MS=1000 LOAD_TEST_THINK_MAX_MS=3000 LOAD_TEST_REQUEST_TIMEOUT_MS=30000 LOAD_TEST_WORKER_INTERVAL_MS=1000 LOAD_TEST_WORKER_LIMIT=100 node scripts/load-test.mjs
+```
+
+Result:
+
+- Total requests: 1106
+- Total errors/timeouts: 554
+- Error rate: 50.09%
+- RPS: 25.0
+- Runtime: 44.3 s
+- `page.dashboard`: 136 requests / 0 errors / p95 30306 ms
+- `page.inbox`: 152 requests / 0 errors / p95 30306 ms
+- `page.broadcasts`: 137 requests / 0 errors / p95 30306 ms
+- `page.analytics`: 127 requests / 0 errors / p95 30304 ms
+- `api.contacts`: 143 requests / 143 timeouts / p95 30305 ms
+- `api.conversations`: 137 requests / 137 timeouts / p95 30305 ms
+- `mock.inbound`: 131 requests / 131 timeouts / p95 30187 ms
+- `automation.webhook`: 142 requests / 142 timeouts / p95 30177 ms
+- `broadcast.queue`: 1 request / 1 timeout / 30006 ms
+
+Updated verdict: production mode is better than local dev by error rate, but still cannot safely claim 1000 simultaneous users. Read pages can eventually return 200, but they sit at the 30s timeout boundary; write-heavy webhook/API/broadcast paths still fail under single-wave load.
+
+## Remaining Architecture Work
+
+1. Move webhook ingest, automation execution, broadcast expansion, and worker processing out of the Next request runtime into a dedicated queue worker.
+2. Add Redis/BullMQ, pg-boss, Supabase Queue, or another durable queue with workspace-level concurrency limits and retries.
+3. Replace hot dashboard/inbox/analytics read queries with persisted summary tables or materialized views updated by jobs/webhooks.
+4. Add production observability before any public launch: request duration histogram, DB pool wait, slow query log, queue depth, worker lag, and timeout rate by route.
+5. Run staging load tests on Vercel preview/staging with staging Supabase metrics enabled; local single-process results are a blocker signal, not a final capacity number.

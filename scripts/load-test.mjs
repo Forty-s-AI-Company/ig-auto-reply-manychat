@@ -96,7 +96,7 @@ async function request(name, path, options = {}) {
       },
     });
     status = response.status;
-    ok = status < 500 && status !== 429;
+    ok = status >= 200 && status < 400;
     await response.arrayBuffer();
   } catch (error) {
     failures.push({ name, path, error: error instanceof Error ? error.message : String(error) });
@@ -265,7 +265,11 @@ async function virtualUser(id, cookie) {
     async () => request("api.contacts", "/api/contacts", { headers: { cookie, "x-forwarded-for": ip } }),
     async () => request("mock.inbound", "/api/webhooks/mock", {
       method: "POST",
-      headers: { "content-type": "application/json", "x-forwarded-for": ip },
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": ip,
+        ...(process.env.MOCK_WEBHOOK_SECRET ? { "x-mock-webhook-secret": process.env.MOCK_WEBHOOK_SECRET } : {}),
+      },
       body: JSON.stringify({
         externalId,
         displayName: `Virtual User ${id}`,

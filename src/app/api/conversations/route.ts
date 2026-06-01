@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
-import { publicChannelSelect } from "@/lib/channels/public";
-import { getDb } from "@/lib/db";
+import { getConversationApiList } from "@/lib/inbox-data";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function GET(request: Request) {
@@ -13,18 +12,8 @@ export async function GET(request: Request) {
   const limit = Math.min(Math.max(Number(searchParams.get("limit") || "50"), 1), 100);
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = channelId || (await getSelectedInstagramChannelId());
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
 
-  const conversations = await getDb().conversation.findMany({
-    where: channelWhere,
-    orderBy: [{ lastMessageAt: "desc" }, { updatedAt: "desc" }],
-    take: limit,
-    include: {
-      contact: { include: { tags: { include: { tag: true } } } },
-      channel: { select: publicChannelSelect },
-      messages: { orderBy: { createdAt: "desc" }, take: 1 },
-    },
-  });
+  const conversations = await getConversationApiList({ workspaceId, selectedChannelId, limit });
 
   return NextResponse.json(conversations);
 }

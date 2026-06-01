@@ -3,6 +3,7 @@ import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/acco
 import { requireApiUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
+import { getContactApiList } from "@/lib/inbox-data";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function GET(request: Request) {
@@ -14,6 +15,11 @@ export async function GET(request: Request) {
   const limit = Math.min(Math.max(Number(searchParams.get("limit") || "50"), 1), 100);
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
+  if (!q) {
+    const contacts = await getContactApiList({ workspaceId, selectedChannelId, limit });
+    return NextResponse.json(contacts);
+  }
+
   const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
   const contacts = await getDb().contact.findMany({
     where: {

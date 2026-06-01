@@ -10,6 +10,7 @@ import { ALL_IG_ACCOUNTS, IG_ACCOUNT_SCOPE_COOKIE } from "@/lib/account-scope";
 import { getCurrentUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
+import { getServerCache } from "@/lib/server-cache";
 import { getCurrentWorkspace, getUserWorkspaces } from "@/lib/workspaces";
 
 const primaryNavItems = [
@@ -27,6 +28,8 @@ const primaryNavItems = [
   { label: "設定", href: "/channels", icon: Settings, iconName: "settings" },
 ] as const;
 
+const ADMIN_SHELL_CACHE_TTL_MS = 5_000;
+
 export async function AdminShell({
   children,
   title = "儀表板",
@@ -39,16 +42,22 @@ export async function AdminShell({
   headerRight?: React.ReactNode;
 }) {
   const workspace = await getCurrentWorkspace();
-  const [user, instagramChannels, cookieStore] = await Promise.all([
+  const [user, cookieStore] = await Promise.all([
     getCurrentUser(),
-    getDb().channel.findMany({
-      where: { workspaceId: workspace.id, type: "instagram", enabled: true },
-      orderBy: [{ name: "asc" }],
-      select: { id: true, name: true, configJson: true },
-    }),
     cookies(),
   ]);
-  const workspaces = user ? await getUserWorkspaces(user.id) : [workspace];
+  const [instagramChannels, workspaces] = await Promise.all([
+    getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
+      getDb().channel.findMany({
+        where: { workspaceId: workspace.id, type: "instagram", enabled: true },
+        orderBy: [{ name: "asc" }],
+        select: { id: true, name: true, configJson: true },
+      }),
+    ),
+    user
+      ? getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
+      : Promise.resolve([workspace]),
+  ]);
   const accountChannels = instagramChannels
     .map((channel) => {
       const config = getMetaChannelConfig(channel.configJson);

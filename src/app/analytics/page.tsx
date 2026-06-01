@@ -2,9 +2,9 @@ import Link from "next/link";
 import { BarChart3, Inbox, Megaphone, MessageCircle, TrendingUp, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/AdminShell";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getAnalyticsSummary } from "@/lib/dashboard-summary";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 function formatPercent(value: number) {
@@ -13,37 +13,22 @@ function formatPercent(value: number) {
 
 export default async function AnalyticsPage() {
   await requireUser();
-  const db = getDb();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-  const [
+  const {
     contacts,
     messages,
     recentMessages,
     openConversations,
     broadcasts,
     queuedBroadcasts,
-    sentBroadcasts,
+    sentCount,
+    failedCount,
     automations,
     enabledAutomations,
-  ] = await Promise.all([
-    db.contact.count({ where: channelWhere }),
-    db.message.count({ where: channelWhere }),
-    db.message.count({ where: { ...channelWhere, createdAt: { gte: sevenDaysAgo } } }),
-    db.conversation.count({ where: { status: "open", ...channelWhere } }),
-    db.broadcast.count({ where: { workspaceId } }),
-    db.broadcast.count({ where: { workspaceId, status: { in: ["queued", "sending"] } } }),
-    db.broadcast.aggregate({ where: { workspaceId }, _sum: { sentCount: true, failedCount: true } }),
-    db.automation.count({ where: { workspaceId } }),
-    db.automation.count({ where: { workspaceId, enabled: true } }),
-  ]);
+  } = await getAnalyticsSummary({ workspaceId, selectedChannelId });
 
-  const sentCount = sentBroadcasts._sum.sentCount || 0;
-  const failedCount = sentBroadcasts._sum.failedCount || 0;
   const deliveryRate = sentCount + failedCount > 0 ? sentCount / (sentCount + failedCount) : 0;
 
   return (

@@ -1,17 +1,13 @@
 ﻿import { AdminShell } from "@/components/AdminShell";
 import { BroadcastsClient } from "@/components/BroadcastsClient";
 import { requireUser } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { getBroadcastsPageData } from "@/lib/inbox-data";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export default async function BroadcastsPage() {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
-  const [broadcasts, tags, segments] = await Promise.all([
-    getDb().broadcast.findMany({ where: { workspaceId }, orderBy: { updatedAt: "desc" } }),
-    getDb().tag.findMany({ where: { workspaceId }, orderBy: { name: "asc" } }),
-    getDb().segment.findMany({ where: { workspaceId }, orderBy: { name: "asc" } }),
-  ]);
+  const { broadcasts, tags, segments } = await getBroadcastsPageData(workspaceId);
 
   return (
     <AdminShell title="廣播活動">
