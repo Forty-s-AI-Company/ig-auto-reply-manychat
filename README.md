@@ -50,6 +50,7 @@ http://localhost:3041
 - [安裝文件](./docs/installation.md)
 - [部署文件](./docs/deployment.md)
 - [環境變數文件](./docs/environment-variables.md)
+- [Codex Windows Setup](./docs/codex-windows-setup.md)
 - [API 文件](./docs/api.md)
 - [ERD](./docs/erd.md)
 - [Project Launch Checklist](./docs/project-launch-checklist.md)
