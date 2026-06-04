@@ -5,36 +5,41 @@ import { requireUser } from "@/lib/auth";
 
 const channels = [
   {
+    name: "Social Accounts",
+    description: "新的可重用 OAuth Popup 模組。Meta、Telegram Bot 與 Mock provider 都從這裡進。",
+    href: "/channels/connect/social",
+    icon: "social",
+  },
+  {
     name: "Instagram",
-    description: "連接 Instagram，建立留言關鍵字、私訊與自動回覆流程。",
+    description: "沿用既有 Instagram 渠道連接頁，適合需要直接接回目前訊息渠道設定的情境。",
     href: "/channels/connect/instagram",
     icon: "ig",
   },
   {
+    name: "Facebook Messenger",
+    description: "沿用既有 Messenger / Meta Business 渠道頁，保留原本渠道授權流程。",
+    href: "/channels/connect/messenger",
+    icon: "ms",
+  },
+  {
+    name: "Telegram",
+    description: "透過新的 Social Accounts popup 視窗輸入 Bot Token，驗證後安全儲存。",
+    href: "/channels/connect/social",
+    icon: "tg",
+  },
+  {
     name: "TikTok",
-    description: "連接 TikTok，建立短影音互動與訊息自動化。",
+    description: "保留擴充位，之後可掛上對應 provider strategy。",
     href: "/channels/connect/tiktok",
     icon: "tt",
     disabled: true,
   },
   {
     name: "WhatsApp",
-    description: "連接 WhatsApp，集中管理客戶訊息與回覆流程。",
+    description: "保留擴充位，之後可掛上對應 provider strategy。",
     href: "/channels/connect/whatsapp",
     icon: "wa",
-    disabled: true,
-  },
-  {
-    name: "Facebook Messenger",
-    description: "連接 Messenger，建立粉專訊息自動化與客服流程。",
-    href: "/channels/connect/messenger",
-    icon: "ms",
-  },
-  {
-    name: "Telegram",
-    description: "連接 Telegram，建立頻道與私訊自動化流程。",
-    href: "/channels/connect/telegram",
-    icon: "tg",
     disabled: true,
   },
 ];
@@ -44,10 +49,10 @@ export default async function ChannelConnectionPage() {
 
   return (
     <ChannelConnectionShell
-      title="你想從哪個平台開始？"
-      description="不用擔心，之後也可以再連接其他社群平台。"
+      title="選擇要連接的渠道"
+      description="先選擇你要連接的社群平台。新的 Social Accounts 模組會優先處理 OAuth popup 與 token 連接流程。"
       backHref="/dashboard"
-      backLabel="返回"
+      backLabel="返回後台"
       visual={<GiftVisual />}
     >
       <div className="space-y-6">
@@ -57,8 +62,8 @@ export default async function ChannelConnectionPage() {
               <ChannelIcon type={channel.icon} />
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[330px] text-sm leading-5 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">需完成正式 API 設定</p>
+                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
+                <p className="mt-2 text-xs font-medium text-amber-700">尚未接上正式 provider</p>
               </div>
             </div>
           ) : (
@@ -70,7 +75,7 @@ export default async function ChannelConnectionPage() {
               <ChannelIcon type={channel.icon} />
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[330px] text-sm leading-5 text-[#596170]">{channel.description}</p>
+                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
               </div>
             </Link>
           ),
@@ -81,6 +86,7 @@ export default async function ChannelConnectionPage() {
 }
 
 const channelIconMap = {
+  social: { icon: siTelegram, background: "#0f766e" },
   ig: { icon: siInstagram, background: "#FF0069" },
   tt: { icon: siTiktok, background: "#000000" },
   wa: { icon: siWhatsapp, background: "#25D366" },

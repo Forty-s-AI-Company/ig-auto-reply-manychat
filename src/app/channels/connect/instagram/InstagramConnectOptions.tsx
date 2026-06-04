@@ -24,27 +24,25 @@ export function InstagramConnectOptions({
   const hasAppUrlMismatch = Boolean(configuredAppUrl && !callbackUrl.startsWith(configuredAppUrl));
   const showSetupNotice = isLocalCallback || hasAppUrlMismatch;
   const isInstagramOnlyLogin = loginPreference === "instagram";
-  const primaryOauthHref = isInstagramOnlyLogin
-    ? "/api/meta/oauth/start?mode=instagram"
-    : "/api/meta/oauth/start?mode=facebook&login=facebook";
+  const primaryOauthHref = isInstagramOnlyLogin ? "/api/oauth/meta-instagram/authorize" : "/api/oauth/meta-facebook/authorize";
 
   return (
     <div>
       <h2 className="text-lg font-bold text-[#17191c]">只需要幾個步驟</h2>
       <p className="mt-3 max-w-[390px] text-base leading-6 text-[#17191c]">
         {isInstagramOnlyLogin
-          ? "我們會開啟 Instagram 登入視窗。完成權限設定後，你的 Instagram 帳號就會連接到系統。"
-          : "我們會開啟 Meta 授權視窗。完成權限設定後，你的 Messenger 帳號就會連接到系統。"}
+          ? "我們會開啟 Instagram 登入 popup。完成授權後，帳號資料會自動回到主視窗。"
+          : "我們會開啟 Facebook / Meta 登入 popup。完成授權後，資料會自動回到主視窗。"}
       </p>
 
       {metaError ? (
-        <DismissibleNoticeToast title="Meta 授權失敗" tone="danger" stackIndex={showSetupNotice ? 1 : 0}>
+        <DismissibleNoticeToast title="連接失敗" tone="danger" stackIndex={showSetupNotice ? 1 : 0}>
           {metaError}
         </DismissibleNoticeToast>
       ) : null}
 
       <OAuthPopupButton href={primaryOauthHref}>
-        {isInstagramOnlyLogin ? "使用 Instagram 帳號繼續" : "透過 Meta Business 連接"}
+        {isInstagramOnlyLogin ? "使用 Instagram 帳號繼續" : "使用 Meta 帳號繼續"}
       </OAuthPopupButton>
 
       {isInstagramOnlyLogin ? (
@@ -56,7 +54,7 @@ export function InstagramConnectOptions({
             新增其他 Instagram 帳號
           </Link>
           <p className="mt-2 text-xs leading-5 text-[#667085]">
-            如果授權視窗仍顯示原本帳號，我們會引導你先切換 Instagram 網頁登入狀態，再繼續新增。
+            如果你不想用目前瀏覽器已登入的帳號，可以先走這個入口，改用重新登入或切換帳號的方式連接。
           </p>
         </div>
       ) : null}
@@ -65,11 +63,11 @@ export function InstagramConnectOptions({
         <p className="max-w-[210px] text-base leading-6 text-[#17191c]">
           InboxPilot 使用可信任的
           <br />
-          Meta 商業合作夥伴
+          Meta 商業合作夥伴流程
         </p>
         <div className="text-right">
-          <div className="text-3xl font-bold text-[#344054]">∞ Meta</div>
-          <p className="text-xs text-[#344054]">商業合作夥伴</p>
+          <div className="text-3xl font-bold text-[#344054]">Meta</div>
+          <p className="text-xs text-[#344054]">Business partner</p>
         </div>
       </div>
 
@@ -81,35 +79,35 @@ export function InstagramConnectOptions({
             expanded ? "bg-[#eef0f3]" : "hover:bg-[#f5f7fa]"
           }`}
         >
-          查看更多選項
+          顯示其他登入方式
           <ChevronDown className={`h-4 w-4 transition ${expanded ? "rotate-180" : ""}`} />
         </button>
       ) : null}
 
       {!isInstagramOnlyLogin && expanded ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <OAuthPopupButton href="/api/meta/oauth/start?mode=instagram" variant="secondary">
-            Instagram 直接登入
+          <OAuthPopupButton href="/api/oauth/meta-instagram/authorize" variant="secondary">
+            改用 Instagram OAuth
           </OAuthPopupButton>
           <p className="text-xs leading-5 text-[#667085] sm:col-span-2">
-            Instagram 直接登入需要另一組 Instagram App 設定。若出現 Invalid redirect_uri，請先改用 Meta Business 連接。
+            如果你想直接用 Instagram app 的 OAuth，而不是 Facebook / Meta dialog，可以改走這個入口。
           </p>
         </div>
       ) : null}
 
       {showSetupNotice ? (
-        <DismissibleNoticeToast title="Meta Callback URL 提醒" tone="warning">
+        <DismissibleNoticeToast title="Callback URL 檢查" tone="warning">
           <code className="mt-2 block overflow-x-auto rounded bg-[#f8fafc] px-3 py-2 text-xs text-[#17191c]">
             {callbackUrl}
           </code>
           {isLocalCallback ? (
             <p className="mt-2 text-xs text-[#667085]">
-              目前使用 localhost，Meta App 的 Valid OAuth Redirect URIs 需要加入上面這一條。
+              如果你在 localhost 測試，記得把這個 callback URL 加進 Meta / Instagram OAuth 設定。
             </p>
           ) : null}
           {hasAppUrlMismatch ? (
             <p className="mt-2 text-xs text-[#b45309]">
-              .env 的 APP_URL 是 {configuredAppUrl}，但目前頁面不是從這個網域開啟。
+              目前 `.env` 的 `APP_URL` 是 {configuredAppUrl}，和實際 callback origin 不一致，正式站很容易在這裡翻車。
             </p>
           ) : null}
         </DismissibleNoticeToast>

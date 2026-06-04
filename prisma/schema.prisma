@@ -271,6 +271,7 @@ model Workspace {
   updatedAt               DateTime                 @updatedAt
   users                   WorkspaceUser[]
   channels                Channel[]
+  connectedAccounts       ConnectedAccount[]
   tags                    Tag[]
   segments                Segment[]
   automations             Automation[]
@@ -370,6 +371,30 @@ model Channel {
 
   @@unique([workspaceId, type, name])
   @@index([workspaceId])
+}
+
+model ConnectedAccount {
+  id                    String    @id @default(cuid())
+  workspaceId           String
+  provider              String
+  providerAccountId     String
+  accountType           String?
+  displayName           String
+  username              String?
+  avatarUrl             String?
+  encryptedAccessToken  String?
+  encryptedRefreshToken String?
+  tokenExpiresAt        DateTime?
+  scopesJson            Json
+  profileJson           Json
+  metadataJson          Json
+  connectedAt           DateTime  @default(now())
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  workspace             Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, provider, providerAccountId])
+  @@index([workspaceId, provider])
 }
 
 model Contact {

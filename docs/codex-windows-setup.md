@@ -25,8 +25,8 @@ Fill `.env.local` from the real secret source. Do not commit `.env`, `.env.local
 Minimum local values:
 
 ```text
-DATABASE_URL=
-DIRECT_URL=
+DATABASE_URL=postgresql://postgres.<project-ref>:<db-password>@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require&connection_limit=1&pool_timeout=20
+DIRECT_URL=postgresql://postgres.<project-ref>:<db-password>@db.<project-ref>.supabase.co:5432/postgres?sslmode=require
 AUTH_SECRET=
 APP_URL=http://localhost:3041
 ADMIN_EMAIL=
@@ -34,6 +34,8 @@ ADMIN_PASSWORD=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ```
+
+Use the Supabase dashboard's Connect panel to copy the latest strings for the active project. Keep `DATABASE_URL` and `DIRECT_URL` from the same project, and do not reuse an old password after the project password changes.
 
 After setting `ADMIN_EMAIL` and `ADMIN_PASSWORD`, create or update the admin user:
 

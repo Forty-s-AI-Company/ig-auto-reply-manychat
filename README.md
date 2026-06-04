@@ -1,33 +1,27 @@
 # InboxPilot
 
-InboxPilot 是一個以 Instagram 訊息營運為核心的 SaaS 後台，提供多帳號管理、收件匣、自動化流程、分眾、廣播、AI FAQ、PayUNI 帳務與推薦/聯盟分潤基礎能力。
+InboxPilot 是一個以 Instagram / Meta 為核心的訊息自動化與 Inbox 工作台，技術棧以 Next.js App Router、React、TypeScript、Prisma 與 Vercel 為主。
 
-專案使用官方 API、Webhook 與可測試的 Mock channel，不使用 unofficial scraping、cookie 抓取或瀏覽器自動登入繞過平台限制。
+## 主要功能
+
+- Dashboard / Analytics
+- Inbox / Contacts / Tags / Segments
+- Automations / Broadcasts / Sequences
+- Meta / Instagram / Telegram 等渠道連接
+- Google 登入、Email 登入
+- PayUNI 訂閱與計費
 
 ## 技術棧
 
-- Next.js App Router 16
+- Next.js 16
 - React 19
 - TypeScript
 - Prisma 6
-- PostgreSQL / Supabase Postgres
+- PostgreSQL / Supabase
 - Tailwind CSS 4
 - Vitest / Playwright
 
-## 核心功能
-
-| 模組                       | 說明                                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------------------------- |
-| Dashboard / Analytics      | 營運 KPI、訊息、聯絡人、自動化與廣播表現。                                                      |
-| Inbox                      | 對話列表、訊息串、手動回覆、內部備註、標籤、自訂欄位與已讀狀態。                                |
-| Contacts / Tags / Segments | 聯絡人、標籤與可用於廣播的分眾條件。                                                            |
-| Automations                | keyword、new_contact、manual、webhook triggers；支援訊息、標籤、等待、條件、AI 回覆與欄位設定。 |
-| Broadcasts                 | 依 tag 或 segment 建立廣播活動，支援預覽、排程與 worker 發送。                                  |
-| Channels                   | Instagram 為正式優先通道；Mock、Telegram、Email 供測試或內部流程使用；其他通道需完成官方 API 設定後才開放。 |
-| Billing                    | PayUNI checkout/return/notify、方案、用量、發票、折抵金、推薦與聯盟分潤服務。                   |
-| Admin                      | 聯盟審核、提領審核、批次匯出與付款標記。                                                        |
-
-## 快速開始
+## 本機開發
 
 ```bash
 npm install
@@ -43,55 +37,98 @@ npm run dev
 http://localhost:3041
 ```
 
-更完整的本機安裝步驟請看 [docs/installation.md](./docs/installation.md)。
-
-## 文件
-
-- [安裝文件](./docs/installation.md)
-- [部署文件](./docs/deployment.md)
-- [環境變數文件](./docs/environment-variables.md)
-- [Codex Windows Setup](./docs/codex-windows-setup.md)
-- [API 文件](./docs/api.md)
-- [ERD](./docs/erd.md)
-- [Project Launch Checklist](./docs/project-launch-checklist.md)
-- [Automation Webhook](./docs/automation-webhooks.md)
-- [PayUNI Billing Flow](./docs/payuni/BILLING_FLOW.md)
-- [Supabase RLS 修正 SQL](./docs/security/supabase-rls-fix.sql)
-
 ## 常用指令
 
 ```bash
-npm run dev              # Next.js dev server, port 3041
-npm run build            # Prisma generate + Next build
-npm run start            # production server
-npm run worker           # background jobs
-npm run lint             # ESLint
-npm run test:unit        # unit tests
-npm run test:e2e         # Playwright E2E
-npm run test:coverage    # coverage gate
+npm run dev
+npm run build
+npm run start
+npm run worker
+npm run lint
+npm test
+npm run test:unit
+npm run test:e2e
 ```
 
-DB integration tests 需要 PostgreSQL：
-
-```bash
-TEST_DATABASE_URL="postgresql://..." npm run test:integration
-```
-
-## 目錄概要
+## 專案結構
 
 ```text
 src/app        Next.js pages and API routes
 src/components Shared UI/client components
-src/lib        Domain logic, adapters, billing, auth, jobs
+src/lib        Domain logic, auth, providers, billing, jobs
 prisma         Prisma schema and migrations
 scripts        Worker, seed/admin helpers, smoke tests
 tests          Unit, integration, E2E tests
 docs           Product, ops, security and API docs
 ```
 
-## 安全與合規提醒
+## Social Login OAuth Popup 模組
 
-- Secret 只放 server-side env，不放前端 bundle。
-- 廣播只發送給符合條件且 `consentStatus=opted_in` 的聯絡人。
-- Webhook secret / HMAC 可透過環境變數啟用。
-- Supabase RLS SQL 已整理於 [docs/security/supabase-rls-fix.sql](./docs/security/supabase-rls-fix.sql)。
+專案現在提供一套可重用的社群帳號連接模組，入口如下：
+
+- `/channels/connect/social`
+- `/api/oauth/:provider/authorize`
+- `/api/oauth/:provider/callback`
+- `/api/oauth/:provider/token`
+
+目前支援的 provider：
+
+- `meta-instagram`
+- `meta-facebook`
+- `telegram-bot`
+- `mock`
+
+### 流程
+
+1. 主視窗點 `Connect Account`
+2. 開 popup 視窗
+3. popup 導向 OAuth provider 或 token 表單
+4. callback 完成 code exchange / token validate
+5. server 將 token 加密後寫入 `ConnectedAccount`
+6. Meta provider 會同步建立 / 更新既有 `instagram` channel
+7. callback bridge 用 `postMessage` 把結果傳回主視窗
+8. 主視窗 refresh 顯示 connected state
+
+### 必要環境變數
+
+```env
+APP_URL="https://your-app.example.com"
+AUTH_SECRET="replace-with-a-strong-secret"
+TOKEN_ENCRYPTION_KEY="replace-with-a-second-strong-secret"
+
+META_APP_ID=""
+META_APP_SECRET=""
+META_INSTAGRAM_APP_ID=""
+META_INSTAGRAM_APP_SECRET=""
+```
+
+### OAuth Callback URL
+
+如果你使用新的 generic OAuth popup 模組，provider 後台要加這些 callback URL：
+
+```text
+https://your-app.example.com/api/oauth/meta-instagram/callback
+https://your-app.example.com/api/oauth/meta-facebook/callback
+```
+
+### 開發建議
+
+- 本機測試 popup 流程時，優先用 `mock` provider。
+- Telegram Bot provider 不是 redirect OAuth，而是 token provider。popup 內貼上 BotFather token 後，server 會先打 `getMe` 驗證，再儲存。
+- 正式環境請務必設定 `TOKEN_ENCRYPTION_KEY`，不要只靠預設 local secret。
+- `/channels/connect/social` 提供 `重新同步 Channel` 按鈕，可用既有 `ConnectedAccount` 的 token 再跑一次 Meta channel 同步，不必重新登入。
+
+## 安全注意事項
+
+- 所有 access token / refresh token 都只存 server 端，並以加密字串落資料庫。
+- OAuth state 使用 httpOnly cookie 保護，callback 會檢查 state 與 provider 是否一致。
+- `.env`、`.env.local`、個人 `.codex/` 狀態不得提交進 Git。
+
+## 文件
+
+- [安裝說明](./docs/installation.md)
+- [部署說明](./docs/deployment.md)
+- [環境變數](./docs/environment-variables.md)
+- [API 文件](./docs/api.md)
+- [ERD](./docs/erd.md)
+- [Codex Windows Setup](./docs/codex-windows-setup.md)
