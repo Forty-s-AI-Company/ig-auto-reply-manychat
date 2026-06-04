@@ -10,10 +10,6 @@
     {
       "path": "/api/cron/refresh-instagram-tokens",
       "schedule": "0 19 * * *"
-    },
-    {
-      "path": "/api/cron/worker",
-      "schedule": "* * * * *"
     }
   ]
 }
