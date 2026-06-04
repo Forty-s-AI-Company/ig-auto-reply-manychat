@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Bot, Camera, FlaskConical, Link2, MessageCircleMore } from "lucide-react";
 import { ChannelConnectionShell, InstagramVisual } from "@/components/ChannelConnectionShell";
 import { OAuthPopupConnectButton } from "@/components/oauth/OAuthPopupConnectButton";
@@ -207,14 +206,6 @@ export default async function SocialConnectPage() {
                       >
                         Connect Account
                       </OAuthPopupConnectButton>
-                      {(provider.id === "meta-instagram" || provider.id === "meta-facebook") && (
-                        <Link
-                          href={provider.id === "meta-instagram" ? "/channels/connect/instagram" : "/channels/connect/messenger"}
-                          className="inline-flex h-11 items-center justify-center rounded-md border border-[#d0d5dd] px-4 text-sm font-semibold text-[#17191c] hover:bg-[#f9fafb]"
-                        >
-                          使用既有渠道頁
-                        </Link>
-                      )}
                     </div>
                   </div>
                 </div>

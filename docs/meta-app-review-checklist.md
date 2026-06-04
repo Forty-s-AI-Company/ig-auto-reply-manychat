@@ -7,8 +7,8 @@
 - App domain: `inboxpilot.carry-digital-nomad.in.net`
 - App URL: `https://inboxpilot.carry-digital-nomad.in.net`
 - Login page for reviewer: `https://inboxpilot.carry-digital-nomad.in.net/login`
-- Instagram connect page: `https://inboxpilot.carry-digital-nomad.in.net/channels/connect/instagram`
-- OAuth redirect URI: `https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/callback`
+- Social login page: `https://inboxpilot.carry-digital-nomad.in.net/channels/connect/social`
+- OAuth redirect URIs: `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback` and `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback`
 - Webhook callback URL: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`
 - Privacy Policy URL: `https://inboxpilot.carry-digital-nomad.in.net/privacy-policy`
 - Terms of Service URL: `https://inboxpilot.carry-digital-nomad.in.net/terms-of-service`
@@ -28,10 +28,10 @@
 
 ## OAuth Settings
 
-Add both redirect URIs while the project still supports both flows:
+Add both redirect URIs for the popup flow:
 
-- `https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/callback`
-- `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`
+- `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`
+- `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback`
 
 Enable:
 
@@ -69,10 +69,10 @@ Use this text as the base reviewer instruction:
 
 ```text
 1. Go to https://inboxpilot.carry-digital-nomad.in.net/login and sign in with the provided reviewer account.
-2. Open Channels > Instagram, or go directly to https://inboxpilot.carry-digital-nomad.in.net/channels/connect/instagram.
-3. Click "使用 Instagram 帳號繼續".
-4. In the Instagram popup, choose the provided Instagram professional account and approve the requested permissions.
-5. After the popup closes, InboxPilot shows the connected Instagram account in Channels.
+2. Open Channels > Social Accounts, or go directly to https://inboxpilot.carry-digital-nomad.in.net/channels/connect/social.
+3. Click "Connect Account" on Instagram OAuth or Facebook / Meta Login.
+4. In the popup, choose the provided Instagram professional account and approve the requested permissions.
+5. After the popup closes, InboxPilot shows the connected account in Social Accounts.
 6. Send a direct message to the connected Instagram account from another Instagram account. Open Inbox in InboxPilot and confirm the message is visible.
 7. Reply to the message from InboxPilot.
 8. Add a comment to the provided test Instagram post. Open Automations / InboxPilot comment automation and confirm the comment can trigger a reply.
@@ -108,9 +108,9 @@ Record a 3-5 minute screen recording:
 
 1. Show the production URL and sign in to InboxPilot.
 2. Open `Channels`.
-3. Click `Instagram` and then `使用 Instagram 帳號繼續`.
+3. Click `Social Accounts` and then `Connect Account` on Instagram OAuth or Facebook / Meta Login.
 4. Approve the Meta permissions.
-5. Return to InboxPilot and show the connected account under `Channels`.
+5. Return to InboxPilot and show the connected account under `Social Accounts` or the linked Instagram channel list.
 6. Send a DM to the connected IG account from another IG account.
 7. Show the new conversation in `Inbox`.
 8. Reply from InboxPilot.

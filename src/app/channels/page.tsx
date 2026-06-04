@@ -92,13 +92,13 @@ const settingsGroups = [
 ];
 
 const channelCards = [
-  ["Instagram", "選擇 Instagram 後會開啟 Instagram 登入，成功後新增平台帳號。", true, "/api/meta/oauth/start?mode=instagram"],
-  ["Facebook Messenger", "選擇 Messenger 後會開啟 Meta 登入，成功後新增粉專訊息渠道。", true, "/api/meta/oauth/start?mode=facebook"],
+  ["Social Accounts", "統一的 OAuth popup 入口，Meta、Telegram 與 Mock provider 都在這裡完成連接。", true, "/channels/connect/social"],
+  ["Telegram Bot", "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。", true, "/channels/connect/social"],
+  ["Mock OAuth Provider", "本機測試用 provider，完整走 popup、callback、postMessage 流程。", true, "/channels/connect/social"],
   ["TikTok", "可先規劃平台入口，正式連線開放後會顯示授權按鈕。", false, ""],
   ["WhatsApp", "WhatsApp Business 連線入口會集中在此管理。", false, ""],
   ["簡訊", "簡訊供應商與地區規則會集中在此管理。", false, ""],
   ["電子郵件", "寄件網域與寄件者驗證會集中在此管理。", false, ""],
-  ["Telegram", "Telegram Bot 與 webhook 會集中在此管理。", false, ""],
 ] as const;
 
 function statusLabel(enabled: boolean) {
@@ -242,7 +242,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                     <Plug className="h-5 w-5 text-[#98a2b3]" />
                   </div>
                   {ready ? (
-                    <Link href={name === "Instagram" ? "/channels/connect/instagram" : name === "Facebook Messenger" ? "/channels/connect/messenger" : href} className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+                    <Link href={href} className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
                       登入並連線
                     </Link>
                   ) : (

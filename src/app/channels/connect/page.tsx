@@ -1,43 +1,37 @@
 import Link from "next/link";
-import { siInstagram, siMessenger, siTelegram, siTiktok, siWhatsapp } from "simple-icons";
+import { Bot, FlaskConical, Link2 } from "lucide-react";
 import { ChannelConnectionShell, GiftVisual } from "@/components/ChannelConnectionShell";
 import { requireUser } from "@/lib/auth";
 
 const channels = [
   {
     name: "Social Accounts",
-    description: "新的可重用 OAuth Popup 模組。Meta、Telegram Bot 與 Mock provider 都從這裡進。",
+    description: "統一的 OAuth popup 入口，Meta、Telegram 與 Mock provider 都會從這裡進入。",
     href: "/channels/connect/social",
     icon: "social",
   },
   {
-    name: "Instagram",
-    description: "沿用既有 Instagram 渠道連接頁，適合需要直接接回目前訊息渠道設定的情境。",
-    href: "/channels/connect/instagram",
-    icon: "ig",
-  },
-  {
-    name: "Facebook Messenger",
-    description: "沿用既有 Messenger / Meta Business 渠道頁，保留原本渠道授權流程。",
-    href: "/channels/connect/messenger",
-    icon: "ms",
-  },
-  {
-    name: "Telegram",
-    description: "透過新的 Social Accounts popup 視窗輸入 Bot Token，驗證後安全儲存。",
+    name: "Telegram Bot",
+    description: "若只需要 Bot Token，會在同一套 provider 架構內完成驗證與儲存。",
     href: "/channels/connect/social",
     icon: "tg",
   },
   {
+    name: "Mock OAuth Provider",
+    description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
+    href: "/channels/connect/social",
+    icon: "mock",
+  },
+  {
     name: "TikTok",
-    description: "保留擴充位，之後可掛上對應 provider strategy。",
+    description: "正式開放後會在這裡接入對應 provider。",
     href: "/channels/connect/tiktok",
     icon: "tt",
     disabled: true,
   },
   {
     name: "WhatsApp",
-    description: "保留擴充位，之後可掛上對應 provider strategy。",
+    description: "WhatsApp Business 連線入口會集中在這裡。",
     href: "/channels/connect/whatsapp",
     icon: "wa",
     disabled: true,
@@ -49,10 +43,10 @@ export default async function ChannelConnectionPage() {
 
   return (
     <ChannelConnectionShell
-      title="選擇要連接的渠道"
-      description="先選擇你要連接的社群平台。新的 Social Accounts 模組會優先處理 OAuth popup 與 token 連接流程。"
+      title="連接平台帳號"
+      description="先選擇平台，再進入對應的 OAuth popup 或 token 授權流程。成功後會回到社群帳號頁面顯示已連接狀態。"
       backHref="/dashboard"
-      backLabel="返回後台"
+      backLabel="返回主控台"
       visual={<GiftVisual />}
     >
       <div className="space-y-6">
@@ -63,7 +57,7 @@ export default async function ChannelConnectionPage() {
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
                 <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">尚未接上正式 provider</p>
+                <p className="mt-2 text-xs font-medium text-amber-700">尚未開放</p>
               </div>
             </div>
           ) : (
@@ -86,26 +80,24 @@ export default async function ChannelConnectionPage() {
 }
 
 const channelIconMap = {
-  social: { icon: siTelegram, background: "#0f766e" },
-  ig: { icon: siInstagram, background: "#FF0069" },
-  tt: { icon: siTiktok, background: "#000000" },
-  wa: { icon: siWhatsapp, background: "#25D366" },
-  ms: { icon: siMessenger, background: "#00B2FF" },
-  tg: { icon: siTelegram, background: "#26A5E4" },
+  social: { icon: Link2, background: "#0f766e" },
+  tg: { icon: Bot, background: "#26A5E4" },
+  mock: { icon: FlaskConical, background: "#7c3aed" },
+  tt: { icon: Link2, background: "#000000" },
+  wa: { icon: Link2, background: "#25D366" },
 };
 
 function ChannelIcon({ type }: { type: string }) {
-  const item = channelIconMap[type as keyof typeof channelIconMap] ?? channelIconMap.ig;
+  const item = channelIconMap[type as keyof typeof channelIconMap] ?? channelIconMap.social;
+  const Icon = item.icon;
 
   return (
     <span
       className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
       style={{ backgroundColor: item.background }}
-      aria-label={item.icon.title}
+      aria-label={type}
     >
-      <svg className="h-6 w-6 text-white" role="img" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="currentColor" d={item.icon.path} />
-      </svg>
+      <Icon className="h-6 w-6 text-white" />
     </span>
   );
 }

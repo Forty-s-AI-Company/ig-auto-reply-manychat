@@ -32,7 +32,7 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
     <ChannelConnectionShell
       title="連接 Instagram"
       description="使用你的 Instagram 帳號連接到自動回覆平台。"
-      backHref="/channels/connect/instagram"
+      backHref="/channels/connect/social"
       backLabel="選擇其他平台"
       visual={<InstagramVisual />}
     >
@@ -48,10 +48,10 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
         </p>
         <OAuthPopupSuccess />
         <Link
-          href="/channels#instagram"
+          href="/channels/connect/social"
           className="mt-8 flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-bold text-white hover:bg-[#005fd0]"
         >
-          前往帳號管理
+          回到 Social Accounts
         </Link>
       </div>
     </ChannelConnectionShell>

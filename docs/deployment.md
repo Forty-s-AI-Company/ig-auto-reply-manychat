@@ -137,7 +137,7 @@ docs/security/supabase-rls-fix.sql
 - 所有 API key/token 只放 server env。
 - `APP_URL` 設為正式 HTTPS domain。
 - PayUNI return/notify URL 與商店後台一致。
-- Meta OAuth redirect URL 與 Meta App 後台一致。
+- OAuth redirect URLs 與 Meta App 後台一致，建議使用 `/api/oauth/meta-instagram/callback` 與 `/api/oauth/meta-facebook/callback`。
 - Worker 已部署且能連 DB。
 - Worker 已設定 `REDIS_URL` 並能消費 BullMQ job。
 - Cron 已設定。

@@ -55,7 +55,7 @@ function normalizeInstagramMediaError(error: unknown): InstagramMediaError {
       status: 401,
       code: "TOKEN_EXPIRED",
       message: "Instagram 授權已過期，請重新連接這個 IG 帳號後再抓取貼文。",
-      actionHref: "/channels/connect/instagram",
+      actionHref: "/channels/connect/social",
     };
   }
 
@@ -64,7 +64,7 @@ function normalizeInstagramMediaError(error: unknown): InstagramMediaError {
       status: 401,
       code: "TOKEN_INVALID",
       message: "Instagram 授權目前無法使用，請重新連接這個 IG 帳號。",
-      actionHref: "/channels/connect/instagram",
+      actionHref: "/channels/connect/social",
     };
   }
 

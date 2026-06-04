@@ -625,7 +625,7 @@ export async function GET(request: Request) {
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=invalid_state`);
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=invalid_state`);
   }
 
   try {
@@ -686,6 +686,6 @@ export async function GET(request: Request) {
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=${encodeURIComponent(message)}`);
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(message)}`);
   }
 }

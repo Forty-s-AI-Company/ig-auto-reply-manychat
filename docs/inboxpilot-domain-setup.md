@@ -52,13 +52,15 @@ APP_URL="https://inboxpilot.carry-digital-nomad.in.net"
 如果同時使用本機開發，保留本機 `localhost:3041` 測試即可。系統目前已針對 localhost 做防呆，從 localhost 開啟時 OAuth callback 會使用：
 
 ```txt
-http://localhost:3041/api/meta/oauth/callback
+http://localhost:3041/api/oauth/meta-instagram/callback
+http://localhost:3041/api/oauth/meta-facebook/callback
 ```
 
 正式網域開啟時則會使用：
 
 ```txt
-https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/callback
+https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback
+https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback
 ```
 
 ## Meta Developers 必填網址
@@ -66,8 +68,10 @@ https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/callback
 Meta App 後台建議加入以下 OAuth Redirect URI：
 
 ```txt
-https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/callback
-http://localhost:3041/api/meta/oauth/callback
+https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback
+https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback
+http://localhost:3041/api/oauth/meta-instagram/callback
+http://localhost:3041/api/oauth/meta-facebook/callback
 ```
 
 Webhook callback 建議使用：

@@ -2,33 +2,45 @@ import { MarketingInfoPage } from "@/components/marketing/MarketingInfoPage";
 
 export const metadata = {
   title: "InboxPilot API",
-  description: "InboxPilot API、Webhook 與第三方服務串接說明。",
+  description: "InboxPilot API 與 OAuth popup、Webhook、Billing 路由文件。",
 };
 
 export default function ApiDocsPage() {
   return (
     <MarketingInfoPage
       eyebrow="API"
-      title="替你的社群營運接上更多系統。"
-      description="InboxPilot 主要提供 no-code 操作，但仍保留 API 與 Webhook 的擴充方向，方便日後串接 CRM、訂單、付款、通知與內部系統。"
+      title="InboxPilot API 文件"
+      description="這份文件整理目前可用的 API、Webhook 與 Social Login OAuth Popup 路由。外部登入流程統一走新的 popup 模組，不再對外展示舊分散式入口。"
       sections={[
         {
-          title: "Meta Webhook",
-          body: "接收 Instagram 留言、私訊與帳號事件，讓自動化能判斷觸發條件並送出後續訊息。",
-          items: ["/api/webhooks/meta", "/api/meta/oauth/callback", "/api/instagram/comments/sync"],
+          title: "Social Login OAuth Popup",
+          body: "Meta、Telegram 與 Mock provider 共用同一套 popup / redirect / token exchange 架構。",
+          items: [
+            "/api/oauth/meta-instagram/authorize",
+            "/api/oauth/meta-instagram/callback",
+            "/api/oauth/meta-facebook/authorize",
+            "/api/oauth/meta-facebook/callback",
+            "/api/oauth/telegram-bot/authorize",
+            "/api/oauth/telegram-bot/callback",
+            "/api/oauth/mock/authorize",
+            "/api/oauth/mock/callback",
+            "/api/oauth/:provider/token",
+          ],
         },
         {
-          title: "PayUni Billing",
-          body: "處理方案付款、回傳結果與付款通知。正式環境需在 PayUni 後台填入 Return URL 與 Notify URL。",
-          items: ["/api/billing/payuni/return", "/api/billing/payuni/notify", "/api/billing/payuni/checkout"],
+          title: "Webhooks",
+          body: "Meta、Telegram 與 WhatsApp webhook 入口，負責接收即時事件。",
+          items: ["/api/webhooks/meta", "/api/webhooks/telegram", "/api/webhooks/whatsapp"],
         },
         {
-          title: "後台資料 API",
-          body: "後台資料包含 contacts、conversations、automations、tags、segments 與 broadcasts。這些 API 目前以登入 session 保護，避免外部未授權存取。",
+          title: "Billing",
+          body: "PayUNI 付款與回傳路由。",
+          items: ["/api/billing/payuni/checkout", "/api/billing/payuni/return", "/api/billing/payuni/notify"],
         },
         {
-          title: "安全原則",
-          body: "Webhook token、API secret 與付款密鑰都只放在伺服器環境變數，不寫入前端，也不會在頁面上直接顯示。",
+          title: "Core App APIs",
+          body: "Contact、Automation、Sequence、Broadcast 與 AI 相關 API 維持既有結構。",
+          items: ["/api/channels", "/api/contacts", "/api/automations", "/api/sequences", "/api/broadcasts", "/api/ai-settings"],
         },
       ]}
     />

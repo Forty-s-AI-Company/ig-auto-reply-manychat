@@ -127,10 +127,10 @@ ManyChat 的流程可以對應到本專案這樣設計：
 | `New account` | `+ New Account` |
 | Channel Connection | `/channels` 或未來 `/channels/connect` |
 | Instagram 卡片 | Instagram 連結選項 |
-| `Connect via Meta` | `/api/meta/oauth/start` |
-| Meta OAuth 視窗 | Meta / Instagram Login OAuth |
-| 使用 Instagram 帳號繼續 | Instagram Login for Business |
-| OAuth callback | `/api/meta/oauth/callback` |
+| `Connect Account` | `/channels/connect/social` |
+| Meta / Instagram popup | `/api/oauth/meta-instagram/authorize`、`/api/oauth/meta-facebook/authorize` |
+| Telegram token popup | `/api/oauth/telegram-bot/authorize` |
+| OAuth callback | `/api/oauth/:provider/callback` |
 | 連結後回到後台 | `/channels?connected=1` |
 
 ## 本專案已更新
@@ -142,9 +142,8 @@ ManyChat 的流程可以對應到本專案這樣設計：
 - 下拉選單底部顯示 `New Account` 按鈕。
 - 點擊 `New Account` 進入 `/channels/connect`。
 - `/channels/connect` 對照 ManyChat `Where would you like to start?` 選平台頁。
-- `/channels/connect/instagram` 對照 ManyChat `Connect Instagram` 頁，包含 `Connect Via Meta`、Meta Business Partner 區塊、`See More Options`。
-- 展開更多選項後顯示 `Connect Via Instagram` 與 `Meta Business Suite`。
-- OAuth 成功後回到 `/channels/connect/success`，顯示 `already connected` 與 `Go To Account`。
+- `/channels/connect/social` 對照新的 Social Login OAuth Popup 中心頁。
+- OAuth 成功後回到 `/channels/connect/social` 顯示已連接帳號與同步狀態。
 
 相關檔案：
 
@@ -152,7 +151,7 @@ ManyChat 的流程可以對應到本專案這樣設計：
 src/components/ManyChatAccountDropdown.tsx
 src/components/ChannelConnectionShell.tsx
 src/app/channels/connect/page.tsx
-src/app/channels/connect/instagram/page.tsx
+src/app/channels/connect/social/page.tsx
 src/app/channels/connect/success/page.tsx
 scripts/test-account-connection-flow.mjs
 ```
@@ -275,4 +274,4 @@ https://app.manychat.com/fb4356719/settings#instagram
 See more options -> Connect via Instagram -> 允許
 ```
 
-未來如果本專案要參考 ManyChat 的連結體驗，建議在 UI 上保留「主要 Meta 連結」與「Instagram 直接連結」兩條路徑，並在 Meta 路徑失敗時提示使用者改走 Instagram 直接授權。
+目前本專案已改成單一 Social Accounts 入口，Meta、Telegram 與 Mock provider 都收斂到 `/channels/connect/social`。舊的 Instagram / Messenger 頁面只保留相容轉址，不再當成主要文件流程。
