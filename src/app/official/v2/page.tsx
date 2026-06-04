@@ -4,7 +4,7 @@ import { OfficialV2LandingPage } from "@/components/official/OfficialV2LandingPa
 export const metadata: Metadata = {
   title: "InboxPilot V2 | IG 自動化與共享收件匣",
   description:
-    "InboxPilot V2 是參考 BotCommerce 長銷售頁節奏重新設計的官方網站，主打 IG 留言自動化、Flow Builder、共享收件匣與 AI 回覆。",
+    "InboxPilot V2 官方網站聚焦 IG 留言自動化、Flow Builder、Meta 串接、共享收件匣與團隊接手。",
 };
 
 export default function OfficialV2Page() {
