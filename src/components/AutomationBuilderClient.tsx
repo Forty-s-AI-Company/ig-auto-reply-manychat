@@ -251,15 +251,15 @@ const defaultSteps: AutomationStep[] = [
 
 const defaultNodePositions: Record<string, { x: number; y: number }> = {
   trigger: { x: 40, y: 220 },
-  "step-1": { x: 330, y: 220 },
-  "step-2": { x: 630, y: 140 },
-  "step-3": { x: 930, y: 140 },
-  "step-4": { x: 1230, y: 120 },
-  "step-5": { x: 1530, y: 250 },
-  "step-6": { x: 1830, y: 120 },
-  "step-7": { x: 630, y: 430 },
-  "step-8": { x: 930, y: 430 },
-  "step-9": { x: 1230, y: 430 },
+  "step-1": { x: 400, y: 220 },
+  "step-2": { x: 760, y: 140 },
+  "step-3": { x: 1120, y: 140 },
+  "step-4": { x: 1480, y: 120 },
+  "step-5": { x: 1840, y: 250 },
+  "step-6": { x: 2200, y: 120 },
+  "step-7": { x: 760, y: 430 },
+  "step-8": { x: 1120, y: 430 },
+  "step-9": { x: 1480, y: 430 },
 };
 
 const defaultEdges: Edge[] = [
@@ -273,6 +273,11 @@ const defaultEdges: Edge[] = [
   { id: "edge-fallback-tag", source: "step-7", target: "step-8", animated: true, style: { strokeWidth: 2 } },
   { id: "edge-tag-source", source: "step-8", target: "step-9", animated: true, style: { strokeWidth: 2 } },
 ];
+
+const flowNodeWidth = 280;
+const flowNodeStartX = 400;
+const flowNodeGapX = 360;
+const flowNodeDefaultY = 180;
 
 const canvaSingleReplyDraft: FlowDraft = {
   name: "Canva變現",
@@ -893,7 +898,9 @@ function buildTemplateGraph(template: AutomationTemplate, draft: FlowDraft) {
   const steps = buildTemplateSteps(template);
   const nodes: Node<FlowNodeData>[] = [
     makeTriggerNode(draft, true),
-    ...steps.map((step, index) => makeStepNode(step, `step-${index + 1}`, defaultNodePositions[`step-${index + 1}`] || { x: 320 + index * 290, y: 160 })),
+    ...steps.map((step, index) =>
+      makeStepNode(step, `step-${index + 1}`, defaultNodePositions[`step-${index + 1}`] || { x: flowNodeStartX + index * flowNodeGapX, y: flowNodeDefaultY }),
+    ),
   ];
   const edges = steps.map((_, index) => ({
     id: `template-edge-${index}`,
@@ -926,7 +933,7 @@ function makeTriggerNode(draft: FlowDraft, selected = false): Node<FlowNodeData>
   return {
     id: "trigger",
     type: "flowNode",
-    position: { x: 40, y: 160 },
+    position: defaultNodePositions.trigger,
     selected,
     data: {
       kind: "trigger",
@@ -968,7 +975,7 @@ function buildGraph(draft: FlowDraft, item?: AutomationItem) {
   const nodes: Node<FlowNodeData>[] = [
     { ...makeTriggerNode(draft, true), position: positionMap.get("trigger") || defaultNodePositions.trigger },
     ...steps.map((step, index) =>
-      makeStepNode(step, `step-${index + 1}`, positionMap.get(`step-${index + 1}`) || { x: 320 + index * 290, y: 160 }),
+      makeStepNode(step, `step-${index + 1}`, positionMap.get(`step-${index + 1}`) || { x: flowNodeStartX + index * flowNodeGapX, y: flowNodeDefaultY }),
     ),
   ];
   const edges =
@@ -1055,9 +1062,10 @@ function FlowNode({ id, data, selected }: NodeProps<Node<FlowNodeData>>) {
       onPointerDown={notifySelection}
       onClick={notifySelection}
       data-testid={`flow-node-${id}`}
-      className={`min-w-[250px] cursor-pointer rounded-md border bg-white p-4 shadow-md transition ${
+      className={`max-w-[280px] cursor-pointer rounded-md border bg-white p-4 shadow-md transition ${
         selected ? "border-emerald-500 ring-2 ring-emerald-200" : isTrigger ? "border-emerald-300" : "border-zinc-200"
       }`}
+      style={{ width: flowNodeWidth }}
     >
       {!isTrigger ? <Handle type="target" position={Position.Left} className="!h-4 !w-4 !border-2 !bg-blue-500" /> : null}
       <div className="flex items-start gap-3">
@@ -1656,7 +1664,7 @@ function FlowBuilderInner({
     setNodes((current) =>
       current.map((node, index) => ({
         ...node,
-        position: defaultNodePositions[node.id] || (node.id === "trigger" ? { x: 40, y: 180 } : { x: 320 + (index - 1) * 290, y: 180 }),
+        position: defaultNodePositions[node.id] || (node.id === "trigger" ? defaultNodePositions.trigger : { x: flowNodeStartX + (index - 1) * flowNodeGapX, y: flowNodeDefaultY }),
       })),
     );
     window.setTimeout(() => fitView({ padding: 0.18, duration: 350 }), 50);
