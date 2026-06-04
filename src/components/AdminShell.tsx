@@ -42,22 +42,18 @@ export async function AdminShell({
   headerRight?: React.ReactNode;
 }) {
   const workspace = await getCurrentWorkspace();
-  const [user, cookieStore] = await Promise.all([
-    getCurrentUser(),
-    cookies(),
-  ]);
-  const [instagramChannels, workspaces] = await Promise.all([
-    getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
-      getDb().channel.findMany({
-        where: { workspaceId: workspace.id, type: "instagram", enabled: true },
-        orderBy: [{ name: "asc" }],
-        select: { id: true, name: true, configJson: true },
-      }),
-    ),
-    user
-      ? getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
-      : Promise.resolve([workspace]),
-  ]);
+  const user = await getCurrentUser();
+  const cookieStore = await cookies();
+  const instagramChannels = await getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
+    getDb().channel.findMany({
+      where: { workspaceId: workspace.id, type: "instagram", enabled: true },
+      orderBy: [{ name: "asc" }],
+      select: { id: true, name: true, configJson: true },
+    }),
+  );
+  const workspaces = user
+    ? await getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
+    : [workspace];
   const accountChannels = instagramChannels
     .map((channel) => {
       const config = getMetaChannelConfig(channel.configJson);

@@ -19,48 +19,41 @@ export function getDashboardSummary(input: SummaryInput) {
     const db = getDb();
     const channelWhere = instagramChannelWhere(input.selectedChannelId, input.workspaceId);
 
-    const [
-      contacts,
-      messages,
-      openConversations,
-      automations,
-      connectedInstagramChannelRows,
-      recentMessages,
-      recentAutomations,
-    ] = await Promise.all([
-      db.contact.count({ where: channelWhere }),
-      db.message.count({ where: channelWhere }),
-      db.conversation.count({ where: { status: "open", ...channelWhere } }),
-      db.automation.count({ where: { workspaceId: input.workspaceId } }),
-      db.channel.findMany({
-        where: { workspaceId: input.workspaceId, type: "instagram", enabled: true },
-        select: { configJson: true, name: true },
-      }),
-      db.message.findMany({
-        where: channelWhere,
-        orderBy: { createdAt: "desc" },
-        take: 6,
-        select: {
-          id: true,
-          direction: true,
-          text: true,
-          createdAt: true,
-          contact: { select: { displayName: true } },
-          channel: { select: publicChannelSelect },
-        },
-      }),
-      db.automation.findMany({
-        where: { workspaceId: input.workspaceId },
-        orderBy: { updatedAt: "desc" },
-        take: 4,
-        select: {
-          id: true,
-          name: true,
-          enabled: true,
-          _count: { select: { steps: true } },
-        },
-      }),
-    ]);
+    // Production uses Supabase session pooling, so keep this dashboard read path
+    // intentionally sequential. The page opens several server-side reads already,
+    // and parallel Prisma queries can exhaust the pool under Vercel serverless.
+    const contacts = await db.contact.count({ where: channelWhere });
+    const messages = await db.message.count({ where: channelWhere });
+    const openConversations = await db.conversation.count({ where: { status: "open", ...channelWhere } });
+    const automations = await db.automation.count({ where: { workspaceId: input.workspaceId } });
+    const connectedInstagramChannelRows = await db.channel.findMany({
+      where: { workspaceId: input.workspaceId, type: "instagram", enabled: true },
+      select: { configJson: true, name: true },
+    });
+    const recentMessages = await db.message.findMany({
+      where: channelWhere,
+      orderBy: { createdAt: "desc" },
+      take: 6,
+      select: {
+        id: true,
+        direction: true,
+        text: true,
+        createdAt: true,
+        contact: { select: { displayName: true } },
+        channel: { select: publicChannelSelect },
+      },
+    });
+    const recentAutomations = await db.automation.findMany({
+      where: { workspaceId: input.workspaceId },
+      orderBy: { updatedAt: "desc" },
+      take: 4,
+      select: {
+        id: true,
+        name: true,
+        enabled: true,
+        _count: { select: { steps: true } },
+      },
+    });
 
     return {
       contacts,
