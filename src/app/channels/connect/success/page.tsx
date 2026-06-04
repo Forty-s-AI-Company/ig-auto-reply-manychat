@@ -25,13 +25,13 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
         orderBy: { updatedAt: "desc" },
         select: { name: true },
       });
-  const accountName = channel?.name || "Instagram account";
+  const accountName = channel?.name || "Connected account";
   const connectedCount = Number(params.connected || 1);
 
   return (
     <ChannelConnectionShell
-      title="連接 Instagram"
-      description="使用你的 Instagram 帳號連接到自動回覆平台。"
+      title="連接 Social Accounts"
+      description="使用你的社群帳號連接到自動回覆平台。"
       backHref="/channels/connect/social"
       backLabel="選擇其他平台"
       visual={<InstagramVisual />}
@@ -44,7 +44,7 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
           {accountName} 已成功連接
         </h2>
         <p className="mt-4 text-base leading-7 text-[#596170]">
-          {connectedCount > 1 ? `已連接 ${connectedCount} 個帳號到自動回覆平台。` : "你的 Instagram 帳號已經成功連接到自動回覆平台。"}
+          {connectedCount > 1 ? `已連接 ${connectedCount} 個帳號到自動回覆平台。` : "你的帳號已經成功連接到自動回覆平台。"}
         </p>
         <OAuthPopupSuccess />
         <Link
