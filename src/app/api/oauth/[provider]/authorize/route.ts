@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { requireApiUser } from "@/lib/auth";
 import { getOAuthProvider } from "@/lib/oauth/registry";
 import { issuePopupState } from "@/lib/oauth/state";
 import { getPopupOrigin } from "@/lib/oauth/utils";
+import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type RouteContext = {
   params: Promise<{ provider: string }>;
 };
+
+const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
+const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
+const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 
 function getTokenProviderPopupPath(provider: string) {
   if (provider === "telegram-bot") return "/oauth/providers/telegram";
@@ -25,6 +31,34 @@ export async function GET(request: Request, context: RouteContext) {
 
   const popupOrigin = getPopupOrigin(request);
   const state = await issuePopupState(request, provider.id, popupOrigin);
+  const secure = new URL(request.url).protocol === "https:";
+  const cookieStore = await cookies();
+
+  if (provider.id === "meta-instagram" || provider.id === "meta-facebook") {
+    const mode = provider.id === "meta-instagram" ? "instagram" : "facebook";
+    const workspaceId = await getCurrentWorkspaceId();
+    cookieStore.set(META_OAUTH_STATE_COOKIE, state, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure,
+      path: "/",
+      maxAge: 10 * 60,
+    });
+    cookieStore.set(META_OAUTH_WORKSPACE_COOKIE, workspaceId, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure,
+      path: "/",
+      maxAge: 10 * 60,
+    });
+    cookieStore.set(META_OAUTH_MODE_COOKIE, mode, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure,
+      path: "/",
+      maxAge: 10 * 60,
+    });
+  }
 
   if (provider.mode === "token") {
     const url = new URL(getTokenProviderPopupPath(provider.id), popupOrigin);

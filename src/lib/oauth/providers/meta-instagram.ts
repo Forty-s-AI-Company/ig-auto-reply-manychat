@@ -1,5 +1,5 @@
 import type { OAuthProvider, TokenResult } from "@/lib/oauth/types";
-import { getProviderCallbackUrl } from "@/lib/oauth/utils";
+import { getLegacyMetaCallbackUrl } from "@/lib/oauth/utils";
 
 type InstagramTokenResponse = {
   access_token?: string;
@@ -46,7 +46,7 @@ async function exchangeCodeForToken(request: Request, code: string) {
       client_id: appId,
       client_secret: appSecret,
       grant_type: "authorization_code",
-      redirect_uri: getProviderCallbackUrl(request, "meta-instagram"),
+      redirect_uri: getLegacyMetaCallbackUrl(request, "meta-instagram"),
       code,
     }),
   });
@@ -106,7 +106,7 @@ export const metaInstagramProvider: OAuthProvider = {
 
     const params = new URLSearchParams({
       client_id: appId,
-      redirect_uri: getProviderCallbackUrl(context.request, "meta-instagram"),
+      redirect_uri: getLegacyMetaCallbackUrl(context.request, "meta-instagram"),
       response_type: "code",
       state: context.state,
       force_authentication: "1",

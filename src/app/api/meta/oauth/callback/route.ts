@@ -10,6 +10,8 @@ import {
 } from "@/lib/channels/meta";
 import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
+import { clearPopupState, readPopupState } from "@/lib/oauth/state";
+import { getPopupBridgeUrl } from "@/lib/oauth/utils";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -602,14 +604,27 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const cookieStore = await cookies();
+  const popupState = await readPopupState();
   const expectedState = cookieStore.get(META_OAUTH_STATE_COOKIE)?.value;
   const workspaceId = cookieStore.get(META_OAUTH_WORKSPACE_COOKIE)?.value || (await getDefaultWorkspaceId());
   const mode = getCallbackMode(request, cookieStore.get(META_OAUTH_MODE_COOKIE)?.value);
+  const popupProvider =
+    popupState.provider === "meta-instagram" || popupState.provider === "meta-facebook" ? popupState.provider : "";
   cookieStore.delete(META_OAUTH_STATE_COOKIE);
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);
 
   if (!code || !state || !expectedState || state !== expectedState) {
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message: "OAuth state 驗證失敗，請重新連接一次。",
+        }),
+      );
+    }
     return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=invalid_state`);
   }
 
@@ -618,6 +633,17 @@ export async function GET(request: Request) {
       const token = await exchangeCodeForInstagramToken(request, code);
       const profile = await getInstagramProfileOrFallback(token.accessToken, token.userId);
       const channel = await upsertInstagramLoginChannel(profile, token.accessToken, token.expiresAt, workspaceId);
+      if (popupProvider) {
+        await clearPopupState();
+        return NextResponse.redirect(
+          getPopupBridgeUrl(request, {
+            status: "success",
+            provider: popupProvider,
+            accountId: channel.id,
+            displayName: channel.name,
+          }),
+        );
+      }
       return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=1&mode=instagram&channel=${channel.id}`);
     }
 
@@ -635,9 +661,31 @@ export async function GET(request: Request) {
     if (channels.length === 0) {
       throw new Error("Meta 沒有回傳可連線的 Instagram 商業帳號。請在 Meta 視窗點「編輯設定」，確認已勾選粉絲專頁、商家與 Instagram 帳號，且該 IG 已連到 Facebook 粉絲專頁。");
     }
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "success",
+          provider: popupProvider,
+          accountId: channels[0]?.id,
+          displayName: channels[0]?.name || "Meta",
+          message: `已同步 ${channels.length} 個 Instagram channel。`,
+        }),
+      );
+    }
     return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook`);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Meta connection failed.";
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message,
+        }),
+      );
+    }
     return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=${encodeURIComponent(message)}`);
   }
 }

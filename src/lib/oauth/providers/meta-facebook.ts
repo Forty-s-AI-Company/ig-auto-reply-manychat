@@ -1,5 +1,5 @@
 import type { OAuthProvider, TokenResult } from "@/lib/oauth/types";
-import { getProviderCallbackUrl } from "@/lib/oauth/utils";
+import { getLegacyMetaCallbackUrl } from "@/lib/oauth/utils";
 
 type FacebookTokenResponse = {
   access_token?: string;
@@ -40,7 +40,7 @@ async function exchangeCodeForToken(request: Request, code: string) {
   const tokenUrl = new URL("https://graph.facebook.com/v25.0/oauth/access_token");
   tokenUrl.searchParams.set("client_id", appId);
   tokenUrl.searchParams.set("client_secret", appSecret);
-  tokenUrl.searchParams.set("redirect_uri", getProviderCallbackUrl(request, "meta-facebook"));
+  tokenUrl.searchParams.set("redirect_uri", getLegacyMetaCallbackUrl(request, "meta-facebook"));
   tokenUrl.searchParams.set("code", code);
 
   const response = await fetch(tokenUrl, { cache: "no-store" });
@@ -80,7 +80,7 @@ export const metaFacebookProvider: OAuthProvider = {
 
     const params = new URLSearchParams({
       client_id: appId,
-      redirect_uri: getProviderCallbackUrl(context.request, "meta-facebook"),
+      redirect_uri: getLegacyMetaCallbackUrl(context.request, "meta-facebook"),
       response_type: "code",
       state: context.state,
       scope: [

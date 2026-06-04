@@ -17,6 +17,11 @@ export function getProviderCallbackUrl(request: Request, provider: string) {
   return `${getAppUrl(request)}/api/oauth/${provider}/callback`;
 }
 
+export function getLegacyMetaCallbackUrl(request: Request, provider: "meta-instagram" | "meta-facebook") {
+  const callbackPath = provider === "meta-instagram" ? "/api/instagram/oauth/callback" : "/api/meta/oauth/callback";
+  return `${getAppUrl(request)}${callbackPath}`;
+}
+
 export function getProviderAuthorizeUrl(request: Request, provider: string) {
   return `${getAppUrl(request)}/api/oauth/${provider}/authorize`;
 }
