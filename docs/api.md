@@ -16,7 +16,7 @@
 
 | Method | Path | 說明 |
 | --- | --- | --- |
-| `GET` | `/api/oauth/meta-instagram/authorize` | Meta Instagram popup start |
+| `GET` | `/api/oauth/meta-instagram/authorize` | Meta Instagram popup start。主 UI 會帶 `fresh_login=1`，先要求 Instagram 重新登入 |
 | `GET` | `/api/oauth/meta-instagram/callback` | Meta Instagram callback |
 | `GET` | `/api/oauth/meta-facebook/authorize` | Meta Facebook popup start |
 | `GET` | `/api/oauth/meta-facebook/callback` | Meta Facebook callback |

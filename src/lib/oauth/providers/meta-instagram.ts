@@ -28,6 +28,34 @@ function getInstagramAppSecret() {
   return process.env.META_INSTAGRAM_APP_SECRET?.trim() || process.env.META_APP_SECRET?.trim() || "";
 }
 
+function shouldForceFreshLogin(request: Request) {
+  const url = new URL(request.url);
+  return url.searchParams.get("fresh_login") === "1";
+}
+
+function buildInstagramAuthorizePath(request: Request, state: string) {
+  const appId = getInstagramAppId();
+  if (!appId) {
+    throw new Error("META_INSTAGRAM_APP_ID 或 META_APP_ID 尚未設定。");
+  }
+
+  const params = new URLSearchParams({
+    client_id: appId,
+    redirect_uri: getLegacyMetaCallbackUrl(request, "meta-instagram"),
+    response_type: "code",
+    state,
+    force_authentication: "1",
+    enable_fb_login: "0",
+    scope: [
+      "instagram_business_basic",
+      "instagram_business_manage_comments",
+      "instagram_business_manage_messages",
+    ].join(","),
+  });
+
+  return `/oauth/authorize?${params}`;
+}
+
 async function readJson<T>(response: Response): Promise<T> {
   return (await response.json().catch(() => ({}))) as T;
 }
@@ -99,25 +127,16 @@ export const metaInstagramProvider: OAuthProvider = {
   label: "Instagram",
   mode: "oauth",
   getAuthUrl(context) {
-    const appId = getInstagramAppId();
-    if (!appId) {
-      throw new Error("META_INSTAGRAM_APP_ID 或 META_APP_ID 尚未設定。");
+    const authorizePath = buildInstagramAuthorizePath(context.request, context.state);
+
+    if (shouldForceFreshLogin(context.request)) {
+      const logoutInUrl = new URL("https://www.instagram.com/accounts/logoutin/");
+      logoutInUrl.searchParams.set("force_classic_login", "");
+      logoutInUrl.searchParams.set("next", authorizePath);
+      return logoutInUrl.toString();
     }
 
-    const params = new URLSearchParams({
-      client_id: appId,
-      redirect_uri: getLegacyMetaCallbackUrl(context.request, "meta-instagram"),
-      response_type: "code",
-      state: context.state,
-      force_authentication: "1",
-      scope: [
-        "instagram_business_basic",
-        "instagram_business_manage_comments",
-        "instagram_business_manage_messages",
-      ].join(","),
-    });
-
-    return `https://api.instagram.com/oauth/authorize?${params}`;
+    return `https://www.instagram.com${authorizePath}`;
   },
   async handleCallback(context): Promise<TokenResult> {
     const token = await exchangeCodeForToken(context.request, context.code);

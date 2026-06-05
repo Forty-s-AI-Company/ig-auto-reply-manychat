@@ -11,7 +11,7 @@ import { getCurrentWorkspaceId } from "@/lib/workspaces";
 const providerCopy = {
   "meta-instagram": {
     title: "Instagram OAuth",
-    description: "使用 Instagram OAuth popup 連接商業帳號。成功後會保存授權資料，並同步建立或更新 Instagram channel。",
+    description: "使用 Instagram OAuth popup 連接商業帳號。系統會先要求重新登入 Instagram，再進入授權與 channel 同步流程。",
     icon: Camera,
   },
   "meta-facebook": {
@@ -188,6 +188,10 @@ export default async function SocialConnectPage() {
           {providers.map((provider) => {
             const copy = providerCopy[provider.id];
             const Icon = copy.icon;
+            const authorizeHref =
+              provider.id === "meta-instagram"
+                ? `/api/oauth/${provider.id}/authorize?fresh_login=1`
+                : `/api/oauth/${provider.id}/authorize`;
 
             return (
               <div key={provider.id} className="rounded-lg border border-[#d7dbe0] bg-white p-5">
@@ -201,7 +205,7 @@ export default async function SocialConnectPage() {
                     <div className="mt-4 flex flex-wrap gap-3">
                       <OAuthPopupConnectButton
                         provider={provider.id}
-                        href={`/api/oauth/${provider.id}/authorize`}
+                        href={authorizeHref}
                         className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
                       >
                         Connect Account
