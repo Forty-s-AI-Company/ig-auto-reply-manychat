@@ -51,20 +51,38 @@ export function OAuthPopupConnectButton({
     return () => window.removeEventListener("message", handleMessage);
   }, [onSuccess, provider, router]);
 
+  function buildHref(transport: "popup" | "redirect") {
+    const url = new URL(href, window.location.origin);
+    url.searchParams.set("transport", transport);
+    return `${url.pathname}${url.search}${url.hash}`;
+  }
+
+  function shouldUseRedirectTransport() {
+    const ua = navigator.userAgent || "";
+    const isMobileUa = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+    const isTouchViewport = navigator.maxTouchPoints > 0 && window.innerWidth < 1024;
+    return isMobileUa || isTouchViewport;
+  }
+
   function openPopup() {
     setPending(true);
+
+    if (shouldUseRedirectTransport()) {
+      window.location.href = buildHref("redirect");
+      return;
+    }
 
     const left = Math.max(0, window.screenX + (window.outerWidth - popupWidth) / 2);
     const top = Math.max(0, window.screenY + (window.outerHeight - popupHeight) / 2);
     const popupName = `oauth-connect-${provider}-${Date.now()}`;
     const popup = window.open(
-      href,
+      buildHref("popup"),
       popupName,
       `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable=yes,scrollbars=yes`,
     );
 
     if (!popup) {
-      window.location.href = href;
+      window.location.href = buildHref("redirect");
       return;
     }
 

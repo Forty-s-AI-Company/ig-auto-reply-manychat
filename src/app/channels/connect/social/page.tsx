@@ -11,7 +11,7 @@ import { getCurrentWorkspaceId } from "@/lib/workspaces";
 const providerCopy = {
   "meta-instagram": {
     title: "Instagram OAuth",
-    description: "使用 Instagram OAuth popup 連接商業帳號。系統會先要求重新登入 Instagram，再進入授權與 channel 同步流程。",
+    description: "桌機會用 popup；手機會改成同頁登入流程，先顯示 Instagram 網頁登入，再進入授權與 channel 同步。",
     icon: Camera,
   },
   "meta-facebook": {
@@ -30,6 +30,15 @@ const providerCopy = {
     icon: FlaskConical,
   },
 } as const;
+
+type SocialConnectPageProps = {
+  searchParams?: Promise<{
+    oauth_status?: string;
+    oauth_provider?: string;
+    oauth_message?: string;
+    oauth_display_name?: string;
+  }>;
+};
 
 type ChannelSummary = {
   id: string;
@@ -80,9 +89,10 @@ function formatTime(value: Date) {
   }).format(value);
 }
 
-export default async function SocialConnectPage() {
+export default async function SocialConnectPage({ searchParams }: SocialConnectPageProps) {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
+  const params = searchParams ? await searchParams : {};
   const [accounts, providers, channels] = await Promise.all([
     getDb().connectedAccount.findMany({
       where: { workspaceId },
@@ -107,6 +117,20 @@ export default async function SocialConnectPage() {
       visual={<InstagramVisual />}
     >
       <div className="space-y-6">
+        {params.oauth_status ? (
+          <div
+            className={
+              params.oauth_status === "success"
+                ? "rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800"
+                : "rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+            }
+          >
+            {params.oauth_status === "success"
+              ? `${params.oauth_display_name || "社群帳號"} 已完成連接。${params.oauth_message ? ` ${params.oauth_message}` : ""}`
+              : params.oauth_message || "社群帳號連接失敗，請重新嘗試。"}
+          </div>
+        ) : null}
+
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">
           <h2 className="text-lg font-semibold text-[#17191c]">已連接帳號</h2>
           <p className="mt-2 text-sm text-[#596170]">

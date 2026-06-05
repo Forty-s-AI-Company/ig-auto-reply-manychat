@@ -11,6 +11,14 @@ type RouteContext = {
   params: Promise<{ provider: string }>;
 };
 
+function buildRedirectResultUrl(request: Request, payload: Record<string, string>) {
+  const url = new URL("/channels/connect/social", request.url);
+  for (const [key, value] of Object.entries(payload)) {
+    url.searchParams.set(key, value);
+  }
+  return url.toString();
+}
+
 function redirectWithError(request: Request, provider: string, message: string) {
   return NextResponse.redirect(
     getPopupBridgeUrl(request, {
@@ -39,11 +47,29 @@ export async function GET(request: Request, context: RouteContext) {
 
   if (providerError) {
     await clearPopupState();
+    if (stored.transport === "redirect") {
+      return NextResponse.redirect(
+        buildRedirectResultUrl(request, {
+          oauth_status: "error",
+          oauth_provider: providerId,
+          oauth_message: providerError,
+        }),
+      );
+    }
     return redirectWithError(request, providerId, providerError);
   }
 
   if (!state || !code || stored.state !== state || stored.provider !== providerId) {
     await clearPopupState();
+    if (stored.transport === "redirect") {
+      return NextResponse.redirect(
+        buildRedirectResultUrl(request, {
+          oauth_status: "error",
+          oauth_provider: providerId,
+          oauth_message: "OAuth state 驗證失敗，請重新連接帳號。",
+        }),
+      );
+    }
     return redirectWithError(request, providerId, "OAuth state 驗證失敗，請重新連接帳號。");
   }
 
@@ -75,7 +101,6 @@ export async function GET(request: Request, context: RouteContext) {
       result,
     });
 
-    await clearPopupState();
     const successPayload: Record<string, string> = {
       status: "success",
       provider: provider.id,
@@ -85,12 +110,33 @@ export async function GET(request: Request, context: RouteContext) {
     if (syncResult.channelIds.length > 0) {
       successPayload.message = `已同步 ${syncResult.channelIds.length} 個渠道`;
     }
+    await clearPopupState();
+    if (stored.transport === "redirect") {
+      return NextResponse.redirect(
+        buildRedirectResultUrl(request, {
+          oauth_status: "success",
+          oauth_provider: provider.id,
+          oauth_account_id: account.id,
+          oauth_display_name: account.displayName,
+          oauth_message: successPayload.message || "帳號已完成連接。",
+        }),
+      );
+    }
     return NextResponse.redirect(
       getPopupBridgeUrl(request, successPayload),
     );
   } catch (error) {
     await clearPopupState();
     const message = error instanceof Error ? error.message : "OAuth callback failed.";
+    if (stored.transport === "redirect") {
+      return NextResponse.redirect(
+        buildRedirectResultUrl(request, {
+          oauth_status: "error",
+          oauth_provider: providerId,
+          oauth_message: message,
+        }),
+      );
+    }
     return redirectWithError(request, providerId, message);
   }
 }

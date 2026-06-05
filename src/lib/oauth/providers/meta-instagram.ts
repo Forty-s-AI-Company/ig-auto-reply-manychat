@@ -33,6 +33,11 @@ function shouldForceFreshLogin(request: Request) {
   return url.searchParams.get("fresh_login") === "1";
 }
 
+function shouldUseRedirectTransport(request: Request) {
+  const url = new URL(request.url);
+  return url.searchParams.get("transport") === "redirect";
+}
+
 function buildInstagramAuthorizePath(request: Request, state: string) {
   const appId = getInstagramAppId();
   if (!appId) {
@@ -128,6 +133,13 @@ export const metaInstagramProvider: OAuthProvider = {
   mode: "oauth",
   getAuthUrl(context) {
     const authorizePath = buildInstagramAuthorizePath(context.request, context.state);
+
+    if (shouldUseRedirectTransport(context.request)) {
+      const loginUrl = new URL("https://www.instagram.com/accounts/login/");
+      loginUrl.searchParams.set("force_classic_login", "");
+      loginUrl.searchParams.set("next", authorizePath);
+      return loginUrl.toString();
+    }
 
     if (shouldForceFreshLogin(context.request)) {
       const logoutInUrl = new URL("https://www.instagram.com/accounts/logoutin/");

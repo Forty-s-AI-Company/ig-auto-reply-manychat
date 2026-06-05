@@ -16,13 +16,13 @@ InboxPilot 是一個以 Instagram / Meta 為核心的 SaaS 後台，使用 Next.
 對外登入統一走這套流程：
 
 1. 使用者點擊 `Connect Account`
-2. 前端開啟 popup
+2. 桌機開 popup；手機改成同頁導轉
 3. 進入 `/api/oauth/:provider/authorize`
 4. provider 完成登入後回到 callback
 5. callback 完成 token exchange
 6. 伺服器安全儲存 token
-7. callback bridge 用 `postMessage` 回主視窗
-8. 主視窗關閉 popup 並更新連線狀態
+7. 桌機用 `postMessage` 回主視窗；手機直接 redirect 回 Social Accounts
+8. UI 更新連線狀態
 
 ### 支援 provider
 

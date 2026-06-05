@@ -19,6 +19,11 @@ function getTokenProviderPopupPath(provider: string) {
   return "/oauth/providers/mock";
 }
 
+function readTransport(request: Request) {
+  const url = new URL(request.url);
+  return url.searchParams.get("transport") === "redirect" ? "redirect" : "popup";
+}
+
 export async function GET(request: Request, context: RouteContext) {
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
@@ -30,7 +35,8 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   const popupOrigin = getPopupOrigin(request);
-  const state = await issuePopupState(request, provider.id, popupOrigin);
+  const transport = readTransport(request);
+  const state = await issuePopupState(request, provider.id, popupOrigin, transport);
   const secure = new URL(request.url).protocol === "https:";
   const cookieStore = await cookies();
 

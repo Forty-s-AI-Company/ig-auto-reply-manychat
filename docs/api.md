@@ -58,6 +58,12 @@
 
 ## 回應格式
 
+補充：
+
+- 桌機會使用 `transport=popup`
+- 手機會使用 `transport=redirect`
+- `transport=redirect` 完成後會直接回到 `/channels/connect/social`
+
 一般錯誤回應：
 
 ```json
