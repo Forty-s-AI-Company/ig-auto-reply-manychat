@@ -4,9 +4,7 @@
 
 ## PayUNI 目前狀態
 
-### 程式碼狀態
-
-核心檔案：
+### 核心檔案
 
 - `src/app/api/billing/payuni/checkout/route.ts`
 - `src/app/api/billing/payuni/notify/route.ts`
@@ -15,23 +13,15 @@
 - `src/lib/billing/payuni-callback.ts`
 - `src/lib/billing/payment-service.ts`
 
-目前流程：
-
-1. `checkout` 建 invoice / paymentOrder
-2. 產出 auto-submit form 導向 PayUNI
-3. `notify` / `return` 都透過 `handlePayuniCallback()`
-4. `parsePayuniResult()` 驗證 `HashInfo`
-5. 成功後 `completePaidPaymentOrder()` 更新訂閱
-
 ### 目前判定
 
 - **測試站可用**
-- **正式站未達可直接公開收款**
+- **正式站未達可放心公開收費**
 
 原因：
 
-- 非 sandbox gateway 時，若沒設 `PAYUNI_ALLOW_PRODUCTION=true`，checkout 直接拒絕
-- 代表正式 merchant review / production 放行仍是 blocker
+- production gateway 仍受到 `PAYUNI_ALLOW_PRODUCTION` 保守開關控制
+- 代表 merchant review / production launch 尚未完全就緒
 
 ## 測試站 / 正式站差異
 
@@ -43,83 +33,168 @@
 
 差異：
 
-- `PAYUNI_GATEWAY_URL` 預設指向 sandbox
-- `isPayuniSandboxGateway()` 會識別 sandbox / test host
-- production 需要額外開關 `PAYUNI_ALLOW_PRODUCTION=true`
+- `PAYUNI_GATEWAY_URL` 預設 sandbox
+- `isPayuniSandboxGateway()` 會判斷 sandbox / test host
+- 非 sandbox 時，若 `PAYUNI_ALLOW_PRODUCTION !== "true"`，checkout 直接拒絕
+
+## checkout / return / notify 是否完整
+
+### checkout
+
+- 有 auth
+- 有 same-origin
+- 有 rate limit
+- 有 idempotency-key 重入短路
+- 會建 invoice / paymentOrder
+
+但：
+
+- 0 元 invoice 直接 success redirect，沒有完整 subscription activation flow
+
+### notify
+
+- 有 rate limit
+- 會經過 `handlePayuniCallback()`
+- 會做 `HashInfo` 驗證
+
+但：
+
+- callback 失敗 observability 還偏弱
+
+### return
+
+- 路由存在
+- 與 notify 共用 callback handler 邏輯
+
+整體結論：
+
+- **結構是完整的**
+- **production correctness 還不夠**
+
+## notify 簽章驗證與 idempotency 是否完整
+
+### 簽章驗證
+
+來源：
+
+- `src/lib/payuni.ts`
+
+結果：
+
+- 有 `HashInfo` 驗證
+- 缺少 `EncryptInfo` / `HashInfo` 會直接報錯
+
+### idempotency
+
+來源：
+
+- `src/lib/billing/payuni-callback.ts`
+
+結果：
+
+- 若 `paymentOrder.status === "paid"`，會直接 idempotent return
+- 基本 callback idempotency 有做
+
+但：
+
+- checkout side 的 idempotency 只對 pending 同 plan 有效，對更複雜升級 / 重試情境仍可再強化
 
 ## 訂閱流程完成度
 
 ### 已完成
 
-- invoice / paymentOrder / subscription schema 存在
-- PayUNI result 有 hash 驗證
-- paid order 會更新 invoice / payment order / subscription
-- referral / affiliate hook 已掛在付款完成後
+- schema 存在：`Subscription`、`PaymentOrder`、`Invoice`
+- paid callback 後會更新 payment order / invoice / subscription
+- referral / affiliate hook 已掛到付款完成
 
-### 未完成 / 有缺口
+### 主要缺口
 
-1. `completePaidPaymentOrder()` 把 interval 寫死成 `month`
-2. 零元折抵交易沒有完整 subscription activation flow
-3. add-on / seats / retention 的計費與權限套用不完整
-4. 訂閱過期、`past_due`、`unpaid` 的產品行為限制還不夠完整
+1. `completePaidPaymentOrder()` 內 interval 被寫死成 `month`
+2. 0 元折抵成功未必真正啟用 subscription
+3. 過期 / past_due / unpaid 的產品層行為限制不完整
 
-## 聯盟分潤完成度
+## 試用期完成度
 
-核心檔案：
+來源：
+
+- `prisma/schema.prisma`
+- `src/lib/billing/plans.ts`
+- `src/lib/billing/referral-service.ts`
+
+結果：
+
+- 有 `trialing`
+- 有 `TRIAL_DAYS`
+- referral 會加 trial day / trial events
+
+但：
+
+- trial 結束後產品層限制與升級引導還不夠完整
+
+## 推薦碼完成度
+
+來源：
 
 - `src/lib/billing/referral-service.ts`
-- `src/lib/billing/affiliate-service.ts`
-- `prisma/schema.prisma`
 
-### 已完成
+結果：
 
 - referral code 生成
 - attribution
-- first payment referral credit
-- affiliate profile / payout profile
+- trial bonus
+- first payment credit
+
+但：
+
+- anti-fraud 邏輯偏弱
+- `riskFlagsJson` 主要是記錄，不是完整防作弊
+
+## 聯盟分潤完成度
+
+來源：
+
+- `src/lib/billing/affiliate-service.ts`
+- `prisma/schema.prisma`
+
+結果：
+
+- affiliate profile
+- payout profile
 - commission 建立
 - hold period
 - payout request / payout batch schema
 
-### 未完成 / 不足
+但：
 
-- anti-fraud 邏輯偏弱，`riskFlagsJson` 只記資料，沒有真正阻擋流程
-- 沒有完整 affiliate terms 頁
-- 沒有完整 refund / clawback 後台操作閉環
-- monthly settlement / paid reconciliation 缺少完整營運介面驗證
+- monthly settlement / payout ops 還不算完整營運系統
+- 缺聯盟條款
+- refund / clawback 閉環不完整
 
-## 目前能不能收費
+## 目前能不能正式收費
 
-### 自動正式收費
+**不建議。**
 
-- **目前不建議**
+主要原因：
 
-### Beta / MVP 收費
-
-- **可以，但要保守**
-
-適合方式：
-
-- 小量客戶
-- sandbox 或人工對帳
-- 人工開通方案
-- 不主打自助升級與年繳
+1. PayUNI production 還在保守模式
+2. subscription correctness 還有 P0 問題
+3. 對外 Billing / legal 頁面存在亂碼
 
 ## 如果不能正式自動收費，MVP 人工收費替代方案
 
-建議短期方案：
+建議：
 
-1. 官網保留方案頁，但不要直接承諾即時自助扣款
-2. 使用表單或聯絡頁蒐集購買需求
-3. 人工收款：
+1. 官網保留方案頁，但不要承諾即時自助扣款
+2. 用聯絡頁 / 表單收集購買需求
+3. 人工請款：
    - 銀行轉帳
    - 第三方付款連結
-   - PayUNI sandbox 先不對外
-4. 後台由 admin 人工建立 / 啟用 subscription
-5. invoice / payment order 先保留內部紀錄
+   - 人工對帳
+4. 後台由 admin 人工開通 subscription
+5. 先把 invoice / paymentOrder 當內部紀錄
 
 ## 結論
 
-- **Billing 架構有了，但還沒到可放心公開賣的程度**
-- **Affiliate 骨架不錯，但還不算成熟營運系統**
-- 若要先賣 MVP，應採 **人工收費 + 人工開通 + 白名單客戶** 模式
+- Billing 架構已具備產品骨架
+- Affiliate / referral 不是空殼，但還不到成熟營運級
+- 目前最務實的做法是：**先 Beta 試賣，金流可採人工替代**

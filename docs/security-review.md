@@ -2,15 +2,16 @@
 
 更新日期：2026-06-10
 
-## 結論
+## 總結
 
 - 敏感資訊外洩風險：**中**
 - 多租戶資料外洩風險：**中**
-- 必須立刻修的安全項：**Meta token fallback、production tenant fallback、計費與訂閱週期漏洞**
+- OAuth / Webhook / Payment / Admin / Prisma / RLS：**有基礎，但還沒到完全放心**
+- 必須立刻修的安全項：**Meta env token fallback、billing subscription correctness、production tenant fallback 邊界**
 
 ## 高風險
 
-### 1. Meta channel token / account fallback 對多租戶有風險
+### 1. Meta env token fallback 對正式多租戶有風險
 
 檔案：
 
@@ -20,18 +21,17 @@
 
 說明：
 
-- channel 若未完整綁定 token，程式會 fallback 到全域 env：
+- 若 channel config 沒有完整 token，程式會 fallback 到全域 env：
   - `META_PAGE_ACCESS_TOKEN`
   - `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`
   - `META_PAGE_ID`
-- 這在 demo / 單租戶很方便，但在正式 SaaS 容易讓錯的 workspace 吃到共享 token
+- 在單 workspace demo 方便，但在正式 SaaS 下可能把錯的 token 套到錯的 workspace / channel
 
-建議：
+結論：
 
-- production 下禁用這些 fallback
-- webhook / outbound / comment sync 都要要求 channel-level binding
+- 這是目前最值得先修的 multi-tenant 安全問題之一
 
-### 2. 多租戶隔離主要靠應用層，不是全面 DB policy first
+### 2. 多租戶隔離主要靠應用層，而不是 DB-first
 
 檔案：
 
@@ -41,16 +41,11 @@
 
 說明：
 
-- 大多數 API 有 `workspaceId` 過濾
-- 但沒有證據顯示所有 Prisma server-side 存取都被 DB policy 強制保護
-- 一旦後續加 route 遺漏 `workspaceId`，就有橫向資料外洩風險
+- 大部分 API 有 `workspaceId` 篩選
+- 但目前查不到一個可以保證「所有敏感資料都由 DB policy 強制隔離」的單一安全邊界
+- 未來只要有新 route 少寫一個 `workspaceId`，就可能開洞
 
-建議：
-
-- 補 tenant isolation tests
-- 對高風險表導入更嚴格的 query helper 或 policy 檢查
-
-### 3. 計費漏洞會影響授權與產品邊界
+### 3. Billing correctness 會反過來影響授權安全
 
 檔案：
 
@@ -59,18 +54,13 @@
 
 說明：
 
-- 年繳被寫成月繳
-- 零元折抵成功未必真正啟動 subscription
-- 這不只是產品問題，也會造成權限與服務授權錯配
-
-建議：
-
-- 修正 interval persistence
-- 零元交易也走正式 completion flow
+- 年繳被寫死 month
+- 0 元折抵成功不一定真正啟用 subscription
+- 這不只是產品問題，也會造成錯誤授權與權限邊界錯配
 
 ## 中風險
 
-### 1. Secret encryption fallback 仍可退回 `AUTH_SECRET`
+### 1. Secret encryption 在 production 仍可能退回 `AUTH_SECRET`
 
 檔案：
 
@@ -85,7 +75,7 @@
 
 - production 強制要求 `TOKEN_ENCRYPTION_KEY`
 
-### 2. Audit log 為 best-effort，失敗只 `console.warn`
+### 2. Audit log 為 best-effort
 
 檔案：
 
@@ -93,13 +83,11 @@
 
 說明：
 
-- 安全事件有記錄，但資料庫寫入失敗時只警告，不會阻止流程
+- 稽核是好的
+- 但寫入失敗只 `console.warn`
+- 對 auth / billing / admin / webhook 類高風險事件來說，可觀測性還不夠
 
-建議：
-
-- 至少把 auth / billing / admin / webhook failure 類事件升級成可觀測告警
-
-### 3. CSRF 主要靠 same-origin，不是 token-based CSRF
+### 3. CSRF 主要靠 same-origin / origin 驗證
 
 檔案：
 
@@ -108,70 +96,140 @@
 
 說明：
 
-- 對內部 app API 來說算合理
-- 但若後續有跨子網域、嵌入式 flow、第三方 form return，邊界要更小心
+- 對目前內部 app API 架構算合理
+- 但不是 token-based CSRF
 
-### 4. PayUNI callback 失敗只做簡單 console error
+### 4. Admin 操作依賴 app auth + role，而非更細緻權限系統
 
 檔案：
 
-- `src/app/api/billing/payuni/notify/route.ts`
+- `src/lib/admin-auth.ts`
+- `src/lib/auth.ts`
 
 說明：
 
-- 驗證本身靠 `parsePayuniResult()` 做 Hash 驗證，這部分是好的
-- 但 callback 失敗觀測性不足
-
-建議：
-
-- 補 audit / alert / structured log
+- 目前 admin / operator 兩層夠 MVP
+- 但正式 SaaS 若要多客服 / 財務 / 夥伴角色，還不夠
 
 ## 低風險
 
-- `AUTH_SECRET` 在 production 有強度檢查：`src/lib/auth.ts`
-- session cookie 有 `httpOnly` / `sameSite=lax` / production `secure`
-- webhook HMAC / shared secret 基礎已存在：
-  - `src/lib/webhook-security.ts`
-  - `src/app/api/webhooks/meta/route.ts`
-  - `src/app/api/webhooks/telegram/route.ts`
-  - `src/app/api/automation-webhooks/[key]/route.ts`
-- rate limit 基礎存在，且可用 Redis 或 in-memory
+### OAuth 安全審查結果
 
-## 敏感資訊外洩風險
+檔案：
 
-### 目前沒看到明顯前端 bundle 洩漏
+- `src/app/api/oauth/[provider]/authorize/route.ts`
+- `src/app/api/oauth/[provider]/callback/route.ts`
+- `src/app/api/meta/oauth/start/route.ts`
+- `src/app/api/meta/oauth/callback/route.ts`
 
-已檢查：
+結果：
 
-- `.env.example`
-- `docs/environment-variables.md`
-- `src/lib/**`
+- 有 `state`
+- 有 popup state 驗證
+- callback failure 有 audit
+- 沒看到把 token / secret 寫進前端
+
+但：
+
+- Meta flow 仍混合 generic 與 legacy callback
+
+### Webhook 安全審查結果
+
+檔案：
+
+- `src/lib/webhook-security.ts`
+- `src/app/api/webhooks/meta/route.ts`
+- `src/app/api/webhooks/telegram/route.ts`
+- `src/app/api/webhooks/whatsapp/route.ts`
+- `src/app/api/automation-webhooks/[key]/route.ts`
+
+結果：
+
+- 有 signature / shared secret 驗證基礎
+- 有 rate limit
+- 有 duplicate event 部分處理
+
+但：
+
+- Meta / messaging 流程還需要更完整的 production idempotency audit
+
+### Payment 安全審查結果
+
+檔案：
+
+- `src/lib/payuni.ts`
+- `src/lib/billing/payuni-callback.ts`
+- `src/app/api/billing/payuni/notify/route.ts`
+
+結果：
+
+- `HashInfo` 驗證有做
+- paid callback 有 idempotent short-circuit
+
+但：
+
+- callback 失敗觀測與 audit 還可以更強
+
+### Prisma 安全審查結果
+
+檔案：
+
+- `prisma/schema.prisma`
 - `src/app/api/**`
+- `src/lib/**`
 
-目前沒有看到：
+結果：
 
-- access token / app secret / PayUNI key 被放進 `NEXT_PUBLIC_*`
-- OAuth callback 把 token 直接送到前端
+- schema 有 workspace / user / payment / audit / affiliate 完整骨架
+- route 層大多有 workspace filter
 
-### 但仍有注意點
+但：
 
-- callback / webhook / billing 失敗訊息仍可能回傳過多 provider error wording
-- README / docs 有亂碼，人工檢查 secret 洩漏時可讀性偏差
+- 不是所有邊界都能從 DB 層直接證明安全
 
-## 多租戶資料外洩風險
+### RLS 安全審查結果
 
-目前判定：**中風險**
+檔案：
 
-原因不是已經看到明確外洩，而是：
+- `docs/project-launch-checklist.md`
+- `docs/security/*`
 
-- 有 default workspace fallback
-- 有全域 Meta token fallback
-- 多租戶邊界主要靠 route 層而非一致性的 DB policy enforcement
+結果：
+
+- 文件宣稱 Supabase RLS 曾處理
+- 但目前 runtime 主體仍是 Prisma server-side access
+- 我這輪沒有直接遠端驗證 Supabase policy 現況，只能判定 **文件有提到，程式碼層無法單獨證明**
+
+## 是否有敏感資訊外洩風險
+
+### 前端 bundle
+
+目前沒看到明確把以下內容放到前端：
+
+- access token
+- app secret
+- PayUNI hash key / iv
+- service role key
+
+### 仍需注意
+
+- provider error 字串可能過度原樣外露
+- 亂碼文件降低人工審查 secret 洩漏的可讀性
+
+## 是否有多租戶資料外洩風險
+
+判定：**中風險**
+
+原因：
+
+- app 層多租戶隔離做得不差
+- 但仍有 default workspace fallback 與 Meta env token fallback
+- 對正式 SaaS 來說，這兩個不能長期並存
 
 ## 必須立刻修的安全項
 
-1. production 禁止 Meta env token fallback 服務多租戶 channel
-2. production 禁止 default workspace fallback 參與 webhook / billing / message ingestion
-3. 強制設定獨立 `TOKEN_ENCRYPTION_KEY`
-4. 修正 billing interval / zero-amount subscription 漏洞
-5. 補 tenant isolation 測試，尤其是 webhook / jobs / oauth sync
+1. production 禁止 Meta env token fallback
+2. 修正 billing interval / 0 元 invoice subscription correctness
+3. production 強制 `TOKEN_ENCRYPTION_KEY`
+4. 增加 tenant isolation tests
+5. 對 billing / webhook / admin failures 補更正式 audit / alert

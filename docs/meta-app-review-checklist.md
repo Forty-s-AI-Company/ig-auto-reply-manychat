@@ -2,97 +2,72 @@
 
 更新日期：2026-06-10
 
-## 目前實際使用的 Meta / Instagram 登入流程
+## 目前使用的 Meta / Instagram 登入流程
 
-不是單一流程，而是混合：
+目前是 **混合流程**，不是單一路徑。
 
-### A. Generic OAuth provider flow
+### Generic OAuth 入口
 
 - `src/app/api/oauth/[provider]/authorize/route.ts`
 - `src/app/api/oauth/[provider]/callback/route.ts`
-- `src/lib/oauth/providers/meta-facebook.ts`
-- `src/lib/oauth/providers/meta-instagram.ts`
+- `src/app/api/oauth/[provider]/token/route.ts`
 
-### B. Legacy Meta callback flow
+### Legacy Meta callback / sync 主流程
 
 - `src/app/api/meta/oauth/start/route.ts`
 - `src/app/api/meta/oauth/callback/route.ts`
 - `src/app/api/instagram/oauth/callback/route.ts`
+- `src/lib/oauth/meta-channel-sync.ts`
 
-### 結論
-
-- `meta-facebook`：Facebook Login / Meta Business Login 風格
-- `meta-instagram`：Instagram Login 風格
-- 真正的 channel 建立、webhook 訂閱與 Meta asset 綁定，仍大量依賴 legacy Meta callback / meta-channel-sync
-
-## OAuth URL 與體驗重點
-
-### Facebook / Meta flow
-
-來源：
+### Provider 定義
 
 - `src/lib/oauth/providers/meta-facebook.ts`
-- `src/app/api/meta/oauth/start/route.ts`
+- `src/lib/oauth/providers/meta-instagram.ts`
 
-會組成：
+## 目前 OAuth route 與 callback route
 
-- `https://www.facebook.com/v25.0/dialog/oauth?...`
-- 部分流程再包進 `business.facebook.com/business/loginpage/...`
+### Facebook / Meta
 
-參數重點：
+- authorize：
+  - `/api/oauth/meta-facebook/authorize`
+  - `/api/meta/oauth/start?mode=facebook`
+- callback：
+  - `/api/oauth/meta-facebook/callback`
+  - `/api/meta/oauth/callback`
 
-- `client_id`
-- `redirect_uri`
-- `response_type=code`
-- `state`
-- `scope`
-- 可能加上 `auth_type=reauthenticate`
-- 可能加上 `auth_type=rerequest`
+### Instagram
 
-### Instagram flow
+- authorize：
+  - `/api/oauth/meta-instagram/authorize`
+  - `/api/meta/oauth/start?mode=instagram`
+- callback：
+  - `/api/oauth/meta-instagram/callback`
+  - `/api/instagram/oauth/callback`
+  - `src/app/api/instagram/oauth/callback/route.ts` 目前直接 re-export 到 Meta callback
+
+## 目前使用 scopes
+
+### `meta-instagram`
 
 來源：
 
 - `src/lib/oauth/providers/meta-instagram.ts`
 - `src/app/api/meta/oauth/start/route.ts`
 
-會組成：
-
-- `https://api.instagram.com/oauth/authorize?...`
-- 或先導到
-  - `https://www.instagram.com/accounts/login/`
-  - `https://www.instagram.com/accounts/logoutin/`
-
-參數重點：
-
-- `client_id`
-- `redirect_uri`
-- `response_type=code`
-- `state`
-- `scope`
-- `force_authentication=1`
-- `enable_fb_login=0`
-
-## 為什麼登入視窗可能直接顯示「允許 / 取消」
-
-原因不是 callback 壞掉，而是：
-
-1. Meta / Instagram 會沿用目前瀏覽器已登入 session
-2. 若該 session 已有可用帳號，provider 可能直接跳授權同意畫面
-3. `reauthenticate` 也不保證一定出現完整帳號切換器
-4. ManyChat 能做得比較像「選帳號」，通常也是因為它把 UX 提示、重新登入、登入入口導向做得更完整，不是因為可以強制 Meta 每次都顯示帳密頁
-
-## 目前需要的 scopes
-
-### Instagram Login flow
+scopes：
 
 - `instagram_business_basic`
 - `instagram_business_manage_comments`
 - `instagram_business_manage_messages`
 
-### Facebook / Meta flow
+### `meta-facebook`
 
-在不同實作中出現的 scopes 合併後，正式應以這組為準：
+來源：
+
+- `src/lib/oauth/providers/meta-facebook.ts`
+- `src/app/api/meta/oauth/start/route.ts`
+
+scopes：
 
 - `public_profile`
 - `pages_show_list`
@@ -106,7 +81,7 @@
 
 ## 需要 App Review 的權限
 
-至少會碰到：
+實際商用大概率會碰到：
 
 - `pages_show_list`
 - `pages_read_engagement`
@@ -120,7 +95,7 @@
 - `instagram_business_manage_comments`
 - `instagram_business_manage_messages`
 
-另外正式商用通常還會需要：
+另外正式公開商用通常還會需要：
 
 - Advanced Access
 - Business Verification
@@ -128,42 +103,53 @@
 ## Demo video 要展示的流程
 
 1. 使用者登入 InboxPilot
-2. 前往 Social / Channels 連接頁
-3. 點選 Instagram 或 Facebook 連接
+2. 前往社群連接頁
+3. 點選 Facebook / Instagram 連接
 4. 完成 OAuth
-5. 顯示實際綁定的 IG / Page 資訊
-6. 選到正確帳號後建立 channel
-7. webhook 測試
-8. 收到 IG 留言或私訊
-9. 觸發自動回覆
-10. 在 Inbox 看得到訊息與聯絡人資料
-11. 如綁錯帳號，展示解除綁定與重新連接流程
+5. 成功後顯示實際綁定的 Page / IG 帳號資訊
+6. 建立 channel
+7. webhook 正常驗證
+8. 收到留言 / 私訊事件
+9. Inbox 能看到對話
+10. Automation 能觸發回覆
+11. 若綁錯帳號，展示解除綁定與重新連接
 
 ## 測試帳號需求
 
 - Meta app admin / developer 帳號
 - 至少 1 個 Facebook Page
-- 至少 1 個 Instagram Professional Account / Business Account
-- 建議再準備 1 組測試用來模擬綁錯帳號、重連、切換帳號
+- 至少 1 個 Instagram Professional / Business Account
+- 建議再準備 1 組帳號用來測試切換帳號、錯綁、重新連接
 
 ## 目前卡住的 Meta 設定
 
 1. 流程仍混合 generic OAuth 與 legacy callback
-2. 正式對外賣仍需 Meta App Review / Advanced Access / Business Verification
-3. 使用者選擇 Page / IG 資產的體驗仍不夠明確
-4. production multi-tenant 下不宜繼續依賴 env token fallback
+2. 正式可售仍依賴 App Review / Advanced Access / Business Verification
+3. 多租戶正式環境不應再依賴 env token fallback
+4. 使用者選擇 Page / IG Business Account 的 UX 還不夠明確
 
-## 安全檢查結果
+## 為什麼登入視窗可能直接顯示允許 / 取消，而不是 IG 帳密登入頁
 
-### 有做到的
+原因通常是：
 
-- `state` cookie 驗證
-- popup state 驗證
-- callback 失敗 audit log
-- 不把 token / secret / authorization code 寫進 audit
+1. Meta / Instagram 會沿用目前瀏覽器 session
+2. 若該 session 已登入某個帳號，provider 往往直接進授權畫面
+3. `reauthenticate` 能增加重新驗證機率，但不保證一定出現完整帳號切換器
+4. ManyChat 比較像有「選帳號」體驗，通常是 UX 包裝、重新登入路徑、引導設計比較完整，不是因為可以強制 Meta 每次顯示帳密頁
 
-### 仍需收斂的
+## 使用者綁錯帳號時的處理建議
 
-- 收斂成單一 Meta 連接主流程
-- production 移除 env fallback token
-- 補更多整合測試覆蓋錯帳號、重連、Page/IG 資產選擇
+目前已有部分 UX：
+
+- Social connect 頁有切換帳號 / 重新連接提示
+- channel 可刪除後重連
+
+建議再補強：
+
+1. 成功頁清楚顯示：
+   - Facebook Page 名稱
+   - Instagram 帳號名稱
+   - 綁定來源是 Facebook Login 還是 Instagram Login
+2. 若偵測到同 workspace 已有既有 IG 綁定，提醒使用者是否覆蓋 / 新增
+3. 提供一鍵解除綁定與重新連接入口
+4. production 模式禁用 env fallback，避免誤以為綁定成功其實用的是舊 token
