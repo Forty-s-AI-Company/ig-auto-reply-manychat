@@ -4,118 +4,123 @@
 
 ## 總結
 
-- 敏感資訊外洩風險：**中**
-- 多租戶資料外洩風險：**中**
-- OAuth / Webhook / Payment / Admin / Prisma / RLS：**有基礎，但還沒到完全放心**
-- 必須立刻修的安全項：**Meta env token fallback、billing subscription correctness、production tenant fallback 邊界**
+- 高風險：`仍有`
+- 中風險：`仍有`
+- 低風險：`有`
+- 是否有敏感資訊外洩風險：`目前未看到明顯前端外洩，但 production 仍需持續防守`
+- 是否有多租戶資料外洩風險：`有中高風險，主因是 Meta env token fallback 尚未移除`
+
+這一輪已完成的安全改善：
+
+- billing completion 現在用 `PaymentOrder.interval` 驅動，不再因 hardcoded month 造成 plan / entitlement 錯配
+- zero-amount / credit-only checkout 已走正式 internal completion flow
+- billing completion success / failure 已補安全 audit，未記錄 PayUNI secret、hash key、token、完整敏感 payload
 
 ## 高風險
 
-### 1. Meta env token fallback 對正式多租戶有風險
+### 1. Meta env token fallback 仍可能跨 tenant 誤用
 
-檔案：
+檔案位置：
 
 - `src/lib/channels/meta.ts`
 - `src/app/api/webhooks/meta/route.ts`
 - `src/lib/instagram/comments-sync.ts`
 
-說明：
+問題：
 
-- 若 channel config 沒有完整 token，程式會 fallback 到全域 env：
-  - `META_PAGE_ACCESS_TOKEN`
-  - `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`
-  - `META_PAGE_ID`
-- 在單 workspace demo 方便，但在正式 SaaS 下可能把錯的 token 套到錯的 workspace / channel
+- channel token 缺失時，仍可能 fallback 到全域 env token
+- 在單租戶 demo 可容忍，在多租戶 SaaS 風險太高
 
-結論：
+影響：
 
-- 這是目前最值得先修的 multi-tenant 安全問題之一
+- 錯發訊息
+- 用錯 Page / IG Business Account
+- tenant boundary 被弱化
 
-### 2. 多租戶隔離主要靠應用層，而不是 DB-first
+必須立刻修：
 
-檔案：
+- production 模式停用 env fallback
+- 所有 Meta 操作都要求 channel-level token 與 account binding
+
+### 2. 多租戶隔離仍以應用層為主，缺少更強的回歸保證
+
+檔案位置：
 
 - `src/lib/workspaces.ts`
 - `src/app/api/**`
 - `prisma/schema.prisma`
 
-說明：
+問題：
 
-- 大部分 API 有 `workspaceId` 篩選
-- 但目前查不到一個可以保證「所有敏感資料都由 DB policy 強制隔離」的單一安全邊界
-- 未來只要有新 route 少寫一個 `workspaceId`，就可能開洞
+- 多數流程有 `workspaceId` 限制，但尚未形成完整的 tenant isolation regression suite
+- 目前沒有足夠證據證明每個敏感 query 都被持續保護
 
-### 3. Billing correctness 會反過來影響授權安全
+必須立刻修：
 
-檔案：
-
-- `src/lib/billing/payment-service.ts`
-- `src/app/api/billing/payuni/checkout/route.ts`
-
-說明：
-
-- 年繳被寫死 month
-- 0 元折抵成功不一定真正啟用 subscription
-- 這不只是產品問題，也會造成錯誤授權與權限邊界錯配
+- 補 tenant isolation tests
+- 補 query helper / review checklist，避免 route 漏帶 `workspaceId`
 
 ## 中風險
 
-### 1. Secret encryption 在 production 仍可能退回 `AUTH_SECRET`
+### 1. Secret encryption 在 production 若未設 `TOKEN_ENCRYPTION_KEY` 會 fallback 到 `AUTH_SECRET`
 
-檔案：
+檔案位置：
 
 - `src/lib/secrets.ts`
-
-說明：
-
-- 若沒設 `TOKEN_ENCRYPTION_KEY`，會退回 `AUTH_SECRET`
-- 再沒有才用 local dev constant
 
 建議：
 
 - production 強制要求 `TOKEN_ENCRYPTION_KEY`
 
-### 2. Audit log 為 best-effort
+### 2. Audit log 仍是 best-effort
 
-檔案：
+檔案位置：
 
 - `src/lib/audit.ts`
 
-說明：
+問題：
 
-- 稽核是好的
-- 但寫入失敗只 `console.warn`
-- 對 auth / billing / admin / webhook 類高風險事件來說，可觀測性還不夠
+- audit 失敗時不應阻斷主流程，這個策略合理
+- 但目前缺少更完整的告警 / metrics 補位
+
+建議：
+
+- 對 auth / billing / webhook / admin failure audit 補 alert / dashboard
 
 ### 3. CSRF 主要靠 same-origin / origin 驗證
 
-檔案：
+檔案位置：
 
 - `src/lib/security.ts`
 - `src/proxy.ts`
 
-說明：
+建議：
 
-- 對目前內部 app API 架構算合理
-- 但不是 token-based CSRF
+- 現況對內部表單 API 基本可接受
+- 若後續增加第三方嵌入或更高風險後台操作，可再考慮 token-based CSRF
 
-### 4. Admin 操作依賴 app auth + role，而非更細緻權限系統
+### 4. Billing completion 仍需持續觀察 idempotency 邊界
 
-檔案：
+檔案位置：
 
-- `src/lib/admin-auth.ts`
-- `src/lib/auth.ts`
+- `src/lib/billing/payment-service.ts`
+- `src/app/api/billing/payuni/checkout/route.ts`
+- `src/lib/billing/payuni-callback.ts`
 
-說明：
+現況：
 
-- 目前 admin / operator 兩層夠 MVP
-- 但正式 SaaS 若要多客服 / 財務 / 夥伴角色，還不夠
+- paid callback 已有 idempotent short-circuit
+- internal credit flow 以 `invoiceId + provider=internal_credit` 重用 payment order，再經 `order.status === "paid"` 避免重複啟用
+
+建議：
+
+- 後續再補更多整合測試，覆蓋 retry / return / notify 混合重入
 
 ## 低風險
 
-### OAuth 安全審查結果
+### OAuth 安全審查
 
-檔案：
+檔案位置：
 
 - `src/app/api/oauth/[provider]/authorize/route.ts`
 - `src/app/api/oauth/[provider]/callback/route.ts`
@@ -125,17 +130,13 @@
 結果：
 
 - 有 `state`
-- 有 popup state 驗證
-- callback failure 有 audit
-- 沒看到把 token / secret 寫進前端
+- 有 callback failure audit
+- 已避免在 audit 內記錄 token / secret / authorization code
+- 但 Meta flow 仍是 generic + legacy 混合，維護風險較高
 
-但：
+### Webhook 安全審查
 
-- Meta flow 仍混合 generic 與 legacy callback
-
-### Webhook 安全審查結果
-
-檔案：
+檔案位置：
 
 - `src/lib/webhook-security.ts`
 - `src/app/api/webhooks/meta/route.ts`
@@ -145,34 +146,41 @@
 
 結果：
 
-- 有 signature / shared secret 驗證基礎
-- 有 rate limit
-- 有 duplicate event 部分處理
+- 已有 signature / shared secret 驗證
+- 已有 rate limit
+- 已有部分失敗 audit
+- 仍建議補更完整 duplicate event / replay 測試
 
-但：
+### Payment 安全審查
 
-- Meta / messaging 流程還需要更完整的 production idempotency audit
-
-### Payment 安全審查結果
-
-檔案：
+檔案位置：
 
 - `src/lib/payuni.ts`
 - `src/lib/billing/payuni-callback.ts`
 - `src/app/api/billing/payuni/notify/route.ts`
+- `src/app/api/billing/payuni/checkout/route.ts`
 
 結果：
 
-- `HashInfo` 驗證有做
-- paid callback 有 idempotent short-circuit
+- `HashInfo` 驗證存在
+- paid callback idempotency 存在
+- 這一輪新增 internal credit completion flow 與安全 audit
 
-但：
+### Admin 安全審查
 
-- callback 失敗觀測與 audit 還可以更強
+檔案位置：
 
-### Prisma 安全審查結果
+- `src/lib/admin-auth.ts`
+- `src/lib/auth.ts`
 
-檔案：
+結果：
+
+- admin / operator 基礎角色存在
+- 後續仍需更細的角色矩陣與審批流程
+
+### Prisma / RLS 審查
+
+檔案位置：
 
 - `prisma/schema.prisma`
 - `src/app/api/**`
@@ -180,56 +188,27 @@
 
 結果：
 
-- schema 有 workspace / user / payment / audit / affiliate 完整骨架
-- route 層大多有 workspace filter
+- schema 結構完整，workspace / billing / audit / affiliate 主要表都有
+- 目前主要依賴 Prisma server-side access，不是 Supabase RLS-first 架構
+- 文件上不應誤導為「已完整依賴 RLS」
 
-但：
+## 敏感資訊外洩風險
 
-- 不是所有邊界都能從 DB 層直接證明安全
-
-### RLS 安全審查結果
-
-檔案：
-
-- `docs/project-launch-checklist.md`
-- `docs/security/*`
-
-結果：
-
-- 文件宣稱 Supabase RLS 曾處理
-- 但目前 runtime 主體仍是 Prisma server-side access
-- 我這輪沒有直接遠端驗證 Supabase policy 現況，只能判定 **文件有提到，程式碼層無法單獨證明**
-
-## 是否有敏感資訊外洩風險
-
-### 前端 bundle
-
-目前沒看到明確把以下內容放到前端：
+目前沒有看到明顯把以下資料打進前端 bundle 的證據：
 
 - access token
-- app secret
 - PayUNI hash key / iv
+- app secret
 - service role key
 
-### 仍需注意
+但仍需持續注意：
 
-- provider error 字串可能過度原樣外露
-- 亂碼文件降低人工審查 secret 洩漏的可讀性
-
-## 是否有多租戶資料外洩風險
-
-判定：**中風險**
-
-原因：
-
-- app 層多租戶隔離做得不差
-- 但仍有 default workspace fallback 與 Meta env token fallback
-- 對正式 SaaS 來說，這兩個不能長期並存
+- console / audit / docs 不得落出完整付款敏感 payload
+- `.env*` 與部署平台 env 權限需嚴格控管
 
 ## 必須立刻修的安全項
 
-1. production 禁止 Meta env token fallback
-2. 修正 billing interval / 0 元 invoice subscription correctness
-3. production 強制 `TOKEN_ENCRYPTION_KEY`
-4. 增加 tenant isolation tests
-5. 對 billing / webhook / admin failures 補更正式 audit / alert
+1. production 停用 Meta env token fallback
+2. production 強制要求 `TOKEN_ENCRYPTION_KEY`
+3. 補 tenant isolation regression tests
+4. 補 billing / webhook / admin failure alerting

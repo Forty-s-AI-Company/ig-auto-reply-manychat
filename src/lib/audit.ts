@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 
 export type AuditResourceType =
   | "auth"
+  | "billing"
   | "broadcast"
   | "channel"
   | "conversation"

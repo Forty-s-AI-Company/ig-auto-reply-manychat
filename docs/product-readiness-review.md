@@ -4,78 +4,61 @@
 
 ## 總結
 
-- 目前產品成熟度總分：**66 / 100**
-- 是否可以正式販售：**否**
-- 是否可以 Beta 試賣：**可以，但只建議白名單 / 小規模 / 受控客戶**
-- 最大 P0 阻礙：**金流與訂閱授權閉環還不夠安全完整，Meta 正式權限與多租戶 token 邊界也還沒收乾淨**
+- 產品成熟度總分：`69 / 100`
+- 是否可以正式販售：`不建議`
+- 是否可以 Beta 試賣：`可以，限白名單 / 少量付費客戶`
+- 最大 P0 阻礙：`PayUNI production readiness、Meta production 權限收斂、多租戶 Meta token fallback`
 
-這份 review 不是只看 README 或 checklist。  
-我有實際檢查：
+這一輪已完成的改善：
 
-- `README.md`
-- `docs/project-launch-checklist.md`
-- `docs/environment-variables.md`
-- `.env.example`
-- `package.json`
-- `prisma/schema.prisma`
-- `src/app/api/**`
-- `src/lib/**`
-- `scripts/**`
-- `tests/**`
+- 已修正 `PaymentOrder -> Subscription` 的 billing interval 傳遞，月繳 / 年繳不再被寫死成 `month`
+- 已讓 zero-amount / credit-only checkout 走正式 internal completion flow
+- 已補上對應測試與安全 audit
 
-實際判讀結果是：  
-這個專案已經不是玩具，SaaS 骨架、worker、health、audit、billing、affiliate、Meta webhook、OAuth、usage ledger 都有。  
-但如果你要「正式公開販售」，現在還不夠穩，會卡在 **PayUNI production readiness、billing subscription correctness、Meta production review、tenant safety 邊界、文案與法務可讀性**。
+這一輪仍未完成的正式販售 blocker：
 
-## 為什麼現在不能正式販售，只能 Beta
+1. PayUNI production gateway 仍受 `PAYUNI_ALLOW_PRODUCTION` 保守開關限制
+2. Meta / Instagram production flow 仍是 generic OAuth + legacy callback 混合
+3. production 模式下仍存在 Meta env token fallback 風險
+4. 對外 Billing / legal / README 文案與亂碼問題仍待整理
 
-1. **PayUNI 正式站還被保守開關擋住**
-   - `src/app/api/billing/payuni/checkout/route.ts`
-2. **訂閱啟用邏輯有硬傷**
-   - `src/lib/billing/payment-service.ts`
-3. **0 元折抵成功未必真的啟用訂閱**
-   - `src/app/api/billing/payuni/checkout/route.ts`
-4. **Meta / Instagram 還是混合流程，且正式可用性取決於 App Review**
-   - `src/app/api/meta/oauth/start/route.ts`
-   - `src/app/api/meta/oauth/callback/route.ts`
-   - `src/app/api/oauth/[provider]/authorize/route.ts`
-5. **多租戶下仍有全域 Meta env token fallback 風險**
-   - `src/lib/channels/meta.ts`
-   - `src/app/api/webhooks/meta/route.ts`
-6. **Billing / Terms / Privacy / Data Deletion / 部分文件有亂碼**
-   - `src/app/billing/page.tsx`
-   - `src/app/terms-of-service/page.tsx`
-   - `src/app/privacy-policy/page.tsx`
-   - `src/app/data-deletion/page.tsx`
-   - `README.md`
-   - `docs/project-launch-checklist.md`
-   - `docs/environment-variables.md`
+## 為什麼目前只能 Beta
+
+雖然核心 SaaS 結構已經有：
+
+- workspace / membership / role
+- subscription / invoice / paymentOrder / wallet ledger
+- audit log / health check / worker / queue
+- IG / Meta OAuth、webhook、Inbox、Broadcast、Automation、Sequence
+
+但正式公開販售還差三類硬門檻：
+
+1. 平台門檻：Meta App Review、Advanced Access、Business Verification
+2. 金流門檻：PayUNI production merchant review 與正式收款 SOP
+3. 多租戶安全門檻：channel token 與 env fallback 必須完全收斂
 
 ## 最小可販售 MVP 範圍
 
-建議第一階段只賣這些：
+建議先賣這個範圍：
 
-- Instagram 留言關鍵字自動私訊
+- Instagram 留言關鍵字觸發
 - Instagram 私訊自動回覆
 - Inbox / Contacts / Tags / Segments
-- Automations
-- Broadcasts
-- Sequences
+- Automation / Broadcast / Sequence
 - AI FAQ
-- Email / Telegram 當附加渠道
+- Email / Telegram
 
-第一階段不要當主賣點的：
+先不要對外承諾：
 
-- WhatsApp
-- TikTok
-- SMS
-- LINE
-- 大規模 affiliate payout automation
-- 完整公開自助式 billing
+- WhatsApp 正式可用
+- TikTok 正式可用
+- SMS 正式可用
+- LINE 正式可用
+- 自動化 affiliate payout / 完整財務對帳
 
 ## P0 問題清單
 
-### P0-1. PayUNI production gateway 仍未進入可放心正式收款狀態
+### P0-1. PayUNI production gateway 尚未進入可正式販售狀態
 
 檔案位置：
 
@@ -83,53 +66,18 @@
 - `src/lib/payuni.ts`
 - `.env.example`
 
-問題：
+現況：
 
-- checkout 會在正式 gateway 且 `PAYUNI_ALLOW_PRODUCTION !== "true"` 時直接拒絕
-- 這代表正式 merchant review / production go-live 還沒真正完成
+- 非 sandbox gateway 時，若 `PAYUNI_ALLOW_PRODUCTION !== "true"` 會直接拒絕 checkout
+- 表示 production merchant review 與上線切換仍需人工確認
 
 修復建議：
 
 - 完成 PayUNI production merchant review
-- 補 production env 與 runbook
-- 在 Billing 頁清楚顯示 sandbox / production 狀態
-- 若短期無法完成，先做人工請款替代流程
+- 建立 production / sandbox 切換 runbook
+- 在 Billing 頁明確說明目前站別與正式開通條件
 
-### P0-2. Subscription interval 被寫死成 month
-
-檔案位置：
-
-- `src/lib/billing/payment-service.ts`
-
-問題：
-
-- `completePaidPaymentOrder()` 內 `const interval = "month"`
-- 代表年繳、月繳在付款完成後可能都被當成月繳 subscription
-
-修復建議：
-
-- 在 checkout 時保存實際 interval
-- completion 時用實際 interval 建 subscription
-- 補 month / year integration tests
-
-### P0-3. Credit-only / zero-amount checkout 成功後未必真的啟用訂閱
-
-檔案位置：
-
-- `src/app/api/billing/payuni/checkout/route.ts`
-- `src/lib/billing/payment-service.ts`
-
-問題：
-
-- invoice `totalAmount <= 0` 時會直接 redirect success
-- 沒有走完整 payment completion subscription flow
-
-修復建議：
-
-- 0 元訂單也應走正式 internal completion flow
-- 同步更新 invoice / subscription / wallet / audit
-
-### P0-4. Meta / Instagram production flow 還沒真正收斂
+### P0-2. Meta / Instagram production flow 尚未完全收斂
 
 檔案位置：
 
@@ -140,19 +88,19 @@
 - `src/lib/oauth/providers/meta-facebook.ts`
 - `src/lib/oauth/providers/meta-instagram.ts`
 
-問題：
+現況：
 
-- generic OAuth 與 legacy Meta callback 並存
-- 不同 flow 的 scopes 與 UX 不完全一致
-- 正式可售仍依賴 Meta App Review / Advanced Access / Business Verification
+- 目前仍是 generic OAuth 與 legacy Meta callback 並存
+- UX 已補強切換帳號提示，但 production path 仍未完全統一
+- 實際可用性仍受 Meta App Review / Advanced Access / Business Verification 影響
 
 修復建議：
 
-- 收斂單一正式 Meta 連接主流程
-- 明確定義 Facebook Login 與 Instagram Login 各自適用場景
-- 補 reviewer / support / QA 可重現的流程文檔
+- 收斂主流程，只保留一條 production support 路徑
+- 明確定義 Page / IG Business Account 選擇與重連流程
+- 補齊 reviewer demo 與支援文件
 
-### P0-5. 多租戶下仍存在 Meta env token fallback 風險
+### P0-3. production 模式仍存在 Meta env token fallback 風險
 
 檔案位置：
 
@@ -161,20 +109,21 @@
 - `src/lib/instagram/comments-sync.ts`
 - `scripts/refresh-meta-token.mjs`
 
-問題：
+現況：
 
-- 缺少 channel token 時會 fallback 到：
+- channel token 缺失時仍可能 fallback 到：
   - `META_PAGE_ACCESS_TOKEN`
   - `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`
   - `META_PAGE_ID`
-- 對單租戶 demo 很方便，對正式 SaaS 很危險
+- 這在 demo 專案可接受，在多租戶 SaaS 不夠安全
 
 修復建議：
 
-- production 模式禁用 env fallback
-- 強制 channel-level token 與 account binding
+- production 模式停用 env fallback
+- 強制以 channel-level token / account binding 運作
+- 補 tenant isolation regression tests
 
-### P0-6. 對外展示與法務頁面存在亂碼
+### P0-4. 對外 Billing / legal / README 文案與亂碼仍待整理
 
 檔案位置：
 
@@ -187,19 +136,39 @@
 - `src/app/terms-of-service/page.tsx`
 - `src/app/data-deletion/page.tsx`
 
-問題：
+現況：
 
-- 不只是 docs，連產品頁與法務頁 source 都有亂碼
-- 對正式收費 SaaS 會直接傷害信任感
+- 仍有多處亂碼或不夠對外可讀的中文文案
+- 這會直接影響正式收費時的信任感
 
 修復建議：
 
-- 全面整理 UTF-8 / 編碼
-- 優先修 Billing、Pricing、Terms、Privacy、Data Deletion
+- 全面整理 UTF-8 與繁中內容
+- 先補 Billing / Pricing / Terms / Privacy / Data Deletion
+
+## 已完成的 P0
+
+### 已完成：billing interval 與 subscription correctness
+
+檔案位置：
+
+- `src/lib/billing/payment-service.ts`
+- `src/app/api/billing/payuni/checkout/route.ts`
+- `prisma/schema.prisma`
+- `prisma/migrations/20260610113000_payment_order_interval/migration.sql`
+- `tests/payuni-billing.test.ts`
+- `tests/billing-checkout-route.test.ts`
+
+結果：
+
+- `PaymentOrder` 新增 `interval` 欄位，保存 month / year
+- `completePaidPaymentOrder()` 改用 `order.interval`
+- zero-amount / credit-only checkout 會建立 `internal_credit` payment order，再走共用 completion flow
+- completion 維持 idempotent，不會重複建立 subscription 或重複發 referral / affiliate side effects
 
 ## P1 問題清單
 
-### P1-1. 計費限制不是全面落地
+### P1-1. plan enforcement 還不夠完整
 
 檔案位置：
 
@@ -208,37 +177,23 @@
 - `src/app/api/broadcasts/route.ts`
 - `src/app/api/sequences/route.ts`
 
-問題：
-
-- `automations`、`broadcasts`、`igAccounts` 有 gate
-- `sequences` 沒 quota gate
-- `teamSeats` 固定 `1`
-- `activeContacts` 直接等於 `contacts`
-
 修復建議：
 
-- 補齊 plan 對應的實際 enforcement
-- 重做 usage summary 計算
+- 把 `automations`、`broadcasts`、`sequences`、`teamSeats`、`activeContacts` 全部收斂到一致的 quota gate
 
-### P1-2. 試用與訂閱過期後的產品行為還不夠完整
+### P1-2. trial / expired / past_due / unpaid 仍缺完整產品行為
 
 檔案位置：
 
-- `prisma/schema.prisma`
-- `src/lib/billing/entitlements.ts`
 - `src/lib/billing/usage-service.ts`
-
-問題：
-
-- `trialing / active / past_due / canceled / unpaid` schema 有
-- 但產品層限制主要只看到 message event gate
-- 沒看到完整的 plan downgrade / subscription expiry 行為矩陣
+- `src/lib/billing/entitlements.ts`
+- `src/app/billing/page.tsx`
 
 修復建議：
 
-- 明確定義 trial、expired、past_due、unpaid 的 UI / API 行為
+- 補齊 subscription 狀態到 UI / API 的限制與提示
 
-### P1-3. Affiliate / referral 有骨架，但營運規則還不夠成熟
+### P1-3. affiliate / referral 還不夠完整
 
 檔案位置：
 
@@ -246,81 +201,40 @@
 - `src/lib/billing/affiliate-service.ts`
 - `prisma/schema.prisma`
 
-問題：
-
-- 有 referral code、trial bonus、credit、commission、payout schema
-- 但 anti-fraud 邏輯偏弱
-- 沒有完整 affiliate terms
-- 沒看到完整 refund / clawback 閉環 UI
-
 修復建議：
 
-- 補 self-referral / suspicious attribution 規則
-- 補聯盟條款與 payout SOP
-
-### P1-4. 多租戶隔離主要靠應用層
-
-檔案位置：
-
-- `src/lib/workspaces.ts`
-- `src/app/api/**`
-- `prisma/schema.prisma`
-
-問題：
-
-- 多數 query 有 `workspaceId`
-- 但沒有全面證據顯示所有敏感表都有 DB 層一致性保護
-
-修復建議：
-
-- 補 tenant isolation tests
-- 收斂高風險 query helper
+- 補 anti-fraud、refund / clawback、affiliate terms、monthly payout SOP
 
 ## P2 問題清單
 
-- onboarding 已改善，但仍未完全 self-serve
-- UI 中文化整體可用，但部分關鍵頁面文案品質不穩
-- Billing 頁沒有足夠清楚說明 sandbox / production 差異
-- README 與 checklist 和實作有落差
-- 沒看到獨立 refund policy / cookie policy 頁
+- onboarding 還不夠自助式
+- billing 頁對 sandbox / production 差異說明不足
+- README 與 checklist 需要持續和實作同步
+- refund policy / cookie policy / 客服流程還不夠完整
 
 ## P3 問題清單
 
-- 內部 docs 有歷史殘留
-- 一些 placeholder 渠道仍容易造成預期誤差
-- Meta 成功頁與綁定確認資訊還能更強
+- 部分文件與後台頁面仍需文字打磨
+- 部分 placeholder 心智負擔仍在
+- 管理後台資訊層級可再整理
 
-## 產品成熟度細項判斷
+## 建議上線判定
 
-- Meta / Instagram 核心能力：**中**
-- SaaS 多租戶 / 角色 / workspace：**中上**
-- Billing / PayUNI：**中下**
-- Affiliate / Referral：**中**
-- Security：**中**
-- Stability / Ops：**中上**
-- UI / UX：**中**
-- Tests：**中上**
+### 可以 Beta 試賣
 
-## 結論
-
-### 目前能不能 Beta 試賣
-
-**可以。**
-
-前提：
+條件：
 
 - 白名單客戶
 - 少量 workspace
-- 先賣 Instagram 主流程
-- PayUNI 若還沒 production review，先採人工收費替代
+- Meta 權限已在實際帳號上測通
+- Redis + worker + Postgres + HTTPS 都已配置
+- PayUNI 若 production 尚未開通，先採人工收費
 
-### 目前能不能正式公開販售
+### 不建議正式公開販售
 
-**不建議。**
+原因：
 
-主要是：
-
-- 金流與訂閱授權閉環還不夠安全
-- Meta production 風險還沒完全收斂
-- 多租戶 token fallback 需要先清掉
-- 對外可讀性與法務頁品質還不夠
+- production 金流仍未完全開通
+- Meta production 權限與 reviewer 流程仍未完全收斂
+- 多租戶安全邊界還沒全收乾淨
+- 對外法務與帳務頁文案仍需整理

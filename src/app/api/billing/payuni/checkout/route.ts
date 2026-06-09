@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { recordAuditEvent } from "@/lib/audit";
 import { createPlanInvoice } from "@/lib/billing/invoice-service";
+import { completeInternalInvoicePaymentOrder } from "@/lib/billing/payment-service";
 import { getPlan, getPlanAmount } from "@/lib/billing/plans";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
@@ -63,6 +65,24 @@ export async function POST(request: Request) {
         headers: { "content-type": "text/html; charset=utf-8" },
       });
     }
+
+    const completedOrder = await getDb().paymentOrder.findFirst({
+      where: {
+        workspaceId,
+        userId: auth.user.id,
+        provider: { in: ["payuni", "internal_credit"] },
+        status: "paid",
+        planKey: plan.key,
+        checkoutPayload: { path: ["idempotencyKey"], equals: idempotencyKey },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    if (completedOrder) {
+      const successPath = completedOrder.provider === "internal_credit"
+        ? "/billing?payment=success&credit=1"
+        : "/billing?payment=success";
+      return NextResponse.redirect(new URL(successPath, request.url), 303);
+    }
   }
 
   const invoice = await createPlanInvoice({
@@ -75,7 +95,35 @@ export async function POST(request: Request) {
   });
 
   if (invoice.totalAmount <= 0) {
-    return NextResponse.redirect(new URL("/billing?payment=success&credit=1", request.url), 303);
+    try {
+      await completeInternalInvoicePaymentOrder({
+        workspaceId,
+        userId: auth.user.id,
+        invoiceId: invoice.id,
+        planKey: plan.key,
+        interval: parsed.data.interval,
+        currency: invoice.currency,
+        idempotencyKey: idempotencyKey || undefined,
+      });
+      return NextResponse.redirect(new URL("/billing?payment=success&credit=1", request.url), 303);
+    } catch (error) {
+      await recordAuditEvent({
+        action: "billing_internal_payment_failed",
+        resourceType: "billing",
+        workspaceId,
+        userId: auth.user.id,
+        success: false,
+        actorIp: getClientIp(request),
+        userAgent: request.headers.get("user-agent"),
+        metadata: {
+          invoiceId: invoice.id,
+          planKey: plan.key,
+          interval: parsed.data.interval,
+          reason: error instanceof Error ? error.message : "internal_payment_failed",
+        },
+      });
+      return NextResponse.json({ error: "Internal billing completion failed." }, { status: 500 });
+    }
   }
 
   const config = getPayuniConfig();
@@ -101,6 +149,7 @@ export async function POST(request: Request) {
       userId: auth.user.id,
       invoiceId: invoice.id,
       planKey: plan.key,
+      interval: parsed.data.interval,
       merTradeNo,
       amount: invoice.totalAmount,
       currency: "TWD",
