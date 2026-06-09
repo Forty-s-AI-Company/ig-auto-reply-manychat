@@ -736,6 +736,7 @@ model PaymentOrder {
   invoiceId       String?
   provider        String                @default("payuni")
   planKey         String
+  interval        BillingInterval       @default(month)
   merTradeNo      String                @unique
   tradeNo         String?
   status          PaymentStatus         @default(pending)

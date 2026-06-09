@@ -4,42 +4,57 @@
 
 ## 目前驗證狀態
 
-本輪實際執行：
+已執行：
 
 ```bash
 git status
 npm run lint
 npm run build
+npm test
+npm run payuni:smoke
 ```
 
 結果：
 
-- `git status`：乾淨
+- `git status`：有本輪預期變更
 - `npm run lint`：通過
 - `npm run build`：通過
+- `npm test`：第一次遇到既有 Vitest 子程序 crash，第二次完整通過
+- `npm run payuni:smoke`：通過
 
 補充：
 
-- build 過程仍出現既有 Prisma engine DLL lock `EPERM` 噪音
-- `scripts/prisma-generate-safe.mjs` 已 fallback 到既有 generated client
-- 這次不是 build failure，但仍是本機開發環境噪音，後續可整理
+- `npm run build` 仍有既有 Prisma engine DLL lock `EPERM` 噪音
+- `scripts/prisma-generate-safe.mjs` 已 fallback 到既有 generated client，因此不構成 build failure
 
 ## Phase 0：正式販售前 blocker
 
 ### 任務 1：修正 billing interval 與 subscription correctness
 
+狀態：`已完成`
+
 檔案：
 
 - `src/lib/billing/payment-service.ts`
 - `src/app/api/billing/payuni/checkout/route.ts`
-- `src/lib/billing/invoice-service.ts`
+- `prisma/schema.prisma`
+- `prisma/migrations/20260610113000_payment_order_interval/migration.sql`
+- `tests/payuni-billing.test.ts`
+- `tests/billing-checkout-route.test.ts`
+- `src/lib/audit.ts`
 
-內容：
+完成內容：
 
-- 不要再把 interval 寫死成 `month`
-- 讓 zero-amount / credit-only checkout 也會正確啟用 subscription
+- `PaymentOrder` 新增 `interval`
+- checkout 建立 payment order 時保存實際 month / year
+- completion 改用 `order.interval`
+- zero-amount / credit-only checkout 改走 internal completion flow
+- completion success / failure 補安全 audit
+- 補 month / year / zero-amount / idempotency 測試
 
 ### 任務 2：production 移除 Meta env token fallback
+
+狀態：`未完成`
 
 檔案：
 
@@ -48,11 +63,15 @@ npm run build
 - `src/lib/instagram/comments-sync.ts`
 - `scripts/refresh-meta-token.mjs`
 
-內容：
+具體任務：
 
-- 正式環境禁止拿全域 env token 當 channel token
+- production 停用 `META_*` env fallback
+- 強制 channel token / account binding
+- 補 tenant isolation regression tests
 
-### 任務 3：收斂 Meta OAuth 正式主流程
+### 任務 3：收斂 Meta OAuth production 主流程
+
+狀態：`未完成`
 
 檔案：
 
@@ -63,12 +82,15 @@ npm run build
 - `src/lib/oauth/providers/meta-facebook.ts`
 - `src/lib/oauth/providers/meta-instagram.ts`
 
-內容：
+具體任務：
 
-- 明確定義正式主流程
-- 降低 generic / legacy 混用造成的維護風險
+- 收斂 generic / legacy callback 混線
+- 明確定義 Page / IG Business Account 選擇與重連流程
+- 補 reviewer / QA demo 支援文件
 
-### 任務 4：修正 Billing / legal / README 亂碼
+### 任務 4：整理 Billing / legal / README 亂碼與對外文案
+
+狀態：`未完成`
 
 檔案：
 
@@ -81,10 +103,11 @@ npm run build
 - `src/app/terms-of-service/page.tsx`
 - `src/app/data-deletion/page.tsx`
 
-內容：
+具體任務：
 
 - 統一 UTF-8
-- 先把對外可見頁面修乾淨
+- 補齊繁中對外文案
+- 明確標示 sandbox / production / trial / refund / cancellation 說明
 
 ### Phase 0 驗證指令
 
@@ -92,6 +115,7 @@ npm run build
 npm run lint
 npm run build
 npm test
+npm run payuni:smoke
 ```
 
 ## Phase 1：Beta 試賣必修
@@ -105,14 +129,14 @@ npm test
 - `src/app/api/automations/route.ts`
 - `src/app/api/broadcasts/route.ts`
 
-內容：
+具體任務：
 
 - 補 `sequences`
 - 補 `teamSeats`
 - 補 `activeContacts`
-- 補更多 quota 行為
+- 補 usage summary 與 quota gate 一致性
 
-### 任務 2：補試用 / 過期 / past_due / unpaid 的產品行為
+### 任務 2：補 trial / expired / past_due / unpaid 產品行為
 
 檔案：
 
@@ -120,7 +144,7 @@ npm test
 - `src/lib/billing/entitlements.ts`
 - `src/app/billing/page.tsx`
 
-### 任務 3：補 onboarding / 綁錯帳號 UX
+### 任務 3：補 onboarding / reconnect UX
 
 檔案：
 
@@ -146,21 +170,21 @@ npm run test:e2e
 
 ## Phase 2：公開販售必修
 
-### 任務 1：Meta App Review / Advanced Access / Business Verification 全收斂
+### 任務 1：完成 Meta App Review / Advanced Access / Business Verification
 
 檔案：
 
 - `docs/meta-app-review-checklist.md`
-- Meta app 後台設定
+- Meta Developer 後台設定
 
-### 任務 2：PayUNI production 正式開通
+### 任務 2：完成 PayUNI production go-live
 
 檔案：
 
 - `src/app/api/billing/payuni/checkout/route.ts`
-- deployment env
+- deployment env / runbook
 
-### 任務 3：affiliate anti-fraud / payout reconciliation
+### 任務 3：補 affiliate anti-fraud / payout reconciliation
 
 檔案：
 
@@ -168,7 +192,7 @@ npm run test:e2e
 - `src/lib/billing/affiliate-service.ts`
 - `src/app/api/admin/**`
 
-### 任務 4：billing / webhook / admin observability
+### 任務 4：補 billing / webhook / admin observability
 
 檔案：
 
@@ -188,7 +212,7 @@ npm run payuni:smoke
 
 ## Phase 3：規模化優化
 
-### 任務 1：1000 user 負載優化
+### 任務 1：高併發與 load test 收斂
 
 檔案：
 
@@ -206,7 +230,7 @@ npm run payuni:smoke
 - `src/lib/queue.ts`
 - `scripts/worker.ts`
 
-### 任務 3：更多渠道正式化
+### 任務 3：補齊正式 channel productization
 
 檔案：
 
@@ -223,21 +247,19 @@ npm run test:e2e
 npm run load:test
 ```
 
-## 下一個 Codex 任務建議
+## 下一個建議 Codex 任務
 
 ```text
-請先閱讀 AGENTS.md、docs/product-readiness-review.md、docs/security-review.md、docs/meta-app-review-checklist.md、docs/billing-affiliate-readiness.md、docs/fix-roadmap.md，然後只修 Phase 0：
+請先閱讀 AGENTS.md、docs/product-readiness-review.md、docs/security-review.md、docs/meta-app-review-checklist.md、docs/billing-affiliate-readiness.md、docs/fix-roadmap.md，然後只修 Phase 0 任務 2：
 
-1. 修正 billing interval 被寫死為 month 的問題
-2. 修正 zero-amount / credit-only checkout 不會真正啟用 subscription 的問題
-3. 在 production 模式移除 Meta env token fallback
-4. 修正 Billing / Terms / Privacy / Data Deletion / README 的亂碼
+1. 在 production 模式移除 Meta env token fallback
+2. 保留 local / sandbox 開發可用性，但正式環境必須強制使用 channel token
+3. 補 tenant isolation regression tests，覆蓋 webhook、comment sync、send message
+4. 更新 docs/codex-session-log.md、docs/fix-roadmap.md、docs/security-review.md、docs/product-readiness-review.md
 
 限制：
 - 不要大重構
-- 不要改 UI 架構
+- 不要改 Meta OAuth 主流程
 - 先列出風險
-- 補對應測試
-- 完成後更新 docs/codex-session-log.md 與 docs/fix-roadmap.md
-- 跑 npm run lint、npm run build、npm test
+- 完成後跑 npm run lint、npm run build、npm test
 ```

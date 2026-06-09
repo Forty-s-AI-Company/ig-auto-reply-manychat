@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handlePayuniCallback } from "@/lib/billing/payuni-callback";
+import { completeInternalInvoicePaymentOrder } from "@/lib/billing/payment-service";
 import { getDb } from "@/lib/db";
 import { createPayuniCheckout } from "@/lib/payuni";
 
@@ -71,6 +72,7 @@ describe("PayUNI billing callback", () => {
         userId: user.id,
         invoiceId: invoice.id,
         planKey: "creator",
+        interval: "month",
         merTradeNo: "PAYUNI_ORDER_1",
         amount: 599,
         currency: "TWD",
@@ -91,8 +93,110 @@ describe("PayUNI billing callback", () => {
     expect(order?.status).toBe("paid");
     expect(subscription?.status).toBe("active");
     expect(subscription?.planKey).toBe("creator");
+    expect(subscription?.interval).toBe("month");
     expect(paidInvoice?.status).toBe("paid");
     expect(commissionCount).toBe(0);
+  });
+
+  it("activates a yearly subscription with the saved order interval", async () => {
+    const workspace = await db.workspace.create({
+      data: { id: "yearly-workspace", name: "Yearly Workspace", slug: "yearly-workspace" },
+    });
+    const user = await db.user.create({
+      data: { id: "yearly-user", email: "yearly@example.com", name: "Yearly User", passwordHash: "test" },
+    });
+    await db.workspaceUser.create({ data: { workspaceId: workspace.id, userId: user.id, role: "admin" } });
+    const invoice = await db.invoice.create({
+      data: {
+        invoiceNumber: "INV-TEST-YEAR",
+        workspaceId: workspace.id,
+        userId: user.id,
+        periodStart: new Date(),
+        periodEnd: new Date(Date.now() + 365 * 86400000),
+        subtotalAmount: 5990,
+        totalAmount: 5990,
+        status: "pending_payment",
+      },
+    });
+    await db.paymentOrder.create({
+      data: {
+        workspaceId: workspace.id,
+        userId: user.id,
+        invoiceId: invoice.id,
+        planKey: "creator",
+        interval: "year",
+        merTradeNo: "PAYUNI_ORDER_YEAR",
+        amount: 5990,
+        currency: "TWD",
+        checkoutPayload: {},
+      },
+    });
+
+    await handlePayuniCallback(payuniResultParams("PAYUNI_ORDER_YEAR", "SUCCESS", 5990));
+
+    const subscription = await db.subscription.findFirst({ where: { workspaceId: workspace.id } });
+    expect(subscription?.status).toBe("active");
+    expect(subscription?.interval).toBe("year");
+    expect(subscription?.amount).toBe(5990);
+  });
+
+  it("completes zero-amount internal credit orders and stays idempotent", async () => {
+    const workspace = await db.workspace.create({
+      data: { id: "credit-workspace", name: "Credit Workspace", slug: "credit-workspace" },
+    });
+    const user = await db.user.create({
+      data: { id: "credit-user", email: "credit@example.com", name: "Credit User", passwordHash: "test" },
+    });
+    await db.workspaceUser.create({ data: { workspaceId: workspace.id, userId: user.id, role: "admin" } });
+    const invoice = await db.invoice.create({
+      data: {
+        invoiceNumber: "INV-TEST-CREDIT",
+        workspaceId: workspace.id,
+        userId: user.id,
+        periodStart: new Date(),
+        periodEnd: new Date(Date.now() + 365 * 86400000),
+        subtotalAmount: 5990,
+        creditUsedAmount: 5990,
+        totalAmount: 0,
+        status: "paid",
+        paidAt: new Date(),
+      },
+    });
+
+    const first = await completeInternalInvoicePaymentOrder({
+      workspaceId: workspace.id,
+      userId: user.id,
+      invoiceId: invoice.id,
+      planKey: "creator",
+      interval: "year",
+      currency: "TWD",
+      idempotencyKey: "credit-checkout-1",
+    });
+    const second = await completeInternalInvoicePaymentOrder({
+      workspaceId: workspace.id,
+      userId: user.id,
+      invoiceId: invoice.id,
+      planKey: "creator",
+      interval: "year",
+      currency: "TWD",
+      idempotencyKey: "credit-checkout-1",
+    });
+
+    const [orderCount, order, subscription, paidInvoice] = await Promise.all([
+      db.paymentOrder.count({ where: { invoiceId: invoice.id, provider: "internal_credit" } }),
+      db.paymentOrder.findFirst({ where: { invoiceId: invoice.id, provider: "internal_credit" } }),
+      db.subscription.findFirst({ where: { workspaceId: workspace.id } }),
+      db.invoice.findUnique({ where: { id: invoice.id } }),
+    ]);
+
+    expect(first.alreadyProcessed).toBe(false);
+    expect(second.alreadyProcessed).toBe(true);
+    expect(orderCount).toBe(1);
+    expect(order?.status).toBe("paid");
+    expect(order?.interval).toBe("year");
+    expect(subscription?.status).toBe("active");
+    expect(subscription?.interval).toBe("year");
+    expect(paidInvoice?.status).toBe("paid");
   });
 
   it("does not activate subscription for failed payment", async () => {
@@ -103,6 +207,7 @@ describe("PayUNI billing callback", () => {
       data: {
         workspaceId: workspace.id,
         planKey: "creator",
+        interval: "month",
         merTradeNo: "PAYUNI_ORDER_FAILED",
         amount: 599,
         currency: "TWD",
