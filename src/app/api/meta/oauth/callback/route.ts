@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { getAppUrl } from "@/lib/app-url";
+import { recordAuditEvent } from "@/lib/audit";
+import { getCurrentUser } from "@/lib/auth";
 import {
   buildInstagramChannelName,
   getMetaChannelConfig,
@@ -9,6 +12,9 @@ import {
 } from "@/lib/channels/meta";
 import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
+import { clearPopupState, readPopupState } from "@/lib/oauth/state";
+import { getPopupBridgeUrl } from "@/lib/oauth/utils";
+import { getClientIp } from "@/lib/security";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -17,7 +23,8 @@ const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
 const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
-const DEFAULT_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
+const DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
+const DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH = "/api/instagram/oauth/callback";
 
 type MetaGraphError = {
   error?: {
@@ -85,22 +92,15 @@ type MetaBusiness = {
   client_instagram_accounts?: { data?: MetaInstagramBusinessAsset[] };
 };
 
-function getAppUrl(request: Request) {
-  const requestOrigin = new URL(request.url).origin;
-  const hostname = new URL(requestOrigin).hostname;
-  if (hostname === "localhost" || hostname === "127.0.0.1") {
-    return requestOrigin;
-  }
-  return (process.env.APP_URL || requestOrigin).replace(/\/$/, "");
-}
-
 function getOAuthRedirectUri(request: Request, mode: MetaOauthMode) {
   const configuredRedirect =
     mode === "instagram"
       ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
       : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
   if (configuredRedirect) return configuredRedirect;
-  return `${getAppUrl(request)}${DEFAULT_OAUTH_CALLBACK_PATH}`;
+  const callbackPath =
+    mode === "instagram" ? DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH : DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH;
+  return `${getAppUrl(request)}${callbackPath}`;
 }
 
 function requiredEnv(name: string) {
@@ -595,20 +595,106 @@ async function upsertInstagramLoginChannel(profile: InstagramProfile, accessToke
   return channel;
 }
 
+export function getCallbackMode(request: Request, cookieValue?: string): MetaOauthMode {
+  if (cookieValue === "facebook" || cookieValue === "instagram") return cookieValue;
+  return new URL(request.url).pathname.startsWith(DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH)
+    ? "instagram"
+    : "facebook";
+}
+
+async function recordMetaOauthFailure(params: {
+  request: Request;
+  workspaceId: string;
+  userId?: string;
+  provider: string;
+  mode: MetaOauthMode;
+  reason: string;
+  transport?: "popup" | "redirect";
+}) {
+  const sanitizedReason = params.reason
+    .replace(/\b(access[_-]?token|refresh[_-]?token|client[_-]?secret|app[_-]?secret|authorization[_-]?code|code|state|secret)\b/gi, "[redacted]")
+    .replace(/([?&](?:code|state|access_token|refresh_token|client_secret|app_secret)=)[^&\s]+/gi, "$1[redacted]")
+    .slice(0, 500);
+
+  await recordAuditEvent({
+    action: "oauth_callback_failed",
+    resourceType: "channel",
+    workspaceId: params.workspaceId,
+    userId: params.userId,
+    actorIp: getClientIp(params.request),
+    userAgent: params.request.headers.get("user-agent"),
+    success: false,
+    metadata: {
+      provider: params.provider,
+      mode: params.mode,
+      transport: params.transport || "popup",
+      reason: sanitizedReason,
+    },
+  });
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
+  const providerError = url.searchParams.get("error_description") || url.searchParams.get("error") || "";
   const cookieStore = await cookies();
+  const popupState = await readPopupState();
   const expectedState = cookieStore.get(META_OAUTH_STATE_COOKIE)?.value;
   const workspaceId = cookieStore.get(META_OAUTH_WORKSPACE_COOKIE)?.value || (await getDefaultWorkspaceId());
-  const mode = (cookieStore.get(META_OAUTH_MODE_COOKIE)?.value === "facebook" ? "facebook" : "instagram") as MetaOauthMode;
+  const mode = getCallbackMode(request, cookieStore.get(META_OAUTH_MODE_COOKIE)?.value);
+  const currentUser = await getCurrentUser();
+  const popupProvider =
+    popupState.provider === "meta-instagram" || popupState.provider === "meta-facebook" ? popupState.provider : "";
+  const auditProvider = popupProvider || `meta-${mode}`;
   cookieStore.delete(META_OAUTH_STATE_COOKIE);
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);
 
+  if (providerError) {
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: providerError,
+    });
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message: providerError,
+        }),
+      );
+    }
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(providerError)}`);
+  }
+
   if (!code || !state || !expectedState || state !== expectedState) {
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=invalid_state`);
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: "invalid_state",
+    });
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message: "OAuth state verification failed.",
+        }),
+      );
+    }
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=invalid_state`);
   }
 
   try {
@@ -616,6 +702,17 @@ export async function GET(request: Request) {
       const token = await exchangeCodeForInstagramToken(request, code);
       const profile = await getInstagramProfileOrFallback(token.accessToken, token.userId);
       const channel = await upsertInstagramLoginChannel(profile, token.accessToken, token.expiresAt, workspaceId);
+      if (popupProvider) {
+        await clearPopupState();
+        return NextResponse.redirect(
+          getPopupBridgeUrl(request, {
+            status: "success",
+            provider: popupProvider,
+            accountId: channel.id,
+            displayName: channel.name,
+          }),
+        );
+      }
       return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=1&mode=instagram&channel=${channel.id}`);
     }
 
@@ -631,11 +728,44 @@ export async function GET(request: Request) {
       }
     }
     if (channels.length === 0) {
-      throw new Error("Meta 沒有回傳可連線的 Instagram 商業帳號。請在 Meta 視窗點「編輯設定」，確認已勾選粉絲專頁、商家與 Instagram 帳號，且該 IG 已連到 Facebook 粉絲專頁。");
+      throw new Error("Meta did not return any usable Instagram channels.");
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook`);
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "success",
+          provider: popupProvider,
+          accountId: channels[0]?.id,
+          displayName: channels[0]?.name || "Meta",
+          message: `Connected ${channels.length} Instagram channel(s).`,
+        }),
+      );
+    }
+    return NextResponse.redirect(
+      `${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook&channel=${channels[0]?.id || ""}`,
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Meta connection failed.";
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/instagram?meta_error=${encodeURIComponent(message)}`);
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: message,
+    });
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message,
+        }),
+      );
+    }
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(message)}`);
   }
 }

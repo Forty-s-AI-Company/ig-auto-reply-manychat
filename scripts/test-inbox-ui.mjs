@@ -7,7 +7,13 @@ import { loadProjectEnv } from "./load-env.mjs";
 loadProjectEnv();
 const base = "http://localhost:3041";
 const outDir = path.resolve("docs/assets");
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPassword = process.env.ADMIN_PASSWORD;
 fs.mkdirSync(outDir, { recursive: true });
+
+if (!adminEmail || !adminPassword) {
+  throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required for UI smoke tests.");
+}
 
 async function ensureInboxFixture() {
   const prisma = new PrismaClient();
@@ -88,10 +94,7 @@ async function ensureInboxFixture() {
 
 await ensureInboxFixture();
 
-const browser = await chromium.launch({
-  executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-  headless: true,
-});
+const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({
   viewport: { width: 1600, height: 900 },
   locale: "zh-TW",
@@ -100,7 +103,7 @@ const context = await browser.newContext({
 const login = await fetch(`${base}/api/auth/login`, {
   method: "POST",
   headers: { "content-type": "application/json" },
-  body: JSON.stringify({ email: "admin@example.com", password: "admin123456" }),
+  body: JSON.stringify({ email: adminEmail, password: adminPassword }),
 });
 const setCookie = login.headers.get("set-cookie") || "";
 const match = setCookie.match(/pca_session=([^;]+)/);

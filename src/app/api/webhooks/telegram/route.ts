@@ -1,18 +1,51 @@
 import { NextResponse } from "next/server";
+import { recordAuditEvent } from "@/lib/audit";
 import { handleInboundMessage } from "@/lib/messages";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 import { hasValidSharedSecret } from "@/lib/webhook-security";
 
 export async function POST(request: Request) {
+  const rateLimitFailure = await assertRateLimit({
+    key: `webhook:telegram:${getClientIp(request)}`,
+    limit: 300,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   if (!process.env.TELEGRAM_BOT_TOKEN) {
+    await recordAuditEvent({
+      action: "webhook_configuration_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "telegram", reason: "missing_bot_token" },
+    });
     return NextResponse.json({ error: "TELEGRAM_BOT_TOKEN is not configured." }, { status: 400 });
   }
   if (!process.env.TELEGRAM_WEBHOOK_SECRET && process.env.NODE_ENV === "production") {
+    await recordAuditEvent({
+      action: "webhook_configuration_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "telegram", reason: "missing_webhook_secret" },
+    });
     return NextResponse.json({ error: "TELEGRAM_WEBHOOK_SECRET is not configured." }, { status: 500 });
   }
   if (
     process.env.TELEGRAM_WEBHOOK_SECRET &&
     !hasValidSharedSecret(request, "x-telegram-bot-api-secret-token", process.env.TELEGRAM_WEBHOOK_SECRET)
   ) {
+    await recordAuditEvent({
+      action: "webhook_signature_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "telegram" },
+    });
     return NextResponse.json({ error: "Invalid Telegram webhook secret." }, { status: 401 });
   }
 

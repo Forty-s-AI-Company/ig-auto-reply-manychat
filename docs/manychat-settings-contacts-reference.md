@@ -71,9 +71,11 @@
 | 流程步驟 | 本專案位置 | 狀態 |
 | --- | --- | --- |
 | 左上角帳號下拉 | 全站左側欄 | 顯示已連結 Instagram 帳號、全部 IG 帳號、新增平台帳號 |
-| 平台選擇頁 | `/channels#platform-connect` | Instagram / Facebook Messenger 可進入登入；其他平台顯示 [開發中] |
-| Instagram 登入 | `/api/meta/oauth/start?mode=instagram` | 已接 Meta OAuth / Instagram Login |
-| Facebook Messenger 登入 | `/api/meta/oauth/start?mode=facebook` | 已接 Meta OAuth 入口 |
+| 平台選擇頁 | `/channels#platform-connect` | 入口已收斂為 Social Accounts，避免再暴露舊的分散式登入入口 |
+| Social Accounts | `/channels/connect/social` | 已接新版 OAuth popup / token 流程 |
+| Instagram OAuth | `/api/oauth/meta-instagram/authorize` | 已接 Meta Instagram Popup |
+| Facebook / Meta Login | `/api/oauth/meta-facebook/authorize` | 已接 Meta Facebook Popup |
+| Telegram Bot | `/api/oauth/telegram-bot/authorize` | 已接 Bot Token 流程 |
 | 新增成功 | `/channels?connected=...` | 成功後顯示已連結帳號與 token 狀態 |
 
 ## 本機測試紀錄

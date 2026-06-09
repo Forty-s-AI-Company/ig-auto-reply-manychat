@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export function LoginForm() {
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("admin123456");
-  const [error, setError] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const googleError = new URLSearchParams(window.location.search).get("google_error");
-    return googleError ? "Google 登入失敗，請再試一次或改用 Email 登入。" : "";
-  });
+const EMAIL_LOGIN_ERROR_MESSAGE = "登入失敗，請檢查帳號或密碼。";
+
+export function LoginForm({ initialError = "" }: { initialError?: string }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(initialError);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,7 +22,7 @@ export function LoginForm() {
 
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      setError(data.error || "登入失敗，請確認帳號或密碼。");
+      setError(data.error || EMAIL_LOGIN_ERROR_MESSAGE);
       return;
     }
 
@@ -75,9 +73,7 @@ export function LoginForm() {
         />
       </label>
 
-      <button className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8]">
-        登入
-      </button>
+      <button className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8]">登入</button>
 
       <p className="text-center text-sm text-[#667085]">
         還沒有帳號？{" "}

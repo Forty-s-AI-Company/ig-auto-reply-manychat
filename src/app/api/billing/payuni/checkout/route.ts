@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { createPlanInvoice } from "@/lib/billing/invoice-service";
 import { getPlan, getPlanAmount } from "@/lib/billing/plans";
 import { requireApiUser } from "@/lib/auth";
@@ -7,14 +8,27 @@ import {
   createMerchantTradeNo,
   createPayuniCheckout,
   getPayuniConfig,
+  isPayuniSandboxGateway,
   renderAutoSubmitForm,
+  type PayuniTradePayload,
 } from "@/lib/payuni";
+import { assertRateLimit, assertSameOriginRequest, getClientIp } from "@/lib/security";
 import { billingCheckoutSchema } from "@/lib/validation";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function POST(request: Request) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
+
+  const rateLimitFailure = await assertRateLimit({
+    key: `payuni-checkout:${auth.user.id}:${getClientIp(request)}`,
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
 
   const parsed = billingCheckoutSchema.safeParse(
     Object.fromEntries((await request.formData()).entries()),
@@ -30,6 +44,27 @@ export async function POST(request: Request) {
   }
 
   const workspaceId = await getCurrentWorkspaceId();
+  const idempotencyKey = request.headers.get("idempotency-key")?.trim() || "";
+  if (idempotencyKey) {
+    const existingOrder = await getDb().paymentOrder.findFirst({
+      where: {
+        workspaceId,
+        userId: auth.user.id,
+        provider: "payuni",
+        status: "pending",
+        planKey: plan.key,
+        checkoutPayload: { path: ["idempotencyKey"], equals: idempotencyKey },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    if (existingOrder) {
+      const checkout = createPayuniCheckout(existingOrder.checkoutPayload as unknown as PayuniTradePayload);
+      return new NextResponse(renderAutoSubmitForm(checkout.action, checkout.fields), {
+        headers: { "content-type": "text/html; charset=utf-8" },
+      });
+    }
+  }
+
   const invoice = await createPlanInvoice({
     userId: auth.user.id,
     workspaceId,
@@ -44,6 +79,9 @@ export async function POST(request: Request) {
   }
 
   const config = getPayuniConfig();
+  if (!isPayuniSandboxGateway(config.gatewayUrl) && process.env.PAYUNI_ALLOW_PRODUCTION !== "true") {
+    return NextResponse.json({ error: "PayUNI production gateway is not enabled while merchant review is pending." }, { status: 503 });
+  }
   const merTradeNo = createMerchantTradeNo(workspaceId);
   const payload = {
     MerID: config.merchantId,
@@ -54,6 +92,7 @@ export async function POST(request: Request) {
     ReturnURL: config.returnUrl,
     NotifyURL: config.notifyUrl,
     UsrMail: auth.user.email,
+    idempotencyKey: idempotencyKey || undefined,
   };
 
   await getDb().paymentOrder.create({
@@ -65,7 +104,7 @@ export async function POST(request: Request) {
       merTradeNo,
       amount: invoice.totalAmount,
       currency: "TWD",
-      checkoutPayload: payload,
+      checkoutPayload: payload as Prisma.InputJsonValue,
     },
   });
 

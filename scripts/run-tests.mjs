@@ -6,11 +6,20 @@ import { loadProjectEnv } from "./load-env.mjs";
 
 loadProjectEnv();
 
+const withCoverage = process.argv.includes("--coverage");
+
 const baseDatabaseUrl = process.env.TEST_DATABASE_URL || process.env.DATABASE_URL;
 if (!baseDatabaseUrl) {
   throw new Error("DATABASE_URL or TEST_DATABASE_URL is required to run tests.");
 }
-const baseDirectUrl = process.env.TEST_DIRECT_URL || process.env.DIRECT_URL || baseDatabaseUrl;
+// Prefer an explicit test direct URL. Otherwise reuse the tested pooler URL,
+// which is more reliable in this workspace than the provisioned DIRECT_URL.
+const baseDirectUrl =
+  process.env.TEST_DIRECT_URL ||
+  process.env.TEST_DATABASE_URL ||
+  process.env.DATABASE_URL ||
+  process.env.DIRECT_URL ||
+  baseDatabaseUrl;
 
 const testSchema = `test_${Date.now()}_${randomBytes(3).toString("hex")}`;
 const testDatabaseUrl = new URL(baseDatabaseUrl);
@@ -62,8 +71,11 @@ try {
     .sort()
     .map((fileName) => path.join("tests", fileName));
 
-  for (let index = 0; index < testFiles.length; index += 6) {
-    const batch = testFiles.slice(index, index + 6);
+  const batches = withCoverage
+    ? [testFiles]
+    : Array.from({ length: Math.ceil(testFiles.length / 6) }, (_, index) => testFiles.slice(index * 6, index * 6 + 6));
+
+  for (const batch of batches) {
     await run(process.execPath, [
       vitestBin,
       "run",
@@ -72,6 +84,7 @@ try {
       "1",
       "--reporter",
       "dot",
+      ...(withCoverage ? ["--coverage"] : []),
       ...batch,
     ]);
   }

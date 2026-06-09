@@ -106,6 +106,7 @@ export const sequenceSubscribeSchema = z.object({
 
 export const automationSchema = z.object({
   name: z.string().min(1),
+  folderId: z.string().min(1).optional().nullable(),
   enabled: z.boolean().default(true),
   triggerType: z.enum(["keyword", "new_contact", "manual", "webhook"]),
   triggerConfigJson: z.unknown().default({}),
@@ -127,6 +128,10 @@ export const automationSchema = z.object({
       }),
     )
     .default([]),
+});
+
+export const automationFolderSchema = z.object({
+  name: z.string().min(1).max(80),
 });
 
 export const knowledgeBaseSchema = z.object({

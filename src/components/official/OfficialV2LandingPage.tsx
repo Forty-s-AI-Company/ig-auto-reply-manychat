@@ -24,13 +24,8 @@ import {
 } from "lucide-react";
 import {
   siFacebook,
-  siGoogle,
   siInstagram,
   siMeta,
-  siShopify,
-  siTelegram,
-  siTiktok,
-  siWhatsapp,
 } from "simple-icons";
 import { useEffect, useRef, useState, type ComponentType } from "react";
 
@@ -58,10 +53,10 @@ const copy = {
       title: "InboxPilot",
       subtitle: "把留言、私訊與銷售機會，自動整理成能成交的對話流程。",
       body:
-        "這版不再只做像 BotCommerce 的版型，而是把 HyperFrames 製作的實際產品介紹影片放到首屏，讓使用者一進來就看到 IG 留言關鍵字、DM、自動化流程與 Inbox 接手。",
+        "專為 Instagram 經營者與小團隊打造：偵測留言關鍵字、送出 DM、標記名單，再把需要人工處理的對話交給共享 Inbox。",
       primary: "開始建立自動化",
       secondary: "觀看產品影片",
-      proof: "HyperFrames 影片展示、繁中預設、Meta API 串接、多帳號 SaaS",
+      proof: "繁中預設、Meta API 串接、多 IG 帳號、團隊 Inbox",
     },
     stats: [
       ["3 分鐘", "建立第一個留言回覆流程"],
@@ -71,53 +66,53 @@ const copy = {
     channelsTitle: "你的客戶在哪裡留言，InboxPilot 就在哪裡接住",
     videoSection: {
       eyebrow: "See InboxPilot in action",
-      title: "這次先補上 BotCommerce 最有說服力的東西：影片",
+      title: "先看清楚 InboxPilot 實際在做什麼",
       body:
-        "BotCommerce 看起來強，是因為每段都用產品畫面或短影片證明功能。InboxPilot v2 現在也把實際產品介紹影片放進頁面，而不是只靠靜態 mock。",
+        "從留言觸發、私訊回覆、流程節點到團隊接手，頁面聚焦產品本身，不再把不相關的製作工具或行銷素材塞進來。",
     },
     videos: [
       {
         title: "完整產品巡覽",
         body: "從 IG 留言關鍵字到 DM、自動化流程、標籤與 Inbox 接手，做成一支橫版產品導覽。",
         src: productTourVideo,
-        label: "HyperFrames 16:9",
+        label: "產品導覽",
       },
       {
         title: "手機直式短片",
-        body: "適合放在社群廣告、限動或手機版首屏，快速傳達 InboxPilot 的核心價值。",
+        body: "用手機畫面呈現留言到 DM 的流程，快速傳達 InboxPilot 的核心價值。",
         src: mobileStoryVideo,
-        label: "HyperFrames 9:16",
+        label: "手機體驗",
       },
       {
         title: "Flow Builder 展示",
-        body: "用影片呈現節點串接、關鍵字條件、延遲與動作，補足原本 v2 只有靜態卡片的不足。",
+        body: "呈現節點串接、關鍵字條件、延遲與動作，讓使用者知道流程如何被建立。",
         src: productTourVideo,
-        label: "實際流程畫面",
+        label: "流程畫面",
       },
       {
         title: "Inbox 接手展示",
-        body: "把未指派、提醒、熱門名單與真人接手放進影片邏輯，讓使用者知道這不是只有自動回覆。",
+        body: "把未指派、提醒、熱門名單與真人接手放進同一個工作流，避免自動化變成斷點。",
         src: productTourVideo,
         label: "團隊收件匣",
       },
     ],
     features: {
-      eyebrow: "Powerful automation tools",
+      eyebrow: "Instagram automation",
       title: "自動化該有的能力，先從 IG 真正會用到的開始",
       body:
-        "重構後的 v2 對齊 BotCommerce 的長銷售頁節奏，但內容不照抄，改成 InboxPilot 真正要交付的 IG 自動化能力。",
+        "官網文案回到 InboxPilot 真正要交付的 IG 自動化能力，而不是泛用聊天機器人、工具包或跨通路大平台承諾。",
     },
     featureItems: [
       ["留言觸發 DM", "支援指定貼文、全部貼文、關鍵字條件、延遲觸發、自動按讚與公開回覆。"],
       ["視覺化 Flow Builder", "訊息、條件、動作、等待、標籤、指派節點，用拖拉方式串成完整對話流程。"],
       ["共享 Inbox", "未指派、指派給我、提醒、標籤、收藏、熱門名單與團隊協作都放在同一個收件匣。"],
-      ["AI 回覆設定", "每個帳號可設定自己的 AI provider 與 API key，不把 SaaS 使用者設定綁死在 .env。"],
+      ["回覆素材管理", "常用文字、活動連結、名單標籤與人工接手規則，都能依照 IG 帳號分開管理。"],
       ["官方 API 優先", "Meta OAuth、Webhook、Token、IG 專業帳號資訊都以正式 API 流程為主。"],
       ["繁中預設", "後台與官網預設繁體中文，英文作為切換語系，不再讓使用者一進來就被英文卡住。"],
     ],
     tabs: {
       title: "為什麼團隊會選 InboxPilot",
-      body: "參考 BotCommerce 的 tab 展示，但內容改成 InboxPilot 的真實使用情境。",
+      body: "內容改成 InboxPilot 的真實使用情境：留言、DM、標籤、提醒、指派與接手。",
       items: [
         ["全天候接住留言", "活動貼文半夜有人留言也能自動回覆，不用等人工醒來才補救。"],
         ["減少重複客服", "價格、尺寸、課程、領取連結等常見問題先由流程處理。"],
@@ -127,25 +122,25 @@ const copy = {
       ],
     },
     botcommerceMatch: {
-      title: "現在 v2 哪裡真的比較像 BotCommerce？",
+      title: "v2 現在聚焦在哪裡？",
       body:
-        "不是顏色像，也不是排版抄一抄。真正像的是銷售頁的說服節奏：先看產品影片，再看功能、情境、整合、比較、價格與 FAQ。",
+        "不是做成一堆工具介紹頁，而是清楚說明 Instagram 留言如何變成可追蹤、可分派、可接手的銷售對話。",
       items: [
-        ["影片先行", "首屏與 Demo 區都放 HyperFrames 產出的產品影片。"],
-        ["長頁節奏", "從 Hero 到 FAQ 的順序參考 BotCommerce 的高密度銷售頁。"],
-        ["互動 Tab", "把使用情境拆成可點擊內容，不一次塞滿。"],
-        ["ManyChat 比較", "保留替代方案定位，但改成 InboxPilot 的 IG 自動化差異。"],
+        ["IG 先行", "頁面主軸回到 Instagram 留言、私訊、貼文活動與 Meta 連線。"],
+        ["流程清楚", "從 Hero 到 FAQ 都圍繞觸發、回覆、標籤、Inbox 接手。"],
+        ["互動 Tab", "把真實使用情境拆成可點擊內容，不一次塞滿。"],
+        ["ManyChat 比較", "保留替代方案定位，但只比較與 IG 自動化相關的差異。"],
       ],
     },
     compare: {
       title: "ManyChat 替代方案，但先做好你真的需要的 IG 流程",
       body:
-        "BotCommerce 用價格對比 ManyChat；InboxPilot 的對比重點則是中文介面、IG 留言流程、Meta 串接與可控的 AI 設定。",
+        "InboxPilot 的對比重點是中文介面、IG 留言流程、Meta 串接、共享 Inbox 與團隊接手。",
       rows: [
         ["視覺化自動化", "成熟 Flow Builder", "ManyChat 風格 Flow Builder，聚焦 IG 留言與 DM"],
         ["語系", "英文為主", "繁體中文預設，英文可切換"],
         ["新增帳號", "Meta / Instagram OAuth", "平台登入導向、保留 IG 名稱與大頭貼"],
-        ["AI 設定", "平台內建與方案限制", "每個租戶自己的 provider / API key"],
+        ["回覆與標籤", "平台規則完整但設定較多", "以活動貼文、留言關鍵字、標籤與接手流程為核心"],
         ["Inbox", "完整客服收件匣", "未指派、提醒、標籤、團隊接手優先補齊"],
       ],
     },
@@ -153,17 +148,17 @@ const copy = {
       eyebrow: "Pricing",
       title: "不用先懂所有功能，先讓第一條 IG 自動化跑起來",
       body:
-        "正式價格仍接到現有 /pricing。v2 的任務是先把產品價值、影片展示和使用情境講清楚，價格頁再承接方案比較。",
+        "正式價格仍接到現有 /pricing。v2 的任務是先把產品價值、產品展示和使用情境講清楚，價格頁再承接方案比較。",
       cta: "查看價格方案",
-      notes: ["連接 IG 帳號", "留言關鍵字自動化", "共享 Inbox", "AI provider 設定"],
+      notes: ["連接 IG 帳號", "留言關鍵字自動化", "共享 Inbox", "團隊接手流程"],
     },
     faq: {
       title: "常見問題",
       items: [
         ["這個頁面會取代原本 /official 嗎？", "不會。原本 /official 保留不動，這次新增並重構的是 /official/v2，方便比較兩版官網。"],
-        ["v2 現在跟 BotCommerce 像在哪？", "像的是長銷售頁架構、影片先行、功能 tab、比較表、價格 CTA 與 FAQ，而不是照抄品牌或文案。"],
-        ["影片真的是 HyperFrames 做的嗎？", "是。這版嵌入的產品巡覽與手機直式短片來自專案內既有 HyperFrames render，並複製到 public/videos/official-v2 使用。"],
-        ["還需要補哪些影片？", "下一階段建議再補新增 IG 帳號、指定貼文、留言觸發、Inbox 接手、AI 設定五段短影片，會更接近 BotCommerce 的說服密度。"],
+        ["v2 現在調整了什麼？", "移除和本專案無關的工具包、製作工具與泛用行銷承諾，改成聚焦 IG 留言自動化與 Inbox 接手。"],
+        ["影片內容會展示什麼？", "展示留言關鍵字、DM 回覆、流程節點、標籤與團隊 Inbox，不再把頁面重點放在製作工具本身。"],
+        ["還需要補哪些產品畫面？", "下一階段建議補新增 IG 帳號、指定貼文、留言觸發、Inbox 接手與標籤管理五段短影片。"],
       ],
     },
     footer: {
@@ -190,10 +185,10 @@ const copy = {
       title: "InboxPilot",
       subtitle: "Turn comments, DMs, and sales moments into automated conversations.",
       body:
-        "V2 no longer only borrows BotCommerce's page rhythm. It now opens with HyperFrames product videos that show comment keywords, DMs, automation flows, and inbox handoff.",
+        "Built for Instagram operators and small teams: detect comment keywords, send DMs, tag leads, and hand off the conversations that need a human.",
       primary: "Build automation",
       secondary: "Watch product video",
-      proof: "HyperFrames demos, Traditional Chinese first, Meta API ready, multi-account SaaS",
+      proof: "Traditional Chinese first, Meta API ready, multiple IG accounts, team inbox",
     },
     stats: [
       ["3 min", "Create your first comment reply flow"],
@@ -203,26 +198,26 @@ const copy = {
     channelsTitle: "InboxPilot meets customers where they already message you",
     videoSection: {
       eyebrow: "See InboxPilot in action",
-      title: "The missing BotCommerce ingredient: real video proof",
+      title: "See what InboxPilot actually does",
       body:
-        "BotCommerce feels persuasive because every section shows product motion. InboxPilot v2 now adds rendered product videos instead of relying on static mockups.",
+        "From comment triggers and DM replies to flow nodes and team handoff, the page now focuses on the product instead of unrelated creation tools or marketing add-ons.",
     },
     videos: [
       {
         title: "Full product tour",
         body: "A landscape walkthrough covering IG comment keywords, DM replies, automation flow, tags, and inbox handoff.",
         src: productTourVideo,
-        label: "HyperFrames 16:9",
+        label: "Product tour",
       },
       {
         title: "Mobile vertical story",
-        body: "A portrait video for social ads, stories, and mobile-first landing sections.",
+        body: "A portrait view of the comment-to-DM flow for mobile visitors.",
         src: mobileStoryVideo,
-        label: "HyperFrames 9:16",
+        label: "Mobile experience",
       },
       {
         title: "Flow Builder demo",
-        body: "Shows node-based keyword, delay, and action logic instead of leaving the flow as a static card.",
+        body: "Shows node-based keyword, delay, and action logic so visitors understand how flows are built.",
         src: productTourVideo,
         label: "Workflow footage",
       },
@@ -234,22 +229,22 @@ const copy = {
       },
     ],
     features: {
-      eyebrow: "Powerful automation tools",
+      eyebrow: "Instagram automation",
       title: "Start with the Instagram workflows teams actually need",
       body:
-        "The rebuilt v2 follows BotCommerce's sales-page rhythm, but the content is rewritten around InboxPilot's IG automation promise.",
+        "The rebuilt v2 is about InboxPilot's real IG automation promise, not generic chatbots, tool bundles, or broad multi-channel claims.",
     },
     featureItems: [
       ["Comment to DM", "Selected posts, all posts, keyword conditions, delayed triggers, auto-like, and public replies."],
       ["Visual Flow Builder", "Drag message, condition, action, wait, tag, and assignment nodes into complete paths."],
       ["Shared Inbox", "Unassigned, assigned to me, reminders, tags, favorites, hot leads, and team handoff."],
-      ["AI Reply Settings", "Each account can store its own AI provider and API key instead of relying on SaaS deployment .env settings."],
+      ["Reply Asset Management", "Saved replies, campaign links, tags, and handoff rules can be managed per IG account."],
       ["Official API First", "Meta OAuth, webhooks, tokens, and Instagram professional account data follow official API flows."],
       ["Bilingual by Design", "Traditional Chinese is the default experience, with English available as a switchable version."],
     ],
     tabs: {
       title: "Why teams choose InboxPilot",
-      body: "Inspired by BotCommerce's tab section, but rewritten around InboxPilot's real use cases.",
+      body: "Rewritten around InboxPilot's real use cases: comments, DMs, tags, reminders, assignment, and handoff.",
       items: [
         ["Always-on comment capture", "Campaign posts can reply overnight without waiting for manual follow-up."],
         ["Less repeated support", "Pricing, sizing, course info, and links can be answered by flows first."],
@@ -259,25 +254,25 @@ const copy = {
       ],
     },
     botcommerceMatch: {
-      title: "Where v2 now actually resembles BotCommerce",
+      title: "What v2 is focused on now",
       body:
-        "It is not about copying colors. It is about the conversion rhythm: product video first, then features, use cases, integrations, comparison, pricing, and FAQ.",
+        "This is not a tool-bundle landing page. It explains how Instagram comments become trackable, assignable, handoff-ready sales conversations.",
       items: [
-        ["Video first", "Hero and demo sections now use HyperFrames-rendered product videos."],
-        ["Long-form rhythm", "The page moves from Hero to FAQ like a dense sales page."],
+        ["IG first", "The page centers Instagram comments, DMs, campaign posts, and Meta connection."],
+        ["Clear flow", "Hero through FAQ now follows trigger, reply, tag, inbox handoff."],
         ["Interactive tabs", "Use cases are grouped into clickable, digestible states."],
-        ["ManyChat comparison", "The alternative positioning is kept, but rewritten for IG automation."],
+        ["ManyChat comparison", "The alternative positioning only compares IG automation differences."],
       ],
     },
     compare: {
       title: "A ManyChat alternative focused on the IG workflows you need first",
       body:
-        "BotCommerce compares pricing with ManyChat. InboxPilot's comparison is about Chinese UX, IG comment flows, Meta integration, and user-controlled AI settings.",
+        "InboxPilot's comparison is about Chinese UX, IG comment flows, Meta integration, shared inbox, and team handoff.",
       rows: [
         ["Visual automation", "Mature Flow Builder", "ManyChat-style builder focused on IG comments and DMs"],
         ["Language", "English-first", "Traditional Chinese default, English switchable"],
         ["Account connect", "Meta / Instagram OAuth", "Platform login flow with IG name and avatar retained"],
-        ["AI settings", "Plan and platform dependent", "Tenant-owned provider and API key settings"],
+        ["Replies and tags", "Powerful but broader setup", "Campaign posts, comment keywords, tags, and handoff flows"],
         ["Inbox", "Full support inbox", "Unassigned, reminders, tags, and team handoff first"],
       ],
     },
@@ -285,17 +280,17 @@ const copy = {
       eyebrow: "Pricing",
       title: "You do not need every feature first. You need your first IG automation live.",
       body:
-        "Pricing still routes to the existing /pricing page. V2 clarifies product value, video proof, and use cases before visitors compare plans.",
+        "Pricing still routes to the existing /pricing page. V2 clarifies product value, product proof, and use cases before visitors compare plans.",
       cta: "View pricing",
-      notes: ["Connect IG accounts", "Comment keyword automation", "Shared Inbox", "AI provider settings"],
+      notes: ["Connect IG accounts", "Comment keyword automation", "Shared Inbox", "Team handoff flows"],
     },
     faq: {
       title: "Frequently asked questions",
       items: [
         ["Will this replace /official?", "No. The original /official page stays untouched. This is a rebuilt /official/v2 route so both versions can be compared."],
-        ["Where does v2 resemble BotCommerce now?", "The page now follows the long-form sales structure, video-first demo, feature tabs, comparison table, pricing CTA, and FAQ rhythm."],
-        ["Were the videos made with HyperFrames?", "Yes. The embedded product tour and mobile story come from existing HyperFrames renders in this project and are served from public/videos/official-v2."],
-        ["What videos should be added next?", "Account connection, selected post setup, comment trigger, inbox handoff, and AI settings should become separate short clips next."],
+        ["What changed in v2?", "Unrelated tool bundles, production-tool mentions, and broad marketing claims were removed. The page now focuses on IG comment automation and inbox handoff."],
+        ["What will the videos show?", "Comment keywords, DM replies, flow nodes, tags, and the team inbox instead of the production tool behind the assets."],
+        ["What product footage should be added next?", "Account connection, selected post setup, comment triggers, inbox handoff, and tag management should become separate short clips."],
       ],
     },
     footer: {
@@ -310,20 +305,14 @@ const copy = {
 
 const channels = [
   { label: "Instagram", icon: siInstagram, color: "#e4405f" },
-  { label: "WhatsApp", icon: siWhatsapp, color: "#25d366" },
-  { label: "Messenger", icon: siFacebook, color: "#0866ff" },
-  { label: "TikTok", icon: siTiktok, color: "#111111" },
-  { label: "Telegram", icon: siTelegram, color: "#26a5e4" },
   { label: "Meta", icon: siMeta, color: "#0467df" },
+  { label: "Messenger", icon: siFacebook, color: "#0866ff" },
 ];
 
 const integrations = [
   { label: "Instagram", icon: siInstagram, color: "#e4405f" },
   { label: "Meta", icon: siMeta, color: "#0467df" },
-  { label: "WhatsApp", icon: siWhatsapp, color: "#25d366" },
-  { label: "Google", icon: siGoogle, color: "#4285f4" },
-  { label: "Shopify", icon: siShopify, color: "#7ab55c" },
-  { label: "Telegram", icon: siTelegram, color: "#26a5e4" },
+  { label: "Messenger", icon: siFacebook, color: "#0866ff" },
 ];
 
 const featureIcons: IconComponent[] = [MessageCircle, Workflow, Inbox, Bot, ShieldCheck, Globe2];
@@ -483,7 +472,7 @@ function VideoFrame({
 function HeroProductVideo({ locale }: { locale: Locale }) {
   return (
     <div className="official-v2-card relative">
-      <VideoFrame src={productTourVideo} label={locale === "zh" ? "HyperFrames 產品影片" : "HyperFrames product video"} />
+      <VideoFrame src={productTourVideo} label={locale === "zh" ? "InboxPilot 產品影片" : "InboxPilot product video"} />
       <div className="absolute -bottom-5 left-6 right-6 rounded-lg border border-[#111] bg-white p-4 shadow-[8px_8px_0_rgba(17,17,17,0.16)]">
         <p className="text-xs font-black uppercase tracking-[0.14em] text-[#2f6df6]">Live walkthrough</p>
         <p className="mt-1 text-sm font-bold leading-6 text-[#111]">
@@ -620,14 +609,14 @@ function FeatureTabs({ locale }: { locale: Locale }) {
   );
 }
 
-function BotCommerceMatch({ locale }: { locale: Locale }) {
+function ProductFocusSection({ locale }: { locale: Locale }) {
   const t = copy[locale].botcommerceMatch;
 
   return (
     <section className="border-y border-black/10 bg-[#ffde45] px-5 py-20">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#111]">BotCommerce reference</p>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#111]">Product focus</p>
           <h2 className="mt-4 text-4xl font-black leading-[1.02] tracking-[-0.04em] text-[#111] md:text-6xl">{t.title}</h2>
           <p className="mt-5 text-lg leading-8 text-[#2e332e]">{t.body}</p>
         </div>
@@ -650,14 +639,14 @@ function IntegrationWall({ locale }: { locale: Locale }) {
     <section className="border-y border-black/10 bg-white px-5 py-16">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#13c296]">Connect tools</p>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-[#13c296]">Meta connection</p>
           <h2 className="mt-4 text-4xl font-black tracking-[-0.04em] text-[#111] md:text-5xl">
-            {locale === "zh" ? "連接你已經在用的平台" : "Connect the platforms you already use"}
+            {locale === "zh" ? "連接 InboxPilot 目前真正需要的平台" : "Connect the platforms InboxPilot actually needs"}
           </h2>
           <p className="mt-5 text-lg leading-8 text-[#4b4f4a]">
             {locale === "zh"
-              ? "保留 BotCommerce 的整合工具牆，但優先放 InboxPilot 目前最重要的 Meta、IG、WhatsApp、Google 與商務工具。"
-              : "The integration wall is inspired by BotCommerce, but focused on Meta, IG, WhatsApp, Google, and commerce tools."}
+              ? "官網只展示與 IG 留言、Meta OAuth、Webhook 和 Messenger 權限相關的連線，不再放無關的工具牆。"
+              : "The page only shows connections related to IG comments, Meta OAuth, webhooks, and Messenger permissions."}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -938,7 +927,7 @@ export function OfficialV2LandingPage() {
       <VideoShowcase locale={locale} />
       <FeatureSection locale={locale} />
       <FeatureTabs locale={locale} />
-      <BotCommerceMatch locale={locale} />
+      <ProductFocusSection locale={locale} />
       <IntegrationWall locale={locale} />
       <ComparisonTable locale={locale} />
       <PricingCta locale={locale} />

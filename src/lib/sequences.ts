@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { getDb } from "@/lib/db";
+import { enqueueJob } from "@/lib/queue";
 
 function nextRunDate(delaySeconds: number) {
   return new Date(Date.now() + Math.max(0, delaySeconds) * 1000);
@@ -38,14 +39,12 @@ export async function subscribeContactToSequence(input: {
     },
   });
 
-  await db.job.create({
-    data: {
-      workspaceId: input.workspaceId,
-      type: "sequence_send",
-      status: "queued",
-      runAt,
-      payloadJson: { subscriptionId: subscription.id },
-    },
+  await enqueueJob({
+    workspaceId: input.workspaceId,
+    type: "sequence_send",
+    status: "queued",
+    runAt,
+    payloadJson: { subscriptionId: subscription.id },
   });
 
   return subscription;

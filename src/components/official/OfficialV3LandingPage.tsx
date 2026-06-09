@@ -24,11 +24,8 @@ import {
 } from "lucide-react";
 import {
   siFacebook,
-  siGoogle,
   siInstagram,
-  siShopify,
-  siTelegram,
-  siWhatsapp,
+  siMeta,
 } from "simple-icons";
 import { useState, type ComponentType } from "react";
 
@@ -58,98 +55,98 @@ const flowChrome: Array<{ accent: string; icon: IconComponent }> = [
   { accent: "#7c3aed", icon: CalendarCheck },
 ];
 
-const integrationIcons = [siGoogle, siShopify, siInstagram, siWhatsapp, siFacebook, siTelegram];
+const integrationIcons = [siInstagram, siMeta, siFacebook];
 
 const copy = {
   zhTW: {
-    topNotice: "終身優惠限時開放 - 2026 年 5 月 25 日結束，之後將回到訂閱制價格。",
+    topNotice: "官方網站 v3 - 聚焦 Instagram 留言自動化、DM 流程與團隊 Inbox。",
     menu: "選單",
     nav: ["影片", "流程", "工具", "比較", "FAQ"],
     deal: {
-      title: "取得終身方案",
-      price: "$499 $49 一次付清 - 今日結束",
-      choose: "選擇方案",
+      title: "開始建立 IG 自動化",
+      price: "查看方案",
+      choose: "查看方案",
     },
     hero: {
-      title: "用 AI 聊天機器人，把對話變成客戶",
+      title: "把 Instagram 留言變成可接手的 DM 流程",
       body:
-        "把 Instagram、WhatsApp、Facebook、Telegram 與網站聊天室集中在一套工具裡，自動回覆留言、收集聯絡資料、預約會議，讓銷售對話不用等人工上線。",
+        "InboxPilot 幫你偵測貼文與 Reels 的留言關鍵字，自動送出私訊、標記名單，並把高意願對話交給團隊 Inbox 接手。",
       partner: "Meta Business\nPartners",
       cardName: "Olivia Hayes",
-      cardText: "剛剛從限時留言進來",
-      dm: "有人留言「價格」時，自動私訊優惠、詢問 Email，並把名單送進你的銷售流程。",
+      cardText: "剛剛從活動貼文留言進來",
+      dm: "有人留言「價格」時，自動私訊活動資訊、加上標籤，並提醒團隊後續跟進。",
     },
     action: {
-      eyebrow: "限時終身優惠",
-      title: "用完整自動化，把每一則留言都變成下一步",
+      eyebrow: "產品導覽",
+      title: "用清楚的流程，把每一則留言變成下一步",
       body:
-        "InboxPilot 讓你建立可視化流程、AI FAQ、廣播訊息與客服交接。影片區塊保留實際操作感，讓訪客一進頁面就知道產品正在做什麼。",
+        "InboxPilot 讓你建立可視化留言流程、DM 回覆、標籤與客服交接。頁面只保留和 IG 自動化有關的產品內容。",
     },
     comments: {
       label: "留言自動化",
       title: "自動回覆留言，\n並接住聯絡資料",
       body:
-        "當顧客在貼文或 Reels 留下關鍵字，系統會立即回覆並引導到私訊，收集 Email、電話、需求或預約時間。",
+        "當顧客在貼文或 Reels 留下關鍵字，系統會立即回覆並引導到私訊，收集需求、加上活動標籤，讓團隊知道誰需要跟進。",
     },
     flows: {
       title: "依照你的情境切換自動化流程",
       body:
-        "這一區是可點擊的分頁，每個分頁都對應一個真實使用情境：留言私訊、廣播、FAQ、銷售開場、歡迎訊息與自動預約。",
+        "每個分頁都對應一個真實 IG 情境：留言私訊、貼文活動、常見問題、銷售開場、歡迎訊息與真人接手。",
       check: "Check It Out",
       tabs: [
         {
-          title: "留言自動私訊並收集聯絡資料",
-          message: "有人留言關鍵字時，立刻送出私訊、詢問 Email 與電話，並標記來源活動。",
-          label: "Auto-DM from comments and capture contact details",
+          title: "留言自動私訊並標記來源",
+          message: "有人留言關鍵字時，立刻送出私訊、標記活動來源，並把高意願名單送進 Inbox。",
+          label: "留言觸發私訊與標籤",
           header: "Comment-to-DM",
           avatar: "DM",
-          lines: ["偵測留言關鍵字", "送出優惠私訊", "收集 Email / 電話"],
+          lines: ["偵測留言關鍵字", "送出活動私訊", "標記來源與意圖"],
         },
         {
-          title: "發送廣播訊息",
-          message: "把新品、活動、限時優惠推送給已同意接收訊息的名單，並追蹤點擊與回覆。",
-          label: "Broadcast a message",
-          header: "Broadcast",
+          title: "指定貼文活動自動化",
+          message: "針對特定貼文或 Reels 設定關鍵字、公開回覆、按讚與私訊內容。",
+          label: "指定貼文活動",
+          header: "Campaign Post",
           avatar: "BC",
-          lines: ["選擇受眾分群", "安排發送時間", "追蹤回覆與點擊"],
+          lines: ["選擇貼文", "設定關鍵字", "追蹤觸發名單"],
         },
         {
           title: "自動回覆常見問題",
-          message: "用 AI 與固定回覆處理價格、配送、付款、退換貨，讓客服保留時間處理真正複雜的問題。",
-          label: "Automate FAQ replies",
-          header: "AI FAQ",
+          message: "用固定回覆與流程條件處理價格、課程資訊、領取連結等重複問題。",
+          label: "常見問題流程",
+          header: "FAQ Flow",
           avatar: "FAQ",
-          lines: ["讀取 FAQ 資料", "比對顧客問題", "必要時交給真人"],
+          lines: ["套用常用回覆", "比對關鍵字", "必要時交給真人"],
         },
         {
           title: "立即開啟銷售對話",
-          message: "用問題篩選需求、推薦商品或方案，再把高意願客戶交給銷售團隊跟進。",
+          message: "用幾個問題篩選需求，再把高意願客戶交給團隊跟進。",
           label: "Start sales conversations instantly",
           header: "Sales Flow",
           avatar: "SALE",
           lines: ["詢問需求", "推薦方案", "標記高意願名單"],
         },
         {
-          title: "發送歡迎訊息",
-          message: "新追蹤、新訂閱或第一次私訊時，立即送出品牌介紹、熱門連結與下一步行動。",
+          title: "發送第一次私訊歡迎",
+          message: "第一次進入 DM 時，送出品牌介紹、熱門連結與下一步行動。",
           label: "Send welcome messages",
           header: "Welcome",
           avatar: "HI",
-          lines: ["辨識新聯絡人", "送出歡迎內容", "引導到下一步"],
+          lines: ["辨識新對話", "送出歡迎內容", "引導到下一步"],
         },
         {
-          title: "自動預約會議或通話",
-          message: "詢問可預約時段、收集需求，並把會議資訊整理給團隊，不再來回確認時間。",
-          label: "Book appointments or calls automatically",
-          header: "Booking",
+          title: "真人接手與提醒",
+          message: "當對話需要人工處理時，建立提醒、保留標籤，並讓團隊從 Inbox 接續。",
+          label: "真人接手與提醒",
+          header: "Handoff",
           avatar: "CAL",
-          lines: ["確認需求", "收集可預約時間", "送出提醒與摘要"],
+          lines: ["建立跟進提醒", "保留對話脈絡", "指派團隊成員"],
         },
       ],
     },
     ctaBand: {
       title: "從第一則訊息開始，建立完整銷售流程",
-      body: "留言、私訊、FAQ、廣播、預約與真人交接都在同一個工作區完成。",
+      body: "留言、私訊、標籤、提醒與真人交接都在同一個工作區完成。",
     },
     proof: {
       title: "成長中的品牌與創作者正在使用",
@@ -162,12 +159,12 @@ const copy = {
     },
     tools: {
       title: "完整的自動化工具",
-      body: "建立 AI 聊天機器人、廣播活動、名單收集與跨通路訊息流程。",
+      body: "建立留言觸發、DM 回覆、標籤、提醒與 Inbox 接手流程。",
       items: [
-        ["AI 聊天機器人", "用 FAQ、文件或網站內容訓練 AI，全天候回覆顧客。"],
-        ["廣播活動", "針對分眾名單發送新品、優惠與活動訊息。"],
+        ["留言觸發", "依照指定貼文、全部貼文與關鍵字啟動流程。"],
+        ["DM 回覆流程", "用訊息、條件、等待與動作節點建立對話路徑。"],
         ["整合收件匣", "集中管理留言、私訊、提醒、客服交接與銷售跟進。"],
-        ["AI 改寫", "快速改寫回覆內容，維持自然又清楚的語氣。"],
+        ["標籤管理", "把活動來源、需求與高意願狀態整理到名單上。"],
         ["快速回覆", "保存每天都會用到的答案，團隊可以直接套用。"],
         ["跟進提醒", "避免高意願名單因為沒有即時跟進而流失。"],
       ],
@@ -175,113 +172,113 @@ const copy = {
     integrations: {
       title: "連接你常用的工具",
       body:
-        "串接 AI 模型、電商平台、CRM、表單與自動化工具，不用寫程式也能建立完整工作流。",
+        "連接 Instagram、Meta 與 Messenger 相關權限，讓留言、私訊與 Webhook 資料回到同一個工作區。",
     },
     bonus: {
-      title: "額外應用程式已包含",
-      body: "同步取得更多行銷工具，讓你的自動化堆疊更完整。",
-      app1: "自動化工作流",
-      app2: "BioLink 頁面",
-      cardBody: "建立可視化流程、活動連結與圍繞顧客對話的自動化作業。",
+      title: "不是工具包，是 IG 自動化工作區",
+      body: "v3 移除無關的製作工具與額外應用程式，回到本專案真的要交付的功能。",
+      app1: "留言流程 Builder",
+      app2: "團隊 Inbox 接手",
+      cardBody: "建立可視化流程、活動標籤、提醒與圍繞 IG 對話的日常作業。",
     },
     why: {
       title: "為什麼選擇 InboxPilot",
-      body: "從同一個工作區自動化客服、銷售、名單收集與活動回覆。",
+      body: "從同一個工作區處理 IG 留言、DM、名單標籤與團隊接手。",
       heading: "更有效率",
-      tabs: ["留言回覆", "電商導購", "客服銷售", "精簡團隊"],
-      cards: ["最適合回覆留言", "為電商品牌打造", "支援客服與銷售", "適合小團隊快速上線"],
+      tabs: ["留言回覆", "活動貼文", "客服接手", "精簡團隊"],
+      cards: ["最適合回覆留言", "為 IG 活動打造", "支援客服與銷售", "適合小團隊快速上線"],
     },
     different: {
       title: "InboxPilot 的設計不一樣",
-      body: "不用再被聯絡人數、席次與平台加價綁住，先把自動化跑起來，再安心擴大對話量。",
+      body: "先把 Instagram 留言自動化跑順，再逐步擴大貼文活動與團隊協作。",
       items: [
-        ["不按聯絡人數漲價", "名單成長不應該變成每月帳單壓力。"],
-        ["適合代理商與品牌", "管理多個專案、活動與客戶流程。"],
-        ["AI 與人工交接", "自動處理重複問題，需要時交給真人。"],
-        ["多通路集中", "把社群訊息與網站對話放在同一個地方。"],
+        ["IG 流程優先", "不先承諾一堆跨通路工具，先把留言到 DM 做紮實。"],
+        ["適合代理商與品牌", "管理多個 IG 帳號、活動貼文與客戶流程。"],
+        ["自動化與人工交接", "自動處理重複問題，需要時交給真人。"],
+        ["繁中工作區", "後台、官網與日常操作以繁體中文優先。"],
       ],
     },
     compare: {
       heroTitle: "更聰明的 ManyChat 替代方案",
-      heroBody: "ManyChat 會隨聯絡人數增加成本。InboxPilot 讓你先用一次付清建立自動化，再擴大規模。",
+      heroBody: "ManyChat 功能完整但設定較廣。InboxPilot 先聚焦繁中團隊最常用的 IG 留言到 DM 流程。",
       featureTitle: "InboxPilot vs ManyChat 功能比較",
       pricingTitle: "InboxPilot vs ManyChat 價格比較",
-      pricingBody: "在終身優惠結束前取得完整權限，之後將回到訂閱制。",
+      pricingBody: "價格頁會承接正式方案；官網先清楚說明產品能解決哪些 IG 自動化問題。",
       table: ["功能", "ManyChat", "InboxPilot", "情境", "月費工具"],
       rows: [
-        ["聯絡人限制", "依名單規模計費", "終身優惠期間不按聯絡人加價"],
-        ["AI FAQ", "需額外設定或加購", "內建 AI 回覆與知識來源"],
-        ["多通路收件匣", "以 Messenger / IG 為主", "IG、WhatsApp、Facebook、Telegram、Webchat"],
-        ["銷售流程", "可建立流程", "針對留言、名單、預約與成交設計"],
+        ["留言觸發", "支援成熟但設定較多", "聚焦 IG 貼文、Reels 與關鍵字"],
+        ["語系", "英文介面為主", "繁體中文優先"],
+        ["收件匣", "完整客服收件匣", "未指派、提醒、標籤與團隊接手優先"],
+        ["銷售流程", "可建立流程", "針對留言、名單、提醒與成交設計"],
       ],
       pricingRows: [
-        ["1,000 位聯絡人", "$15+/月", "$49 一次付清"],
-        ["10,000 位聯絡人", "$95+/月", "$49 一次付清"],
-        ["團隊工具", "多工具堆疊", "同一平台完成"],
+        ["起步", "需先理解完整平台", "先建立第一條 IG 留言流程"],
+        ["團隊協作", "依方案與席次規則", "以 Inbox 指派與提醒為核心"],
+        ["產品定位", "跨通路自動化平台", "IG 留言自動化工作區"],
       ],
     },
     plans: {
-      title: "Choose Your Lifetime Plan",
-      body: "在優惠結束前一次付清取得完整權限，之後只會保留訂閱方案。",
-      trust: ["一次付清", "終身存取", "無月費"],
+      title: "選擇適合你的 InboxPilot 方案",
+      body: "正式方案以 /pricing 為準；這裡先讓訪客理解不同使用規模會需要哪些能力。",
+      trust: ["IG 帳號連線", "留言自動化", "團隊 Inbox"],
       cards: [
-        ["Lifetime Plan", "$49", "$499", "10,000 credits", "適合個人品牌、創作者與小型商家快速啟動自動化。"],
-        ["Lifetime Bundle", "$149", "$999", "30,000 credits", "適合代理商、成長團隊與多專案管理。"],
+        ["Starter", "先上線", "正式價格見 /pricing", "單一 IG 帳號", "適合個人品牌、創作者與小型商家快速啟動第一條留言流程。"],
+        ["Team", "一起接手", "正式價格見 /pricing", "多帳號與團隊", "適合代理商、成長團隊與多活動管理。"],
       ],
     },
     faq: {
       title: "常見問題",
       body: "先把最容易卡住的問題講清楚，避免你買完才發現少一塊。",
       items: [
-        ["這真的是終身方案嗎？", "是，這個頁面呈現的是一次付清的終身優惠，之後新用戶會回到訂閱制。"],
+        ["這裡的方案就是正式價格嗎？", "正式價格以 /pricing 頁面為準。v3 先用簡化方案說明適合的使用情境。"],
         ["可以自動回覆 Instagram 留言嗎？", "可以，流程可以從留言關鍵字觸發，接著發送私訊、收集資料並標記名單。"],
-        ["支援哪些通路？", "頁面展示 Instagram、Facebook、WhatsApp、Telegram 與 Webchat 等通路。"],
+        ["支援哪些通路？", "官方頁面現在聚焦 Instagram 與 Meta 相關連線，不再宣傳尚未作為核心交付的通路。"],
         ["我需要寫程式嗎？", "不需要，主要流程可透過視覺化設定完成。"],
       ],
     },
     footer: ["Privacy", "Terms", "Contact"],
   },
   zhCN: {
-    topNotice: "终身优惠限时开放 - 2026 年 5 月 25 日结束，之后将回到订阅制价格。",
+    topNotice: "官方网站 v3 - 聚焦 Instagram 留言自动化、DM 流程与团队 Inbox。",
     menu: "菜单",
     nav: ["视频", "流程", "工具", "比较", "FAQ"],
-    deal: { title: "取得终身方案", price: "$499 $49 一次付清 - 今日结束", choose: "选择方案" },
+    deal: { title: "开始建立 IG 自动化", price: "查看方案", choose: "查看方案" },
     hero: {
-      title: "用 AI 聊天机器人，把对话变成客户",
+      title: "把 Instagram 留言变成可接手的 DM 流程",
       body:
-        "把 Instagram、WhatsApp、Facebook、Telegram 与网站聊天室集中在一套工具里，自动回复留言、收集联系方式、预约会议，让销售对话不用等人工上线。",
+        "InboxPilot 帮你侦测帖子与 Reels 的留言关键词，自动送出私信、标记名单，并把高意愿对话交给团队 Inbox 接手。",
       partner: "Meta Business\nPartners",
       cardName: "Olivia Hayes",
-      cardText: "刚刚从限时留言进来",
-      dm: "有人留言“价格”时，自动私信优惠、询问 Email，并把名单送进你的销售流程。",
+      cardText: "刚刚从活动帖子留言进来",
+      dm: "有人留言“价格”时，自动私信活动信息、加上标签，并提醒团队后续跟进。",
     },
     action: {
-      eyebrow: "限时终身优惠",
-      title: "用完整自动化，把每一则留言都变成下一步",
+      eyebrow: "产品导览",
+      title: "用清楚的流程，把每一则留言变成下一步",
       body:
-        "InboxPilot 让你建立可视化流程、AI FAQ、广播消息与客服交接。视频区块保留实际操作感，让访客一进页面就知道产品正在做什么。",
+        "InboxPilot 让你建立可视化留言流程、DM 回复、标签与客服交接。页面只保留和 IG 自动化有关的产品内容。",
     },
     comments: {
       label: "留言自动化",
       title: "自动回复留言，\n并接住联系方式",
       body:
-        "当顾客在帖子或 Reels 留下关键词，系统会立即回复并引导到私信，收集 Email、电话、需求或预约时间。",
+        "当顾客在帖子或 Reels 留下关键词，系统会立即回复并引导到私信，收集需求、加上活动标签，让团队知道谁需要跟进。",
     },
     flows: {
       title: "按照你的情境切换自动化流程",
       body:
-        "这一区是可点击的分页，每个分页都对应一个真实使用情境：留言私信、广播、FAQ、销售开场、欢迎消息与自动预约。",
+        "每个分页都对应一个真实 IG 情境：留言私信、帖子活动、常见问题、销售开场、欢迎消息与人工接手。",
       check: "Check It Out",
       tabs: [
-        { title: "留言自动私信并收集联系方式", message: "有人留言关键词时，立刻送出私信、询问 Email 与电话，并标记来源活动。", label: "Auto-DM from comments and capture contact details", header: "Comment-to-DM", avatar: "DM", lines: ["侦测留言关键词", "送出优惠私信", "收集 Email / 电话"] },
-        { title: "发送广播消息", message: "把新品、活动、限时优惠推送给已同意接收消息的名单，并追踪点击与回复。", label: "Broadcast a message", header: "Broadcast", avatar: "BC", lines: ["选择受众分群", "安排发送时间", "追踪回复与点击"] },
-        { title: "自动回复常见问题", message: "用 AI 与固定回复处理价格、配送、付款、退换货，让客服保留时间处理真正复杂的问题。", label: "Automate FAQ replies", header: "AI FAQ", avatar: "FAQ", lines: ["读取 FAQ 资料", "比对顾客问题", "必要时交给真人"] },
-        { title: "立即开启销售对话", message: "用问题筛选需求、推荐商品或方案，再把高意愿客户交给销售团队跟进。", label: "Start sales conversations instantly", header: "Sales Flow", avatar: "SALE", lines: ["询问需求", "推荐方案", "标记高意愿名单"] },
-        { title: "发送欢迎消息", message: "新关注、新订阅或第一次私信时，立即送出品牌介绍、热门链接与下一步行动。", label: "Send welcome messages", header: "Welcome", avatar: "HI", lines: ["识别新联系人", "送出欢迎内容", "引导到下一步"] },
-        { title: "自动预约会议或通话", message: "询问可预约时段、收集需求，并把会议信息整理给团队，不再来回确认时间。", label: "Book appointments or calls automatically", header: "Booking", avatar: "CAL", lines: ["确认需求", "收集可预约时间", "送出提醒与摘要"] },
+        { title: "留言自动私信并标记来源", message: "有人留言关键词时，立刻送出私信、标记活动来源，并把高意愿名单送进 Inbox。", label: "留言触发私信与标签", header: "Comment-to-DM", avatar: "DM", lines: ["侦测留言关键词", "送出活动私信", "标记来源与意图"] },
+        { title: "指定帖子活动自动化", message: "针对特定帖子或 Reels 设置关键词、公开回复、点赞与私信内容。", label: "指定帖子活动", header: "Campaign Post", avatar: "BC", lines: ["选择帖子", "设置关键词", "追踪触发名单"] },
+        { title: "自动回复常见问题", message: "用固定回复与流程条件处理价格、课程信息、领取链接等重复问题。", label: "常见问题流程", header: "FAQ Flow", avatar: "FAQ", lines: ["套用常用回复", "比对关键词", "必要时交给真人"] },
+        { title: "立即开启销售对话", message: "用几个问题筛选需求，再把高意愿客户交给团队跟进。", label: "Start sales conversations instantly", header: "Sales Flow", avatar: "SALE", lines: ["询问需求", "推荐方案", "标记高意愿名单"] },
+        { title: "发送第一次私信欢迎", message: "第一次进入 DM 时，送出品牌介绍、热门链接与下一步行动。", label: "Send welcome messages", header: "Welcome", avatar: "HI", lines: ["识别新对话", "送出欢迎内容", "引导到下一步"] },
+        { title: "人工接手与提醒", message: "当对话需要人工处理时，建立提醒、保留标签，并让团队从 Inbox 接续。", label: "人工接手与提醒", header: "Handoff", avatar: "CAL", lines: ["建立跟进提醒", "保留对话脉络", "指派团队成员"] },
       ],
     },
-    ctaBand: { title: "从第一则消息开始，建立完整销售流程", body: "留言、私信、FAQ、广播、预约与人工交接都在同一个工作区完成。" },
+    ctaBand: { title: "从第一则消息开始，建立完整销售流程", body: "留言、私信、标签、提醒与人工交接都在同一个工作区完成。" },
     proof: {
       title: "成长中的品牌与创作者正在使用",
       body: "把对话自动化、接住潜在客户，让消息不再只是通知，而是可追踪的收入来源。",
@@ -289,81 +286,81 @@ const copy = {
     },
     tools: {
       title: "完整的自动化工具",
-      body: "建立 AI 聊天机器人、广播活动、名单收集与跨通路消息流程。",
-      items: [["AI 聊天机器人", "用 FAQ、文件或网站内容训练 AI，全天候回复顾客。"], ["广播活动", "针对分众名单发送新品、优惠与活动消息。"], ["整合收件箱", "集中管理留言、私信、提醒、客服交接与销售跟进。"], ["AI 改写", "快速改写回复内容，维持自然又清楚的语气。"], ["快速回复", "保存每天都会用到的答案，团队可以直接套用。"], ["跟进提醒", "避免高意愿名单因为没有即时跟进而流失。"]],
+      body: "建立留言触发、DM 回复、标签、提醒与 Inbox 接手流程。",
+      items: [["留言触发", "依照指定帖子、全部帖子与关键词启动流程。"], ["DM 回复流程", "用消息、条件、等待与动作节点建立对话路径。"], ["整合收件箱", "集中管理留言、私信、提醒、客服交接与销售跟进。"], ["标签管理", "把活动来源、需求与高意愿状态整理到名单上。"], ["快速回复", "保存每天都会用到的答案，团队可以直接套用。"], ["跟进提醒", "避免高意愿名单因为没有即时跟进而流失。"]],
     },
-    integrations: { title: "连接你常用的工具", body: "串接 AI 模型、电商平台、CRM、表单与自动化工具，不用写程序也能建立完整工作流。" },
-    bonus: { title: "额外应用程序已包含", body: "同步取得更多营销工具，让你的自动化堆栈更完整。", app1: "自动化工作流", app2: "BioLink 页面", cardBody: "建立可视化流程、活动链接与围绕顾客对话的自动化作业。" },
-    why: { title: "为什么选择 InboxPilot", body: "从同一个工作区自动化客服、销售、名单收集与活动回复。", heading: "更有效率", tabs: ["留言回复", "电商导购", "客服销售", "精简团队"], cards: ["最适合回复留言", "为电商品牌打造", "支持客服与销售", "适合小团队快速上线"] },
+    integrations: { title: "连接你常用的工具", body: "连接 Instagram、Meta 与 Messenger 相关权限，让留言、私信与 Webhook 数据回到同一个工作区。" },
+    bonus: { title: "不是工具包，是 IG 自动化工作区", body: "v3 移除无关的制作工具与额外应用程序，回到本项目真的要交付的功能。", app1: "留言流程 Builder", app2: "团队 Inbox 接手", cardBody: "建立可视化流程、活动标签、提醒与围绕 IG 对话的日常作业。" },
+    why: { title: "为什么选择 InboxPilot", body: "从同一个工作区处理 IG 留言、DM、名单标签与团队接手。", heading: "更有效率", tabs: ["留言回复", "活动帖子", "客服接手", "精简团队"], cards: ["最适合回复留言", "为 IG 活动打造", "支持客服与销售", "适合小团队快速上线"] },
     different: {
       title: "InboxPilot 的设计不一样",
-      body: "不用再被联系人数、席次与平台加价绑住，先把自动化跑起来，再安心扩大对话量。",
-      items: [["不按联系人数涨价", "名单成长不应该变成每月账单压力。"], ["适合代理商与品牌", "管理多个项目、活动与客户流程。"], ["AI 与人工交接", "自动处理重复问题，需要时交给真人。"], ["多通路集中", "把社群消息与网站对话放在同一个地方。"]],
+      body: "先把 Instagram 留言自动化跑顺，再逐步扩大帖子活动与团队协作。",
+      items: [["IG 流程优先", "不先承诺一堆跨通路工具，先把留言到 DM 做扎实。"], ["适合代理商与品牌", "管理多个 IG 帐号、活动帖子与客户流程。"], ["自动化与人工交接", "自动处理重复问题，需要时交给真人。"], ["中文工作区", "后台、官网与日常操作以中文优先。"]],
     },
     compare: {
       heroTitle: "更聪明的 ManyChat 替代方案",
-      heroBody: "ManyChat 会随联系人数增加成本。InboxPilot 让你先用一次付清建立自动化，再扩大规模。",
+      heroBody: "ManyChat 功能完整但设置较广。InboxPilot 先聚焦中文团队最常用的 IG 留言到 DM 流程。",
       featureTitle: "InboxPilot vs ManyChat 功能比较",
       pricingTitle: "InboxPilot vs ManyChat 价格比较",
-      pricingBody: "在终身优惠结束前取得完整权限，之后将回到订阅制。",
+      pricingBody: "价格页会承接正式方案；官网先清楚说明产品能解决哪些 IG 自动化问题。",
       table: ["功能", "ManyChat", "InboxPilot", "情境", "月费工具"],
-      rows: [["联系人限制", "依名单规模计费", "终身优惠期间不按联系人加价"], ["AI FAQ", "需额外设置或加购", "内建 AI 回复与知识来源"], ["多通路收件箱", "以 Messenger / IG 为主", "IG、WhatsApp、Facebook、Telegram、Webchat"], ["销售流程", "可建立流程", "针对留言、名单、预约与成交设计"]],
-      pricingRows: [["1,000 位联系人", "$15+/月", "$49 一次付清"], ["10,000 位联系人", "$95+/月", "$49 一次付清"], ["团队工具", "多工具堆叠", "同一平台完成"]],
+      rows: [["留言触发", "支持成熟但设置较多", "聚焦 IG 帖子、Reels 与关键词"], ["语系", "英文界面为主", "中文优先"], ["收件箱", "完整客服收件箱", "未指派、提醒、标签与团队接手优先"], ["销售流程", "可建立流程", "针对留言、名单、提醒与成交设计"]],
+      pricingRows: [["起步", "需先理解完整平台", "先建立第一条 IG 留言流程"], ["团队协作", "依方案与席次规则", "以 Inbox 指派与提醒为核心"], ["产品定位", "跨通路自动化平台", "IG 留言自动化工作区"]],
     },
     plans: {
-      title: "Choose Your Lifetime Plan",
-      body: "在优惠结束前一次付清取得完整权限，之后只会保留订阅方案。",
-      trust: ["一次付清", "终身存取", "无月费"],
-      cards: [["Lifetime Plan", "$49", "$499", "10,000 credits", "适合个人品牌、创作者与小型商家快速启动自动化。"], ["Lifetime Bundle", "$149", "$999", "30,000 credits", "适合代理商、成长团队与多项目管理。"]],
+      title: "选择适合你的 InboxPilot 方案",
+      body: "正式方案以 /pricing 为准；这里先让访客理解不同使用规模会需要哪些能力。",
+      trust: ["IG 帐号连接", "留言自动化", "团队 Inbox"],
+      cards: [["Starter", "先上线", "正式价格见 /pricing", "单一 IG 帐号", "适合个人品牌、创作者与小型商家快速启动第一条留言流程。"], ["Team", "一起接手", "正式价格见 /pricing", "多帐号与团队", "适合代理商、成长团队与多活动管理。"]],
     },
     faq: {
       title: "常见问题",
       body: "先把最容易卡住的问题讲清楚，避免你买完才发现少一块。",
-      items: [["这真的是终身方案吗？", "是，这个页面呈现的是一次付清的终身优惠，之后新用户会回到订阅制。"], ["可以自动回复 Instagram 留言吗？", "可以，流程可以从留言关键词触发，接着发送私信、收集资料并标记名单。"], ["支持哪些通路？", "页面展示 Instagram、Facebook、WhatsApp、Telegram 与 Webchat 等通路。"], ["我需要写程序吗？", "不需要，主要流程可通过可视化设置完成。"]],
+      items: [["这里的方案就是正式价格吗？", "正式价格以 /pricing 页面为准。v3 先用简化方案说明适合的使用情境。"], ["可以自动回复 Instagram 留言吗？", "可以，流程可以从留言关键词触发，接着发送私信、收集资料并标记名单。"], ["支持哪些通路？", "官方页面现在聚焦 Instagram 与 Meta 相关连接，不再宣传尚未作为核心交付的通路。"], ["我需要写程序吗？", "不需要，主要流程可通过可视化设置完成。"]],
     },
     footer: ["Privacy", "Terms", "Contact"],
   },
   en: {
-    topNotice: "Lifetime deal closes on May 25, 2026. Subscription pricing returns after the offer ends.",
+    topNotice: "Official v3 - focused on Instagram comment automation, DM flows, and team inbox.",
     menu: "Menu",
     nav: ["Video", "Flows", "Tools", "Compare", "FAQ"],
-    deal: { title: "Get The Lifetime Deal", price: "$499 $49 One-Time - Ends Today", choose: "Choose Plan" },
+    deal: { title: "Build IG automation", price: "View plans", choose: "View plans" },
     hero: {
-      title: "Turn Conversations Into Customers With AI Chatbots",
+      title: "Turn Instagram comments into handoff-ready DM flows",
       body:
-        "Automate Instagram, WhatsApp, Facebook, Telegram, and website chat from one workspace. Reply to comments, capture contact details, book calls, and move leads forward without waiting for a human agent.",
+        "InboxPilot detects comment keywords on posts and Reels, sends DMs, tags leads, and routes high-intent conversations to your team inbox.",
       partner: "Meta Business\nPartners",
       cardName: "Olivia Hayes",
-      cardText: "New lead from story reply",
-      dm: "When someone comments “price”, InboxPilot sends the offer, asks for email, and moves the lead into your sales flow.",
+      cardText: "New lead from campaign post",
+      dm: "When someone comments “price”, InboxPilot sends campaign details, adds a tag, and reminds the team to follow up.",
     },
     action: {
-      eyebrow: "Limited lifetime offer",
-      title: "Turn every comment into the next step",
+      eyebrow: "Product tour",
+      title: "Turn every comment into a clear next step",
       body:
-        "InboxPilot gives you visual automations, AI FAQ replies, broadcasts, and human handoff. The video section keeps the page product-led so visitors immediately understand what the tool does.",
+        "InboxPilot gives you visual comment flows, DM replies, tags, and handoff. This page keeps only product content that belongs to IG automation.",
     },
     comments: {
       label: "Comment automation",
       title: "Auto-reply to comments\nand capture contact details",
       body:
-        "When customers comment on posts or Reels, InboxPilot replies instantly, opens the DM, and collects email, phone, intent, or booking details.",
+        "When customers comment on posts or Reels, InboxPilot replies instantly, opens the DM, captures intent, adds campaign tags, and shows your team who needs follow-up.",
     },
     flows: {
       title: "Switch automation flows for every use case",
       body:
-        "This is a real tabbed section. Each tab mirrors one selling flow: comment-to-DM, broadcast, FAQ, sales starters, welcome messages, and automatic booking.",
+        "Each tab mirrors a real Instagram workflow: comment-to-DM, campaign posts, FAQs, sales starters, welcome messages, and human handoff.",
       check: "Check It Out",
       tabs: [
-        { title: "Auto-DM from comments and capture contact details", message: "Trigger a DM from comment keywords, ask for email and phone, and tag the campaign source.", label: "Auto-DM from comments and capture contact details", header: "Comment-to-DM", avatar: "DM", lines: ["Detect comment keyword", "Send offer in DM", "Capture email / phone"] },
-        { title: "Broadcast a message", message: "Send launches, promotions, and updates to opted-in contacts while tracking clicks and replies.", label: "Broadcast a message", header: "Broadcast", avatar: "BC", lines: ["Choose audience segment", "Schedule the send", "Track replies and clicks"] },
-        { title: "Automate FAQ replies", message: "Use AI and saved answers for pricing, shipping, payments, and returns so your team handles the harder questions.", label: "Automate FAQ replies", header: "AI FAQ", avatar: "FAQ", lines: ["Read FAQ sources", "Match customer intent", "Handoff when needed"] },
-        { title: "Start sales conversations instantly", message: "Qualify buyers, recommend products or plans, and route high-intent leads to your sales team.", label: "Start sales conversations instantly", header: "Sales Flow", avatar: "SALE", lines: ["Ask qualifying questions", "Recommend a plan", "Tag high-intent leads"] },
-        { title: "Send welcome messages", message: "Greet new followers, subscribers, or first-time DM contacts with your best links and next action.", label: "Send welcome messages", header: "Welcome", avatar: "HI", lines: ["Identify new contact", "Send welcome content", "Guide the next step"] },
-        { title: "Book appointments or calls automatically", message: "Collect availability, confirm intent, and prepare the booking summary without back-and-forth messages.", label: "Book appointments or calls automatically", header: "Booking", avatar: "CAL", lines: ["Confirm the need", "Collect availability", "Send reminders and summary"] },
+        { title: "Auto-DM from comments and tag the source", message: "Trigger a DM from comment keywords, tag the campaign source, and send high-intent leads into the inbox.", label: "Comment-triggered DMs and tags", header: "Comment-to-DM", avatar: "DM", lines: ["Detect comment keyword", "Send campaign DM", "Tag source and intent"] },
+        { title: "Selected post automation", message: "Set keywords, public replies, likes, and DM content for a specific post or Reel.", label: "Selected post campaign", header: "Campaign Post", avatar: "BC", lines: ["Choose a post", "Set keywords", "Track triggered leads"] },
+        { title: "Automate common questions", message: "Use saved replies and flow conditions for pricing, course info, links, and repeated questions.", label: "FAQ flows", header: "FAQ Flow", avatar: "FAQ", lines: ["Use saved replies", "Match keywords", "Handoff when needed"] },
+        { title: "Start sales conversations instantly", message: "Ask a few qualifying questions, then route high-intent customers to your team.", label: "Start sales conversations instantly", header: "Sales Flow", avatar: "SALE", lines: ["Ask qualifying questions", "Recommend a plan", "Tag high-intent leads"] },
+        { title: "Send first-DM welcomes", message: "When a conversation starts, send brand context, useful links, and the next action.", label: "Send welcome messages", header: "Welcome", avatar: "HI", lines: ["Identify new conversation", "Send welcome content", "Guide the next step"] },
+        { title: "Human handoff and reminders", message: "When a conversation needs a person, create reminders, keep tags, and let the team continue in the inbox.", label: "Human handoff and reminders", header: "Handoff", avatar: "CAL", lines: ["Create follow-up reminder", "Keep conversation context", "Assign a teammate"] },
       ],
     },
-    ctaBand: { title: "Build a complete sales flow from the first message", body: "Comments, DMs, FAQ, broadcasts, bookings, and human handoff all live in one workspace." },
+    ctaBand: { title: "Build a complete sales flow from the first message", body: "Comments, DMs, tags, reminders, and human handoff all live in one workspace." },
     proof: {
       title: "Trusted by growing businesses and creators",
       body: "Automate conversations, capture leads, and turn messages into trackable revenue.",
@@ -371,37 +368,37 @@ const copy = {
     },
     tools: {
       title: "Powerful automation tools",
-      body: "Create AI chatbots, send broadcasts, capture leads, and automate conversations across every messaging channel.",
-      items: [["AI Chatbots", "Automate conversations 24/7 with AI trained on your FAQs, documents, or website content."], ["Broadcast Campaigns", "Reach your audience with targeted messages designed to drive action."], ["Unified Inbox", "Manage comments, DMs, handoff, reminders, and support in one workspace."], ["Rewrite With AI", "Improve replies quickly while keeping the tone useful and human."], ["Quick Replies", "Save the answers your team sends every day and reuse them instantly."], ["Follow-Up Reminders", "Never lose a lead because the first reply happened at the wrong time."]],
+      body: "Build comment triggers, DM replies, tags, reminders, and inbox handoff flows.",
+      items: [["Comment triggers", "Start flows from selected posts, all posts, and keywords."], ["DM reply flows", "Use message, condition, wait, and action nodes to build conversation paths."], ["Unified Inbox", "Manage comments, DMs, handoff, reminders, and support in one workspace."], ["Tag management", "Organize campaign source, needs, and high-intent status on every lead."], ["Quick Replies", "Save the answers your team sends every day and reuse them instantly."], ["Follow-Up Reminders", "Never lose a lead because the first reply happened at the wrong time."]],
     },
-    integrations: { title: "Connect with your favorite tools", body: "Connect AI models, ecommerce platforms, CRMs, forms, and automation tools to build powerful workflows without coding." },
-    bonus: { title: "Extra apps included", body: "Get additional apps to expand your marketing stack and automate more of your business.", app1: "Automation workflows", app2: "BioLink pages", cardBody: "Build visual workflows, campaign links, and automated processes around your customer conversations." },
-    why: { title: "Why businesses choose InboxPilot", body: "Automate support, sales, lead capture, and campaign replies from one focused workspace.", heading: "Super-efficient", tabs: ["Comment replies", "Ecommerce sales", "Support & sales", "Lean teams"], cards: ["Best at replying to comments", "Designed for ecommerce owners", "Built for support and sales", "Ready for lean teams"] },
+    integrations: { title: "Connect the channels InboxPilot actually uses", body: "Connect Instagram, Meta, and Messenger permissions so comments, DMs, and webhook data return to one workspace." },
+    bonus: { title: "Not a tool bundle. An IG automation workspace.", body: "V3 removes unrelated creation tools and extra apps so the page reflects what this project actually ships.", app1: "Comment Flow Builder", app2: "Team Inbox Handoff", cardBody: "Build visual flows, campaign tags, reminders, and daily work around IG conversations." },
+    why: { title: "Why businesses choose InboxPilot", body: "Handle IG comments, DMs, tags, and team handoff from one focused workspace.", heading: "Super-efficient", tabs: ["Comment replies", "Campaign posts", "Support handoff", "Lean teams"], cards: ["Best at replying to comments", "Built for IG campaigns", "Built for support and sales", "Ready for lean teams"] },
     different: {
       title: "Why InboxPilot is built differently",
-      body: "Scale your chatbot business without contact-based anxiety, seat restrictions, or hidden platform markups.",
-      items: [["No contact-based pricing pressure", "Your list growth should not punish you with a bigger monthly bill."], ["Agency and brand friendly", "Manage multiple projects, campaigns, and client workflows."], ["AI plus human handoff", "Automate repeated questions and route complex issues to your team."], ["Multi-channel workspace", "Keep social and website conversations in one place."]],
+      body: "Get Instagram comment automation working first, then expand campaign and team workflows with confidence.",
+      items: [["IG flows first", "No broad multi-channel promises before comment-to-DM is solid."], ["Agency and brand friendly", "Manage multiple IG accounts, campaign posts, and client workflows."], ["Automation plus human handoff", "Handle repeated questions automatically and route complex issues to your team."], ["Chinese-first workspace", "The admin, website, and daily workflow are designed for Chinese-speaking teams first."]],
     },
     compare: {
-      heroTitle: "Smarter ManyChat alternative: stop paying for contacts",
-      heroBody: "ManyChat pricing grows as your contact list grows. InboxPilot keeps the landing offer simple: launch automation first, scale conversations next.",
+      heroTitle: "A focused ManyChat alternative for IG comment workflows",
+      heroBody: "ManyChat is broad and mature. InboxPilot starts with the IG comment-to-DM workflow Chinese-speaking teams use most.",
       featureTitle: "InboxPilot vs ManyChat: feature comparison",
       pricingTitle: "InboxPilot vs ManyChat: pricing comparison",
-      pricingBody: "Get full access with a one-time payment before this offer disappears and only subscription plans remain.",
+      pricingBody: "The pricing page carries the official plans. This page first explains which IG automation problems the product solves.",
       table: ["Feature", "ManyChat", "InboxPilot", "Scenario", "Monthly Tool"],
-      rows: [["Contact limits", "Priced by list size", "No contact-based increase during this lifetime offer"], ["AI FAQ", "Requires extra setup or add-ons", "Built-in AI replies and knowledge sources"], ["Multi-channel inbox", "Messenger / IG focused", "IG, WhatsApp, Facebook, Telegram, Webchat"], ["Sales workflows", "Flow builder available", "Designed around comments, leads, bookings, and sales"]],
-      pricingRows: [["1,000 contacts", "$15+/mo", "$49 one-time"], ["10,000 contacts", "$95+/mo", "$49 one-time"], ["Team stack", "Multiple tools", "One platform"]],
+      rows: [["Comment triggers", "Mature but broader setup", "Focused on IG posts, Reels, and keywords"], ["Language", "English-first", "Chinese-first"], ["Inbox", "Full support inbox", "Unassigned, reminders, tags, and team handoff first"], ["Sales workflows", "Flow builder available", "Designed around comments, leads, reminders, and closing"]],
+      pricingRows: [["Getting started", "Learn a broad platform first", "Create the first IG comment flow"], ["Team collaboration", "Depends on plan and seats", "Inbox assignment and reminders are central"], ["Product focus", "Multi-channel automation platform", "IG comment automation workspace"]],
     },
     plans: {
-      title: "Choose Your Lifetime Plan",
-      body: "Get full access with a one-time payment before this offer disappears and only subscription plans remain.",
-      trust: ["One-time payment", "Lifetime access", "No monthly fees"],
-      cards: [["Lifetime Plan", "$49", "$499", "10,000 credits", "Best for solo creators, small shops, and personal brands launching automation."], ["Lifetime Bundle", "$149", "$999", "30,000 credits", "Best for agencies, growing teams, and multiple automation projects."]],
+      title: "Choose the InboxPilot plan that fits",
+      body: "Official pricing lives on /pricing. This section explains which capability set fits each stage.",
+      trust: ["IG account connection", "Comment automation", "Team inbox"],
+      cards: [["Starter", "Launch first", "See /pricing", "Single IG account", "Best for creators, personal brands, and small shops launching the first comment flow."], ["Team", "Handoff together", "See /pricing", "Multiple accounts and team", "Best for agencies, growing teams, and multiple campaign workflows."]],
     },
     faq: {
       title: "Frequently Asked Questions",
       body: "Get the key answers before you choose a plan.",
-      items: [["Is this really lifetime access?", "Yes. This page presents a one-time lifetime offer. New customers return to subscription pricing after the offer ends."], ["Can it auto-reply to Instagram comments?", "Yes. Flows can start from comment keywords, send DMs, collect details, and tag leads."], ["Which channels are supported?", "The page showcases Instagram, Facebook, WhatsApp, Telegram, and Webchat workflows."], ["Do I need to code?", "No. Core flows can be built visually without writing code."]],
+      items: [["Is this the official price?", "Official pricing lives on /pricing. V3 uses simplified plan language to explain fit."], ["Can it auto-reply to Instagram comments?", "Yes. Flows can start from comment keywords, send DMs, collect details, and tag leads."], ["Which channels are supported?", "The official page now focuses on Instagram and Meta-related connections instead of advertising channels that are not core delivery yet."], ["Do I need to code?", "No. Core flows can be built visually without writing code."]],
     },
     footer: ["Privacy", "Terms", "Contact"],
   },
@@ -428,7 +425,7 @@ export function OfficialV3LandingPage() {
       <WhyChooseSection t={t} />
       <BuiltDifferentSection t={t} />
       <CompareSection t={t} />
-      <LifetimePlans t={t} />
+      <PlanSection t={t} />
       <FaqSection t={t} />
       <Footer t={t} />
       <FloatingMenu t={t} />
@@ -580,7 +577,7 @@ function ProductDemoPanel({ portrait = false, compact = false }: { portrait?: bo
       </div>
       <div className={`${portrait ? "inset-x-5 top-16" : "left-8 top-16 w-[42%]"} absolute rounded-2xl bg-white p-5 text-zinc-950 shadow-2xl`}>
         <p className="text-xs font-black uppercase text-[#ff00d4]">InboxPilot Flow</p>
-        <p className={`${compact ? "text-lg" : "text-2xl"} mt-2 font-black leading-tight`}>留言觸發 AI 私訊</p>
+        <p className={`${compact ? "text-lg" : "text-2xl"} mt-2 font-black leading-tight`}>留言觸發私訊流程</p>
         <div className="mt-5 space-y-3">
           {["偵測 IG 關鍵字", "送出優惠與表單", "交給真人跟進"].map((item) => (
             <div key={item} className="flex items-center gap-3 rounded-xl bg-zinc-100 px-3 py-2 text-sm font-bold">
@@ -915,7 +912,7 @@ function CompareTable({ title, body, headers, rows }: { title: string; body?: st
   );
 }
 
-function LifetimePlans({ t }: { t: Copy }) {
+function PlanSection({ t }: { t: Copy }) {
   return (
     <section id="plans" className="bg-[#f7f7fb] px-5 py-24 lg:px-8">
       <SectionTitle title={t.plans.title} body={t.plans.body} />

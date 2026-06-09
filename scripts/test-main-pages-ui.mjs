@@ -66,12 +66,17 @@ function cookieFromSetCookie(setCookie) {
 }
 
 async function login(context) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD are required for main page UI tests.");
+  }
   const response = await fetch(`${base}/api/auth/login`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email: "admin@example.com", password: "admin123456" }),
+    body: JSON.stringify({ email: adminEmail, password: adminPassword }),
   });
-  if (!response.ok) throw new Error(`預設帳密登入失敗：${response.status}`);
+  if (!response.ok) throw new Error(`測試管理員登入失敗：${response.status}`);
   await context.addCookies([cookieFromSetCookie(response.headers.get("set-cookie"))]);
 }
 
@@ -140,10 +145,7 @@ async function checkLinks(page, checks, pageTitle) {
 }
 
 const serverProcess = await waitForServer();
-const browser = await chromium.launch({
-  executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-  headless: true,
-});
+const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1600, height: 900 }, locale: "zh-TW" });
 await login(context);
 

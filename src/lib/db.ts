@@ -14,7 +14,8 @@ function normalizePrismaPoolUrl(name: "DATABASE_URL" | "DIRECT_URL") {
     const isSupabasePooler = url.hostname.includes(".pooler.supabase.com");
     if (!isPostgres || !isSupabasePooler) return;
 
-    url.searchParams.set("connection_limit", process.env.PRISMA_CONNECTION_LIMIT || "1");
+    const defaultConnectionLimit = process.env.NODE_ENV === "production" ? "5" : "10";
+    url.searchParams.set("connection_limit", process.env.PRISMA_CONNECTION_LIMIT || defaultConnectionLimit);
     const currentTimeout = Number(url.searchParams.get("pool_timeout") || "0");
     if (!currentTimeout || currentTimeout < 60) {
       url.searchParams.set("pool_timeout", "60");

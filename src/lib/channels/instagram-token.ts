@@ -1,4 +1,6 @@
 import type { MetaChannelConfig } from "@/lib/channels/meta";
+import { getMetaChannelConfig, toPrismaJson } from "@/lib/channels/meta";
+import { getDb } from "@/lib/db";
 
 type InstagramTokenResponse = {
   access_token?: string;
@@ -43,4 +45,47 @@ export async function refreshInstagramLongLivedToken(config: MetaChannelConfig):
     pageAccessToken: data.access_token,
     userTokenExpiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
   };
+}
+
+export async function refreshDueInstagramTokens() {
+  const db = getDb();
+  const channels = await db.channel.findMany({
+    where: { type: "instagram", enabled: true },
+    orderBy: { updatedAt: "asc" },
+    select: { id: true, name: true, workspaceId: true, configJson: true },
+  });
+
+  const results = {
+    scanned: channels.length,
+    skipped: 0,
+    refreshed: 0,
+    failed: 0,
+    failures: [] as Array<{ channelId: string; channelName: string; reason: string }>,
+  };
+
+  for (const channel of channels) {
+    const config = getMetaChannelConfig(channel.configJson);
+    if (config.loginProvider !== "instagram" || !isInstagramTokenRefreshable(config)) {
+      results.skipped += 1;
+      continue;
+    }
+
+    try {
+      const refreshed = await refreshInstagramLongLivedToken(config);
+      await db.channel.update({
+        where: { id: channel.id },
+        data: { configJson: toPrismaJson(refreshed) },
+      });
+      results.refreshed += 1;
+    } catch (error) {
+      results.failed += 1;
+      results.failures.push({
+        channelId: channel.id,
+        channelName: channel.name,
+        reason: error instanceof Error ? error.message : "Instagram token refresh failed.",
+      });
+    }
+  }
+
+  return results;
 }

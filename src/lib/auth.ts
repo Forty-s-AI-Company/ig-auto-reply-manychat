@@ -9,6 +9,20 @@ import { getDb } from "@/lib/db";
 const COOKIE_NAME = "pca_session";
 const MIN_PRODUCTION_SECRET_LENGTH = 32;
 const LOCAL_DEV_AUTH_SECRET = "local-dev-auth-secret-change-before-production";
+const SESSION_CACHE_TTL_MS = 5_000;
+
+type CachedSessionUser = {
+  expiresAt: number;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    avatarUrl: string | null;
+    role: "admin" | "operator";
+  } | null;
+};
+
+const sessionUserCache = new Map<string, CachedSessionUser>();
 
 function getAuthSecret() {
   const secret = process.env.AUTH_SECRET || LOCAL_DEV_AUTH_SECRET;
@@ -64,12 +78,17 @@ export const getCurrentUser = cache(async function getCurrentUser() {
   if (!token) return null;
 
   try {
+    const cached = sessionUserCache.get(token);
+    if (cached && cached.expiresAt > Date.now()) return cached.user;
+
     const { payload } = await jwtVerify(token, getAuthSecret());
     if (typeof payload.userId !== "string") return null;
-    return getDb().user.findUnique({
+    const user = await getDb().user.findUnique({
       where: { id: payload.userId },
       select: { id: true, email: true, name: true, avatarUrl: true, role: true },
     });
+    sessionUserCache.set(token, { user, expiresAt: Date.now() + SESSION_CACHE_TTL_MS });
+    return user;
   } catch {
     return null;
   }

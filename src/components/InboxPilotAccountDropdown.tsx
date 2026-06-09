@@ -2,7 +2,7 @@
 
 import { ChevronDown, Pin, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 type Workspace = {
   id: string;
@@ -29,27 +29,33 @@ const PINNED_ACCOUNTS_STORAGE_KEY = "inboxpilot_pinned_instagram_accounts";
 export function InboxPilotAccountDropdown({ channels, selectedChannelId }: InboxPilotAccountDropdownProps) {
   const router = useRouter();
   const rootRef = useRef<HTMLDivElement>(null);
+  const channelIds = useMemo(() => new Set(channels.map((channel) => channel.id)), [channels]);
+  const sanitizePinnedIds = useCallback((value: unknown) => {
+    if (!Array.isArray(value)) return [];
+    return value.filter((id): id is string => typeof id === "string" && channelIds.has(id));
+  }, [channelIds]);
   const [open, setOpen] = useState(false);
   const [pinnedIds, setPinnedIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
       const raw = window.localStorage.getItem(PINNED_ACCOUNTS_STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === "string") : [];
+      return sanitizePinnedIds(parsed);
     } catch {
       return [];
     }
   });
   const [isPending, startTransition] = useTransition();
+  const safePinnedIds = useMemo(() => sanitizePinnedIds(pinnedIds), [pinnedIds, sanitizePinnedIds]);
   const sortedChannels = useMemo(
     () =>
       [...channels].sort((a, b) => {
-        const aPinned = pinnedIds.includes(a.id);
-        const bPinned = pinnedIds.includes(b.id);
+        const aPinned = safePinnedIds.includes(a.id);
+        const bPinned = safePinnedIds.includes(b.id);
         if (aPinned !== bPinned) return aPinned ? -1 : 1;
         return 0;
       }),
-    [channels, pinnedIds],
+    [channels, safePinnedIds],
   );
   const selectedChannel = sortedChannels.find((channel) => channel.id === selectedChannelId);
 
@@ -60,6 +66,12 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
     document.addEventListener("mousedown", closeOnOutsideClick);
     return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, []);
+
+  useEffect(() => {
+    if (safePinnedIds.length !== pinnedIds.length) {
+      window.localStorage.setItem(PINNED_ACCOUNTS_STORAGE_KEY, JSON.stringify(safePinnedIds));
+    }
+  }, [pinnedIds.length, safePinnedIds]);
 
   async function changeAccount(channelId: string) {
     const response = await fetch("/api/account-scope", {
@@ -73,10 +85,11 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
   }
 
   function togglePinned(channelId: string) {
+    if (!channelIds.has(channelId)) return;
     setPinnedIds((current) => {
       const next = current.includes(channelId)
         ? current.filter((id) => id !== channelId)
-        : [channelId, ...current];
+        : [channelId, ...current.filter((id) => channelIds.has(id))];
       window.localStorage.setItem(PINNED_ACCOUNTS_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
@@ -87,28 +100,28 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
   const connectedLabel = channels.length === 1 ? "已連接 1 個平台帳號" : `已連接 ${channels.length} 個平台帳號`;
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative z-50">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className={`flex h-11 w-full items-center gap-2 rounded-lg border px-2 text-left transition ${
-          open ? "border-[#d5d7dc] bg-[#d9d9d9]" : "border-transparent hover:bg-[#e2e2e2]"
+        className={`flex h-11 w-full items-center gap-2 rounded-md border px-2 text-left transition ${
+          open ? "border-white/18 bg-white/12" : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
         aria-expanded={open}
       >
         <InstagramAvatar channel={currentChannel} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-medium text-[#34363a]">{currentName}</p>
+          <p className="truncate text-xs font-medium text-white">{currentName}</p>
         </div>
-        <ChevronDown className={`h-4 w-4 shrink-0 text-[#667085] transition ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-4 w-4 shrink-0 text-[#9bd6d9] transition ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open ? (
-        <div className="absolute left-0 top-[calc(100%+4px)] z-50 w-[320px] overflow-hidden rounded-md border border-[#d6dae0] bg-white shadow-[0_14px_32px_rgba(16,24,40,0.14)]">
+        <div className="absolute left-0 top-[calc(100%+6px)] z-[90] w-full min-w-[260px] max-w-[calc(100vw-32px)] overflow-hidden rounded-md border border-[#d6dae0] bg-white text-[#111827] shadow-[0_18px_42px_rgba(2,23,24,0.22)]">
           <div className="max-h-[312px] overflow-y-auto p-1.5">
             {sortedChannels.length > 0 ? (
               sortedChannels.map((channel) => {
-                const pinned = pinnedIds.includes(channel.id);
+                const pinned = safePinnedIds.includes(channel.id);
                 return (
                 <button
                   key={channel.id}
@@ -117,7 +130,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   onClick={() => changeAccount(channel.id)}
                   className={`flex h-[52px] w-full items-center gap-3 rounded-sm border px-2 text-left text-sm ${
                     channel.id === selectedChannelId || (!selectedChannelId && channel.id === sortedChannels[0]?.id)
-                      ? "border-[#d8e7fb] bg-[#eef6ff]"
+                      ? "border-[#b6eef2] bg-[var(--primary-soft)]"
                       : "border-transparent hover:bg-[#f5f7fa]"
                   }`}
                 >
@@ -147,7 +160,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                       togglePinned(channel.id);
                     }}
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md hover:bg-white ${
-                      pinned ? "text-[#006fe6]" : "text-[#344054]"
+                      pinned ? "text-[var(--teal-dark)]" : "text-[#344054]"
                     }`}
                   >
                     <Pin className="h-4 w-4" fill={pinned ? "currentColor" : "none"} />
@@ -169,7 +182,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                 setOpen(false);
                 router.push("/channels/connect");
               }}
-              className="flex h-8 w-full items-center justify-center gap-2 rounded-md border border-[#d2d6dc] bg-white px-3 text-sm font-medium text-[#34363a] hover:bg-[#f6f7f9]"
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-sm font-medium text-[#34363a] hover:bg-[var(--primary-soft)]"
             >
               <Plus className="h-4 w-4" />
               新增平台帳號
@@ -203,15 +216,15 @@ function InstagramAvatar({ channel, size }: { channel?: Channel; size: "sm" | "m
 function PlanBadge({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
   return (
     <span
-      className={`inline-flex items-center justify-center rounded-[3px] border border-white bg-[#006fe6] font-black text-white shadow-[0_0_0_0.5px_rgba(0,0,0,0.08)] ${className}`}
+      className={`inline-flex items-center justify-center rounded-[3px] border border-white bg-[var(--primary)] font-black text-[#063a3d] shadow-[0_0_0_0.5px_rgba(0,0,0,0.08)] ${className}`}
       style={{
         minWidth: compact ? 23 : 25,
         height: compact ? 12 : 14,
         paddingInline: compact ? 2 : 4,
         fontSize: compact ? 8 : 9,
         lineHeight: compact ? "10px" : "12px",
-        color: "#ffffff",
-        backgroundColor: "#006fe6",
+        color: "#063a3d",
+        backgroundColor: "#19d3d8",
         borderColor: "#ffffff",
       }}
     >

@@ -3,7 +3,7 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-const SHOW_DELAY_MS = 180;
+const SHOW_DELAY_MS = 90;
 const MAX_VISIBLE_MS = 12000;
 
 function isSameOriginUrl(value: string) {

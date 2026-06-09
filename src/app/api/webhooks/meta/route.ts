@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAuditEvent } from "@/lib/audit";
 import {
   findMetaChannelForInbound,
   isConfiguredMetaObject,
@@ -10,13 +11,21 @@ import {
 import { getDb } from "@/lib/db";
 import { processInstagramCommentEvent } from "@/lib/instagram/comments-sync";
 import { getOrCreateChannel, handleInboundMessage } from "@/lib/messages";
-import { getDefaultWorkspaceId } from "@/lib/workspaces";
+import { assertRateLimit, getClientIp } from "@/lib/security";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   const challenge = verifyMetaWebhook(new URL(request.url).searchParams);
   if (challenge === null) {
+    await recordAuditEvent({
+      action: "webhook_verification_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "meta", method: "GET" },
+    });
     return NextResponse.json({ error: "Meta webhook verification failed." }, { status: 403 });
   }
   return new Response(challenge, { status: 200 });
@@ -52,12 +61,31 @@ async function ensureChannelEnabled(
 }
 
 export async function POST(request: Request) {
+  const rateLimitFailure = await assertRateLimit({
+    key: `webhook:meta:${getClientIp(request)}`,
+    limit: 300,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
+
   const rawBody = await request.text();
   const signature = request.headers.get("x-hub-signature-256");
+  const configuredSecrets = [process.env.META_APP_SECRET, process.env.META_INSTAGRAM_APP_SECRET].filter(
+    (secret): secret is string => Boolean(secret?.trim()),
+  );
   const signatureValid =
-    verifyMetaSignature(rawBody, signature, process.env.META_APP_SECRET) ||
-    verifyMetaSignature(rawBody, signature, process.env.META_INSTAGRAM_APP_SECRET);
+    configuredSecrets.length > 0
+      ? configuredSecrets.some((secret) => verifyMetaSignature(rawBody, signature, secret))
+      : verifyMetaSignature(rawBody, signature);
   if (!signatureValid) {
+    await recordAuditEvent({
+      action: "webhook_signature_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "meta", method: "POST" },
+    });
     return NextResponse.json({ error: "Invalid Meta webhook signature." }, { status: 401 });
   }
 
@@ -85,8 +113,12 @@ export async function POST(request: Request) {
 
   for (const inbound of inboundMessages) {
     const configuredChannel = await findMetaChannelForInbound(inbound);
+    if (!configuredChannel?.workspaceId) {
+      duplicated += 1;
+      continue;
+    }
     const channelName = configuredChannel?.name || inbound.channelName;
-    const workspaceId = configuredChannel?.workspaceId || (await getDefaultWorkspaceId());
+    const workspaceId = configuredChannel.workspaceId;
     const channel = await ensureChannelEnabled(inbound.channelType, channelName, workspaceId);
     if (inbound.providerMessageId) {
       const existing = await getDb().message.findFirst({

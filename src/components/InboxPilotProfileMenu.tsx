@@ -36,11 +36,11 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl }: InboxPilotProf
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#4b5563] hover:bg-[#e2e2e2]"
+        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
       >
         <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" />
         <span className="min-w-0 flex-1 truncate text-left">我的個人檔案</span>
-        <ChevronDown className={`h-3.5 w-3.5 transition ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-3.5 w-3.5 text-[#81b6ba] transition ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open ? (
@@ -76,7 +76,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl }: InboxPilotProf
               >
                 <option value="zh-TW">繁體中文</option>
                 <option value="en" disabled>
-                  English [開發中]
+                  English
                 </option>
               </select>
             </label>
@@ -112,7 +112,7 @@ function ProfileAvatar({ avatarUrl, displayName, size }: { avatarUrl?: string | 
       : "h-12 w-12 text-lg";
 
   return (
-    <div className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#d1d5db] font-semibold text-[#344054] ${className}`}>
+    <div className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--primary-soft)] font-semibold text-[var(--deep-teal)] ${className}`}>
       {avatarUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" referrerPolicy="no-referrer" />
@@ -125,7 +125,7 @@ function ProfileAvatar({ avatarUrl, displayName, size }: { avatarUrl?: string | 
 
 function MenuLink({ href, icon, label }: { href: string; icon?: React.ReactNode; label: string }) {
   return (
-    <Link href={href} prefetch={false} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
+    <Link href={href} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
       <span className="shrink-0 text-[#667085]">{icon}</span>
       <span className="min-w-0 flex-1">{label}</span>
     </Link>
@@ -161,7 +161,7 @@ function MenuButton({
 function DevelopmentBadge() {
   return (
     <span className="rounded-sm bg-[#fff7ed] px-1.5 py-0.5 text-[11px] font-medium text-[#b45309]">
-      [開發中]
+      排隊中
     </span>
   );
 }

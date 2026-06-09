@@ -13,9 +13,9 @@
 - Automations / AutomationStep / AutomationRun
 - Broadcasts / Jobs
 - Knowledge Base / AI Settings
-- Mock / Telegram / Instagram / Messenger / WhatsApp channel scaffold
-- Meta OAuth / webhook scaffold
-- Billing / PayUni scaffold
+- Mock / Telegram / Instagram / Messenger / WhatsApp channel adapters
+- Meta OAuth / webhook integration points
+- Billing / PayUni integration points
 
 但產品體驗不像 ManyChat，主要原因是：
 

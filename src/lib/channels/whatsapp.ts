@@ -10,7 +10,7 @@ export const whatsappAdapter: ChannelAdapter = {
     }
 
     throw new Error(
-      "WhatsApp sendMessage scaffold is ready, but template/session policy mapping must be configured before sending.",
+      "WhatsApp sending is disabled until template and session policy mapping is configured.",
     );
   },
 };

@@ -14,6 +14,7 @@ export async function GET(_request: Request, { params }: Params) {
   const automation = await getDb().automation.findFirst({
     where: { id, workspaceId },
     include: {
+      folder: { select: { id: true, name: true } },
       steps: { orderBy: { order: "asc" } },
       runs: {
         orderBy: { createdAt: "desc" },
@@ -38,6 +39,11 @@ export async function PUT(request: Request, { params }: Params) {
   if (!parsed.success) return NextResponse.json({ error: "自動化資料格式不正確。" }, { status: 400 });
 
   const workspaceId = await getCurrentWorkspaceId();
+  const folderId = parsed.data.folderId || null;
+  if (folderId) {
+    const folder = await getDb().automationFolder.findFirst({ where: { id: folderId, workspaceId }, select: { id: true } });
+    if (!folder) return NextResponse.json({ error: "找不到指定的資料夾。" }, { status: 404 });
+  }
   const db = getDb();
   const existing = await db.automation.findFirst({ where: { id, workspaceId }, select: { id: true } });
   if (!existing) return NextResponse.json({ error: "找不到指定的自動化。" }, { status: 404 });
@@ -47,6 +53,7 @@ export async function PUT(request: Request, { params }: Params) {
     where: { id },
     data: {
       name: parsed.data.name,
+      folderId,
       enabled: parsed.data.enabled,
       triggerType: parsed.data.triggerType,
       triggerConfigJson: parsed.data.triggerConfigJson ?? {},
@@ -59,6 +66,7 @@ export async function PUT(request: Request, { params }: Params) {
       },
     },
     include: {
+      folder: { select: { id: true, name: true } },
       steps: { orderBy: { order: "asc" } },
       runs: {
         orderBy: { createdAt: "desc" },

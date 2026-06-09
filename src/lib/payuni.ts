@@ -48,6 +48,11 @@ function resolveGatewayAction(rawGatewayUrl: string) {
   return normalized.endsWith("/upp") ? normalized : `${normalized}/upp`;
 }
 
+export function isPayuniSandboxGateway(gatewayUrl: string) {
+  const hostname = new URL(gatewayUrl).hostname.toLowerCase();
+  return hostname.includes("sandbox") || hostname.includes("test");
+}
+
 export function getPayuniConfig(): PayuniConfig {
   return {
     merchantId: requiredEnv("PAYUNI_MERCHANT_ID"),

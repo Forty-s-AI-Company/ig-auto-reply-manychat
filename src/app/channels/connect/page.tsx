@@ -1,40 +1,39 @@
 import Link from "next/link";
-import { siInstagram, siMessenger, siTelegram, siTiktok, siWhatsapp } from "simple-icons";
+import { Bot, FlaskConical, Link2 } from "lucide-react";
 import { ChannelConnectionShell, GiftVisual } from "@/components/ChannelConnectionShell";
 import { requireUser } from "@/lib/auth";
 
 const channels = [
   {
-    name: "Instagram",
-    description: "連接 Instagram，建立留言關鍵字、私訊與自動回覆流程。",
-    href: "/channels/connect/instagram",
-    icon: "ig",
+    name: "Social Accounts",
+    description: "統一的 OAuth popup 入口，Meta、Telegram 與 Mock provider 都會從這裡進入。",
+    href: "/channels/connect/social",
+    icon: "social",
+  },
+  {
+    name: "Telegram Bot",
+    description: "若只需要 Bot Token，會在同一套 provider 架構內完成驗證與儲存。",
+    href: "/channels/connect/social",
+    icon: "tg",
+  },
+  {
+    name: "Mock OAuth Provider",
+    description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
+    href: "/channels/connect/social",
+    icon: "mock",
   },
   {
     name: "TikTok",
-    description: "連接 TikTok，建立短影音互動與訊息自動化。",
+    description: "正式開放後會在這裡接入對應 provider。",
     href: "/channels/connect/tiktok",
     icon: "tt",
     disabled: true,
   },
   {
     name: "WhatsApp",
-    description: "連接 WhatsApp，集中管理客戶訊息與回覆流程。",
+    description: "WhatsApp Business 連線入口會集中在這裡。",
     href: "/channels/connect/whatsapp",
     icon: "wa",
-    disabled: true,
-  },
-  {
-    name: "Facebook Messenger",
-    description: "連接 Messenger，建立粉專訊息自動化與客服流程。",
-    href: "/channels/connect/messenger",
-    icon: "ms",
-  },
-  {
-    name: "Telegram",
-    description: "連接 Telegram，建立頻道與私訊自動化流程。",
-    href: "/channels/connect/telegram",
-    icon: "tg",
     disabled: true,
   },
 ];
@@ -44,10 +43,10 @@ export default async function ChannelConnectionPage() {
 
   return (
     <ChannelConnectionShell
-      title="你想從哪個平台開始？"
-      description="不用擔心，之後也可以再連接其他社群平台。"
+      title="連接平台帳號"
+      description="先選擇平台，再進入對應的 OAuth popup 或 token 授權流程。成功後會回到社群帳號頁面顯示已連接狀態。"
       backHref="/dashboard"
-      backLabel="返回"
+      backLabel="返回主控台"
       visual={<GiftVisual />}
     >
       <div className="space-y-6">
@@ -57,8 +56,8 @@ export default async function ChannelConnectionPage() {
               <ChannelIcon type={channel.icon} />
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[330px] text-sm leading-5 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">[開發中]</p>
+                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
+                <p className="mt-2 text-xs font-medium text-amber-700">尚未開放</p>
               </div>
             </div>
           ) : (
@@ -70,7 +69,7 @@ export default async function ChannelConnectionPage() {
               <ChannelIcon type={channel.icon} />
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[330px] text-sm leading-5 text-[#596170]">{channel.description}</p>
+                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
               </div>
             </Link>
           ),
@@ -81,25 +80,24 @@ export default async function ChannelConnectionPage() {
 }
 
 const channelIconMap = {
-  ig: { icon: siInstagram, background: "#FF0069" },
-  tt: { icon: siTiktok, background: "#000000" },
-  wa: { icon: siWhatsapp, background: "#25D366" },
-  ms: { icon: siMessenger, background: "#00B2FF" },
-  tg: { icon: siTelegram, background: "#26A5E4" },
+  social: { icon: Link2, background: "#0f766e" },
+  tg: { icon: Bot, background: "#26A5E4" },
+  mock: { icon: FlaskConical, background: "#7c3aed" },
+  tt: { icon: Link2, background: "#000000" },
+  wa: { icon: Link2, background: "#25D366" },
 };
 
 function ChannelIcon({ type }: { type: string }) {
-  const item = channelIconMap[type as keyof typeof channelIconMap] ?? channelIconMap.ig;
+  const item = channelIconMap[type as keyof typeof channelIconMap] ?? channelIconMap.social;
+  const Icon = item.icon;
 
   return (
     <span
       className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
       style={{ backgroundColor: item.background }}
-      aria-label={item.icon.title}
+      aria-label={type}
     >
-      <svg className="h-6 w-6 text-white" role="img" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="currentColor" d={item.icon.path} />
-      </svg>
+      <Icon className="h-6 w-6 text-white" />
     </span>
   );
 }

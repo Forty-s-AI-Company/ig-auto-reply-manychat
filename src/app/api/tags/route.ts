@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { assertSameOriginRequest } from "@/lib/security";
 import { tagSchema } from "@/lib/validation";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -12,6 +13,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const parsed = tagSchema.safeParse(await request.json().catch(() => null));

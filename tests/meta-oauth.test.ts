@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getInstagramAppSecret } from "../src/app/api/meta/oauth/callback/route";
+import { getCallbackMode, getInstagramAppSecret } from "../src/app/api/meta/oauth/callback/route";
+import { getMetaBusinessLoginPreference } from "../src/app/api/meta/oauth/start/route";
 
 describe("Meta OAuth configuration", () => {
   afterEach(() => {
@@ -23,5 +24,16 @@ describe("Meta OAuth configuration", () => {
     vi.stubEnv("META_APP_SECRET", "facebook-secret");
 
     expect(getInstagramAppSecret()).toBe("instagram-secret");
+  });
+
+  it("defaults the Meta Business login preference to the requested OAuth mode", () => {
+    expect(getMetaBusinessLoginPreference("facebook", null)).toBe("facebook");
+    expect(getMetaBusinessLoginPreference("instagram", null)).toBe("instagram");
+    expect(getMetaBusinessLoginPreference("facebook", "instagram")).toBe("instagram");
+  });
+
+  it("falls back to the callback path when the OAuth mode cookie is missing", () => {
+    expect(getCallbackMode(new Request("https://example.com/api/meta/oauth/callback"))).toBe("facebook");
+    expect(getCallbackMode(new Request("https://example.com/api/instagram/oauth/callback"))).toBe("instagram");
   });
 });

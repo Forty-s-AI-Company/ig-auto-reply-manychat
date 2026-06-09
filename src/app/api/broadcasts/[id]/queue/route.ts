@@ -3,13 +3,23 @@ import { requireApiUser } from "@/lib/auth";
 import { assertCanSendAutomation } from "@/lib/billing/usage-service";
 import { getDb } from "@/lib/db";
 import { queueBroadcast } from "@/lib/jobs";
+import { assertRateLimit, assertSameOriginRequest } from "@/lib/security";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type Params = { params: Promise<{ id: string }> };
 
-export async function POST(_request: Request, { params }: Params) {
+export async function POST(request: Request, { params }: Params) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
+  const rateLimitFailure = await assertRateLimit({
+    key: `queue-broadcast:${auth.user.id}`,
+    limit: 20,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
   const { id } = await params;
   const workspaceId = await getCurrentWorkspaceId();
   const broadcast = await getDb().broadcast.findFirst({ where: { id, workspaceId }, select: { id: true } });
