@@ -26,6 +26,16 @@ function getFacebookAppSecret() {
   return process.env.META_APP_SECRET?.trim() || "";
 }
 
+function shouldForceReauthenticate(request: Request) {
+  const url = new URL(request.url);
+  return url.searchParams.get("switch_account") === "1" || url.searchParams.get("reauth") === "1";
+}
+
+function shouldReRequestPermissions(request: Request) {
+  const url = new URL(request.url);
+  return url.searchParams.get("rerequest") === "1";
+}
+
 async function readJson<T>(response: Response): Promise<T> {
   return (await response.json().catch(() => ({}))) as T;
 }
@@ -88,10 +98,19 @@ export const metaFacebookProvider: OAuthProvider = {
         "pages_show_list",
         "pages_read_engagement",
         "pages_manage_metadata",
+        "pages_messaging",
         "instagram_basic",
+        "instagram_manage_comments",
         "instagram_manage_messages",
+        "business_management",
       ].join(","),
     });
+
+    if (shouldForceReauthenticate(context.request)) {
+      params.set("auth_type", "reauthenticate");
+    } else if (shouldReRequestPermissions(context.request)) {
+      params.set("auth_type", "rerequest");
+    }
 
     return `https://www.facebook.com/v25.0/dialog/oauth?${params}`;
   },
@@ -109,8 +128,11 @@ export const metaFacebookProvider: OAuthProvider = {
         "pages_show_list",
         "pages_read_engagement",
         "pages_manage_metadata",
+        "pages_messaging",
         "instagram_basic",
+        "instagram_manage_comments",
         "instagram_manage_messages",
+        "business_management",
       ],
       avatarUrl: profile.picture?.data?.url,
       accountType: "facebook-user",

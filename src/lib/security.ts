@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Redis from "ioredis";
 
 type RateLimitOptions = {
   key: string;
@@ -12,6 +13,7 @@ type Bucket = {
 };
 
 const buckets = new Map<string, Bucket>();
+let redisClientPromise: Promise<Redis | null> | null = null;
 
 function isLocalhost(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1" || hostname === "[::1]";
@@ -36,6 +38,10 @@ export function getClientIp(request: Request) {
 }
 
 export function checkRateLimit({ key, limit, windowMs }: RateLimitOptions) {
+  return checkRateLimitLocal({ key, limit, windowMs });
+}
+
+export function checkRateLimitLocal({ key, limit, windowMs }: RateLimitOptions) {
   const now = Date.now();
   const existing = buckets.get(key);
   if (!existing || existing.resetAt <= now) {
@@ -51,17 +57,74 @@ export function checkRateLimit({ key, limit, windowMs }: RateLimitOptions) {
   return { ok: true, remaining: Math.max(0, limit - existing.count), resetAt: existing.resetAt };
 }
 
-export function rateLimitResponse(resetAt: number) {
+function rateLimitResponse(limit: number, resetAt: number) {
   const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
   return NextResponse.json(
     { error: "Too many requests. Please try again later." },
-    { status: 429, headers: { "retry-after": String(retryAfter) } },
+    {
+      status: 429,
+      headers: {
+        "retry-after": String(retryAfter),
+        "x-ratelimit-limit": String(limit),
+        "x-ratelimit-remaining": "0",
+        "x-ratelimit-reset": String(Math.ceil(resetAt / 1000)),
+      },
+    },
   );
 }
 
-export function assertRateLimit(options: RateLimitOptions) {
-  const result = checkRateLimit(options);
-  return result.ok ? null : rateLimitResponse(result.resetAt);
+async function getRateLimitRedis() {
+  const redisUrl = process.env.REDIS_URL?.trim();
+  if (!redisUrl) return null;
+
+  redisClientPromise ||= import("ioredis")
+    .then(({ default: RedisClient }) => new RedisClient(redisUrl, { maxRetriesPerRequest: null, enableReadyCheck: false }))
+    .catch((error) => {
+      console.warn("[rate-limit] redis init failed, falling back to in-memory limits", error);
+      return null;
+    });
+
+  return redisClientPromise;
+}
+
+export async function checkRateLimitAsync({ key, limit, windowMs }: RateLimitOptions) {
+  const redis = await getRateLimitRedis();
+  if (!redis) return checkRateLimitLocal({ key, limit, windowMs });
+
+  try {
+    const script = `
+      local current = redis.call("INCR", KEYS[1])
+      if current == 1 then
+        redis.call("PEXPIRE", KEYS[1], ARGV[1])
+      end
+      local ttl = redis.call("PTTL", KEYS[1])
+      local limit = tonumber(ARGV[2])
+      if current > limit then
+        return {0, 0, ttl}
+      end
+      return {1, limit - current, ttl}
+    `;
+    const [allowedRaw, remainingRaw, ttlRaw] = (await redis.eval(
+      script,
+      1,
+      key,
+      String(windowMs),
+      String(limit),
+    )) as [number | string, number | string, number | string];
+    const allowed = Number(allowedRaw) === 1;
+    const remaining = Number(remainingRaw);
+    const ttl = Number(ttlRaw);
+    const resetAt = Date.now() + Math.max(0, Number.isFinite(ttl) ? ttl : windowMs);
+    return { ok: allowed, remaining, resetAt };
+  } catch (error) {
+    console.warn("[rate-limit] redis check failed, falling back to in-memory limits", error);
+    return checkRateLimitLocal({ key, limit, windowMs });
+  }
+}
+
+export async function assertRateLimit(options: RateLimitOptions) {
+  const result = await checkRateLimitAsync(options);
+  return result.ok ? null : rateLimitResponse(options.limit, result.resetAt);
 }
 
 export function assertSameOriginRequest(request: Request) {

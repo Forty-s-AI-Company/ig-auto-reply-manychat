@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { recordAuditEvent } from "@/lib/audit";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sequenceSchema } from "@/lib/validation";
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
 
   const parsed = sequenceSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: "序列資料不完整。" }, { status: 400 });
+    return NextResponse.json({ error: "序列資料格式錯誤，請重新確認。" }, { status: 400 });
   }
 
   const workspaceId = await getCurrentWorkspaceId();
@@ -53,10 +54,24 @@ export async function POST(request: Request) {
       },
       include: { steps: { orderBy: { order: "asc" } } },
     });
+
+    await recordAuditEvent({
+      action: "sequence_created",
+      resourceType: "sequence",
+      resourceId: sequence.id,
+      workspaceId,
+      userId: auth.user.id,
+      metadata: {
+        name: sequence.name,
+        enabled: sequence.enabled,
+        stepCount: sequence.steps.length,
+      },
+    });
+
     return NextResponse.json(sequence);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return NextResponse.json({ error: "這個序列名稱已經存在。" }, { status: 409 });
+      return NextResponse.json({ error: "序列名稱已存在，請換一個。" }, { status: 409 });
     }
     throw error;
   }

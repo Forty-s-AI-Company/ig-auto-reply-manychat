@@ -6,7 +6,7 @@ import { mockInboundSchema } from "@/lib/validation";
 import { hasValidSharedSecret } from "@/lib/webhook-security";
 
 export async function POST(request: Request) {
-  const rateLimitFailure = assertRateLimit({
+  const rateLimitFailure = await assertRateLimit({
     key: `webhook:mock:${getClientIp(request)}`,
     limit: 120,
     windowMs: 60 * 1000,

@@ -30,7 +30,7 @@ function getInstagramAppSecret() {
 
 function shouldForceFreshLogin(request: Request) {
   const url = new URL(request.url);
-  return url.searchParams.get("fresh_login") === "1";
+  return url.searchParams.get("fresh_login") === "1" || url.searchParams.get("switch_account") === "1";
 }
 
 function shouldUseRedirectTransport(request: Request) {

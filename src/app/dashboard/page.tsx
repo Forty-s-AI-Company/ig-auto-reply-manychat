@@ -16,6 +16,8 @@ import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDashboardSummary } from "@/lib/dashboard-summary";
+import { getHealthCheckResult } from "@/lib/health";
+import { getServerCache } from "@/lib/server-cache";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 function directionLabel(direction: string) {
@@ -45,6 +47,7 @@ export default async function DashboardPage() {
     recentMessages,
     recentAutomations,
   } = await getDashboardSummary({ workspaceId, selectedChannelId });
+  const health = await getServerCache(`dashboard:health:${workspaceId}`, 5_000, getHealthCheckResult);
   const connectedInstagramChannels = connectedInstagramChannelRows.filter((channel) => {
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
@@ -95,6 +98,12 @@ export default async function DashboardPage() {
     { label: "IG 連線", value: `${connectedInstagramChannels} 個帳號`, ok: connectedInstagramChannels > 0 },
     { label: "自動化", value: `${automations} 個流程`, ok: automations > 0 },
     { label: "待處理", value: `${openConversations} 則對話`, ok: openConversations === 0 },
+    { label: "資料庫", value: health.checks.database.ok ? "正常" : "異常", ok: health.checks.database.ok },
+    {
+      label: "Redis",
+      value: health.checks.redis.configured ? (health.checks.redis.ok ? "正常" : "異常") : "未設定",
+      ok: !health.checks.redis.configured || health.checks.redis.ok,
+    },
   ];
 
   return (
@@ -163,6 +172,20 @@ export default async function DashboardPage() {
                 />
               </div>
               <p className="mt-2 text-xs text-[var(--text-muted)]">免費方案聯絡人用量：{contacts}/1000</p>
+            </div>
+            <div className="mt-4 flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-white px-3 py-2 text-sm">
+              <span className="text-[var(--text-secondary)]">系統健康</span>
+              <span
+                className={`font-medium ${
+                  health.status === "ok"
+                    ? "text-green-700"
+                    : health.status === "degraded"
+                      ? "text-amber-700"
+                      : "text-red-700"
+                }`}
+              >
+                {health.status === "ok" ? "正常" : health.status === "degraded" ? "部分退化" : "異常"}
+              </span>
             </div>
             <div className="mt-4 grid gap-2">
               {healthItems.map((item) => (

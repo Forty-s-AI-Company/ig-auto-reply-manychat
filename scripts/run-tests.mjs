@@ -12,7 +12,14 @@ const baseDatabaseUrl = process.env.TEST_DATABASE_URL || process.env.DATABASE_UR
 if (!baseDatabaseUrl) {
   throw new Error("DATABASE_URL or TEST_DATABASE_URL is required to run tests.");
 }
-const baseDirectUrl = process.env.TEST_DIRECT_URL || process.env.DIRECT_URL || baseDatabaseUrl;
+// Prefer an explicit test direct URL. Otherwise reuse the tested pooler URL,
+// which is more reliable in this workspace than the provisioned DIRECT_URL.
+const baseDirectUrl =
+  process.env.TEST_DIRECT_URL ||
+  process.env.TEST_DATABASE_URL ||
+  process.env.DATABASE_URL ||
+  process.env.DIRECT_URL ||
+  baseDatabaseUrl;
 
 const testSchema = `test_${Date.now()}_${randomBytes(3).toString("hex")}`;
 const testDatabaseUrl = new URL(baseDatabaseUrl);

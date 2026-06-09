@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { getAppUrl } from "@/lib/app-url";
+import { recordAuditEvent } from "@/lib/audit";
+import { getCurrentUser } from "@/lib/auth";
 import {
   buildInstagramChannelName,
   getMetaChannelConfig,
@@ -12,6 +14,7 @@ import { assertWorkspaceLimit } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
 import { clearPopupState, readPopupState } from "@/lib/oauth/state";
 import { getPopupBridgeUrl } from "@/lib/oauth/utils";
+import { getClientIp } from "@/lib/security";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -599,29 +602,95 @@ export function getCallbackMode(request: Request, cookieValue?: string): MetaOau
     : "facebook";
 }
 
+async function recordMetaOauthFailure(params: {
+  request: Request;
+  workspaceId: string;
+  userId?: string;
+  provider: string;
+  mode: MetaOauthMode;
+  reason: string;
+  transport?: "popup" | "redirect";
+}) {
+  const sanitizedReason = params.reason
+    .replace(/\b(access[_-]?token|refresh[_-]?token|client[_-]?secret|app[_-]?secret|authorization[_-]?code|code|state|secret)\b/gi, "[redacted]")
+    .replace(/([?&](?:code|state|access_token|refresh_token|client_secret|app_secret)=)[^&\s]+/gi, "$1[redacted]")
+    .slice(0, 500);
+
+  await recordAuditEvent({
+    action: "oauth_callback_failed",
+    resourceType: "channel",
+    workspaceId: params.workspaceId,
+    userId: params.userId,
+    actorIp: getClientIp(params.request),
+    userAgent: params.request.headers.get("user-agent"),
+    success: false,
+    metadata: {
+      provider: params.provider,
+      mode: params.mode,
+      transport: params.transport || "popup",
+      reason: sanitizedReason,
+    },
+  });
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
+  const providerError = url.searchParams.get("error_description") || url.searchParams.get("error") || "";
   const cookieStore = await cookies();
   const popupState = await readPopupState();
   const expectedState = cookieStore.get(META_OAUTH_STATE_COOKIE)?.value;
   const workspaceId = cookieStore.get(META_OAUTH_WORKSPACE_COOKIE)?.value || (await getDefaultWorkspaceId());
   const mode = getCallbackMode(request, cookieStore.get(META_OAUTH_MODE_COOKIE)?.value);
+  const currentUser = await getCurrentUser();
   const popupProvider =
     popupState.provider === "meta-instagram" || popupState.provider === "meta-facebook" ? popupState.provider : "";
+  const auditProvider = popupProvider || `meta-${mode}`;
   cookieStore.delete(META_OAUTH_STATE_COOKIE);
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);
 
-  if (!code || !state || !expectedState || state !== expectedState) {
+  if (providerError) {
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: providerError,
+    });
     if (popupProvider) {
       await clearPopupState();
       return NextResponse.redirect(
         getPopupBridgeUrl(request, {
           status: "error",
           provider: popupProvider,
-          message: "OAuth state 驗證失敗，請重新連接一次。",
+          message: providerError,
+        }),
+      );
+    }
+    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(providerError)}`);
+  }
+
+  if (!code || !state || !expectedState || state !== expectedState) {
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: "invalid_state",
+    });
+    if (popupProvider) {
+      await clearPopupState();
+      return NextResponse.redirect(
+        getPopupBridgeUrl(request, {
+          status: "error",
+          provider: popupProvider,
+          message: "OAuth state verification failed.",
         }),
       );
     }
@@ -659,7 +728,7 @@ export async function GET(request: Request) {
       }
     }
     if (channels.length === 0) {
-      throw new Error("Meta 沒有回傳可連線的 Instagram 商業帳號。請在 Meta 視窗點「編輯設定」，確認已勾選粉絲專頁、商家與 Instagram 帳號，且該 IG 已連到 Facebook 粉絲專頁。");
+      throw new Error("Meta did not return any usable Instagram channels.");
     }
     if (popupProvider) {
       await clearPopupState();
@@ -669,13 +738,24 @@ export async function GET(request: Request) {
           provider: popupProvider,
           accountId: channels[0]?.id,
           displayName: channels[0]?.name || "Meta",
-          message: `已同步 ${channels.length} 個 Instagram channel。`,
+          message: `Connected ${channels.length} Instagram channel(s).`,
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook`);
+    return NextResponse.redirect(
+      `${getAppUrl(request)}/channels/connect/success?connected=${channels.length}&mode=facebook&channel=${channels[0]?.id || ""}`,
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Meta connection failed.";
+    await recordMetaOauthFailure({
+      request,
+      workspaceId,
+      userId: currentUser?.id,
+      provider: auditProvider,
+      mode,
+      transport: popupState.transport,
+      reason: message,
+    });
     if (popupProvider) {
       await clearPopupState();
       return NextResponse.redirect(

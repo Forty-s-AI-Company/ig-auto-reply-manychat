@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
+import { recordAuditEvent } from "@/lib/audit";
 import { requireApiUser } from "@/lib/auth";
 import { syncConnectedAccountToChannel } from "@/lib/oauth/meta-channel-sync";
 import { getOAuthProvider } from "@/lib/oauth/registry";
 import { clearPopupState, readPopupState } from "@/lib/oauth/state";
 import { saveConnectedAccount } from "@/lib/oauth/store";
 import { getPopupBridgeUrl, toPrismaJson } from "@/lib/oauth/utils";
+import { getClientIp } from "@/lib/security";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type RouteContext = {
@@ -44,8 +46,21 @@ export async function GET(request: Request, context: RouteContext) {
   const code = url.searchParams.get("code") || "";
   const providerError = url.searchParams.get("error_description") || url.searchParams.get("error") || "";
   const stored = await readPopupState();
+  const auditBase = {
+    resourceType: "channel" as const,
+    workspaceId: await getCurrentWorkspaceId(),
+    userId: auth.user.id,
+    actorIp: getClientIp(request),
+    userAgent: request.headers.get("user-agent"),
+  };
 
   if (providerError) {
+    await recordAuditEvent({
+      ...auditBase,
+      action: "oauth_callback_failed",
+      success: false,
+      metadata: { provider: providerId, reason: providerError, phase: "provider_error" },
+    });
     await clearPopupState();
     if (stored.transport === "redirect") {
       return NextResponse.redirect(
@@ -60,17 +75,24 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   if (!state || !code || stored.state !== state || stored.provider !== providerId) {
+    const message = "OAuth state verification failed.";
+    await recordAuditEvent({
+      ...auditBase,
+      action: "oauth_callback_failed",
+      success: false,
+      metadata: { provider: providerId, reason: message, phase: "state_validation" },
+    });
     await clearPopupState();
     if (stored.transport === "redirect") {
       return NextResponse.redirect(
         buildRedirectResultUrl(request, {
           oauth_status: "error",
           oauth_provider: providerId,
-          oauth_message: "OAuth state 驗證失敗，請重新連接帳號。",
+          oauth_message: message,
         }),
       );
     }
-    return redirectWithError(request, providerId, "OAuth state 驗證失敗，請重新連接帳號。");
+    return redirectWithError(request, providerId, message);
   }
 
   try {
@@ -80,7 +102,7 @@ export async function GET(request: Request, context: RouteContext) {
       code,
       popupOrigin: stored.popupOrigin,
     });
-    const workspaceId = await getCurrentWorkspaceId();
+    const workspaceId = auditBase.workspaceId;
     const account = await saveConnectedAccount(workspaceId, {
       provider: provider.id,
       providerAccountId: result.providerAccountId,
@@ -101,6 +123,18 @@ export async function GET(request: Request, context: RouteContext) {
       result,
     });
 
+    await recordAuditEvent({
+      ...auditBase,
+      action: "oauth_callback_success",
+      resourceId: account.id,
+      metadata: {
+        provider: provider.id,
+        accountId: account.id,
+        displayName: account.displayName,
+        channelCount: syncResult.channelIds.length,
+      },
+    });
+
     const successPayload: Record<string, string> = {
       status: "success",
       provider: provider.id,
@@ -108,7 +142,7 @@ export async function GET(request: Request, context: RouteContext) {
       displayName: account.displayName,
     };
     if (syncResult.channelIds.length > 0) {
-      successPayload.message = `已同步 ${syncResult.channelIds.length} 個渠道`;
+      successPayload.message = `Connected ${syncResult.channelIds.length} channel(s).`;
     }
     await clearPopupState();
     if (stored.transport === "redirect") {
@@ -118,16 +152,20 @@ export async function GET(request: Request, context: RouteContext) {
           oauth_provider: provider.id,
           oauth_account_id: account.id,
           oauth_display_name: account.displayName,
-          oauth_message: successPayload.message || "帳號已完成連接。",
+          oauth_message: successPayload.message || "Connected successfully.",
         }),
       );
     }
-    return NextResponse.redirect(
-      getPopupBridgeUrl(request, successPayload),
-    );
+    return NextResponse.redirect(getPopupBridgeUrl(request, successPayload));
   } catch (error) {
-    await clearPopupState();
     const message = error instanceof Error ? error.message : "OAuth callback failed.";
+    await recordAuditEvent({
+      ...auditBase,
+      action: "oauth_callback_failed",
+      success: false,
+      metadata: { provider: providerId, reason: message, phase: "callback" },
+    });
+    await clearPopupState();
     if (stored.transport === "redirect") {
       return NextResponse.redirect(
         buildRedirectResultUrl(request, {

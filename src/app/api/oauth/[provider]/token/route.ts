@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { recordAuditEvent } from "@/lib/audit";
 import { requireApiUser } from "@/lib/auth";
 import { getOAuthProvider } from "@/lib/oauth/registry";
 import { clearPopupState, readPopupState } from "@/lib/oauth/state";
 import { saveConnectedAccount } from "@/lib/oauth/store";
 import { toPrismaJson } from "@/lib/oauth/utils";
+import { getClientIp } from "@/lib/security";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 const bodySchema = z.object({
@@ -31,6 +33,15 @@ export async function POST(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Token payload is invalid." }, { status: 400 });
   }
 
+  const workspaceId = await getCurrentWorkspaceId();
+  const auditBase = {
+    resourceType: "channel" as const,
+    workspaceId,
+    userId: auth.user.id,
+    actorIp: getClientIp(request),
+    userAgent: request.headers.get("user-agent"),
+  };
+
   try {
     const stored = await readPopupState();
     const result = await provider.connectWithToken({
@@ -39,7 +50,6 @@ export async function POST(request: Request, context: RouteContext) {
       token: body.data.token,
       label: body.data.label,
     });
-    const workspaceId = await getCurrentWorkspaceId();
     const account = await saveConnectedAccount(workspaceId, {
       provider: provider.id,
       providerAccountId: result.providerAccountId,
@@ -54,6 +64,16 @@ export async function POST(request: Request, context: RouteContext) {
       profileJson: toPrismaJson(result.profile),
       metadataJson: toPrismaJson(result.metadata),
     });
+    await recordAuditEvent({
+      ...auditBase,
+      action: "token_connect_success",
+      resourceId: account.id,
+      metadata: {
+        provider: provider.id,
+        accountId: account.id,
+        displayName: account.displayName,
+      },
+    });
     await clearPopupState();
 
     return NextResponse.json({
@@ -63,6 +83,15 @@ export async function POST(request: Request, context: RouteContext) {
       displayName: account.displayName,
     });
   } catch (error) {
+    await recordAuditEvent({
+      ...auditBase,
+      action: "token_connect_failed",
+      success: false,
+      metadata: {
+        provider: providerId,
+        reason: error instanceof Error ? error.message : "token_connect_failed",
+      },
+    });
     await clearPopupState();
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Token provider connect failed." },

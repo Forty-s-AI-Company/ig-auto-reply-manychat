@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Settings, Sparkles, Users, Wallet } from "lucide-react";
+import { Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Settings, Shield, Sparkles, Users, Wallet } from "lucide-react";
 import { cookies } from "next/headers";
 import { AdminMobileNav } from "@/components/AdminMobileNav";
 import { AdminSidebarLink } from "@/components/AdminSidebarLink";
@@ -13,26 +13,27 @@ import { getDb } from "@/lib/db";
 import { getServerCache } from "@/lib/server-cache";
 import { getCurrentWorkspace, getUserWorkspaces } from "@/lib/workspaces";
 
-const primaryNavItems = [
-  { label: "儀表板", href: "/dashboard", icon: Home, iconName: "home" },
+const basePrimaryNavItems = [
+  { label: "首頁", href: "/dashboard", icon: Home, iconName: "home" },
   { label: "收件匣", href: "/inbox", icon: Inbox, iconName: "inbox" },
   { label: "聯絡人", href: "/contacts", icon: Users, iconName: "users" },
-  { label: "廣播活動", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
+  { label: "廣播", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
   { label: "自動化", href: "/automations", icon: Sparkles, iconName: "sparkles" },
   { label: "序列", href: "/sequences", icon: Clock, iconName: "clock" },
   { label: "AI", href: "/ai-settings", icon: Bot, iconName: "bot" },
   { label: "分析", href: "/analytics", icon: Sparkles, iconName: "barChart3" },
-  { label: "付款", href: "/billing", icon: CreditCard, iconName: "creditCard" },
+  { label: "帳單", href: "/billing", icon: CreditCard, iconName: "creditCard" },
   { label: "推薦", href: "/referrals", icon: Gift, iconName: "gift" },
   { label: "錢包", href: "/wallet", icon: Wallet, iconName: "wallet" },
-  { label: "設定", href: "/channels", icon: Settings, iconName: "settings" },
+  { label: "渠道", href: "/channels", icon: Settings, iconName: "settings" },
 ] as const;
 
+const adminNavItem = { label: "稽核紀錄", href: "/admin/audit", icon: Shield, iconName: "shield" } as const;
 const ADMIN_SHELL_CACHE_TTL_MS = 5_000;
 
 export async function AdminShell({
   children,
-  title = "儀表板",
+  title = "首頁",
   headerCenter,
   headerRight,
 }: {
@@ -43,6 +44,8 @@ export async function AdminShell({
 }) {
   const workspace = await getCurrentWorkspace();
   const user = await getCurrentUser();
+  const isAdmin = user?.role === "admin";
+  const primaryNavItems = isAdmin ? [...basePrimaryNavItems, adminNavItem] : basePrimaryNavItems;
   const cookieStore = await cookies();
   const instagramChannels = await getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
     getDb().channel.findMany({
@@ -103,9 +106,9 @@ export async function AdminShell({
           </div>
 
           <nav className="ip-sidebar-nav-layer space-y-1 px-2.5 py-4">
-            {primaryNavItems.map((item) => {
-              return <AdminSidebarLink key={item.href} href={item.href} label={item.label} iconName={item.iconName} />;
-            })}
+            {primaryNavItems.map((item) => (
+              <AdminSidebarLink key={item.href} href={item.href} label={item.label} iconName={item.iconName} />
+            ))}
           </nav>
 
           <div className="mt-auto border-t border-white/10 bg-[var(--sidebar-bg-dark)]/30 px-2 py-3">
@@ -115,7 +118,7 @@ export async function AdminShell({
               className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
             >
               <CircleHelp className="h-5 w-5 text-[#81b6ba]" />
-              說明文件
+              說明中心
             </Link>
           </div>
         </div>
@@ -141,6 +144,7 @@ export async function AdminShell({
                 selectedWorkspaceId={workspace.id}
                 channels={serializedAccountChannels}
                 selectedChannelId={selectedChannelId}
+                isAdmin={isAdmin}
                 user={mobileUser}
               />
               <h1 className="truncate text-[24px] font-semibold text-[var(--ip-text)]">{title}</h1>

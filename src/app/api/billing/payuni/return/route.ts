@@ -8,7 +8,7 @@ function appRedirect(path: string, request: Request) {
 }
 
 export async function POST(request: Request) {
-  const rateLimitFailure = assertRateLimit({
+  const rateLimitFailure = await assertRateLimit({
     key: `payuni-return:${getClientIp(request)}`,
     limit: 120,
     windowMs: 60 * 1000,

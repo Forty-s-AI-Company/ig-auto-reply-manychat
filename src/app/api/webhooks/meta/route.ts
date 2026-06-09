@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordAuditEvent } from "@/lib/audit";
 import {
   findMetaChannelForInbound,
   isConfiguredMetaObject,
@@ -17,6 +18,14 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   const challenge = verifyMetaWebhook(new URL(request.url).searchParams);
   if (challenge === null) {
+    await recordAuditEvent({
+      action: "webhook_verification_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "meta", method: "GET" },
+    });
     return NextResponse.json({ error: "Meta webhook verification failed." }, { status: 403 });
   }
   return new Response(challenge, { status: 200 });
@@ -52,7 +61,7 @@ async function ensureChannelEnabled(
 }
 
 export async function POST(request: Request) {
-  const rateLimitFailure = assertRateLimit({
+  const rateLimitFailure = await assertRateLimit({
     key: `webhook:meta:${getClientIp(request)}`,
     limit: 300,
     windowMs: 60 * 1000,
@@ -69,6 +78,14 @@ export async function POST(request: Request) {
       ? configuredSecrets.some((secret) => verifyMetaSignature(rawBody, signature, secret))
       : verifyMetaSignature(rawBody, signature);
   if (!signatureValid) {
+    await recordAuditEvent({
+      action: "webhook_signature_failed",
+      resourceType: "webhook",
+      actorIp: getClientIp(request),
+      userAgent: request.headers.get("user-agent"),
+      success: false,
+      metadata: { provider: "meta", method: "POST" },
+    });
     return NextResponse.json({ error: "Invalid Meta webhook signature." }, { status: 401 });
   }
 

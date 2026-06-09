@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
-  const rateLimitFailure = assertRateLimit({
+  const rateLimitFailure = await assertRateLimit({
     key: `ai-model-test:${auth.user.id}`,
     limit: 10,
     windowMs: 15 * 60 * 1000,

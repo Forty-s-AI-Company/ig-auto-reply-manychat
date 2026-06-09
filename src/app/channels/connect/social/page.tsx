@@ -1,4 +1,5 @@
-import { Bot, Camera, FlaskConical, Link2, MessageCircleMore } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, Bot, Camera, ExternalLink, FlaskConical, Link2, MessageCircleMore } from "lucide-react";
 import { ChannelConnectionShell, InstagramVisual } from "@/components/ChannelConnectionShell";
 import { OAuthPopupConnectButton } from "@/components/oauth/OAuthPopupConnectButton";
 import { ResyncConnectedAccountButton } from "@/components/oauth/ResyncConnectedAccountButton";
@@ -37,6 +38,7 @@ type SocialConnectPageProps = {
     oauth_provider?: string;
     oauth_message?: string;
     oauth_display_name?: string;
+    meta_error?: string;
   }>;
 };
 
@@ -89,6 +91,27 @@ function formatTime(value: Date) {
   }).format(value);
 }
 
+function buildAuthorizeHref(providerId: string) {
+  if (providerId === "meta-instagram") {
+    return {
+      primary: "/api/oauth/meta-instagram/authorize?fresh_login=1",
+      secondary: "/api/oauth/meta-instagram/authorize?switch_account=1",
+    };
+  }
+
+  if (providerId === "meta-facebook") {
+    return {
+      primary: "/api/oauth/meta-facebook/authorize",
+      secondary: "/api/oauth/meta-facebook/authorize?switch_account=1&reauth=1&rerequest=1",
+    };
+  }
+
+  return {
+    primary: `/api/oauth/${providerId}/authorize`,
+    secondary: "",
+  };
+}
+
 export default async function SocialConnectPage({ searchParams }: SocialConnectPageProps) {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
@@ -117,6 +140,19 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
       visual={<InstagramVisual />}
     >
       <div className="space-y-6">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <div className="space-y-2 leading-6">
+              <p>請先確認目前瀏覽器登入的是你要綁定的 Instagram / Meta 帳號。</p>
+              <p>
+                如果彈窗一打開就直接看到「允許 / 取消」，通常代表瀏覽器裡已經有 Meta 或 Instagram 的登入 session，
+                平台會直接沿用那個帳號，不一定會再跳出帳號切換畫面。
+              </p>
+            </div>
+          </div>
+        </div>
+
         {params.oauth_status ? (
           <div
             className={
@@ -130,6 +166,9 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
               : params.oauth_message || "社群帳號連接失敗，請重新嘗試。"}
           </div>
         ) : null}
+        {params.meta_error ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{params.meta_error}</div>
+        ) : null}
 
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">
           <h2 className="text-lg font-semibold text-[#17191c]">已連接帳號</h2>
@@ -139,9 +178,54 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
 
           <div className="mt-4 space-y-3">
             {accounts.length === 0 ? (
-              <div className="rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#596170]">
-                還沒有任何 Social Login 連接。下面任選一個 provider 開始測。
-              </div>
+              <>
+                <div className="rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#596170]">
+                  還沒有任何 Social Login 連接。下面任選一個 provider 開始測。
+                </div>
+                {channelSummaries.length > 0 ? (
+                  <div className="rounded-md border border-[#d7dbe0] bg-white p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-[#17191c]">目前已綁定的 Instagram channels</p>
+                        <p className="mt-1 text-xs text-[#596170]">
+                          這些 channel 已經存在工作區。若懷疑綁錯帳號，可以先解除綁定再重新連接。
+                        </p>
+                      </div>
+                      <Link
+                        href="/channels#instagram"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[#006fe6] hover:text-[#005fd0]"
+                      >
+                        前往 Channels 檢查
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                    <div className="mt-3 space-y-2">
+                      {channelSummaries.map((channel) => (
+                        <div
+                          key={channel.id}
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-[#f8fafc] px-3 py-2"
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-[#17191c]">{channel.name}</p>
+                            <p className="mt-1 text-xs text-[#596170]">
+                              {channel.instagramUsername ? `@${channel.instagramUsername}` : "未讀取到使用者名稱"}
+                            </p>
+                          </div>
+                          <span
+                            className={
+                              channel.enabled
+                                ? "rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700"
+                                : "rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600"
+                            }
+                          >
+                            {channel.enabled ? "已啟用" : "未啟用"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </>
             ) : (
               accounts.map((account) => {
                 const syncedChannels = findSyncedChannels(account, channelSummaries);
@@ -212,10 +296,10 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
           {providers.map((provider) => {
             const copy = providerCopy[provider.id];
             const Icon = copy.icon;
-            const authorizeHref =
-              provider.id === "meta-instagram"
-                ? `/api/oauth/${provider.id}/authorize?fresh_login=1`
-                : `/api/oauth/${provider.id}/authorize`;
+            const authorizeHref = buildAuthorizeHref(provider.id);
+            const isMetaProvider = provider.id === "meta-instagram" || provider.id === "meta-facebook";
+            const secondaryLabel =
+              provider.id === "meta-instagram" ? "重新登入 IG 後連接" : provider.id === "meta-facebook" ? "切換 Meta 帳號" : "";
 
             return (
               <div key={provider.id} className="rounded-lg border border-[#d7dbe0] bg-white p-5">
@@ -226,14 +310,29 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                   <div className="min-w-0 flex-1">
                     <h3 className="text-base font-semibold text-[#17191c]">{copy.title}</h3>
                     <p className="mt-2 text-sm leading-6 text-[#596170]">{copy.description}</p>
+                    {isMetaProvider ? (
+                      <div className="mt-3 rounded-md bg-[#f8fafc] p-3 text-xs leading-6 text-[#596170]">
+                        <p>若目前瀏覽器已登入別的 Meta / Instagram 帳號，請先切換帳號後再授權。</p>
+                        <p>綁錯帳號時，可到 Channels 解除綁定，再回來重新連接。</p>
+                      </div>
+                    ) : null}
                     <div className="mt-4 flex flex-wrap gap-3">
                       <OAuthPopupConnectButton
                         provider={provider.id}
-                        href={authorizeHref}
+                        href={authorizeHref.primary}
                         className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
                       >
-                        Connect Account
+                        連接帳號
                       </OAuthPopupConnectButton>
+                      {authorizeHref.secondary ? (
+                        <OAuthPopupConnectButton
+                          provider={provider.id}
+                          href={authorizeHref.secondary}
+                          className="inline-flex h-11 items-center justify-center rounded-md border border-[#d0d5dd] bg-white px-4 text-sm font-semibold text-[#17191c] hover:bg-[#f9fafb]"
+                        >
+                          {secondaryLabel}
+                        </OAuthPopupConnectButton>
+                      ) : null}
                     </div>
                   </div>
                 </div>

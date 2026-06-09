@@ -1,11 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getOAuthProvider, listOAuthProviders } from "@/lib/oauth/registry";
+import { metaFacebookProvider } from "@/lib/oauth/providers/meta-facebook";
+import { metaInstagramProvider } from "@/lib/oauth/providers/meta-instagram";
 import { mockProvider } from "@/lib/oauth/providers/mock";
 import { telegramBotProvider } from "@/lib/oauth/providers/telegram-bot";
 import { getProviderCallbackUrl } from "@/lib/oauth/utils";
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
 });
 
 describe("unit: oauth popup module", () => {
@@ -20,6 +23,42 @@ describe("unit: oauth popup module", () => {
   it("builds callback URLs from the request origin", () => {
     const request = new Request("http://localhost:3041/api/test");
     expect(getProviderCallbackUrl(request, "meta-instagram")).toBe("http://localhost:3041/api/oauth/meta-instagram/callback");
+  });
+
+  it("builds the Instagram auth URL with a forced fresh-login path", () => {
+    vi.stubEnv("META_INSTAGRAM_APP_ID", "instagram-app-id");
+
+    const authUrl = metaInstagramProvider.getAuthUrl?.({
+      request: new Request("http://localhost:3041/api/oauth/meta-instagram/authorize?fresh_login=1"),
+      state: "popup-state",
+      popupOrigin: "http://localhost:3041",
+    });
+
+    expect(authUrl).toBeTruthy();
+    const url = new URL(String(authUrl));
+    expect(url.origin + url.pathname).toBe("https://www.instagram.com/accounts/logoutin/");
+    expect(url.searchParams.get("next")).toContain("response_type=code");
+    expect(url.searchParams.get("next")).toContain("scope=instagram_business_basic%2Cinstagram_business_manage_comments%2Cinstagram_business_manage_messages");
+  });
+
+  it("builds the Facebook auth URL with reauthenticate and rerequest hints", () => {
+    vi.stubEnv("META_APP_ID", "facebook-app-id");
+
+    const authUrl = metaFacebookProvider.getAuthUrl?.({
+      request: new Request("http://localhost:3041/api/oauth/meta-facebook/authorize?switch_account=1&reauth=1&rerequest=1"),
+      state: "popup-state",
+      popupOrigin: "http://localhost:3041",
+    });
+
+    expect(authUrl).toBeTruthy();
+    const url = new URL(String(authUrl));
+    expect(url.origin + url.pathname).toBe("https://www.facebook.com/v25.0/dialog/oauth");
+    expect(url.searchParams.get("response_type")).toBe("code");
+    expect(url.searchParams.get("auth_type")).toBe("reauthenticate");
+    const scope = url.searchParams.get("scope") || "";
+    expect(scope).toContain("pages_messaging");
+    expect(scope).toContain("instagram_manage_comments");
+    expect(scope).toContain("business_management");
   });
 
   it("decodes mock provider callback payloads", async () => {

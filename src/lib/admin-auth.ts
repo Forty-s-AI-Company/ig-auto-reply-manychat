@@ -17,7 +17,7 @@ export async function requireAdminApiUser(request?: Request) {
     };
   }
   if (request) {
-    const rateLimitFailure = assertRateLimit({
+    const rateLimitFailure = await assertRateLimit({
       key: `admin:${auth.user.id}`,
       limit: 60,
       windowMs: 60 * 1000,

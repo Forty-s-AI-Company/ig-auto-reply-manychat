@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, Bot, Clock, CreditCard, Gift, Home, Inbox, Megaphone, Settings, Sparkles, Users, Wallet } from "lucide-react";
+import { BarChart3, Bot, Clock, CreditCard, Gift, Home, Inbox, Megaphone, Settings, Shield, Sparkles, Users, Wallet } from "lucide-react";
 
 const icons = {
   home: Home,
@@ -17,6 +17,7 @@ const icons = {
   gift: Gift,
   wallet: Wallet,
   settings: Settings,
+  shield: Shield,
 };
 
 export function AdminSidebarLink({

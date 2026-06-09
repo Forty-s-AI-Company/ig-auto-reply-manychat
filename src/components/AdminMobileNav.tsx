@@ -1,7 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Megaphone, Menu, Settings, Sparkles, Users, Wallet, X } from "lucide-react";
+import {
+  BarChart3,
+  Bot,
+  CircleHelp,
+  Clock,
+  CreditCard,
+  Gift,
+  Home,
+  Inbox,
+  Megaphone,
+  Menu,
+  Settings,
+  Shield,
+  Sparkles,
+  Users,
+  Wallet,
+  X,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { InboxPilotAccountDropdown } from "@/components/InboxPilotAccountDropdown";
@@ -26,6 +43,7 @@ type AdminMobileNavProps = {
   selectedWorkspaceId: string;
   channels: Channel[];
   selectedChannelId?: string;
+  isAdmin?: boolean;
   user?: {
     name?: string | null;
     email?: string | null;
@@ -33,19 +51,19 @@ type AdminMobileNavProps = {
   } | null;
 };
 
-const mobileNavItems = [
-  { label: "儀表板", href: "/dashboard", icon: Home },
+const baseNavItems = [
+  { label: "首頁", href: "/dashboard", icon: Home },
   { label: "收件匣", href: "/inbox", icon: Inbox },
   { label: "聯絡人", href: "/contacts", icon: Users },
-  { label: "廣播活動", href: "/broadcasts", icon: Megaphone },
+  { label: "廣播", href: "/broadcasts", icon: Megaphone },
   { label: "自動化", href: "/automations", icon: Sparkles },
   { label: "序列", href: "/sequences", icon: Clock },
   { label: "AI", href: "/ai-settings", icon: Bot },
   { label: "分析", href: "/analytics", icon: BarChart3 },
-  { label: "付款", href: "/billing", icon: CreditCard },
+  { label: "帳單", href: "/billing", icon: CreditCard },
   { label: "推薦", href: "/referrals", icon: Gift },
   { label: "錢包", href: "/wallet", icon: Wallet },
-  { label: "設定", href: "/channels", icon: Settings },
+  { label: "渠道", href: "/channels", icon: Settings },
 ];
 
 export function AdminMobileNav({
@@ -53,10 +71,14 @@ export function AdminMobileNav({
   selectedWorkspaceId,
   channels,
   selectedChannelId,
+  isAdmin = false,
   user,
 }: AdminMobileNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const navItems = isAdmin
+    ? [...baseNavItems, { label: "稽核紀錄", href: "/admin/audit", icon: Shield }]
+    : baseNavItems;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -71,7 +93,7 @@ export function AdminMobileNav({
         type="button"
         onClick={() => setOpen(true)}
         className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] text-[var(--ip-text)] shadow-sm lg:hidden"
-        aria-label="開啟選單"
+        aria-label="開啟導覽"
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -82,7 +104,7 @@ export function AdminMobileNav({
             type="button"
             className="fixed inset-0 z-[70] bg-black/35 lg:hidden"
             onClick={() => setOpen(false)}
-            aria-label="關閉選單背景"
+            aria-label="關閉導覽背景"
           />
           <aside
             className="ip-sidebar-visual fixed inset-y-0 left-0 z-[80] flex max-w-[min(86vw,320px)] flex-col shadow-2xl lg:hidden"
@@ -107,7 +129,7 @@ export function AdminMobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#b8dadd] hover:bg-white/10 hover:text-white"
-                aria-label="關閉選單"
+                aria-label="關閉導覽"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -123,7 +145,7 @@ export function AdminMobileNav({
             </div>
 
             <nav className="ip-sidebar-nav-layer min-h-0 flex-1 overflow-y-auto px-2.5 py-4">
-              {mobileNavItems.map((item) => {
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
                 return (
@@ -150,7 +172,7 @@ export function AdminMobileNav({
                 className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
               >
                 <CircleHelp className="h-5 w-5 shrink-0 text-[#81b6ba]" />
-                說明文件
+                說明中心
               </Link>
             </div>
             <svg

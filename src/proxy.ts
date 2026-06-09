@@ -27,18 +27,36 @@ function addLocalhostOrigins(allowedOrigins: Set<string>, port: string) {
   }
 }
 
+function getRequestId(request: NextRequest) {
+  return request.headers.get("x-request-id") || crypto.randomUUID();
+}
+
 export function proxy(request: NextRequest) {
-  if (!isMutating(request.method)) return NextResponse.next();
+  const requestId = getRequestId(request);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-request-id", requestId);
+
+  if (!isMutating(request.method)) {
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    response.headers.set("x-request-id", requestId);
+    return response;
+  }
 
   const pathname = request.nextUrl.pathname;
   if (EXTERNAL_POST_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    return NextResponse.next();
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    response.headers.set("x-request-id", requestId);
+    return response;
   }
 
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
   const candidate = origin || (referer ? new URL(referer).origin : "");
-  if (!candidate && process.env.NODE_ENV !== "production") return NextResponse.next();
+  if (!candidate && process.env.NODE_ENV !== "production") {
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    response.headers.set("x-request-id", requestId);
+    return response;
+  }
 
   const allowedOrigins = new Set<string>([request.nextUrl.origin]);
   if (process.env.APP_URL) allowedOrigins.add(new URL(process.env.APP_URL).origin);
@@ -47,10 +65,14 @@ export function proxy(request: NextRequest) {
   }
 
   if (!candidate || !allowedOrigins.has(candidate)) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    const response = NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    response.headers.set("x-request-id", requestId);
+    return response;
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set("x-request-id", requestId);
+  return response;
 }
 
 export const config = {

@@ -3,7 +3,7 @@ import { handlePayuniCallback } from "@/lib/billing/payuni-callback";
 import { assertRateLimit, getClientIp } from "@/lib/security";
 
 export async function POST(request: Request) {
-  const rateLimitFailure = assertRateLimit({
+  const rateLimitFailure = await assertRateLimit({
     key: `payuni-notify:${getClientIp(request)}`,
     limit: 120,
     windowMs: 60 * 1000,

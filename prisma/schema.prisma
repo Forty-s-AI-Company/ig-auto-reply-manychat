@@ -253,6 +253,7 @@ model User {
   referralRewardsGiven      ReferralReward[]      @relation("ReferralRewardReferrer")
   referralRewardsReceived   ReferralReward[]      @relation("ReferralRewardReferred")
   walletLedgers             WalletLedger[]
+  auditEvents               AuditEvent[]
   affiliateProfile          AffiliateProfile?
   affiliateCommissions      AffiliateCommission[] @relation("AffiliateCommissionAffiliate")
   referredCommissions       AffiliateCommission[] @relation("AffiliateCommissionReferred")
@@ -292,6 +293,7 @@ model Workspace {
   coupons                 Coupon[]
   contactFieldDefinitions ContactFieldDefinition[]
   sequences               Sequence[]
+  auditEvents             AuditEvent[]
 }
 
 model WorkspaceAiSetting {
@@ -825,6 +827,27 @@ model MessageEventLedger {
   @@index([workspaceId, createdAt])
   @@index([contactId])
   @@index([type])
+}
+
+model AuditEvent {
+  id           String    @id @default(cuid())
+  workspaceId  String?
+  userId       String?
+  action       String
+  resourceType String
+  resourceId   String?
+  success      Boolean   @default(true)
+  actorIp      String?
+  userAgent    String?
+  metadataJson Json
+  createdAt    DateTime  @default(now())
+  workspace    Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, createdAt])
+  @@index([userId, createdAt])
+  @@index([action, createdAt])
+  @@index([resourceType, resourceId])
 }
 
 model ReferralCode {
