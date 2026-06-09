@@ -1,141 +1,169 @@
-# InboxPilot Meta App Review Checklist
+# Meta App Review Checklist
 
-這份文件用來送審 `InboxPilot` 的 Meta / Instagram 連線能力，目標是讓非 App admin / developer / tester 的 Instagram 專業帳號也能授權綁定 InboxPilot。
+更新日期：2026-06-10
 
-## Current Production URLs
+## 目前實際使用的 Meta / Instagram 登入流程
 
-- App domain: `inboxpilot.carry-digital-nomad.in.net`
-- App URL: `https://inboxpilot.carry-digital-nomad.in.net`
-- Login page for reviewer: `https://inboxpilot.carry-digital-nomad.in.net/login`
-- Social login page: `https://inboxpilot.carry-digital-nomad.in.net/channels/connect/social`
-- OAuth redirect URIs: `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback` and `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback`
-- Webhook callback URL: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`
-- Privacy Policy URL: `https://inboxpilot.carry-digital-nomad.in.net/privacy-policy`
-- Terms of Service URL: `https://inboxpilot.carry-digital-nomad.in.net/terms-of-service`
-- Data Deletion Instructions URL: `https://inboxpilot.carry-digital-nomad.in.net/data-deletion`
-- Data deletion callback: `https://inboxpilot.carry-digital-nomad.in.net/api/meta/data-deletion`
-- Deauthorize callback: `https://inboxpilot.carry-digital-nomad.in.net/api/meta/deauthorize`
+不是單一流程，而是混合：
 
-## Meta App Basic Settings
+### A. Generic OAuth provider flow
 
-- Display name: `InboxPilot`
-- App icon: use the InboxPilot brand icon.
-- App domains: `inboxpilot.carry-digital-nomad.in.net`
-- Contact email: use the production support email.
-- Privacy Policy URL: `https://inboxpilot.carry-digital-nomad.in.net/privacy-policy`
-- Terms of Service URL: `https://inboxpilot.carry-digital-nomad.in.net/terms-of-service`
-- User data deletion: choose Data Deletion Callback URL, and use `https://inboxpilot.carry-digital-nomad.in.net/api/meta/data-deletion`.
+- `src/app/api/oauth/[provider]/authorize/route.ts`
+- `src/app/api/oauth/[provider]/callback/route.ts`
+- `src/lib/oauth/providers/meta-facebook.ts`
+- `src/lib/oauth/providers/meta-instagram.ts`
 
-## OAuth Settings
+### B. Legacy Meta callback flow
 
-Add both redirect URIs for the popup flow:
+- `src/app/api/meta/oauth/start/route.ts`
+- `src/app/api/meta/oauth/callback/route.ts`
+- `src/app/api/instagram/oauth/callback/route.ts`
 
-- `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`
-- `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-facebook/callback`
+### 結論
 
-Enable:
+- `meta-facebook`：Facebook Login / Meta Business Login 風格
+- `meta-instagram`：Instagram Login 風格
+- 真正的 channel 建立、webhook 訂閱與 Meta asset 綁定，仍大量依賴 legacy Meta callback / meta-channel-sync
 
-- Client OAuth Login
-- Web OAuth Login
-- Enforce HTTPS
-- Strict Mode for Redirect URIs
+## OAuth URL 與體驗重點
 
-## Permissions to Request
+### Facebook / Meta flow
 
-Request only the permissions that are actually used in the reviewer demo. Fewer permissions usually makes review easier.
+來源：
 
-| Permission | Why InboxPilot needs it | Reviewer demo proof |
-| --- | --- | --- |
-| `instagram_business_basic` | Reads the Instagram professional account identity, username, and profile metadata through Instagram Login. | Show the connected Instagram profile in Channels. |
-| `instagram_business_manage_messages` | Reads and replies to Instagram DMs sent to the connected professional account. | Send a DM to the test IG account, show it in Inbox, and reply from InboxPilot. |
-| `instagram_business_manage_comments` | Reads and replies to Instagram media comments for automation triggers. | Comment on a test IG post, show the comment in InboxPilot, and trigger/reply from automation. |
+- `src/lib/oauth/providers/meta-facebook.ts`
+- `src/app/api/meta/oauth/start/route.ts`
 
-Legacy Facebook Login permissions such as `pages_show_list`, `pages_read_engagement`, `pages_manage_metadata`, `pages_messaging`, `instagram_basic`, `instagram_manage_messages`, and `business_management` should only be requested if InboxPilot intentionally re-enables the Facebook Page / Meta Business asset selection flow.
+會組成：
 
-## Review Demo Account Package
+- `https://www.facebook.com/v25.0/dialog/oauth?...`
+- 部分流程再包進 `business.facebook.com/business/loginpage/...`
 
-Prepare these before submission:
+參數重點：
 
-- InboxPilot reviewer login email and password.
-- A workspace with no private customer data.
-- One Instagram professional account that can receive DMs and comments.
-- One public test Instagram post for comment automation testing.
-- A test Facebook / Meta account that has access to the professional IG account if using the Business Login flow.
-- A short note telling Meta which account to choose in the popup.
+- `client_id`
+- `redirect_uri`
+- `response_type=code`
+- `state`
+- `scope`
+- 可能加上 `auth_type=reauthenticate`
+- 可能加上 `auth_type=rerequest`
 
-## Reviewer Instructions
+### Instagram flow
 
-Use this text as the base reviewer instruction:
+來源：
 
-```text
-1. Go to https://inboxpilot.carry-digital-nomad.in.net/login and sign in with the provided reviewer account.
-2. Open Channels > Social Accounts, or go directly to https://inboxpilot.carry-digital-nomad.in.net/channels/connect/social.
-3. Click "Connect Account" on Instagram OAuth or Facebook / Meta Login.
-4. In the popup, choose the provided Instagram professional account and approve the requested permissions.
-5. After the popup closes, InboxPilot shows the connected account in Social Accounts.
-6. Send a direct message to the connected Instagram account from another Instagram account. Open Inbox in InboxPilot and confirm the message is visible.
-7. Reply to the message from InboxPilot.
-8. Add a comment to the provided test Instagram post. Open Automations / InboxPilot comment automation and confirm the comment can trigger a reply.
-```
+- `src/lib/oauth/providers/meta-instagram.ts`
+- `src/app/api/meta/oauth/start/route.ts`
 
-## Permission Explanation Text
+會組成：
 
-Use concise, feature-specific explanations:
+- `https://api.instagram.com/oauth/authorize?...`
+- 或先導到
+  - `https://www.instagram.com/accounts/login/`
+  - `https://www.instagram.com/accounts/logoutin/`
 
-```text
-InboxPilot is a SaaS inbox and automation platform for Instagram professional accounts. Customers connect their own Instagram professional account, receive Instagram DMs and comment events in InboxPilot, and configure automatic replies for common customer questions.
-```
+參數重點：
 
-```text
-instagram_business_manage_messages is required so InboxPilot can receive and reply to Instagram direct messages for the user's connected professional account. Without this permission, the Inbox and automation reply features cannot work.
-```
+- `client_id`
+- `redirect_uri`
+- `response_type=code`
+- `state`
+- `scope`
+- `force_authentication=1`
+- `enable_fb_login=0`
 
-```text
-instagram_business_manage_comments is required so InboxPilot can read comments on the user's Instagram media and send configured public replies. This powers comment keyword automation and customer support workflows.
-```
+## 為什麼登入視窗可能直接顯示「允許 / 取消」
 
-```text
-Instagram Webhooks are required so new Instagram messages and comments can be delivered to InboxPilot in real time.
-```
+原因不是 callback 壞掉，而是：
 
-```text
-instagram_business_basic is required to identify the connected Instagram professional account, display its username/profile in InboxPilot, and associate messages/comments with the correct customer workspace.
-```
+1. Meta / Instagram 會沿用目前瀏覽器已登入 session
+2. 若該 session 已有可用帳號，provider 可能直接跳授權同意畫面
+3. `reauthenticate` 也不保證一定出現完整帳號切換器
+4. ManyChat 能做得比較像「選帳號」，通常也是因為它把 UX 提示、重新登入、登入入口導向做得更完整，不是因為可以強制 Meta 每次都顯示帳密頁
 
-## Demo Video Script
+## 目前需要的 scopes
 
-Record a 3-5 minute screen recording:
+### Instagram Login flow
 
-1. Show the production URL and sign in to InboxPilot.
-2. Open `Channels`.
-3. Click `Social Accounts` and then `Connect Account` on Instagram OAuth or Facebook / Meta Login.
-4. Approve the Meta permissions.
-5. Return to InboxPilot and show the connected account under `Social Accounts` or the linked Instagram channel list.
-6. Send a DM to the connected IG account from another IG account.
-7. Show the new conversation in `Inbox`.
-8. Reply from InboxPilot.
-9. Add a comment to a test IG post.
-10. Show the comment in InboxPilot or trigger a configured automation.
-11. Show the privacy policy and data deletion pages briefly.
+- `instagram_business_basic`
+- `instagram_business_manage_comments`
+- `instagram_business_manage_messages`
 
-## Pre-Submission Fixes
+### Facebook / Meta flow
 
-- Change the Meta app display name from `manychat-auto-reply` to `InboxPilot`.
-- Confirm the app is in Live mode.
-- Complete Business Verification.
-- Confirm the review account can sign in without 2FA blockers.
-- Confirm the IG account is a professional account.
-- Confirm the same IG account is not blocked by account quality or asset restrictions.
-- Remove or justify `business_management` if the demo does not require business asset discovery.
-- Use fresh/incognito browser sessions during reviewer testing to avoid accidental login to the wrong IG account.
+在不同實作中出現的 scopes 合併後，正式應以這組為準：
 
-## Why the Current Popup Fails
+- `public_profile`
+- `pages_show_list`
+- `pages_read_engagement`
+- `pages_manage_metadata`
+- `pages_messaging`
+- `instagram_basic`
+- `instagram_manage_comments`
+- `instagram_manage_messages`
+- `business_management`
 
-If the popup says `你無法使用此帳號連結到 manychat-auto-reply`, the OAuth redirect URI is no longer the main issue. Meta is rejecting the selected account for the current app. Typical causes:
+## 需要 App Review 的權限
 
-- The app display name / business identity is not production-ready.
-- The app has not passed Advanced Access / App Review for the requested Instagram permissions.
-- The selected account is not accepted for this app because it is not in an allowed app role or approved business context.
-- The app requests too many permissions for an unreviewed app.
+至少會碰到：
 
-The fix is to complete the app setup, business verification, and permission review, then retest with a clean browser session.
+- `pages_show_list`
+- `pages_read_engagement`
+- `pages_manage_metadata`
+- `pages_messaging`
+- `instagram_basic`
+- `instagram_manage_comments`
+- `instagram_manage_messages`
+- `business_management`
+- `instagram_business_basic`
+- `instagram_business_manage_comments`
+- `instagram_business_manage_messages`
+
+另外正式商用通常還會需要：
+
+- Advanced Access
+- Business Verification
+
+## Demo video 要展示的流程
+
+1. 使用者登入 InboxPilot
+2. 前往 Social / Channels 連接頁
+3. 點選 Instagram 或 Facebook 連接
+4. 完成 OAuth
+5. 顯示實際綁定的 IG / Page 資訊
+6. 選到正確帳號後建立 channel
+7. webhook 測試
+8. 收到 IG 留言或私訊
+9. 觸發自動回覆
+10. 在 Inbox 看得到訊息與聯絡人資料
+11. 如綁錯帳號，展示解除綁定與重新連接流程
+
+## 測試帳號需求
+
+- Meta app admin / developer 帳號
+- 至少 1 個 Facebook Page
+- 至少 1 個 Instagram Professional Account / Business Account
+- 建議再準備 1 組測試用來模擬綁錯帳號、重連、切換帳號
+
+## 目前卡住的 Meta 設定
+
+1. 流程仍混合 generic OAuth 與 legacy callback
+2. 正式對外賣仍需 Meta App Review / Advanced Access / Business Verification
+3. 使用者選擇 Page / IG 資產的體驗仍不夠明確
+4. production multi-tenant 下不宜繼續依賴 env token fallback
+
+## 安全檢查結果
+
+### 有做到的
+
+- `state` cookie 驗證
+- popup state 驗證
+- callback 失敗 audit log
+- 不把 token / secret / authorization code 寫進 audit
+
+### 仍需收斂的
+
+- 收斂成單一 Meta 連接主流程
+- production 移除 env fallback token
+- 補更多整合測試覆蓋錯帳號、重連、Page/IG 資產選擇
