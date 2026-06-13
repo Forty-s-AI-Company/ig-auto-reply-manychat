@@ -1,33 +1,51 @@
-# 環境變數文件
+# Environment Variables
 
-完整範例請看專案根目錄 [.env.example](../.env.example)。本文件依用途整理每個環境變數。
 
-## 必填
+## 2026-06-13 Update - Staging environment guidance
 
-| 變數             | 說明                                                       | 範例                      |
-| ---------------- | ---------------------------------------------------------- | ------------------------- |
-| `DATABASE_URL`   | Prisma runtime DB 連線。正式環境建議使用 Supabase pooler。 | `postgresql://...`        |
-| `DIRECT_URL`     | Prisma migration/direct DB 連線。                          | `postgresql://...`        |
-| `AUTH_SECRET`    | session JWT 簽章 secret。production 至少 32 字元。         | `openssl rand -base64 32` |
-| `APP_URL`        | 正式 app URL，用於 OAuth、PayUNI、Email 連結。             | `https://example.com`     |
-| `ADMIN_EMAIL`    | seed/admin helper 的管理員 email。                         | `admin@example.com`       |
-| `ADMIN_PASSWORD` | seed/admin helper 的管理員密碼。                           | `change-me`               |
-| `ADMIN_NAME`     | seed/admin helper 的管理員名稱。                           | `Admin`                   |
+InboxPilot now requires a separated staging environment for Meta OAuth, PayUNI return / notify, webhooks, Google OAuth, and E2E flows that cannot be validated reliably on localhost.
 
-## App URL
+Staging rules:
 
-| 變數         | 說明                                 |
-| ------------ | ------------------------------------ |
-| `APP_DOMAIN` | 部署 domain，主要作為文件/設定輔助。 |
-| `APP_URL`    | 伺服器產生 callback URL 時使用。     |
-| `DEMO_LINK`  | 行銷或 demo 下載連結。               |
+- Staging must use a dedicated HTTPS `APP_URL`, for example `https://staging.inboxpilot.example.com`.
+- Staging must use a separate Supabase project or database from production.
+- Staging must not reuse production `DATABASE_URL`, `DIRECT_URL`, PayUNI Hash Key / IV, Meta App Secret, Google Client Secret, OpenAI key, or token values.
+- Staging PayUNI must default to sandbox:
+  - `PAYUNI_GATEWAY_URL=https://sandbox-api.payuni.com.tw/api`
+  - `PAYUNI_ALLOW_PRODUCTION=false`
+  - `PAYUNI_SMOKE_ALLOW_PRODUCTION=false`
+- Staging E2E can run against the remote URL with:
+
+```bash
+PLAYWRIGHT_BASE_URL=https://staging.inboxpilot.example.com npm run test:e2e
+```
+
+See [Staging Environment Runbook](./staging-environment-runbook.md) for the full checklist.
+
+更新日期：2026-06-10
+
+這份文件說明 InboxPilot 常用環境變數。請以 [.env.example](../.env.example) 作為範本，再依照 local、staging、production 分別設定。
+
+## 基礎設定
+
+| 變數 | 說明 | 範例 |
+| --- | --- | --- |
+| `APP_URL` | 正式 App URL。OAuth、Webhook、PayUNI、Email link 都會用到。 | `https://app.example.com` |
+| `APP_DOMAIN` | 正式網域，通常用於文件與部署檢查。 | `app.example.com` |
+| `AUTH_SECRET` | Session / JWT secret。production 至少 32 bytes。 | `openssl rand -base64 32` |
+| `TOKEN_ENCRYPTION_KEY` | 加密 access token / refresh token 的獨立 key。production 必填。 | `openssl rand -base64 32` |
+| `DATABASE_URL` | Prisma runtime database URL。 | `postgresql://...` |
+| `DIRECT_URL` | Prisma migration / direct connection URL。 | `postgresql://...` |
+| `ADMIN_EMAIL` | seed / admin helper 建立管理員帳號使用。 | `admin@example.com` |
+| `ADMIN_PASSWORD` | seed / admin helper 建立管理員密碼使用。 | `change-me` |
+| `ADMIN_NAME` | 預設管理員名稱。 | `Admin` |
 
 ## Google Login
 
-| 變數                   | 說明                         |
-| ---------------------- | ---------------------------- |
-| `GOOGLE_CLIENT_ID`     | Google OAuth client id。     |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret。 |
+| 變數 | 說明 |
+| --- | --- |
+| `GOOGLE_CLIENT_ID` | Google OAuth client id |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
 
 Redirect URI：
 
@@ -37,107 +55,112 @@ https://your-domain.com/api/auth/google/callback
 
 ## AI Providers
 
-| 變數                   | 說明                                                  |
-| ---------------------- | ----------------------------------------------------- |
-| `AI_PROVIDER`          | 預設 AI provider。空值時使用 deterministic fallback。 |
-| `AI_DEFAULT_PROVIDER`  | 工作區尚未設定時的預設 provider。                     |
-| `AI_DEFAULT_MODEL`     | 工作區尚未設定時的預設 model。                        |
-| `OPENAI_API_KEY`       | OpenAI-compatible provider key。                      |
-| `GEMINI_API_KEY`       | Gemini API key。                                      |
-| `XAI_API_KEY`          | xAI API key。                                         |
-| `DEEPSEEK_API_KEY`     | DeepSeek API key。                                    |
-| `CODEX_CLI_COMMAND`    | 本機 Codex CLI command。                              |
-| `CODEX_CLI_TIMEOUT_MS` | Codex CLI timeout。                                   |
+| 變數 | 說明 |
+| --- | --- |
+| `AI_PROVIDER` | 預設 AI provider。未設定時使用 deterministic fallback。 |
+| `AI_DEFAULT_PROVIDER` | 後台尚未設定時使用的 provider。 |
+| `AI_DEFAULT_MODEL` | 後台尚未設定時使用的 model。 |
+| `OPENAI_API_KEY` | OpenAI-compatible provider key。 |
+| `GEMINI_API_KEY` | Gemini API key。 |
+| `XAI_API_KEY` | xAI API key。 |
+| `DEEPSEEK_API_KEY` | DeepSeek API key。 |
+| `CODEX_CLI_COMMAND` | Codex CLI command。 |
+| `CODEX_CLI_TIMEOUT_MS` | Codex CLI timeout。 |
 
-## Channels
+## OAuth / Meta / Instagram
 
-### Mock / Automation Webhook
+| 變數 | 說明 |
+| --- | --- |
+| `META_APP_ID` | Facebook / Meta App ID。 |
+| `META_APP_SECRET` | Facebook / Meta App Secret。 |
+| `META_INSTAGRAM_APP_ID` | Instagram Login App ID。若與 `META_APP_ID` 不同，必須搭配專用 secret。 |
+| `META_INSTAGRAM_APP_SECRET` | Instagram Login App Secret。 |
+| `META_VERIFY_TOKEN` | Meta webhook verify token。 |
+| `META_GRAPH_API_VERSION` | Graph API version，預設 `v25.0`。 |
+| `META_TOKEN_RENEWAL_WINDOW_DAYS` | token 到期前幾天提醒或刷新。 |
 
-| 變數                        | 說明                                                      |
-| --------------------------- | --------------------------------------------------------- |
-| `MOCK_WEBHOOK_SECRET`       | 若設定，`/api/webhooks/mock` 需帶 shared secret。         |
-| `AUTOMATION_WEBHOOK_SECRET` | 若設定，`/api/automation-webhooks/[key]` 需帶 HMAC 簽名。 |
+目前新的主流程使用 generic callback：
+
+```text
+https://your-domain.com/api/oauth/meta-facebook/callback
+https://your-domain.com/api/oauth/meta-instagram/callback
+```
+
+legacy callback 仍保留作 fallback：
+
+```text
+https://your-domain.com/api/meta/oauth/callback
+https://your-domain.com/api/instagram/oauth/callback
+```
+
+Production 注意：
+
+- production 不可依賴 `META_PAGE_ACCESS_TOKEN`、`META_PAGE_ID`、`META_INSTAGRAM_BUSINESS_ACCOUNT_ID` 作為 runtime fallback。
+- 正式發送與 webhook matching 必須使用 channel 自己保存的 token / id。
+
+## Webhook / Channel
+
+| 變數 | 說明 |
+| --- | --- |
+| `MOCK_WEBHOOK_SECRET` | `/api/webhooks/mock` shared secret。 |
+| `AUTOMATION_WEBHOOK_SECRET` | `/api/automation-webhooks/[key]` HMAC secret。 |
+| `TELEGRAM_BOT_TOKEN` | Telegram BotFather token。 |
+| `TELEGRAM_WEBHOOK_SECRET` | Telegram webhook secret。 |
+| `WHATSAPP_VERIFY_TOKEN` | WhatsApp webhook verification token。 |
+| `WHATSAPP_ACCESS_TOKEN` | WhatsApp Cloud API access token。 |
+| `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp phone number id。 |
+
+## Email SMTP
+
+| 變數 | 說明 |
+| --- | --- |
+| `EMAIL_SMTP_HOST` | SMTP host。 |
+| `EMAIL_SMTP_PORT` | SMTP port，常見為 `587` 或 `465`。 |
+| `EMAIL_SMTP_SECURE` | `true` 通常搭配 465，`false` 通常搭配 587。 |
+| `EMAIL_SMTP_USER` | SMTP username。 |
+| `EMAIL_SMTP_PASSWORD` | SMTP password。 |
+| `EMAIL_FROM` | 寄件 email。 |
+| `EMAIL_FROM_NAME` | 寄件名稱。 |
+| `EMAIL_DEFAULT_SUBJECT` | 預設 email subject。 |
 
 ## Queue / Worker
 
-正式環境建議設定 Redis，讓 job 透過 BullMQ 分發到 dedicated worker。系統仍會先寫入 PostgreSQL `Job` table 作為 source of truth；未設定 `REDIS_URL` 時，worker 會退回 DB polling。
+正式環境建議一定要設定 Redis，並以獨立 worker 消費 job。
 
-| 變數                   | 說明                                              |
-| ---------------------- | ------------------------------------------------- |
-| `REDIS_URL`            | Redis connection URL。設定後啟用 BullMQ queue。   |
-| `JOB_QUEUE_NAME`       | BullMQ queue 名稱，預設 `inboxpilot-jobs`。       |
-| `WORKER_CONCURRENCY`   | BullMQ worker 同時處理 job 數，預設 `5`。         |
-| `WORKER_INTERVAL_MS`   | DB fallback polling interval，預設 `5000` ms。    |
-| `WORKER_DB_BATCH_SIZE` | DB fallback 每次處理 job 數，預設 `10`。          |
-
-### Telegram
-
-| 變數                      | 說明                       |
-| ------------------------- | -------------------------- |
-| `TELEGRAM_BOT_TOKEN`      | Telegram BotFather token。 |
-| `TELEGRAM_WEBHOOK_SECRET` | Telegram webhook secret。  |
-
-### Email SMTP
-
-| 變數                    | 說明                                        |
-| ----------------------- | ------------------------------------------- |
-| `EMAIL_SMTP_HOST`       | SMTP host。                                 |
-| `EMAIL_SMTP_PORT`       | SMTP port，預設常用 `587`。                 |
-| `EMAIL_SMTP_SECURE`     | `true` 通常代表 465；`false` 通常代表 587。 |
-| `EMAIL_SMTP_USER`       | SMTP username。                             |
-| `EMAIL_SMTP_PASSWORD`   | SMTP password。                             |
-| `EMAIL_FROM`            | 寄件 email。                                |
-| `EMAIL_FROM_NAME`       | 寄件名稱。                                  |
-| `EMAIL_DEFAULT_SUBJECT` | 預設信件主旨。                              |
-
-## Meta / Instagram / WhatsApp
-
-| 變數                                 | 說明                                  |
-| ------------------------------------ | ------------------------------------- |
-| `META_VERIFY_TOKEN`                  | Meta webhook verification token。     |
-| `META_GRAPH_API_VERSION`             | Graph API version，預設 `v25.0`。     |
-| `META_APP_ID`                        | Meta App ID。                         |
-| `META_APP_SECRET`                    | Meta App Secret。                     |
-| `META_FACEBOOK_REDIRECT_URI`         | Facebook Login redirect URI。         |
-| `META_INSTAGRAM_REDIRECT_URI`        | Instagram Login redirect URI。        |
-| `META_USER_ACCESS_TOKEN`             | User token fallback。                 |
-| `META_USER_ACCESS_TOKEN_EXPIRES_AT`  | User token 到期時間。                 |
-| `META_PAGE_ID`                       | Facebook Page ID fallback。           |
-| `META_INSTAGRAM_BUSINESS_ACCOUNT_ID` | IG business account fallback。        |
-| `META_TOKEN_RENEWAL_WINDOW_DAYS`     | token 到期前幾天刷新。                |
-| `META_PAGE_ACCESS_TOKEN`             | Page token fallback。                 |
-| `WHATSAPP_VERIFY_TOKEN`              | WhatsApp webhook verification token。 |
-| `WHATSAPP_ACCESS_TOKEN`              | WhatsApp Cloud API access token。     |
-| `WHATSAPP_PHONE_NUMBER_ID`           | WhatsApp phone number id。            |
+| 變數 | 說明 |
+| --- | --- |
+| `REDIS_URL` | Redis connection URL。設定後使用 BullMQ。 |
+| `JOB_QUEUE_NAME` | BullMQ queue 名稱，預設 `inboxpilot-jobs`。 |
+| `WORKER_CONCURRENCY` | BullMQ worker concurrency，預設 `5`。 |
+| `WORKER_INTERVAL_MS` | DB polling fallback interval，預設 `5000` ms。 |
+| `WORKER_DB_BATCH_SIZE` | DB polling fallback 每批處理數量，預設 `10`。 |
 
 ## PayUNI
 
-目前 PayUNI 必須使用測試站；正式站仍在審核中，不得把 production env 切到正式金流 gateway。
-
-| 變數                 | 說明                 |
-| -------------------- | -------------------- |
-| `PAYUNI_MERCHANT_ID` | PayUNI 商店代號。    |
-| `PAYUNI_HASH_KEY`    | PayUNI Hash Key。    |
-| `PAYUNI_HASH_IV`     | PayUNI Hash IV。     |
-| `PAYUNI_VERSION`     | PayUNI API version。 |
-| `PAYUNI_GATEWAY_URL` | PayUNI gateway。     |
-| `PAYUNI_RETURN_URL`  | 前景付款回傳 URL。   |
-| `PAYUNI_NOTIFY_URL`  | 背景付款通知 URL。   |
+| 變數 | 說明 |
+| --- | --- |
+| `PAYUNI_MERCHANT_ID` | PayUNI Merchant ID。 |
+| `PAYUNI_HASH_KEY` | PayUNI Hash Key。server-only。 |
+| `PAYUNI_HASH_IV` | PayUNI Hash IV。server-only。 |
+| `PAYUNI_VERSION` | PayUNI API version。 |
+| `PAYUNI_GATEWAY_URL` | PayUNI gateway URL。sandbox / production 需分清楚。 |
+| `PAYUNI_RETURN_URL` | 使用者付款後導回 URL。 |
+| `PAYUNI_NOTIFY_URL` | PayUNI server notify URL。 |
+| `PAYUNI_ALLOW_PRODUCTION` | 只有明確設為 `true` 時才允許非 sandbox gateway。 |
 
 ## Supabase
 
-Supabase 專案名必須是 `IG Auto Reply ManyChat`。
+| 變數 | 說明 |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase public URL。可以進前端。 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key。可以進前端，但仍需搭配權限規則。 |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key。只能放 server env。 |
+| `TEST_DATABASE_URL` | 測試資料庫 URL，`scripts/run-tests.mjs` 會建立獨立 test schema。 |
 
-| 變數                            | 說明                                                      |
-| ------------------------------- | --------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase public URL。前端可見。                           |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key。前端可見。                             |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Service role key。只能 server-side 使用，不可放前端。     |
-| `TEST_DATABASE_URL`             | 測試 DB 連線。`scripts/run-tests.mjs` 會建立獨立 schema。 |
+## Secret Handling
 
-## Secret handling
-
-- 不要 commit `.env` 或 `.env.local`。
-- 可 commit `.env.example`，但只能放 placeholder。
-- `NEXT_PUBLIC_*` 會進前端 bundle，不要放 service role、API key、token、secret。
-- `SUPABASE_SERVICE_ROLE_KEY`、PayUNI key、Meta token、OpenAI key 都必須只存在 server env。
+- 不要 commit `.env` 或 `.env.local`
+- `.env.example` 只能放 placeholder
+- `NEXT_PUBLIC_*` 會進前端 bundle，不可放 token、secret、API key
+- `SUPABASE_SERVICE_ROLE_KEY`、PayUNI key、Meta token、AI provider key 都只能放 server env
+- audit、console、文件、URL 不可記錄完整 token、secret、authorization code 或付款敏感 payload

@@ -1,48 +1,92 @@
 # InboxPilot Security Review
 
+
+## 2026-06-13 Update - Staging environment isolation
+
+- Staging is required before more Meta OAuth, PayUNI callback, webhook, and E2E validation.
+- Current Vercel env inventory shows env variables are configured for Production, but no Preview / staging env was observed in the CLI listing.
+- Staging must use separate Supabase DB resources and must not reuse production `DATABASE_URL`, `DIRECT_URL`, service role key, PayUNI Hash Key / IV, Meta App Secret, Google Client Secret, OpenAI key, or tokens.
+- Staging PayUNI must point to sandbox and keep `PAYUNI_ALLOW_PRODUCTION=false`.
+- Added `docs/staging-environment-runbook.md` with manual setup checklist and non-sensitive env examples.
+- Updated Playwright config to support `PLAYWRIGHT_BASE_URL`, so E2E can target a remote staging URL without starting localhost.
+- Security blocker before staging GO: create Preview / staging env in Vercel with dedicated staging credentials and verify `/api/health` against the staging URL.
+
+## 2026-06-12 Update - Non-public schema cleanup preflight package
+
+- Created `docs/non-public-schema-cleanup-preflight.md` as a read-only review package for future duplicate schema cleanup.
+- No cleanup SQL was provided and no production DB change was made.
+- The package requires proof that duplicate schemas are empty, isolated from `public`, and unused by Prisma runtime before cleanup can even be drafted.
+- The backup gate remains mandatory: Supabase scheduled backups/PITR or encrypted restore-tested external `pg_dump`.
+- This lowers process risk, but does not remove the operational risk from the current lack of managed backup/PITR.
+
+## 2026-06-12 Update - Production backup / PITR readiness
+
+- Read-only Supabase dashboard check confirmed production is still on a Free organization plan.
+- Scheduled backups are not available on the current plan.
+- PITR is not enabled and is presented as a Pro Plan add-on.
+- This remains a high operational security risk because mistaken schema changes, destructive cleanup, or application/data corruption cannot be rolled back through Supabase-managed recovery.
+- Before cleaning non-`public` duplicate schemas or running any non-additive migration, require Supabase backup/PITR or a restore-tested encrypted external `pg_dump`.
+- No production DB change was made and no DATABASE_URL, DIRECT_URL, PayUNI secret, token, or full payload was output.
+
+## 2026-06-12 Update - Production non-public schema inventory
+
+- Read-only inventory confirmed two duplicate non-`public` schemas in production: `undefined` and `test_1779910095731_d847e1`.
+- Both schemas have exact total rows `0`, so no tenant/user/payment data was found in those duplicate schemas during this check.
+- Both schemas still contain FK and index structures, which can confuse migration verification if checks are not schema-qualified.
+- FK references stay inside each duplicate schema; no observed FK reference from those schemas into `public`.
+- Prisma runtime check found no `multiSchema`, `schemas = [...]`, or `@@schema`, so application runtime is expected to use `public`.
+- No cleanup was performed because production Supabase still lacks recoverable backup/PITR.
+- Security requirement remains: all future DB verification SQL must qualify `public` explicitly and must not rely on `conname` or `relname` alone.
+
+## 2026-06-12 Update - AuditEvent FK additive migration applied
+
+- `public."AuditEvent"` now has the expected Prisma foreign keys:
+  - `AuditEvent_workspaceId_fkey`
+  - `AuditEvent_userId_fkey`
+- Preflight orphan check passed before applying the migration:
+  - `audit_workspace_orphans = 0`
+  - `audit_user_orphans = 0`
+- Verification confirmed both FK constraints are on `schema_name = public`, `table_name = AuditEvent`, `contype = f`, with `ON DELETE SET NULL`.
+- This reduces orphan audit reference risk and resolves the remaining `AuditEvent` referential integrity drift found in `docs/production-schema-drift-report.md`.
+- No product feature code was changed and no DATABASE_URL, DIRECT_URL, PayUNI secret, token, or full payload was output.
+- Remaining security/ops risk: production Supabase still has no recoverable PITR / backup, and non-public duplicate schemas should be inventoried later before cleanup.
+
+## 2026-06-12 Update - Production schema drift read-only check
+
+- 已完成 production Supabase `public` schema read-only drift 檢查，結果記錄於 `docs/production-schema-drift-report.md`。
+- `public` schema table / column / primary key / unique / index 與 Prisma schema 一致。
+- 安全與資料完整性風險：`public."AuditEvent"` 缺少 `workspaceId` 與 `userId` 兩個 foreign key；目前不影響 `/admin/audit` 讀取，但可能允許 orphan audit references。
+- 驗證風險：production DB 存在非 `public` duplicate schema（`undefined`、`test_1779910095731_d847e1`），未來 migration verification 不可只用 constraint name，必須加上 schema-qualified checks。
+- 本次未修改 production DB，未輸出 DATABASE_URL、DIRECT_URL、PayUNI secret 或完整 payload。
+
+## 2026-06-12 Update - Production AuditEvent schema 安全修正
+
+- 已補齊 production `AuditEvent` table、index、foreign key，讓安全稽核頁 `/admin/audit` 可正常讀取 audit log。
+- 本次 SQL 未更新、刪除或插入既有資料，也未修改 PayUNI 交易邏輯。
+- 本次操作未輸出 DATABASE_URL、DIRECT_URL、PayUNI Hash Key、Hash IV、EncryptInfo、HashInfo 或任何完整 payload。
+- 剩餘安全風險：Supabase production 目前沒有可回復備份/PITR，後續任何 schema 或資料修正前應先補正式備份策略。
+- `AuditEvent` 未啟用 RLS，這符合目前 Prisma server-side 存取模式；但若未來開放 Supabase client 直連 audit table，必須補 RLS policy 或明確封鎖 client-side 存取。
+
 更新日期：2026-06-10
 
-## 總結
+## 結論
 
-- 高風險：`仍有`
-- 中風險：`仍有`
+- 高風險：`仍有，但已比前一輪少`
+- 中風險：`有`
 - 低風險：`有`
-- 是否有敏感資訊外洩風險：`目前未看到明顯前端外洩，但 production 仍需持續防守`
-- 是否有多租戶資料外洩風險：`有中高風險，主因是 Meta env token fallback 尚未移除`
+- 敏感資訊外洩風險：`目前沒看到明顯前端外洩，但仍需持續防守`
+- 多租戶資料外洩風險：`已補強，但不能宣稱完全零風險`
 
-這一輪已完成的安全改善：
+本輪已完成的重要修正：
 
-- billing completion 現在用 `PaymentOrder.interval` 驅動，不再因 hardcoded month 造成 plan / entitlement 錯配
-- zero-amount / credit-only checkout 已走正式 internal completion flow
-- billing completion success / failure 已補安全 audit，未記錄 PayUNI secret、hash key、token、完整敏感 payload
+1. production 模式不再允許 Meta env token fallback
+2. Meta webhook / comment sync / send message 都遵守同一套 tenant 邊界
+3. Meta OAuth 新主流程改為 generic callback，且保持 callback failure audit
+4. Connected account 已可安全解除綁定，不需要直接刪 channel
 
 ## 高風險
 
-### 1. Meta env token fallback 仍可能跨 tenant 誤用
-
-檔案位置：
-
-- `src/lib/channels/meta.ts`
-- `src/app/api/webhooks/meta/route.ts`
-- `src/lib/instagram/comments-sync.ts`
-
-問題：
-
-- channel token 缺失時，仍可能 fallback 到全域 env token
-- 在單租戶 demo 可容忍，在多租戶 SaaS 風險太高
-
-影響：
-
-- 錯發訊息
-- 用錯 Page / IG Business Account
-- tenant boundary 被弱化
-
-必須立刻修：
-
-- production 模式停用 env fallback
-- 所有 Meta 操作都要求 channel-level token 與 account binding
-
-### 2. 多租戶隔離仍以應用層為主，缺少更強的回歸保證
+### 1. 多租戶隔離仍主要依賴應用層 where 條件
 
 檔案位置：
 
@@ -50,23 +94,45 @@
 - `src/app/api/**`
 - `prisma/schema.prisma`
 
-問題：
+說明：
 
-- 多數流程有 `workspaceId` 限制，但尚未形成完整的 tenant isolation regression suite
-- 目前沒有足夠證據證明每個敏感 query 都被持續保護
+- 目前 Prisma 查詢大致有 `workspaceId` 限制
+- 但還不是每個資料讀寫都透過統一的 tenant-safe repository layer
 
-必須立刻修：
+建議：
 
-- 補 tenant isolation tests
-- 補 query helper / review checklist，避免 route 漏帶 `workspaceId`
+- 持續補 route-level regression tests
+- 對高風險資料模型建立更一致的 workspace scoping helper
+
+### 2. Meta legacy callback 仍存在，正式環境需維持雙路徑觀察
+
+檔案位置：
+
+- `src/app/api/meta/oauth/callback/route.ts`
+- `src/app/api/instagram/oauth/callback/route.ts`
+- `src/app/api/oauth/[provider]/callback/route.ts`
+
+說明：
+
+- 這不是立即漏洞，但它會增加 production 設定與 reviewer 說明複雜度
+- 若 Meta 後台 redirect URI 沒同步，可能造成使用者走到舊流程或誤判為 callback 失敗
+
+建議：
+
+- 先補齊 Meta 後台設定
+- 觀察 generic callback 穩定度後，再規劃 legacy callback 退場
 
 ## 中風險
 
-### 1. Secret encryption 在 production 若未設 `TOKEN_ENCRYPTION_KEY` 會 fallback 到 `AUTH_SECRET`
+### 1. `TOKEN_ENCRYPTION_KEY` 在 production 仍應強制獨立設定
 
 檔案位置：
 
 - `src/lib/secrets.ts`
+
+說明：
+
+- 若未設定，系統可能退回使用 `AUTH_SECRET`
 
 建議：
 
@@ -78,137 +144,163 @@
 
 - `src/lib/audit.ts`
 
-問題：
+說明：
 
-- audit 失敗時不應阻斷主流程，這個策略合理
-- 但目前缺少更完整的告警 / metrics 補位
+- 目前 audit 失敗不會中止主流程
+- 這是合理取捨，但正式營運應補 alert / metrics
 
-建議：
-
-- 對 auth / billing / webhook / admin failure audit 補 alert / dashboard
-
-### 3. CSRF 主要靠 same-origin / origin 驗證
+### 3. Connected account disconnect 不會自動刪除 channel
 
 檔案位置：
 
-- `src/lib/security.ts`
-- `src/proxy.ts`
+- `src/app/api/oauth/accounts/[id]/route.ts`
 
-建議：
+說明：
 
-- 現況對內部表單 API 基本可接受
-- 若後續增加第三方嵌入或更高風險後台操作，可再考慮 token-based CSRF
-
-### 4. Billing completion 仍需持續觀察 idempotency 邊界
-
-檔案位置：
-
-- `src/lib/billing/payment-service.ts`
-- `src/app/api/billing/payuni/checkout/route.ts`
-- `src/lib/billing/payuni-callback.ts`
-
-現況：
-
-- paid callback 已有 idempotent short-circuit
-- internal credit flow 以 `invoiceId + provider=internal_credit` 重用 payment order，再經 `order.status === "paid"` 避免重複啟用
-
-建議：
-
-- 後續再補更多整合測試，覆蓋 retry / return / notify 混合重入
+- 這是刻意設計，避免誤刪歷史 channel 與訊息資料
+- 但營運上要讓使用者知道：解除綁定後還需要到 Channels 檢查舊綁定
 
 ## 低風險
 
-### OAuth 安全審查
+### OAuth
 
-檔案位置：
+- 有 `state` 驗證
+- callback failure 會寫 audit
+- callback audit 不寫 token、secret、authorization code
 
-- `src/app/api/oauth/[provider]/authorize/route.ts`
-- `src/app/api/oauth/[provider]/callback/route.ts`
-- `src/app/api/meta/oauth/start/route.ts`
-- `src/app/api/meta/oauth/callback/route.ts`
+### Webhook
 
-結果：
+- 有 signature 驗證
+- 有 rate limit
+- production 不再把 `META_*` env 值灌回 channel config
 
-- 有 `state`
-- 有 callback failure audit
-- 已避免在 audit 內記錄 token / secret / authorization code
-- 但 Meta flow 仍是 generic + legacy 混合，維護風險較高
+### Payment
 
-### Webhook 安全審查
+- PayUNI notify 有簽章驗證與 idempotency
+- zero-amount internal completion 已改走正式 completion flow
 
-檔案位置：
+### Admin / Prisma / RLS
 
-- `src/lib/webhook-security.ts`
-- `src/app/api/webhooks/meta/route.ts`
-- `src/app/api/webhooks/telegram/route.ts`
-- `src/app/api/webhooks/whatsapp/route.ts`
-- `src/app/api/automation-webhooks/[key]/route.ts`
+- admin / operator 邊界有基本保護
+- Prisma 為主，沒有看到明顯 raw SQL 注入點
+- Supabase RLS 不是這個專案的主要 enforcement layer，安全邊界仍以 server-side Prisma 為主
 
-結果：
+## OAuth / Webhook / Payment / Admin / Prisma / RLS 審查結果
 
-- 已有 signature / shared secret 驗證
-- 已有 rate limit
-- 已有部分失敗 audit
-- 仍建議補更完整 duplicate event / replay 測試
+### OAuth
 
-### Payment 安全審查
+- 新的 Meta authorize URL 已改為 generic callback
+- legacy callback 暫時保留，避免一次切太兇
+- 最小 reconnect / disconnect UX 已補
 
-檔案位置：
+### Webhook
 
-- `src/lib/payuni.ts`
-- `src/lib/billing/payuni-callback.ts`
-- `src/app/api/billing/payuni/notify/route.ts`
-- `src/app/api/billing/payuni/checkout/route.ts`
+- Meta webhook 可以根據 channel config 尋找正確 workspace / channel
+- production fallback 已移除，tenant isolation 比之前安全
 
-結果：
+### Payment
 
-- `HashInfo` 驗證存在
-- paid callback idempotency 存在
-- 這一輪新增 internal credit completion flow 與安全 audit
+- Billing interval / zero-amount subscription correctness 已修正
+- 正式收款 readiness 仍取決於 PayUNI production go-live
 
-### Admin 安全審查
+### Admin
 
-檔案位置：
+- `/admin/audit` 已存在
+- 稽核事件涵蓋 OAuth / webhook / billing / 基本管理流程，但 alerting 還不夠
 
-- `src/lib/admin-auth.ts`
-- `src/lib/auth.ts`
+### Prisma
 
-結果：
+- 多數查詢有 workspace scoping
+- 仍建議持續補整合測試，不靠人工相信自己
 
-- admin / operator 基礎角色存在
-- 後續仍需更細的角色矩陣與審批流程
+### RLS
 
-### Prisma / RLS 審查
+- 沒有把 Supabase RLS 當主要授權層
+- 這代表 server code 必須持續維持 tenant discipline
 
-檔案位置：
+## 是否有敏感資訊外洩風險
 
-- `prisma/schema.prisma`
-- `src/app/api/**`
-- `src/lib/**`
-
-結果：
-
-- schema 結構完整，workspace / billing / audit / affiliate 主要表都有
-- 目前主要依賴 Prisma server-side access，不是 Supabase RLS-first 架構
-- 文件上不應誤導為「已完整依賴 RLS」
-
-## 敏感資訊外洩風險
-
-目前沒有看到明顯把以下資料打進前端 bundle 的證據：
+目前沒有看到明顯把下列敏感資訊直接送進前端 bundle：
 
 - access token
+- Meta app secret
 - PayUNI hash key / iv
-- app secret
 - service role key
 
-但仍需持續注意：
+但仍需持續防守：
 
-- console / audit / docs 不得落出完整付款敏感 payload
-- `.env*` 與部署平台 env 權限需嚴格控管
+- console / audit / docs 不要寫完整 payload
+- `.env*` 不得誤提交
+- 新增 OAuth / payment / webhook 功能時，先檢查 log 與 error message
+
+## 是否有多租戶資料外洩風險
+
+有降低，但不能說完全沒有。
+
+本輪改善：
+
+- production Meta env fallback 已移除
+- webhook / comment sync / send message 已補 tenant isolation regression tests
+
+仍需持續觀察：
+
+- billing、admin、reporting、search 類 API 是否都有完整 workspace 限制
 
 ## 必須立刻修的安全項
 
-1. production 停用 Meta env token fallback
-2. production 強制要求 `TOKEN_ENCRYPTION_KEY`
-3. 補 tenant isolation regression tests
-4. 補 billing / webhook / admin failure alerting
+1. production 強制要求 `TOKEN_ENCRYPTION_KEY`
+2. 繼續補 billing / admin / reporting 的 tenant isolation tests
+3. 完成 Meta 後台 generic callback URI 設定與 reviewer 流程收斂
+# Security Review Update - PayUNI Audit Coverage
+
+更新日期：2026-06-10
+
+## 本輪 PayUNI 安全補強
+
+- PayUNI 付款失敗會寫入 `billing_payuni_payment_failed` audit event。
+- PayUNI return callback 例外會寫入 `billing_payuni_return_failed` audit event。
+- PayUNI notify callback 例外會寫入 `billing_payuni_notify_failed` audit event。
+- Audit metadata 僅記錄非敏感摘要，不記錄 PayUNI secret、Hash Key、Hash IV、EncryptInfo、HashInfo、完整 return payload 或完整 notify payload。
+- `/admin/audit` 顯示 metadata 前會遮罩敏感 key，降低既有或未來 audit metadata 誤含敏感欄位時的前端外洩風險。
+- `npm run payuni:preflight` 只輸出非敏感 Go/No-Go 摘要，不列印 Merchant ID、Hash Key、Hash IV、EncryptInfo、HashInfo 或付款 payload。
+
+## 2026-06-10 Update - Admin Billing Reconciliation
+
+- `/admin/billing-reconciliation` 為 admin-only、read-only 對帳入口，查詢條件限 MerTradeNo / TradeNo，資料仍依目前 workspace 查詢。
+- 頁面刻意只顯示非敏感營運欄位；不得在 audit、文件、客服紀錄或 issue 貼上 PayUNI secret、Hash Key、Hash IV、EncryptInfo、HashInfo 或完整 payload。
+- 剩餘風險：仍需 production 環境實測確認真實 return / notify 與 PayUNI 後台紀錄一致。
+
+## 2026-06-13 Update - Production non-public schema cleanup
+
+- Removed production non-public duplicate schemas `undefined` and `test_1779910095731_d847e1` after user-confirmed rollback path and final preflight.
+- Cleanup used guarded SQL that stopped if:
+  - `public` schema was missing.
+  - any FK crossed between `public` and the duplicate schemas.
+  - any table in the duplicate schemas contained rows.
+- Post-cleanup verification confirmed:
+  - both duplicate schemas no longer exist,
+  - no FK remains involving either duplicate schema.
+- Security impact:
+  - reduces schema drift and accidental cross-schema confusion risk,
+  - does not change application auth, tenant isolation, OAuth, webhook, billing, or PayUNI transaction logic.
+- Remaining security risks:
+  - continue requiring Supabase backup/PITR or restore-tested encrypted dump before future destructive DB operations,
+  - add automated monitoring for Prisma missing-table/schema errors,
+  - continue broader tenant isolation and PayUNI production verification work.
+
+## 2026-06-13 Update - Post-cleanup schema drift security recheck
+
+- Read-only recheck confirmed production duplicate schemas `undefined` and `test_1779910095731_d847e1` no longer exist.
+- `public` schema table and column surface matches Prisma with 0 missing and 0 extra tables/columns.
+- `public."AuditEvent"` retains both expected FK constraints:
+  - `AuditEvent_workspaceId_fkey`
+  - `AuditEvent_userId_fkey`
+- Billing-critical schema surface is present:
+  - `PaymentOrder.interval` exists as non-null `BillingInterval`.
+  - `Subscription.interval` exists as non-null `BillingInterval`.
+  - billing core tables are present.
+- No current metadata-level schema drift was found that would block billing, subscription, PayUNI notify schema access, or admin audit rendering.
+- Remaining security/ops risk is not schema drift in this check; it is operational readiness:
+  - PayUNI real production transaction verification is still pending.
+  - Redis/worker and monitoring readiness still need completion.
+  - future destructive DB work still requires backup/PITR or restore-tested encrypted dump.
