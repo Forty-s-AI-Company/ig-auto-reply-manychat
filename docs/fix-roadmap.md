@@ -1,5 +1,14 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login ADR before implementation
+
+Status: documented only.
+
+- Added an ADR for evaluating Facebook Login for Business, Instagram Business Login, and keeping the current Instagram OAuth flow before any product implementation.
+- Recommendation: proceed only with sandbox-only research / implementation planning, not production replacement.
+- Required gates before production: App Review readiness, env isolation, callback state / nonce / code exchange review, ConnectedAccount / Channel mapping, workspace linking isolation, channel sync failure handling, and token / code / secret redaction verification.
+- Product code, OAuth routes, callback routes, login buttons, and env were intentionally not changed.
+
 ## 2026-06-15：Meta Account Selection 測試矩陣
 
 - 新增 `docs/meta-business-login-account-selection-test-matrix.md`，定義未登入、單一登入、多帳號 session、桌機 / 手機、popup / redirect transport 的測試矩陣。

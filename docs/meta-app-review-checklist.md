@@ -1,5 +1,13 @@
 # Meta App Review Checklist
 
+## 2026-06-15 - Meta Business Login ADR review gate
+
+Status: documented only.
+
+- Added a pre-implementation ADR requiring sandbox-only validation before Facebook Login for Business or Instagram Business Login can replace the current Instagram OAuth flow.
+- App Review readiness remains a required gate: reviewer demo flow, permission usage table, screen recording script, test workspace, test Business / Page / IG assets, and redaction proof must be ready before production rollout.
+- If App Review fails or account selection UX is not materially better than the current flow, the production fallback remains the existing Instagram OAuth flow.
+
 ## 2026-06-15：Account Selection 測試矩陣
 
 - 新增 `docs/meta-business-login-account-selection-test-matrix.md`，作為 App Review 前的 Business / Page / IG account selection 測試紀錄模板。

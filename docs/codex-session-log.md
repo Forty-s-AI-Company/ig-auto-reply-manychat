@@ -1,5 +1,28 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login pre-implementation ADR
+
+Task:
+
+- Read the project and Meta login research docs.
+- Create a documentation-only ADR for evaluating Facebook Login for Business, Instagram Business Login, and keeping the current Instagram OAuth flow.
+- Do not modify product code, OAuth flow, callback routes, login buttons, or env.
+
+Files changed:
+
+- `docs/adr-meta-business-login-before-implementation.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/codex-session-log.md`
+
+Validation:
+
+- `git status`: only documentation files changed.
+- `npm run lint`: passed.
+- `npm run build`: passed with exit code 0. The existing Prisma engine DLL lock fallback message appeared and reused the generated client.
+- `npm test`: not run; documentation-only task covered by lint/build verification.
+
 ## 2026-06-15：Meta Account Selection 測試矩陣
 
 - 本次任務目標：只新增 / 更新文件，建立 `docs/meta-business-login-account-selection-test-matrix.md`，定義未登入、單一登入、多帳號 session、桌機 / 手機、popup / redirect transport、callback 結果、workspace linking / channel sync 與 ManyChat UX 判定標準。

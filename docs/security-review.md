@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-15 - Meta Business Login ADR security note
+
+Scope: documentation-only ADR for Facebook Login for Business / Instagram Business Login evaluation.
+
+- Any sandbox-only experiment must redact access tokens, refresh tokens, authorization codes, client secrets, app secrets, and reusable callback URLs from console output, server logs, audit logs, screenshots, and documentation.
+- Callback handling must validate state, nonce, expiry, authenticated user session, workspace ownership, and selected Business / Page / IG account before creating or updating ConnectedAccount / Channel records.
+- Code exchange must remain server-side only; tokens must not be returned to the browser or persisted outside encrypted storage.
+- No product code, OAuth route, callback route, login button, or env change was made for this ADR.
+
 ## 2026-06-15：Account Selection 測試矩陣安全補充
 
 - 新增 `docs/meta-business-login-account-selection-test-matrix.md`，要求每個測試案例記錄 callback error classification、workspace isolation、channel sync 與 token redaction 檢查。
