@@ -1,5 +1,12 @@
 # Meta App Review Checklist
 
+## 2026-06-15：Business Login 研究規格補充
+
+- 新增 `docs/meta-business-login-experiment-spec.md`，先以文件任務評估 Facebook Login for Business / Instagram Business Login 是否能取代或補強目前 Instagram OAuth。
+- 尚未修改 OAuth flow、callback route、登入按鈕或 env。
+- 後續 App Review 文件需補：reviewer demo script、permission usage table、Business / Page / IG account selection 錄影流程、token / code / secret redaction 檢查清單。
+- 若導入 login configuration / `config_id`，需重新確認 Advanced Access、Business Verification、redirect URI 與測試帳號需求。
+
 更新日期：2026-06-10
 
 ## 目前使用的 Meta / Instagram 登入流程

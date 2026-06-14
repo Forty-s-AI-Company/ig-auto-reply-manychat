@@ -1,5 +1,11 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15：Business Login 實驗規格
+
+- 新增 `docs/meta-business-login-experiment-spec.md`，定義 Facebook Login for Business / Instagram Business Login 的文件型研究任務與實驗範圍。
+- 後續不應直接改正式 OAuth flow；應先用 sandbox-only provider 或文件化手動 URL 驗證 account selection、callback payload、workspace linking 與 App Review 需求。
+- 下一步建議補 `docs/meta-business-login-app-review-demo-script.md`，把 reviewer demo、permission usage、資料使用位置與 redaction checklist 寫清楚。
+
 ## 2026-06-15：Meta Login 帳號選擇研究待辦
 
 - 已新增 `docs/meta-login-account-selection-analysis.md`，記錄目前 Instagram OAuth、Facebook OAuth、legacy Meta Business Login 相容路徑與 ManyChat 差異。
