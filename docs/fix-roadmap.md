@@ -1,5 +1,14 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15：Meta Login 帳號選擇研究待辦
+
+- 已新增 `docs/meta-login-account-selection-analysis.md`，記錄目前 Instagram OAuth、Facebook OAuth、legacy Meta Business Login 相容路徑與 ManyChat 差異。
+- 後續建議：
+  - 評估 Facebook Login for Business / Business Login for Instagram 是否可成為正式 account selection flow。
+  - 在實驗分支測試 `force_reauth`、`force_authentication`、`enable_fb_login` 對不同瀏覽器 session 的實際效果。
+  - 調整 UI 文案，避免承諾「一定能強制切換帳號」。
+  - 若導入 login configuration / `config_id`，同步更新 Meta App Review 文件與 QA demo script。
+
 更新日期：2026-06-10
 
 ## 目前驗證狀態

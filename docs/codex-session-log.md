@@ -1,5 +1,22 @@
 # Codex Session Log
 
+## 2026-06-15：Meta / Instagram 帳號選擇分析
+
+- 本次任務目標：只做文件分析，不修改產品功能程式碼；確認 InboxPilot 目前 Meta / Instagram OAuth 帳號連接流程、authorize URL、帳號切換限制與 ManyChat 差異。
+- 修改檔案：
+  - `docs/meta-login-account-selection-analysis.md`
+  - `docs/codex-session-log.md`
+  - `docs/fix-roadmap.md`
+- 驗證：
+  - `git status`：僅有文件變更。
+  - `npm run lint`：通過。
+  - `npm run build`：通過。
+  - `npm test`：未執行；本次為純文件分析任務，且已完成 lint / build 驗證。
+- 風險記錄：
+  - 目前無功能程式碼變更。
+  - 分析指出帳號切換不能由 `auth_type=reauthenticate` 或 `auth_type=rerequest` 穩定保證。
+  - 若要接近 ManyChat UX，後續需評估 Facebook Login for Business / Business Login for Instagram。
+
 更新日期：2026-06-10
 
 ## 用途
