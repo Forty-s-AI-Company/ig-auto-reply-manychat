@@ -1,5 +1,11 @@
 # InboxPilot Security Review
 
+## 2026-06-15：Account Selection 測試矩陣安全補充
+
+- 新增 `docs/meta-business-login-account-selection-test-matrix.md`，要求每個測試案例記錄 callback error classification、workspace isolation、channel sync 與 token redaction 檢查。
+- 測試紀錄不得保存 raw token、authorization code、state raw value、client secret、app secret 或 webhook verify token。
+- Workspace linking 驗證需確認 `workspaceId` 不來自 callback query，且 channel 建立 / 更新限制在目前 workspace。
+
 ## 2026-06-15：Meta Business Login App Review 安全補充
 
 - 新增 `docs/meta-business-login-app-review-demo-script.md`，明確列出 token / authorization code / secret redaction checklist。

@@ -1,5 +1,11 @@
 # Meta App Review Checklist
 
+## 2026-06-15：Account Selection 測試矩陣
+
+- 新增 `docs/meta-business-login-account-selection-test-matrix.md`，作為 App Review 前的 Business / Page / IG account selection 測試紀錄模板。
+- 測試矩陣要求記錄 Meta dialog 是否只顯示「允許 / 取消」、是否可選 Business / Page / IG、callback 結果與 workspace linking 結果。
+- 測試截圖與紀錄不得包含 token、authorization code、state raw value、secret 或未遮罩個資。
+
 ## 2026-06-15：Business Login Demo Script
 
 - 新增 `docs/meta-business-login-app-review-demo-script.md`，整理 Facebook Login for Business / Instagram Business Login 的 reviewer demo 流程、permission usage table、資料使用位置與 redaction checklist。

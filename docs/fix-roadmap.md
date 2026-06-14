@@ -1,5 +1,10 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15：Meta Account Selection 測試矩陣
+
+- 新增 `docs/meta-business-login-account-selection-test-matrix.md`，定義未登入、單一登入、多帳號 session、桌機 / 手機、popup / redirect transport 的測試矩陣。
+- 後續建議先用矩陣測目前 `meta-instagram` baseline，再測 Facebook Login for Business / Instagram Business Login sandbox flow，最後再決定是否進入產品實作。
+
 ## 2026-06-15：Meta App Review Demo Script
 
 - 新增 `docs/meta-business-login-app-review-demo-script.md`，補齊 Facebook Login for Business / Instagram Business Login 的 reviewer demo、permission usage table、資料使用方式與不通過 App Review 的備援方案。
