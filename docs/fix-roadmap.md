@@ -1,5 +1,10 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15：Meta App Review Demo Script
+
+- 新增 `docs/meta-business-login-app-review-demo-script.md`，補齊 Facebook Login for Business / Instagram Business Login 的 reviewer demo、permission usage table、資料使用方式與不通過 App Review 的備援方案。
+- 下一步若繼續文件任務，建議建立 account selection 測試矩陣，記錄未登入、單一登入、多帳號 session 下 Meta dialog 畫面與 callback 結果。
+
 ## 2026-06-15：Business Login 實驗規格
 
 - 新增 `docs/meta-business-login-experiment-spec.md`，定義 Facebook Login for Business / Instagram Business Login 的文件型研究任務與實驗範圍。

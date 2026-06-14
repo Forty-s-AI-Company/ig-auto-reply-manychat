@@ -1,5 +1,12 @@
 # InboxPilot Security Review
 
+## 2026-06-15：Meta Business Login App Review 安全補充
+
+- 新增 `docs/meta-business-login-app-review-demo-script.md`，明確列出 token / authorization code / secret redaction checklist。
+- Callback 安全要求：驗證 user、state、provider、workspace、flow type、TTL；成功與失敗都需清除 state；audit 僅記錄安全摘要。
+- Workspace linking 安全要求：workspaceId 不得來自 callback query，channel 建立 / 更新必須限制 workspace，IG account identity 應以 `instagramBusinessAccountId` 或 `instagramOauthUserId` 判斷。
+- 本次只更新文件，未修改 OAuth、callback、token 儲存、env 或產品功能程式碼。
+
 更新日期：2026-06-10
 
 ## 總結

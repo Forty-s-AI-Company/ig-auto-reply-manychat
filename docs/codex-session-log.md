@@ -1,5 +1,23 @@
 # Codex Session Log
 
+## 2026-06-15：Meta Business Login App Review Demo Script
+
+- 本次任務目標：只新增 / 更新文件，產出 `docs/meta-business-login-app-review-demo-script.md`，補齊 reviewer demo、permission usage table、資料使用位置、redaction checklist、callback / workspace linking / channel sync 安全重點與 App Review 備援方案。
+- 修改檔案：
+  - `docs/meta-business-login-app-review-demo-script.md`
+  - `docs/meta-app-review-checklist.md`
+  - `docs/security-review.md`
+  - `docs/fix-roadmap.md`
+  - `docs/codex-session-log.md`
+- 驗證：
+  - `git status`：僅有文件變更。
+  - `npm run lint`：通過。
+  - `npm run build`：通過；出現既有 Prisma engine DLL lock fallback 訊息，但指令 exit code 為 0。
+  - `npm test`：未執行；本次為純文件任務，已完成 lint / build 驗證。
+- 限制：
+  - 未修改產品功能程式碼。
+  - 未修改 OAuth flow、callback route、登入按鈕或 env。
+
 ## 2026-06-15：Business Login 研究規格文件
 
 - 本次任務目標：依 `docs/meta-login-account-selection-analysis.md` 建立只做文件與實驗規格的研究任務，評估 Facebook Login for Business / Instagram Business Login 是否能取代目前 Instagram OAuth。
