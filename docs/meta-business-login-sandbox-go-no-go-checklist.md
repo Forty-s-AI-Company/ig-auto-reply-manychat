@@ -1,5 +1,22 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Document Index
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-doc-index.md
+```
+
+Decision:
+
+```text
+Internal beta document index: Ready
+Internal beta: Hold
+App Review submission preparation: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Internal Beta Closeout Report Template
 
 Evidence:

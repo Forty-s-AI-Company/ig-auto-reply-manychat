@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Document Index Status
+
+Status: internal beta document index documented / internal beta Hold / App Review submission preparation Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-doc-index.md
+```
+
+Current App Review implication:
+
+- The internal beta documentation set now has a single index covering file purpose, reading order, evidence-to-closeout decision path, template / draft status, open gates, internal beta Hold reasons, App Review submission preparation status, and production No-Go reasons.
+- Internal beta remains Hold because the package assembly, redaction report, reviewer recording, screenshots, permission proof, test asset proof, scope reconciliation, access controls, rollback, guards, and sign-off have not been executed against real artifacts.
+- App Review submission preparation remains Hold.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Internal Beta Closeout Report Template Status
 
 Status: closeout report template documented / internal beta Hold / production implementation No-Go.

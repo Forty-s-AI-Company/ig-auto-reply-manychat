@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta document index security note
+
+Scope: documentation-only internal beta document index.
+
+- Added `docs/meta-business-login-internal-beta-doc-index.md`.
+- The index lists each internal beta document, reading order, evidence-to-closeout path, template / draft status, open gates, internal beta Hold reasons, App Review submission preparation status, and production No-Go reasons.
+- The index explicitly blocks Supabase migration / `db push`, production OAuth flow changes, callback changes, login button changes, env changes, Prisma schema changes, production ConnectedAccount / Channel writes, and real Meta token exchange during this documentation phase.
+- The index repeats the prohibition on writing raw token, authorization code, raw state, raw nonce, full callback URL, secret, browser storage, unmasked asset ID, or real customer data into docs, logs, audit, test output, screenshots, or recordings.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta closeout report template security note
 
 Scope: documentation-only internal beta closeout report template.
