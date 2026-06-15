@@ -420,3 +420,20 @@ scopes：
 2. 若偵測到同 workspace 已有既有 IG 綁定，提醒使用者是否覆蓋 / 新增
 3. 提供一鍵解除綁定與重新連接入口
 4. production 模式禁用 env fallback，避免誤以為綁定成功其實用的是舊 token
+## 2026-06-16 - Sandbox Callback Capture Evidence Status
+
+Current sandbox evidence status:
+
+- Account selection UX: observed in browser, multiple Instagram profile options were shown.
+- Callback capture route guard: implemented as signed-state read-only guard.
+- Real callback evidence: still Hold.
+- Workspace linking: dry-run only.
+- Channel sync: dry-run only.
+- Internal beta: Hold.
+- Production implementation: No-Go.
+
+Reviewer demo safety requirement:
+
+- Do not show raw authorization code, raw state, raw nonce, access token, app secret, client secret, or full callback URL in recording, logs, audit records, reports, screenshots, or documentation.
+- If a callback evidence response is shown, only show the redacted JSON fields and hashed evidence markers.
+- Do not present sandbox callback capture as a production user-facing feature.

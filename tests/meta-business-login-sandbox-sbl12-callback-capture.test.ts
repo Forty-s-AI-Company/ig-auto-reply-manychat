@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildSandboxCallbackCaptureEvidence,
+  createSandboxCallbackCaptureState,
+  parseSandboxCallbackCaptureState,
   validateSandboxCallbackCaptureEvidence,
 } from "@/lib/meta-business-sandbox-callback-capture";
 
@@ -18,6 +20,36 @@ const baseInput = {
 };
 
 describe("SBL-12 sandbox callback capture evidence", () => {
+  it("creates and parses a sandbox callback capture state marker", () => {
+    const state = createSandboxCallbackCaptureState({
+      providerId: "meta-business-instagram-sandbox",
+      workspaceId: "default-workspace",
+      requestId: "req-callback-capture",
+    });
+
+    expect(state).toMatch(/^sblcap\.[A-Za-z0-9_-]+\.[a-f0-9]{16}$/);
+    expect(parseSandboxCallbackCaptureState(state)).toEqual({
+      providerId: "meta-business-instagram-sandbox",
+      workspaceId: "default-workspace",
+      requestId: "req-callback-capture",
+    });
+    expect(parseSandboxCallbackCaptureState(`${state}tampered`)).toBeNull();
+    expect(parseSandboxCallbackCaptureState("regular-oauth-state")).toBeNull();
+  });
+
+  it("allows signed sandbox state marker when OAuth transport cannot send custom headers", () => {
+    const evidence = buildSandboxCallbackCaptureEvidence({
+      ...baseInput,
+      sandboxHeader: null,
+      signedStateMarker: true,
+    });
+
+    expect(evidence.status).toBe("success");
+    expect(evidence.exchangeAttempted).toBe(false);
+    expect(Object.values(evidence.productionWrites).every((value) => value === false)).toBe(true);
+    expect(validateSandboxCallbackCaptureEvidence(evidence)).toEqual([]);
+  });
+
   it("captures callback evidence without raw code, raw state, token exchange, or production writes", () => {
     const evidence = buildSandboxCallbackCaptureEvidence(baseInput);
     const serialized = JSON.stringify(evidence);
@@ -37,11 +69,11 @@ describe("SBL-12 sandbox callback capture evidence", () => {
     expect(validateSandboxCallbackCaptureEvidence(evidence)).toEqual([]);
   });
 
-  it("requires the explicit sandbox callback capture header", () => {
+  it("requires an explicit sandbox callback capture marker", () => {
     const evidence = buildSandboxCallbackCaptureEvidence({ ...baseInput, sandboxHeader: null });
 
     expect(evidence.status).toBe("error");
-    expect(evidence.errorType).toBe("sandbox_callback_capture_header_required");
+    expect(evidence.errorType).toBe("sandbox_callback_capture_marker_required");
     expect(validateSandboxCallbackCaptureEvidence(evidence)).toEqual([]);
   });
 

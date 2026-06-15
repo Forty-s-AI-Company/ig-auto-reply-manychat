@@ -482,3 +482,30 @@ Scope: documentation-only ADR for Facebook Login for Business / Instagram Busine
 2. production 強制要求 `TOKEN_ENCRYPTION_KEY`
 3. 補 tenant isolation regression tests
 4. 補 billing / webhook / admin failure alerting
+## 2026-06-16 - Meta Business Login Sandbox Callback Capture Guard
+
+Scope:
+
+- Added a read-only sandbox capture guard to `src/app/api/meta/oauth/callback/route.ts`.
+- The guard is only entered when `state` is a valid sandbox callback capture marker.
+- Normal production OAuth callbacks keep the existing cookie-backed state validation and callback behavior.
+
+Security properties:
+
+- No Meta token exchange is attempted in sandbox capture mode.
+- No app secret, client secret, access token, authorization code, raw state, or full callback URL is returned.
+- No ConnectedAccount / Channel / webhook / channel sync / token refresh write is performed.
+- The sandbox state marker is only a routing marker for redacted evidence, not a production OAuth trust boundary.
+
+Validation:
+
+```text
+npx vitest run tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts
+Result: 2 test files passed, 9 tests passed
+```
+
+Remaining hold:
+
+- Real callback evidence is still missing.
+- Workspace linking and channel sync remain dry-run only.
+- Internal beta and production implementation remain blocked until App Review, UX, callback security, redaction, rollback, and workspace linking gates pass.

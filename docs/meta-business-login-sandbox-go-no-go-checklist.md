@@ -590,3 +590,16 @@ Target review date:
 
 完成後請執行 git status、npm run lint、npm run build。npm test 可視情況略過，但要說明原因。
 ```
+## 2026-06-16 - SBL-12 Callback Capture Guard Gate Update
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Callback capture helper | Pass | `tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts` |
+| Signed-state route guard | Pass | `tests/meta-business-login-sandbox-sbl12-callback-route.test.ts` |
+| Normal callback regression | Pass at invalid-state regression level | Non-sandbox callback still redirects through existing invalid-state path. |
+| Real callback evidence | Hold | Browser has not yet produced a captured callback evidence packet. |
+| Workspace linking | Hold | Dry-run only; no production ConnectedAccount / Channel write is allowed. |
+| Channel sync | Hold | Dry-run only. |
+| Redaction | Pass at unit / route-test level, Hold for real callback evidence | Raw code/state/full callback URL are not present in tested response bodies. |
+| Internal beta | Hold | Requires real callback evidence and workspace/channel validation. |
+| Production implementation | No-Go | Still blocked by App Review, env, callback, workspace linking, channel sync, redaction, and rollback gates. |

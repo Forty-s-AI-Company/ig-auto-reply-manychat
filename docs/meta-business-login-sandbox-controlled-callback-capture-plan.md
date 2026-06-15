@@ -1,7 +1,7 @@
 # Meta Business Login Sandbox Controlled Callback Capture Plan
 
 Date: 2026-06-16  
-Status: Sandbox helper implemented, production callback unchanged  
+Status: Sandbox helper and signed-state route guard implemented
 Scope: Controlled callback capture before completing Instagram Business Login OAuth
 
 ## Summary
@@ -12,8 +12,8 @@ The current Meta-provided Instagram Business Login redirect URI still points to 
 
 ```text
 Sandbox callback capture helper: Implemented
-Production callback integration: Not implemented
-Production callback behavior: Unchanged
+Production callback integration: Implemented as read-only signed-state guard
+Production callback behavior: Unchanged when state is not a sandbox capture marker
 Internal beta: Hold
 Production implementation: No-Go
 ```
@@ -219,3 +219,50 @@ Do not proceed with Option C unless App Review evidence requires a real callback
 | Channel sync evidence | Hold |
 | Internal beta | Hold |
 | Production implementation | No-Go |
+
+## 2026-06-16 Update - Option B Implemented
+
+Option B was selected because the currently registered Instagram Business Login redirect URI points to the existing Instagram callback route and OAuth redirects cannot carry custom request headers.
+
+Implemented route behavior:
+
+```text
+if state is a valid sandbox callback capture marker:
+  return redacted JSON evidence
+  do not exchange authorization code
+  do not read token / secret
+  do not write ConnectedAccount / Channel
+  do not subscribe webhook
+  do not start channel sync
+else:
+  continue existing production callback behavior
+```
+
+Files:
+
+```text
+src/lib/meta-business-sandbox-callback-capture.ts
+src/app/api/meta/oauth/callback/route.ts
+tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts
+tests/meta-business-login-sandbox-sbl12-callback-route.test.ts
+```
+
+Security note:
+
+- The sandbox callback capture state marker is only a routing marker for a read-only evidence response.
+- It is not treated as a production OAuth security boundary.
+- Normal production OAuth callbacks still rely on the existing cookie-backed state check.
+- Raw authorization code, raw state, and full callback URL must not appear in response body, logs, audit records, reports, or App Review documents.
+
+Updated targeted command:
+
+```bash
+npx vitest run tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts
+```
+
+Current targeted result:
+
+```text
+2 test files passed
+9 tests passed
+```

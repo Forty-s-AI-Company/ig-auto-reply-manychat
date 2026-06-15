@@ -993,3 +993,71 @@ Validation:
   - Billing / legal / README 亂碼與對外文案仍未整理
 - 下一個建議任務：
   - 進入 Phase 0 任務 2，production 模式移除 Meta env token fallback
+## 2026-06-16 - Meta Business Login Sandbox SBL-12 Callback Capture Guard
+
+任務目標：
+
+- 在不進行真實 Meta token exchange、不寫入 production ConnectedAccount / Channel、不改登入按鈕、不改 env、不改 Prisma schema 的前提下，讓目前已註冊的 Instagram callback 可以安全捕捉 redacted callback evidence。
+
+修改內容：
+
+- 新增 signed sandbox callback capture state marker。
+- 在 production Meta callback route 加入極窄的 read-only sandbox guard；只有 state 是 sandbox capture marker 時才會早退回 redacted JSON。
+- 一般 production OAuth callback 沒有 sandbox marker 時，仍走原本 callback 邏輯。
+- 新增 helper 與 route targeted tests。
+- 更新 SBL-12、security、App Review、runbook、report、go/no-go、roadmap 文件。
+
+驗證：
+
+```text
+npx vitest run tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts
+Result: 2 test files passed, 9 tests passed
+
+npx vitest run tests/meta-business-login-sandbox-production-isolation.test.ts tests/meta-business-login-sandbox-sbl01-route.test.ts tests/meta-business-login-sandbox-sbl01.test.ts tests/meta-business-login-sandbox-sbl03.test.ts tests/meta-business-login-sandbox-sbl04.test.ts tests/meta-business-login-sandbox-sbl05.test.ts tests/meta-business-login-sandbox-sbl06.test.ts tests/meta-business-login-sandbox-sbl07.test.ts tests/meta-business-login-sandbox-sbl08.test.ts tests/meta-business-login-sandbox-sbl09.test.ts tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts
+Result: 13 test files passed, 53 tests passed
+
+npm run lint
+Result: passed
+
+npm run build
+Result: passed; Prisma generate reported a local Windows DLL lock and reused the existing generated client.
+
+npm test
+Result: timed out after 184 seconds before a complete result was returned.
+```
+
+Gate：
+
+- Callback capture helper: Pass
+- Signed-state route guard: Pass
+- Real callback evidence: Hold
+- Workspace linking: Hold
+- Channel sync: Hold
+- Internal beta: Hold
+- Production implementation: No-Go
+
+下一步建議 Codex Prompt：
+
+```text
+請繼續執行 Meta Business Login sandbox SBL-12 controlled browser callback capture。
+
+限制：
+1. 不要改 OAuth flow。
+2. 不要改登入按鈕。
+3. 不要改 env。
+4. 不要改 Prisma schema。
+5. 不要建立或更新 production ConnectedAccount / Channel。
+6. 不要做真實 Meta token exchange。
+7. 只能使用 signed sandbox callback capture marker 取得 redacted evidence。
+
+請根據：
+- docs/meta-business-login-sandbox-controlled-callback-capture-plan.md
+- docs/meta-business-login-sandbox-sbl12-callback-capture-test-command.md
+- docs/meta-business-login-sandbox-runbook-template.md
+- docs/meta-business-login-sandbox-experiment-report-template.md
+- docs/meta-business-login-sandbox-go-no-go-checklist.md
+
+執行一次受控瀏覽器 OAuth callback capture，僅記錄 redacted JSON evidence，不得記錄 raw code、raw state、raw nonce、full callback URL、token、secret。
+
+完成後請回填 runbook / report / go-no-go checklist / security-review / fix-roadmap / codex-session-log，並執行 git status、targeted tests、npm run lint、npm run build。
+```

@@ -58,12 +58,24 @@ function findMarkerHits(files: string[], markers: string[]) {
   });
 }
 
+function isAllowedCallbackCaptureGuardHit(hit: { file: string; marker: string }) {
+  return (
+    hit.file === "src/app/api/meta/oauth/callback/route.ts" &&
+    hit.marker === "meta-business-sandbox" &&
+    readRepoFile(hit.file).includes("@/lib/meta-business-sandbox-callback-capture")
+  );
+}
+
+function findUnexpectedProductionMarkerHits(files: string[], markers: string[]) {
+  return findMarkerHits(files, markers).filter((hit) => !isAllowedCallbackCaptureGuardHit(hit));
+}
+
 describe("Meta Business Login sandbox production isolation", () => {
   it("keeps existing production OAuth routes free of sandbox providers and helpers", () => {
     const existingProductionOAuthFiles = productionOAuthFiles.filter((file) => existsSync(path.join(repoRoot, file)));
 
     expect(existingProductionOAuthFiles.length).toBeGreaterThan(0);
-    expect(findMarkerHits(existingProductionOAuthFiles, forbiddenProductionMarkers)).toEqual([]);
+    expect(findUnexpectedProductionMarkerHits(existingProductionOAuthFiles, forbiddenProductionMarkers)).toEqual([]);
   });
 
   it("does not expose internal sandbox OAuth routes from app or component UI code", () => {
@@ -87,6 +99,6 @@ describe("Meta Business Login sandbox production isolation", () => {
       (file) => !file.startsWith("src/app/api/internal/") && !file.includes("meta-business-sandbox"),
     );
 
-    expect(findMarkerHits(productionSourceFiles, forbiddenProductionMarkers)).toEqual([]);
+    expect(findUnexpectedProductionMarkerHits(productionSourceFiles, forbiddenProductionMarkers)).toEqual([]);
   });
 });

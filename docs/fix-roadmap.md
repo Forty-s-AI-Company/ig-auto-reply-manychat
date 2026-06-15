@@ -557,3 +557,24 @@ npm run load:test
 - 先列出風險
 - 完成後跑 npm run lint、npm run build、npm test
 ```
+## 2026-06-16 - Meta Business Login Sandbox SBL-12 Callback Capture Guard
+
+Completed:
+
+- Added signed-state sandbox callback capture marker support.
+- Added read-only sandbox callback capture guard to the Meta OAuth callback route.
+- Added route-level regression test proving non-sandbox invalid-state callbacks still use the existing redirect path.
+- Added callback capture test command documentation.
+
+Still blocked:
+
+- Real callback evidence has not been captured yet.
+- Workspace linking and channel sync remain dry-run only.
+- Internal beta remains Hold.
+- Production implementation remains No-Go.
+
+Next best step:
+
+```text
+Run one controlled browser OAuth attempt with the sandbox callback capture state marker, capture only the redacted JSON evidence, then update the runbook, experiment report, go/no-go checklist, security review, and session log.
+```

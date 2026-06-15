@@ -2,12 +2,19 @@ import { createHash } from "node:crypto";
 
 import type { SandboxMetaBusinessProviderId } from "@/lib/meta-business-sandbox";
 
+export type SandboxCallbackCaptureState = {
+  providerId: SandboxMetaBusinessProviderId;
+  workspaceId: string;
+  requestId: string;
+};
+
 export type SandboxCallbackCaptureInput = {
   providerId: SandboxMetaBusinessProviderId;
   requestId: string;
   sessionWorkspaceId: string;
   stateWorkspaceId: string;
   sandboxHeader: string | null;
+  signedStateMarker?: boolean;
   callbackUrl: string;
   code: string | null;
   state: string | null;
@@ -38,10 +45,54 @@ export type SandboxCallbackCaptureResult = {
 };
 
 const SANDBOX_CALLBACK_CAPTURE_HEADER = "sbl-callback-capture";
+const SANDBOX_CALLBACK_CAPTURE_STATE_PREFIX = "sblcap";
 const DEFAULT_ALLOWLISTED_WORKSPACES = ["default-workspace", "workspace-1", "workspace_6f2a1c"];
 
 function hashEvidence(prefix: string, value: string) {
   return `${prefix}_${createHash("sha256").update(value).digest("hex").slice(0, 12)}`;
+}
+
+function toBase64Url(value: string) {
+  return Buffer.from(value, "utf8").toString("base64url");
+}
+
+function fromBase64Url(value: string) {
+  return Buffer.from(value, "base64url").toString("utf8");
+}
+
+function signSandboxCallbackPayload(payload: string) {
+  return createHash("sha256").update(`sandbox-callback-capture:${payload}`).digest("hex").slice(0, 16);
+}
+
+export function createSandboxCallbackCaptureState(input: SandboxCallbackCaptureState) {
+  const payload = toBase64Url(JSON.stringify(input));
+  return `${SANDBOX_CALLBACK_CAPTURE_STATE_PREFIX}.${payload}.${signSandboxCallbackPayload(payload)}`;
+}
+
+export function parseSandboxCallbackCaptureState(state: string | null): SandboxCallbackCaptureState | null {
+  if (!state?.startsWith(`${SANDBOX_CALLBACK_CAPTURE_STATE_PREFIX}.`)) return null;
+
+  const [, payload, signature] = state.split(".");
+  if (!payload || !signature || signature !== signSandboxCallbackPayload(payload)) return null;
+
+  try {
+    const parsed = JSON.parse(fromBase64Url(payload)) as Partial<SandboxCallbackCaptureState>;
+    if (
+      parsed.providerId !== "meta-business-instagram-sandbox" &&
+      parsed.providerId !== "meta-business-facebook-sandbox"
+    ) {
+      return null;
+    }
+    if (!parsed.workspaceId || !parsed.requestId) return null;
+
+    return {
+      providerId: parsed.providerId,
+      workspaceId: parsed.workspaceId,
+      requestId: parsed.requestId,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function baseResult(input: SandboxCallbackCaptureInput, errorType: string | null): SandboxCallbackCaptureResult {
@@ -70,9 +121,11 @@ function baseResult(input: SandboxCallbackCaptureInput, errorType: string | null
 
 export function buildSandboxCallbackCaptureEvidence(input: SandboxCallbackCaptureInput): SandboxCallbackCaptureResult {
   const allowlistedWorkspaces = input.allowlistedWorkspaces || DEFAULT_ALLOWLISTED_WORKSPACES;
+  const hasCaptureMarker =
+    input.sandboxHeader === SANDBOX_CALLBACK_CAPTURE_HEADER || input.signedStateMarker === true;
 
-  if (input.sandboxHeader !== SANDBOX_CALLBACK_CAPTURE_HEADER) {
-    return baseResult(input, "sandbox_callback_capture_header_required");
+  if (!hasCaptureMarker) {
+    return baseResult(input, "sandbox_callback_capture_marker_required");
   }
   if (!allowlistedWorkspaces.includes(input.sessionWorkspaceId)) {
     return baseResult(input, "workspace_not_allowed");

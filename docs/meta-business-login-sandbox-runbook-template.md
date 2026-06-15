@@ -651,3 +651,38 @@ Final decision:
 
 完成後請執行 git status、npm run lint、npm run build。npm test 可視情況略過，但要說明原因。
 ```
+## 2026-06-16 - SBL-12 Signed-State Callback Capture Runbook Fields
+
+When running the next browser-based OAuth attempt, record only redacted callback evidence.
+
+Required fields:
+
+```text
+Run id:
+Provider id: meta-business-instagram-sandbox / meta-business-facebook-sandbox
+Workspace marker: workspace_[hash only]
+Request marker: req_[hash only]
+Callback capture mode: sandbox_callback_capture
+Response status: success / error
+Error type: null / redacted_error_type
+Exchange attempted: false
+Production writes:
+  connectedAccount: false
+  channel: false
+  webhook: false
+  channelSync: false
+  tokenRefresh: false
+Raw code present: Pass / Fail
+Raw state present: Pass / Fail
+Full callback URL present: Pass / Fail
+```
+
+Do not paste:
+
+- raw authorization code
+- raw state
+- raw nonce
+- full callback URL
+- access token
+- app secret
+- client secret

@@ -586,3 +586,35 @@ Target review date:
 
 完成後請執行 git status、npm run lint、npm run build。npm test 可視情況略過，但要說明原因。
 ```
+## 2026-06-16 - SBL-12 Callback Evidence Report Slot
+
+Use this slot only after the browser produces a sandbox callback capture response.
+
+```text
+Callback evidence status: Not captured / Captured / Error
+Observed Meta dialog before callback:
+Captured response status:
+Captured error type:
+Redaction result:
+  raw code absent: Pass / Fail
+  raw state absent: Pass / Fail
+  full callback URL absent: Pass / Fail
+  token / secret absent: Pass / Fail
+Production write guard:
+  connectedAccount: false
+  channel: false
+  webhook: false
+  channelSync: false
+  tokenRefresh: false
+ManyChat UX proximity after callback: Close / Partially close / Not close / Unknown
+Go / hold / no-go recommendation:
+```
+
+Current status before real callback capture:
+
+```text
+Callback evidence status: Not captured
+Recommendation: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
