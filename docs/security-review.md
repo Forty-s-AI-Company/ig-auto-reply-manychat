@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login final redaction search execution report template security note
+
+Scope: documentation-only final redaction search execution report template.
+
+- Added `docs/meta-business-login-final-redaction-search-execution-report-template.md`.
+- The template defines final searches across App Review documents, recordings, screenshots, test output, logs, audit records, browser console evidence, network exports, and the final upload package.
+- Required searches cover token, authorization code, secret, raw state, raw nonce, full callback URL, unmasked Meta asset ID, and real customer data exposure.
+- The template explicitly forbids copying raw sensitive values into the report and keeps internal beta at Hold until all findings are cleaned, excluded, or accepted as allowed false positives.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login final reviewer recording security note
 
 Scope: documentation-only reviewer recording shot list.

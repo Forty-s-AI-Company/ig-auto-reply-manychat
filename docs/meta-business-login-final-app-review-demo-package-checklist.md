@@ -54,6 +54,12 @@ Latest reviewer recording shot list:
 docs/meta-business-login-final-reviewer-recording-shot-list.md
 ```
 
+Latest redaction search execution report template:
+
+```text
+docs/meta-business-login-final-redaction-search-execution-report-template.md
+```
+
 Current permission decision:
 
 ```text
@@ -62,6 +68,7 @@ Core Instagram Business Login scopes: keep as candidate
 Content publish / insights: defer or remove until product proof exists
 Facebook Login for Business scopes: Hold until the selected flow and asset proof are reconciled
 Reviewer recording shot list: Draft complete; final recording still Hold
+Final redaction search execution report template: Ready; execution still Hold
 ```
 
 ## 1. Reviewer Demo Recording Checklist

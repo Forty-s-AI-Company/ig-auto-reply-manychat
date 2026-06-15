@@ -1,5 +1,16 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login final redaction search execution report template
+
+Status: redaction search execution report template documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-final-redaction-search-execution-report-template.md`.
+- Documented the final search scope for App Review documents, reviewer recordings, screenshots, test output, server logs, audit records, browser console evidence, network exports, and final upload package.
+- Documented required searches for token, authorization code, secret, raw state, raw nonce, full callback URL, and unmasked Meta asset IDs.
+- Documented allowed false positive rules, finding records, cleanup and retest flow, and internal beta Hold release decision.
+- Internal beta remains Hold until the template is executed against the real final package and all findings are resolved.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login final reviewer recording shot list
 
 Status: reviewer recording shot list documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.

@@ -1,5 +1,75 @@
 # Codex Session Log
 
+## 2026-06-16 - Meta Business Login Final Redaction Search Execution Report Template
+
+Task:
+
+- Create the final redaction search execution report template based on the reviewer recording shot list, permission usage proof matrix, and final App Review demo package checklist.
+- Only add / update documentation.
+- Do not modify product code, OAuth flow, callback route, login button, env, or Prisma schema.
+
+Files changed:
+
+- `docs/meta-business-login-final-redaction-search-execution-report-template.md`
+- `docs/meta-business-login-final-app-review-demo-package-checklist.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Decision:
+
+```text
+Final redaction search execution report template: Ready
+Final redaction search executed: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+Validation:
+
+```text
+git status --short --branch
+Result: master had docs-only working tree changes before commit.
+
+git diff --check
+Result: passed with Windows line-ending warnings only.
+
+npx vitest run tests/meta-business-login-sandbox-sbl08.test.ts tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts tests/meta-business-login-sandbox-sbl13-workspace-linking-sync.test.ts
+Result: 4 test files passed, 12 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Existing Windows Prisma engine DLL lock fallback appeared and reused the existing generated client.
+
+npm test
+Result: not run locally because this task changed documentation only; targeted SBL tests plus lint/build passed.
+```
+
+Next suggested Codex Prompt:
+
+```text
+請根據 docs/meta-business-login-final-redaction-search-execution-report-template.md、docs/meta-business-login-final-reviewer-recording-shot-list.md 與 docs/meta-business-login-final-permission-usage-proof-matrix.md，建立 Meta Business Login final App Review package assembly checklist。
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+檔案路徑：
+docs/meta-business-login-final-app-review-package-assembly-checklist.md
+
+內容需包含：
+1. final reviewer recording、screenshots、permission proof、redaction report、test asset proof 的打包清單
+2. 每個檔案進 App Review package 前的 gate
+3. 不可打包的檔案類型與敏感資料規則
+4. Meta Dashboard scope reconciliation 檢查
+5. internal beta 是否可解除 Hold 的條件
+6. production implementation 仍不可開始的原因
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```
+
 ## 2026-06-16 - Meta Business Login Final Reviewer Recording Shot List
 
 Task:
