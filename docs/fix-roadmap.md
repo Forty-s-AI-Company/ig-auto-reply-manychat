@@ -1,5 +1,16 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login final reviewer recording shot list
+
+Status: reviewer recording shot list documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-final-reviewer-recording-shot-list.md`.
+- Mapped each current or candidate Meta / Instagram permission to required reviewer recording shots and product screens.
+- Documented recording segments for workspace entry, social connection, account selection, consent, redacted callback evidence, workspace linking dry-run, channel sync dry-run, channel detail, Inbox/message proof, comment automation proof, and Business / Page / IG asset selection proof.
+- Documented values that must be masked or excluded from the recording package.
+- Internal beta remains Hold until final recording, redaction search, scope reconciliation, access controls, rollback proof, and product owner sign-off are complete.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login final permission usage proof matrix
 
 Status: permission matrix documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.

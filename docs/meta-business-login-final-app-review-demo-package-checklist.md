@@ -48,6 +48,12 @@ Latest permission proof matrix:
 docs/meta-business-login-final-permission-usage-proof-matrix.md
 ```
 
+Latest reviewer recording shot list:
+
+```text
+docs/meta-business-login-final-reviewer-recording-shot-list.md
+```
+
 Current permission decision:
 
 ```text
@@ -55,6 +61,7 @@ Permission usage proof matrix: Draft complete
 Core Instagram Business Login scopes: keep as candidate
 Content publish / insights: defer or remove until product proof exists
 Facebook Login for Business scopes: Hold until the selected flow and asset proof are reconciled
+Reviewer recording shot list: Draft complete; final recording still Hold
 ```
 
 ## 1. Reviewer Demo Recording Checklist

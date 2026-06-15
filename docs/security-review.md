@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login final reviewer recording security note
+
+Scope: documentation-only reviewer recording shot list.
+
+- Added `docs/meta-business-login-final-reviewer-recording-shot-list.md`.
+- The shot list defines exactly which screens may be recorded for permission proof and which sensitive values must be masked or excluded.
+- The recording plan requires redacted callback evidence only, dry-run workspace linking / channel sync evidence only, and no raw authorization code, raw state, raw nonce, full callback URL, token, secret, browser storage, or unmasked Meta asset IDs.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login final permission proof matrix security note
 
 Scope: documentation-only permission proof matrix.

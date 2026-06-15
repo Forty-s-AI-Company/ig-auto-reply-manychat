@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Final Reviewer Recording Shot List Status
+
+Status: reviewer recording shot list documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-reviewer-recording-shot-list.md
+```
+
+Current App Review implication:
+
+- Reviewer recording segments are now mapped to permissions, product screens, account selection, consent, redacted callback evidence, workspace linking dry-run, and channel sync dry-run.
+- The recording must not show raw authorization code, raw state, raw nonce, full callback URL, token, secret, cookies, localStorage, sessionStorage, or unmasked Business / Page / IG IDs.
+- Internal beta remains Hold until the recording is captured, final redaction search passes, scopes are reconciled with Meta Dashboard, and access / rollback sign-off is complete.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Final Permission Usage Proof Matrix Status
 
 Status: permission matrix documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
