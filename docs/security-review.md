@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-15 - Meta Business Login sandbox browser evidence security note
+
+Scope: browser-based external evidence attempt.
+
+- Added `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`.
+- The in-app Browser reached Facebook login for Meta Developers but no credentials, OTP, token, authorization code, app secret, raw state, raw nonce, full callback URL, or browser storage was read or entered.
+- Local internal sandbox routes returned 401 without an authenticated admin session, which confirms the internal route guard remains active.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production ConnectedAccount / Channel write paths were not changed.
+
 ## 2026-06-15 - Meta Business Login sandbox external evidence handoff security note
 
 Scope: Chrome-based external evidence collection attempt.

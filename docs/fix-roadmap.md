@@ -1,5 +1,15 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login sandbox browser evidence run
+
+Status: Hold at Facebook login.
+
+- Added `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`.
+- In-app Browser reached Facebook login for Meta Developers but did not have an authenticated Meta developer session.
+- Local route guard evidence passed: unauthenticated internal sandbox route calls returned 401 dry-run errors.
+- No credentials, OTP, token, authorization code, app secret, raw state, raw nonce, full callback URL, or browser storage was read or entered.
+- Internal beta and production implementation remain No-Go until real Meta dialog, account selection, callback, and App Review evidence is collected.
+
 ## 2026-06-15 - Meta Business Login sandbox external evidence handoff
 
 Status: Hold, Chrome extension UI blocker.

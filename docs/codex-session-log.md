@@ -1,5 +1,33 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login sandbox browser evidence run
+
+Task:
+
+- Continue into browser-based external evidence collection.
+- Attempt to open Meta Developers and record whether Meta App Dashboard / account selection evidence can be collected.
+- Do not enter credentials, OTP, token, authorization code, app secret, raw state, raw nonce, full callback URL, or inspect browser storage.
+
+Files changed:
+
+- `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-business-login-sandbox-runbook-template.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/codex-session-log.md`
+
+Validation / observations:
+
+- Local dev server health check: passed, status 200.
+- In-app Browser could not navigate directly to the internal API route due `net::ERR_BLOCKED_BY_CLIENT`.
+- HTTP guard check for internal authorize route: 401 dry-run `unauthorized` without authenticated admin session.
+- HTTP guard check for internal callback route with sandbox header: 401 dry-run `unauthorized` without authenticated admin session.
+- Meta Developers redirected to Facebook login; no authenticated Meta developer session was available.
+- No Meta dialog, account selection UX, real callback, reviewer demo, or App Dashboard evidence was captured.
+
 ## 2026-06-15 - Meta Business Login sandbox external evidence retry blocker
 
 Task:

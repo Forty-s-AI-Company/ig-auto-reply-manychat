@@ -1,5 +1,31 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## 2026-06-15 - Browser Evidence Run Go/No-Go Update
+
+Status: Hold / No-Go for external evidence.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md
+```
+
+Observed:
+
+- Local dev server health check passed.
+- Internal sandbox routes returned `401 unauthorized` without an authenticated admin session.
+- In-app Browser reached Facebook login for Meta Developers.
+- No Meta App Dashboard, Facebook Login for Business dialog, Instagram Business Login dialog, Business / Page / IG account selection UX, real callback payload, or reviewer demo evidence was captured.
+
+Decision:
+
+```text
+Local route guard: Pass
+External Meta evidence: Hold
+Internal beta: No-Go
+Production implementation: No-Go
+```
+
 ## 2026-06-15 - SBL-06 To SBL-08 Go/No-Go Update
 
 Status: targeted helper tests passed.

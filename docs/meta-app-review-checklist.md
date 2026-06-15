@@ -1,5 +1,15 @@
 # Meta App Review Checklist
 
+## 2026-06-15 - Meta Business Login sandbox browser evidence run
+
+Status: Hold.
+
+- Browser evidence file: `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`.
+- In-app Browser reached the Facebook login page for Meta Developers but did not have an authenticated Meta developer session.
+- No Meta App Dashboard, Facebook Login for Business dialog, Instagram Business Login dialog, Business / Page / IG account selection UX, real callback evidence, or reviewer demo recording was captured.
+- No credentials, OTP, token, authorization code, app secret, raw state, raw nonce, full callback URL, or browser storage was read or entered.
+- Internal beta and production implementation remain blocked.
+
 ## 2026-06-15 - Meta Business Login sandbox external evidence handoff
 
 Status: Hold.

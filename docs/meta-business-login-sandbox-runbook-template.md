@@ -1,5 +1,24 @@
 # Meta Business Login Sandbox Runbook Template
 
+## 2026-06-15 - Browser Evidence Run Record
+
+Status: Hold at Meta login.
+
+| Field | Value |
+| --- | --- |
+| Run ID | `browser_evidence_20260615_001` |
+| Evidence file | `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md` |
+| Browser surface | In-app Browser |
+| Chrome automation | Unavailable: missing Chrome plugin `scripts/browser-client.mjs` |
+| Local dev server | `http://localhost:3041`, health check 200 |
+| Local internal route result | 401 unauthorized without authenticated admin session |
+| Meta Developers result | Redirected to Facebook login |
+| Account selection evidence | Not captured |
+| Credentials / OTP entered | No |
+| Raw token / code / secret recorded | No |
+| Internal beta | No-Go |
+| Production implementation | No-Go |
+
 ## 2026-06-15 - SBL-06 To SBL-08 Helper Run Record
 
 Status: completed for targeted helper tests.

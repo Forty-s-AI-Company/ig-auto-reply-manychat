@@ -176,6 +176,14 @@ Missing evidence:
 - Permission usage evidence.
 - Rollback evidence.
 
+Browser evidence update:
+
+```text
+docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md
+```
+
+The in-app Browser reached the Facebook login screen for Meta Developers but did not have an authenticated Meta session. No credentials, OTP, token, authorization code, app secret, raw state, raw nonce, callback URL, or browser storage were read or entered. External Meta dialog and account selection evidence remain missing.
+
 ## External Evidence Handoff Update
 
 Chrome was opened to `https://developers.facebook.com/apps/` and reached the Meta Developers Apps page title `所有應用程式 - Meta for Developers`.
