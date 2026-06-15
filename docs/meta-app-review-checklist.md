@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Evidence Execution Report Template Status
+
+Status: evidence execution report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-evidence-execution-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta evidence execution now has a report template for run metadata, package assembly result, redaction report result, reviewer recording / screenshots result, permission proof / test asset proof result, access-control result, rollback / fallback result, production write guard, token exchange guard, and final go / hold decision.
+- Internal beta remains Hold until this report is executed with every gate recorded as Pass and product owner sign-off is complete.
+- Supabase migration / `db push` remains out of scope.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Internal Beta Evidence Collection Runbook Status
 
 Status: evidence collection runbook documented / internal beta Hold / production implementation No-Go.

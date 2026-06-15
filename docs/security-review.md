@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta evidence execution report template security note
+
+Scope: documentation-only internal beta evidence execution report template.
+
+- Added `docs/meta-business-login-internal-beta-evidence-execution-report-template.md`.
+- The report template records package assembly, redaction report, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, token exchange guard, and final internal beta go / hold decisions.
+- The template forbids copying raw token, authorization code, secret, raw state, raw nonce, full callback URL, credential, OTP, cookie, browser storage, or real customer data into the report.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta evidence collection security note
 
 Scope: documentation-only internal beta evidence collection runbook.
