@@ -1,5 +1,30 @@
 # Codex Session Log
 
+## 2026-06-16 - Meta Business Login sandbox next controlled callback prompt
+
+Task:
+
+- Answer why the next suggested prompt was missing.
+- Add a copyable next-step prompt for controlled callback capture preparation.
+- Keep the next step blocked from blindly retrying OAuth against the production callback.
+
+Files changed:
+
+- `docs/meta-business-login-sandbox-next-controlled-callback-prompt.md`
+- `docs/fix-roadmap.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/security-review.md`
+- `docs/codex-session-log.md`
+
+Decision:
+
+- The next safe task is controlled callback capture design and guard preparation.
+- Do not retry the Instagram Business Login OAuth URL until sandbox-only callback capture or equivalent production-safe controls exist.
+- Internal beta remains Hold.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Meta Business Login sandbox OAuth profile selection
 
 Task:

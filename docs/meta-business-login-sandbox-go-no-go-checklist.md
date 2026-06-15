@@ -1,5 +1,25 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## 2026-06-16 - Next Controlled Callback Prompt Update
+
+Status: Hold until callback capture guard exists.
+
+Prompt file:
+
+```text
+docs/meta-business-login-sandbox-next-controlled-callback-prompt.md
+```
+
+Decision:
+
+```text
+Do not blindly retry OAuth URL: Hold
+Controlled callback capture design: Required
+Sandbox-only callback guard: Required before final consent
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-16 - OAuth Profile Selection Go/No-Go Update
 
 Status: Partial Pass / Hold before callback.

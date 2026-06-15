@@ -1,5 +1,14 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Meta Business Login sandbox controlled callback prompt
+
+Status: documented next step.
+
+- Added `docs/meta-business-login-sandbox-next-controlled-callback-prompt.md`.
+- Callback evidence is still missing and must not be collected by blindly retrying the OAuth URL against the production callback.
+- Before App Review readiness, callback capture must prove redaction, state / workspace validation, no raw code storage, no unintended token exchange, and no unintended ConnectedAccount / Channel writes.
+- Internal beta remains Hold; production implementation remains No-Go.
+
 ## 2026-06-16 - Meta Business Login sandbox OAuth profile selection evidence
 
 Status: Partial Pass / Hold.

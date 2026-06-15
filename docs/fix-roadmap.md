@@ -1,5 +1,14 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-16 - Meta Business Login sandbox next controlled callback prompt
+
+Status: documented next step.
+
+- Added `docs/meta-business-login-sandbox-next-controlled-callback-prompt.md`.
+- The next safe step is controlled callback capture preparation, not blindly reopening the Instagram Business Login OAuth URL.
+- The prompt requires sandbox-only capture design, redaction, state / workspace validation, and production write guards before any callback evidence run.
+- Internal beta remains Hold. Production implementation remains No-Go.
+
 ## 2026-06-16 - Meta Business Login sandbox OAuth profile selection evidence
 
 Status: Partial Pass / Hold before callback.

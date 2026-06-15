@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login sandbox controlled callback prompt security note
+
+Scope: next-step prompt for callback evidence safety.
+
+- Added `docs/meta-business-login-sandbox-next-controlled-callback-prompt.md`.
+- The prompt explicitly blocks blind OAuth retry before sandbox-only callback capture, redaction, state / workspace validation, and production write guards exist.
+- It requires no raw token, authorization code, secret, raw state, raw nonce, full callback URL, cookie, localStorage, or sessionStorage in logs, docs, audit, response, or snapshots.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login sandbox OAuth profile selection security note
 
 Scope: Instagram Business Login profile selection continuation.

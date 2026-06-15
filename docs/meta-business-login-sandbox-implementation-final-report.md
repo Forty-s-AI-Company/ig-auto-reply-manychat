@@ -200,6 +200,14 @@ docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md
 
 The Instagram Business Login flow showed account selection, and `carry.digital.nomad` was selected as the test profile. Instagram then loaded the selected profile's home page instead of showing a final OAuth consent screen or redirecting to callback. Callback evidence, workspace linking, and channel sync evidence remain missing.
 
+Next prompt update:
+
+```text
+docs/meta-business-login-sandbox-next-controlled-callback-prompt.md
+```
+
+The next safe step is controlled callback capture preparation. Do not blindly retry the OAuth URL until sandbox-only callback capture, redaction, state / workspace validation, and production write guards are designed and verified.
+
 ## External Evidence Handoff Update
 
 Chrome was opened to `https://developers.facebook.com/apps/` and reached the Meta Developers Apps page title `所有應用程式 - Meta for Developers`.
