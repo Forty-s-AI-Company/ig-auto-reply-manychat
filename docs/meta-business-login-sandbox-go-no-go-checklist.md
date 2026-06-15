@@ -1,5 +1,36 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## 2026-06-16 - OAuth Profile Selection Go/No-Go Update
+
+Status: Partial Pass / Hold before callback.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md
+```
+
+Observed:
+
+- Instagram Business Login showed a forced login screen.
+- Clicking `使用 Facebook 帳號登入` showed IG profile account selection.
+- Available choices included `ling.yun.energy`, `carry.digital.nomad`, and `使用其他個人檔案`.
+- `carry.digital.nomad` was selected.
+- Instagram loaded the selected profile's home page.
+- No final OAuth consent screen or callback URL with `code` was observed.
+
+Decision:
+
+```text
+Profile account selection UX: Pass
+Selected test profile evidence: Pass
+Callback evidence: Hold
+Workspace linking: Hold
+Channel sync: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-15 - Authenticated Browser Evidence Go/No-Go Update
 
 Status: Partial Pass / Hold.

@@ -192,6 +192,14 @@ docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.m
 
 After the browser was authenticated, InboxPilot App Dashboard evidence, Instagram API setup evidence, Instagram Business Login URL evidence, business login settings, permission status, and partial account selection UX evidence were captured. Callback evidence remains missing because the run stopped before selecting a profile and before final OAuth authorization.
 
+OAuth profile selection update:
+
+```text
+docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md
+```
+
+The Instagram Business Login flow showed account selection, and `carry.digital.nomad` was selected as the test profile. Instagram then loaded the selected profile's home page instead of showing a final OAuth consent screen or redirecting to callback. Callback evidence, workspace linking, and channel sync evidence remain missing.
+
 ## External Evidence Handoff Update
 
 Chrome was opened to `https://developers.facebook.com/apps/` and reached the Meta Developers Apps page title `所有應用程式 - Meta for Developers`.

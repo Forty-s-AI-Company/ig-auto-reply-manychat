@@ -1,5 +1,25 @@
 # Meta Business Login Sandbox Runbook Template
 
+## 2026-06-16 - OAuth Profile Selection Run Record
+
+Status: Partial Pass / Hold before callback.
+
+| Field | Value |
+| --- | --- |
+| Run ID | `oauth_profile_selection_20260616_001` |
+| Evidence file | `docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md` |
+| Browser surface | In-app Browser |
+| Starting surface | Instagram Business Login forced login page |
+| Account selection UX | Pass |
+| Available profiles | `ling.yun.energy`, `carry.digital.nomad`, `使用其他個人檔案` |
+| Selected profile | `carry.digital.nomad` |
+| Result after selection | Instagram home for selected profile |
+| OAuth consent screen | Not shown |
+| Callback evidence | Not captured |
+| Raw token / code / secret recorded | No |
+| Internal beta | Hold |
+| Production implementation | No-Go |
+
 ## 2026-06-15 - Authenticated Browser Evidence Run Record
 
 Status: Partial Pass / Hold before account authorization.

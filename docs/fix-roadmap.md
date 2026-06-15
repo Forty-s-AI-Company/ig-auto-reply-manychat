@@ -1,5 +1,15 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-16 - Meta Business Login sandbox OAuth profile selection evidence
+
+Status: Partial Pass / Hold before callback.
+
+- Added `docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md`.
+- Continued the Instagram Business Login flow to profile selection and selected `carry.digital.nomad`.
+- Account selection UX is now confirmed: two profiles plus "use another profile" were shown.
+- Final OAuth consent and callback evidence remain missing because Instagram loaded the selected profile home page after selection.
+- Next safe step is not a blind OAuth retry; it requires sandbox callback capture or explicit production-safe test callback controls.
+
 ## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
 
 Status: Partial Pass / Hold.

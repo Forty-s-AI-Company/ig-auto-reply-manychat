@@ -1,5 +1,16 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Meta Business Login sandbox OAuth profile selection evidence
+
+Status: Partial Pass / Hold.
+
+- Evidence file: `docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md`.
+- Instagram Business Login showed profile account selection after Facebook login.
+- Available choices included `ling.yun.energy`, `carry.digital.nomad`, and `使用其他個人檔案`.
+- `carry.digital.nomad` was selected, and Instagram loaded the selected profile's home page.
+- Final OAuth consent, callback payload, workspace linking, channel sync, reviewer demo recording, and App Review submission evidence remain missing.
+- Internal beta remains Hold; production implementation remains No-Go.
+
 ## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
 
 Status: Partial Pass / Hold.

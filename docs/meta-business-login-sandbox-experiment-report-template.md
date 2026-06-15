@@ -1,5 +1,26 @@
 # Meta Business Login Sandbox Experiment Report Template
 
+## 2026-06-16 - OAuth Profile Selection Result Summary
+
+Status: Partial Pass / Hold before callback.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md
+```
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Forced login | Pass | Instagram login shown with `force_authentication` |
+| Account selection UX | Pass | `ling.yun.energy`, `carry.digital.nomad`, and "use another profile" shown |
+| Selected profile | Pass | `carry.digital.nomad` |
+| OAuth consent screen | Hold | Not shown after profile selection |
+| Callback payload | Hold | No `code` callback observed |
+| Workspace linking | Hold | Not exercised |
+| Channel sync | Hold | Not exercised |
+| Production implementation | No-Go | Callback and App Review gates still missing |
+
 ## 2026-06-15 - Authenticated Browser Evidence Result Summary
 
 Status: Partial Pass / Hold.

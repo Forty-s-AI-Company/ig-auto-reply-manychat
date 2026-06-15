@@ -1,5 +1,32 @@
 # Codex Session Log
 
+## 2026-06-16 - Meta Business Login sandbox OAuth profile selection
+
+Task:
+
+- Continue from the Instagram Business Login forced login page in the in-app Browser.
+- Observe account selection behavior and stop before any production callback or final OAuth authorization.
+
+Files changed:
+
+- `docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-business-login-sandbox-runbook-template.md`
+- `docs/meta-business-login-sandbox-experiment-report-template.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Validation / observations:
+
+- Instagram Business Login forced login screen was visible.
+- Clicking `使用 Facebook 帳號登入` showed IG profile selection with `ling.yun.energy`, `carry.digital.nomad`, and `使用其他個人檔案`.
+- Selected `carry.digital.nomad`.
+- Instagram loaded the selected profile's home page.
+- No final OAuth consent screen, authorization code callback, production ConnectedAccount write, production Channel write, webhook registration, or channel sync was intentionally triggered.
+
 ## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
 
 Task:
