@@ -1,5 +1,197 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login sandbox production isolation regression
+
+Status: targeted production isolation test passed.
+
+- Added `tests/meta-business-login-sandbox-production-isolation.test.ts`.
+- Added `docs/meta-business-login-sandbox-production-isolation-test-command.md`.
+- The test checks that existing production OAuth routes, UI entry points, and Prisma schema remain free of sandbox provider ids, sandbox helper references, and `/api/internal/oauth` exposure.
+- Existing production OAuth flow, callback routes, login buttons, env, Prisma schema, token storage, and production ConnectedAccount / Channel writes remain unchanged.
+
+## 2026-06-15 - Meta Business Login sandbox route helper integration
+
+Status: targeted route integration tests passed.
+
+- Integrated internal sandbox routes with state / nonce redacted evidence, code exchange dry-run classifier, dry-run callback evidence, workspace allowlist spoofing guard, and production write guard metadata.
+- Updated SBL-01 route tests to verify helper-chain evidence on authorize and callback responses.
+- Existing production OAuth flow, existing callback routes, login buttons, env, Prisma schema, token storage, and production ConnectedAccount / Channel writes remain unchanged.
+
+## 2026-06-15 - Meta Business Login sandbox implementation final report
+
+Status: sandbox coding complete, production blocked.
+
+- Added `docs/meta-business-login-sandbox-implementation-final-report.md`.
+- Sandbox coding is complete for internal-only dry-run scaffold, including route skeleton, state / nonce helpers, code exchange safe stub, redaction helper, dry-run payload builder, workspace allowlist guard, production write guard, and targeted tests.
+- Internal beta and production implementation remain No-Go until real Meta sandbox evidence and App Review gates pass.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-06 to SBL-08 helpers
+
+Status: targeted helper tests passed.
+
+- Added SBL-06 dry-run callback payload builder, SBL-07 workspace allowlist guard, and SBL-08 production write guard.
+- Added targeted tests and `docs/meta-business-login-sandbox-sbl06-08-test-command.md`.
+- Existing OAuth flow, callback routes, login buttons, env, Prisma schema, production ConnectedAccount, and production Channel records were intentionally not changed.
+- Sandbox helper set is now ready for SBL-10 final runbook / report / go-no-go consolidation.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-05 redacted logging helper
+
+Status: targeted helper tests passed.
+
+- Added `src/lib/meta-business-sandbox-redaction.ts` with sandbox-only payload redaction, Meta asset id masking, audit event creation, and unsafe payload detection.
+- Added `tests/meta-business-login-sandbox-sbl05.test.ts` and `docs/meta-business-login-sandbox-sbl05-test-command.md`.
+- Production audit behavior, production logging format, existing OAuth routes, existing callback routes, env, and Prisma schema were intentionally not changed.
+- Next step: SBL-06 dry-run callback payload builder.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-04 code exchange helper
+
+Status: targeted helper tests passed.
+
+- Added `src/lib/meta-business-sandbox-code-exchange.ts` with sandbox-only code exchange classification.
+- The helper skips token exchange by default, redacts authorization code / token output, and classifies safe error types.
+- Added `tests/meta-business-login-sandbox-sbl04.test.ts` and `docs/meta-business-login-sandbox-sbl04-test-command.md`.
+- Real Meta token exchange, env changes, token storage, existing OAuth routes, existing callbacks, Prisma schema, and production writes remain blocked.
+- Next step: SBL-05 redacted logging helper.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-03 state nonce helpers
+
+Status: targeted helper tests passed.
+
+- Added `src/lib/meta-business-sandbox-state.ts` with sandbox-only state / nonce creation, hash-only records, TTL validation, single-use replay protection, provider / workspace / user binding, and redacted audit output.
+- Added `tests/meta-business-login-sandbox-sbl03.test.ts` and `docs/meta-business-login-sandbox-sbl03-test-command.md`.
+- Existing OAuth state helpers, callback routes, cookies, env, Prisma schema, and production token handling were intentionally not changed.
+- Next step: SBL-04 server-side code exchange helper as safe stub / classifier.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-01 internal route skeleton
+
+Status: targeted skeleton tests passed.
+
+- Added sandbox-only internal authorize and callback route skeletons under `/api/internal/oauth/[provider]`.
+- Added `src/lib/meta-business-sandbox.ts` with internal-only guards, sandbox provider validation, workspace allowlist validation, redacted dry-run authorize payloads, redacted dry-run callback payloads, and production write guard checks.
+- Added SBL-01 helper and route tests plus `docs/meta-business-login-sandbox-sbl01-test-command.md`.
+- Existing OAuth routes, existing callback routes, login buttons, env, Prisma schema, and production ConnectedAccount / Channel writes were intentionally not changed.
+- Next step: SBL-03 state / nonce helpers.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 test scaffold coding
+
+Status: targeted scaffold tests passed.
+
+- Added SBL-09 test scaffold under `tests/`, including fixtures, redaction assertion helper, dry-run callback payload validation, raw URL rejection, and production write guard tests.
+- Added `docs/meta-business-login-sandbox-sbl09-test-command.md` and backfilled runbook, experiment report, go/no-go checklist, coding risk test plan, security review, Meta App Review checklist, and session log.
+- Decision: SBL-01 internal-only route skeleton may start next under internal-only / dry-run-first / no-production-write constraints; internal beta and production implementation remain No-Go.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 coding readiness checklist
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-sbl09-coding-readiness-checklist.md` to decide whether SBL-09 sandbox test scaffold coding can begin.
+- Decision: SBL-09 is Go for sandbox test scaffold coding only; SBL-01 remains Hold, and internal beta / production implementation remain No-Go.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 fixture redaction spec
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-sbl09-fixture-redaction-spec.md` to define fixture naming, safe / unsafe fixture boundaries, redaction assertions, dry-run callback snapshots, production write guard fixtures, and evidence search standards.
+- SBL-09 remains pre-coding documentation until the fixture and redaction rules are accepted as the required scaffold boundary; SBL-01, internal beta, and production implementation remain blocked.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 test suite spec
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-sbl09-test-suite-spec.md` to define the minimum sandbox test suite before SBL-01 route work.
+- The spec covers internal-only route tests, workspace allowlist tests, state / nonce / code exchange tests, redacted logging tests, dry-run callback payload tests, and production write guard tests.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox coding kickoff checklist
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-coding-kickoff-checklist.md` to define kickoff checks before SBL-09 and SBL-01.
+- The checklist separates test-suite scaffold readiness from route skeleton readiness, defines internal-only / dry-run-first / no-production-write checks, redaction search standards, required document backfills, and current internal beta / production blocks.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox final readiness review
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-final-readiness-review.md` to assess whether the sandbox document set is ready for coding.
+- Conclusion: documentation is mostly ready, sandbox coding remains Hold until go/no-go is explicitly marked, and internal beta / production implementation remain No-Go.
+- Recommended first coding-prep task is SBL-09 test suite scaffold planning before SBL-01 internal-only route skeleton.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox coding task breakdown
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-coding-task-breakdown.md` to break future sandbox coding into internal-only / dry-run-first tasks.
+- The breakdown lists each task's prerequisite gates, test requirements, files and flows that must not be modified, and how to backfill runbook / report / go-no-go checklist evidence.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox document index
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-doc-index.md` to index all Meta Business Login sandbox research, planning, template, go/no-go, coding draft, and risk test plan documents.
+- The index defines reading order, document purpose, decision path, template / draft status, unpassed gates, and the current block on production implementation.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox coding risk test plan
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-coding-risk-test-plan.md` to define pre-coding risks and tests for internal-only routes, sandbox provider interface, state / nonce / code exchange, redacted logging, dry-run payloads, workspace allowlist, and production Channel write guards.
+- The plan defines the minimum checklist required before sandbox coding can start and keeps the decision at Hold if any gate is incomplete.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox coding spec draft
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-coding-spec-draft.md` to define the pre-coding technical draft for an internal-only sandbox Meta Business Login prototype.
+- The draft covers internal-only route behavior, sandbox provider interface, state / nonce / code exchange helpers, redacted logging, dry-run callback payloads, workspace allowlist rules, production Channel write guards, and the explicit boundary that production OAuth flow, callback, button, env, schema, ConnectedAccount, and Channel remain unchanged.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox go/no-go checklist
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-go-no-go-checklist.md` to define decision gates for sandbox coding, internal beta, and production implementation readiness.
+- The checklist covers App Review, account selection UX, callback security, workspace linking, channel sync, redaction, rollback, and the differences between sandbox coding, internal beta, and production implementation gates.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox experiment report template
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-experiment-report-template.md` as the first blank report template for summarizing sandbox-only Meta Business Login experiment results.
+- The template captures experiment summary, test matrix coverage, Meta dialog UX, callback / workspace linking / channel sync results, redaction search results, ManyChat UX proximity, App Review risk, and go / hold / no-go decision.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox runbook template
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-runbook-template.md` as the execution record template for sandbox-only Meta Business Login experiments.
+- The template covers pre-test checks, Meta App Dashboard settings, redacted authorize URL / callback payload records, account selection UX observations, workspace linking / channel sync checks, redaction search results, and go / no-go decision gates.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - Meta Business Login sandbox implementation plan
+
+Status: documented only.
+
+- Added `docs/meta-business-login-sandbox-implementation-plan.md` to define a sandbox-only experiment plan before any product implementation.
+- The plan keeps production `meta-instagram` unchanged and requires isolated sandbox provider ids, separate env planning, callback state / nonce / code exchange security, redacted logging, App Review gates, workspace linking validation, and rollback criteria.
+- Product code, OAuth routes, callback routes, login buttons, Prisma schema, and env were intentionally not changed.
+
+## 2026-06-15 - AI model cache refresh automation
+
+- Operational check only: `npm run ai-models:refresh` passed on 2026-06-15.
+- Remote provider cache result remained stable across all 6 workspaces: `chatgpt 10`, `gemini 7`, `deepseek 2`, `xai 2`.
+- `codex_cli` and `antigravity_cli` were still absent from the refresh payload without throwing errors, matching the existing local CLI gating behavior noted in automation memory.
+
 ## 2026-06-15 - Meta Business Login ADR before implementation
 
 Status: documented only.

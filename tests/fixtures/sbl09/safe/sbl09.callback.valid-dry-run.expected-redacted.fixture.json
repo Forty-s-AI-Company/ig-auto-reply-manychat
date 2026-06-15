@@ -1,0 +1,35 @@
+{
+  "fixtureId": "SBL09-CALLBACK-VALID-DRY-RUN-EXPECTED-REDACTED",
+  "area": "callback",
+  "safety": "expected-redacted",
+  "payload": {
+    "mode": "dry_run",
+    "provider": "meta-business-login-sandbox",
+    "workspace": {
+      "id": "workspace_6f2a1c",
+      "allowlisted": true
+    },
+    "auth": {
+      "state": "[REDACTED_STATE]",
+      "nonce": "[REDACTED_NONCE]",
+      "code": "[REDACTED_CODE]",
+      "exchangeAttempted": false
+    },
+    "selection": {
+      "businessId": "business_8c1d2e",
+      "pageId": "page_5a90bb",
+      "instagramAccountId": "ig_1ef733"
+    },
+    "writes": {
+      "wouldCreateConnectedAccount": false,
+      "wouldCreateChannel": false,
+      "wouldRegisterWebhook": false,
+      "wouldStartChannelSync": false,
+      "wouldScheduleTokenRefresh": false
+    },
+    "result": {
+      "status": "dry_run_only",
+      "errorType": null
+    }
+  }
+}
