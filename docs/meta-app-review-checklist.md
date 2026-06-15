@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Closeout Report Template Status
+
+Status: closeout report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-closeout-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta closeout now has a report template for closeout metadata, monitoring summary, access / redaction / guard / UX / fallback result summary, issue / pause trigger / remediation status, final beta conclusion, App Review submission preparation decision, missing production evidence, and next-stage Go / Hold.
+- A successful closeout can only move to App Review submission preparation, not production implementation.
+- Production implementation remains No-Go until App Review approval, Business Verification / Advanced Access confirmation, production security review, token lifecycle approval, tenant isolation review, rollback plan, and required Supabase project confirmation are complete.
+- Supabase migration / `db push` remains out of scope.
+
 ## 2026-06-16 - Internal Beta Monitoring Report Template Status
 
 Status: monitoring report template documented / internal beta Hold / production implementation No-Go.

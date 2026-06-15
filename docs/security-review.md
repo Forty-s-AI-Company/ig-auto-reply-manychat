@@ -1,5 +1,16 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta closeout report template security note
+
+Scope: documentation-only internal beta closeout report template.
+
+- Added `docs/meta-business-login-internal-beta-closeout-report-template.md`.
+- The template summarizes beta monitoring, access control, redaction, guard, UX, fallback, issues, pause triggers, remediation, final beta conclusion, App Review submission preparation readiness, and missing production evidence.
+- The template keeps production implementation at No-Go even after a successful beta closeout until App Review approval, Business Verification / Advanced Access confirmation, production token lifecycle review, callback security review, tenant isolation review, rollback plan, and any required Supabase project confirmation are complete.
+- The template forbids copying raw token, authorization code, secret, raw state, raw nonce, full callback URL, credential, OTP, cookie, browser storage, unmasked asset ID, or real customer data into the report.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta monitoring report template security note
 
 Scope: documentation-only internal beta monitoring report template.
