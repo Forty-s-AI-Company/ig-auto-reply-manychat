@@ -1,5 +1,19 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login sandbox external evidence retry blocker
+
+Task:
+
+- Retry Chrome-based Meta Developers Apps evidence collection after the user asked Codex to continue.
+- Keep the attempt read-only and do not treat blocked page access as App Review evidence.
+
+Result:
+
+- Chrome listed the Meta Developers Apps tab at `https://developers.facebook.com/apps/`.
+- Claiming the latest Meta Developers Apps tab and reading the DOM was still blocked by another Chrome extension UI.
+- No Meta App Dashboard, Meta dialog, account selection UX, callback, or App Review evidence was collected.
+- Production implementation remains No-Go.
+
 ## 2026-06-15 - Meta Business Login sandbox external evidence handoff
 
 Task:

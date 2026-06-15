@@ -43,6 +43,29 @@ Automation could not read the page DOM because Chrome reported another extension
 
 This is not valid Meta App Review evidence. It only means evidence collection is blocked until the user closes or completes the blocking Chrome extension UI.
 
+## Chrome Retry Record
+
+Retry date: 2026-06-15
+
+Chrome still listed a Meta Developers Apps tab:
+
+```text
+Title: 所有應用程式 - Meta for Developers
+URL: https://developers.facebook.com/apps/
+```
+
+Codex attempted to claim the latest Meta Developers Apps tab and read the DOM again.
+
+Result:
+
+```text
+Blocked: Chrome reported another extension UI is open on this page.
+```
+
+Codex also previously attempted to close Meta-related `chrome-extension://.../park.html` tabs and send `Escape`, but Chrome automation was blocked before those actions could complete.
+
+This retry still does not produce valid Meta App Dashboard, Meta dialog, account selection UX, callback, or App Review evidence.
+
 ## Resume Attempt Record
 
 After the user asked Codex to continue, Chrome automation could again list and claim Meta-related tabs.
