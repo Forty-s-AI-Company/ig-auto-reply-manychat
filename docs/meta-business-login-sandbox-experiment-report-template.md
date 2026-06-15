@@ -1,5 +1,22 @@
 # Meta Business Login Sandbox Experiment Report Template
 
+## 2026-06-16 - SBL-12 Controlled Callback Capture Result Summary
+
+Status: helper Pass / route integration Hold.
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Redacted callback capture | Pass | `tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts` |
+| Missing capture header rejection | Pass | `sandbox_callback_capture_header_required` |
+| State mismatch rejection | Pass | `invalid_state` |
+| Workspace mismatch rejection | Pass | `workspace_mismatch` |
+| Non-allowlisted workspace rejection | Pass | `workspace_not_allowed` |
+| Token exchange | Pass | Not attempted |
+| Production writes | Pass | All write flags false |
+| Production callback behavior | Pass | Unchanged |
+| Real callback evidence | Hold | Route not integrated |
+| Production implementation | No-Go | App Review / callback / workspace / sync gates missing |
+
 ## 2026-06-16 - OAuth Profile Selection Result Summary
 
 Status: Partial Pass / Hold before callback.

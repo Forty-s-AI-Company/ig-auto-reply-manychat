@@ -1,5 +1,22 @@
 # Meta Business Login Sandbox Runbook Template
 
+## 2026-06-16 - SBL-12 Controlled Callback Capture Run Record
+
+Status: helper completed, route integration on Hold.
+
+| Field | Value |
+| --- | --- |
+| Run ID | `sbl12_callback_capture_20260616_001` |
+| Plan | `docs/meta-business-login-sandbox-controlled-callback-capture-plan.md` |
+| Test command | `npx vitest run tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts` |
+| Result | Passed: 5 tests |
+| Production callback changed | No |
+| Token exchange attempted | No |
+| Production ConnectedAccount / Channel write | No |
+| Callback evidence route integration | Hold |
+| Internal beta | Hold |
+| Production implementation | No-Go |
+
 ## 2026-06-16 - OAuth Profile Selection Run Record
 
 Status: Partial Pass / Hold before callback.

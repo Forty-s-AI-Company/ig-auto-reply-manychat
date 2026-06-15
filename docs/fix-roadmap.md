@@ -1,5 +1,15 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture helper
+
+Status: targeted helper tests passed.
+
+- Added `src/lib/meta-business-sandbox-callback-capture.ts`.
+- Added `tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts`.
+- Added `docs/meta-business-login-sandbox-controlled-callback-capture-plan.md` and `docs/meta-business-login-sandbox-sbl12-callback-capture-test-command.md`.
+- Production callback route remains unchanged; route integration and real callback evidence remain Hold.
+- Next safe step is choosing Option A sandbox redirect URI or Option B narrow production callback read-only guard with tests.
+
 ## 2026-06-16 - Meta Business Login sandbox next controlled callback prompt
 
 Status: documented next step.

@@ -1,5 +1,42 @@
 # Codex Session Log
 
+## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture helper
+
+Task:
+
+- Inspect current production Instagram / Meta callback risk points.
+- Add sandbox-only callback capture helper and tests.
+- Do not modify production OAuth flow, callback routes, login buttons, env, Prisma schema, token storage, or production writes.
+
+Files changed:
+
+- `src/lib/meta-business-sandbox-callback-capture.ts`
+- `tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts`
+- `docs/meta-business-login-sandbox-controlled-callback-capture-plan.md`
+- `docs/meta-business-login-sandbox-sbl12-callback-capture-test-command.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-business-login-sandbox-runbook-template.md`
+- `docs/meta-business-login-sandbox-experiment-report-template.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Validation:
+
+- `npx vitest run tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts`: passed, 5 tests.
+- `npx vitest run tests/meta-business-login-sandbox-production-isolation.test.ts tests/meta-business-login-sandbox-sbl01-route.test.ts tests/meta-business-login-sandbox-sbl01.test.ts tests/meta-business-login-sandbox-sbl03.test.ts tests/meta-business-login-sandbox-sbl04.test.ts tests/meta-business-login-sandbox-sbl05.test.ts tests/meta-business-login-sandbox-sbl06.test.ts tests/meta-business-login-sandbox-sbl07.test.ts tests/meta-business-login-sandbox-sbl08.test.ts tests/meta-business-login-sandbox-sbl09.test.ts tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts`: passed, 49 tests.
+- `npm run lint`: passed.
+- `npm run build`: passed with exit code 0. The existing Prisma engine DLL lock fallback message appeared and reused the generated client.
+
+Decision:
+
+- Callback capture helper: Pass.
+- Production callback route integration: Hold.
+- Real callback evidence: Hold.
+- Internal beta: Hold.
+- Production implementation: No-Go.
+
 ## 2026-06-16 - Meta Business Login sandbox next controlled callback prompt
 
 Task:

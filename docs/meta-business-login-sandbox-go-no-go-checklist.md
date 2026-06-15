@@ -1,5 +1,27 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## 2026-06-16 - SBL-12 Controlled Callback Capture Update
+
+Status: helper Pass / route integration Hold.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-controlled-callback-capture-plan.md
+tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts
+```
+
+Decision:
+
+```text
+Callback capture helper: Pass
+Production callback unchanged: Pass
+Route integration: Hold
+Real callback evidence: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-16 - Next Controlled Callback Prompt Update
 
 Status: Hold until callback capture guard exists.

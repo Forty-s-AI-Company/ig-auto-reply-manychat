@@ -1,5 +1,14 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture gate
+
+Status: helper Pass / route integration Hold.
+
+- Added sandbox-only callback capture helper and tests.
+- Callback evidence can now be represented as redacted evidence with hash-only code / state references and all production write flags blocked at helper level.
+- Production callback route remains unchanged and real callback evidence is still missing.
+- App Review remains Hold because reviewer demo, real callback, workspace linking, channel sync, and rollback evidence are not complete.
+
 ## 2026-06-16 - Meta Business Login sandbox controlled callback prompt
 
 Status: documented next step.

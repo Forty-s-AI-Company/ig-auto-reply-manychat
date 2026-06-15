@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture security note
+
+Scope: sandbox-only callback capture helper and test.
+
+- Added `src/lib/meta-business-sandbox-callback-capture.ts` and `tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts`.
+- The helper captures callback evidence with redacted code / state and hash-only references, requires explicit sandbox capture header, validates workspace allowlist and workspace match, and keeps token exchange / production writes disabled.
+- Added `docs/meta-business-login-sandbox-controlled-callback-capture-plan.md` with production callback risk map and safe integration options.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login sandbox controlled callback prompt security note
 
 Scope: next-step prompt for callback evidence safety.
