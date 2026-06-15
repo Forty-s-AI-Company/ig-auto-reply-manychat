@@ -1,5 +1,13 @@
 # Meta App Review Checklist
 
+## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet review gate
+
+Status: targeted local evidence packet test passed.
+
+- Added local dry-run evidence packet generation for redacted authorize / callback payloads, production write guard evidence, and gate status output.
+- This is still not App Review evidence because no real Meta dialog, account selection UX recording, Business / Page / IG asset evidence, callback evidence, reviewer demo, or redacted screen recording has been collected.
+- Internal beta and production implementation remain blocked.
+
 ## 2026-06-15 - Meta Business Login sandbox production isolation review gate
 
 Status: targeted production isolation test passed.

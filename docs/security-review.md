@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet security note
+
+Scope: local dry-run evidence packet helper and tests.
+
+- Added `src/lib/meta-business-sandbox-evidence.ts` to combine redacted internal authorize and callback dry-run payloads into a hash-only evidence packet.
+- Added `tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts` to verify raw authorization code / state are not present, production write guard evidence is required, and production implementation remains No-Go.
+- The helper does not call Meta, exchange real codes, store tokens, write audit records, register webhooks, sync channels, or create production ConnectedAccount / Channel records.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-15 - Meta Business Login sandbox production isolation security note
 
 Scope: automated production isolation regression test.

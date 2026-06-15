@@ -30,6 +30,7 @@ Production implementation: No-Go
 | SBL-08 production write guard | Complete | `src/lib/meta-business-sandbox-write-guard.ts` |
 | SBL-10 runbook / report / go-no-go backfill | Complete | This report plus updated sandbox docs |
 | Production isolation regression test | Complete | `tests/meta-business-login-sandbox-production-isolation.test.ts` |
+| SBL-11 local evidence packet | Complete | `src/lib/meta-business-sandbox-evidence.ts`, `tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts` |
 
 ## Route Integration Update
 
@@ -73,6 +74,19 @@ Result:
 ```text
 10 test files passed
 41 tests passed
+```
+
+SBL-11 local evidence packet validation:
+
+```text
+npx vitest run tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts
+```
+
+Result:
+
+```text
+1 test file passed
+3 tests passed
 ```
 
 Additional validation:
@@ -143,6 +157,7 @@ Implemented sandbox controls:
 - Token / code / secret / state / nonce / URL redaction.
 - Business / Page / IG id masking.
 - Production write guard for ConnectedAccount, Channel, webhook, sync, and token refresh operations.
+- Local evidence packet validation that keeps raw code / state out of evidence and keeps production implementation at No-Go.
 
 ## App Review Status
 

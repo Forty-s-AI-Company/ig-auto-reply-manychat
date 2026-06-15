@@ -1,5 +1,31 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet
+
+Task:
+
+- Add a local dry-run evidence packet helper for sandbox execution preparation.
+- Validate that redacted authorize / callback evidence can be packaged without raw code, raw state, production writes, or production implementation approval.
+- Do not call Meta, exchange real codes, store tokens, modify production OAuth, modify callback routes, modify login buttons, modify env, modify Prisma schema, or write production ConnectedAccount / Channel records.
+
+Files changed:
+
+- `src/lib/meta-business-sandbox-evidence.ts`
+- `tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts`
+- `docs/meta-business-login-sandbox-sbl11-evidence-packet-test-command.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/codex-session-log.md`
+
+Validation:
+
+- `npx vitest run tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts`: passed, 3 tests.
+- `npx vitest run tests/meta-business-login-sandbox-production-isolation.test.ts tests/meta-business-login-sandbox-sbl01-route.test.ts tests/meta-business-login-sandbox-sbl01.test.ts tests/meta-business-login-sandbox-sbl03.test.ts tests/meta-business-login-sandbox-sbl04.test.ts tests/meta-business-login-sandbox-sbl05.test.ts tests/meta-business-login-sandbox-sbl06.test.ts tests/meta-business-login-sandbox-sbl07.test.ts tests/meta-business-login-sandbox-sbl08.test.ts tests/meta-business-login-sandbox-sbl09.test.ts tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts`: passed, 44 tests.
+- `npm run lint`: passed.
+- `npm run build`: passed with exit code 0. The existing Prisma engine DLL lock fallback message appeared and reused the generated client.
+
 ## 2026-06-15 - Meta Business Login sandbox production isolation regression
 
 Task:

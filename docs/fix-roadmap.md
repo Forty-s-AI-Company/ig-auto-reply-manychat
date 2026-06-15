@@ -1,5 +1,15 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet
+
+Status: targeted evidence packet tests passed.
+
+- Added `src/lib/meta-business-sandbox-evidence.ts`.
+- Added `tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts`.
+- Added `docs/meta-business-login-sandbox-sbl11-evidence-packet-test-command.md`.
+- The packet keeps local dry-run evidence redacted, requires production write guard evidence, and keeps internal beta / production implementation blocked until real Meta sandbox evidence and App Review gates pass.
+- Existing production OAuth flow, callback routes, login buttons, env, Prisma schema, token storage, and production ConnectedAccount / Channel writes remain unchanged.
+
 ## 2026-06-15 - Meta Business Login sandbox production isolation regression
 
 Status: targeted production isolation test passed.
