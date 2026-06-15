@@ -1036,6 +1036,12 @@ Gate：
 - Internal beta: Hold
 - Production implementation: No-Go
 
+CI follow-up:
+
+- GitHub Actions CI failed because workflow still used `DATABASE_URL=file:./dev.db`.
+- `scripts/run-tests.mjs` now requires PostgreSQL for `npm test`.
+- Updated `.github/workflows/ci.yml` to run a PostgreSQL service and provide `TEST_DATABASE_URL` / `TEST_DIRECT_URL`.
+
 下一步建議 Codex Prompt：
 
 ```text

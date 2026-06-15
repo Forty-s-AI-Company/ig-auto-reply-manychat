@@ -572,6 +572,7 @@ Still blocked:
 - Workspace linking and channel sync remain dry-run only.
 - Internal beta remains Hold.
 - Production implementation remains No-Go.
+- Production callback deployment was blocked by CI because GitHub Actions still used SQLite for `npm test`; CI has been updated to use PostgreSQL service credentials.
 
 Next best step:
 

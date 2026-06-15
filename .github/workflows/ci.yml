@@ -7,8 +7,25 @@ on:
 jobs:
   lint-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: inboxpilot_ci
+          POSTGRES_USER: inboxpilot
+          POSTGRES_PASSWORD: inboxpilot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U inboxpilot -d inboxpilot_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     env:
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
       AUTH_SECRET: ci-secret-used-only-for-tests-please-rotate
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin123456
