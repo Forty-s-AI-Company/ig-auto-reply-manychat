@@ -1223,3 +1223,55 @@ docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md
 
 完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
 ```
+## 2026-06-16 - Meta Business Login Sandbox Internal Beta Access / Rollback Runbook
+
+任務目標：
+
+- 根據 internal beta go/no-go review，建立 internal beta access / rollback runbook。
+
+修改內容：
+
+- 新增 `docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md`。
+- 回填 `docs/fix-roadmap.md`。
+- 回填 `docs/meta-business-login-sandbox-go-no-go-checklist.md`。
+- 回填 `docs/meta-app-review-checklist.md`。
+
+結論：
+
+```text
+Internal-only beta entry point: Hold
+Workspace allowlist: Hold
+User / admin permissions: Hold
+Redaction search process: Partial Pass
+Production write guard monitoring: Pass for dry-run
+Token exchange prevention: Pass for dry-run / Hold for beta implementation
+Fallback to existing Instagram OAuth: Pass
+Rollback / disable beta: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+下一步建議 Codex Prompt：
+
+```text
+請根據 docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md 與 docs/meta-business-login-app-review-demo-script.md，建立 Meta Business Login final App Review demo package checklist。
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+檔案路徑：
+docs/meta-business-login-final-app-review-demo-package-checklist.md
+
+內容需包含：
+1. reviewer demo recording checklist
+2. permission usage proof checklist
+3. Business / Page / IG test asset checklist
+4. account selection UX evidence checklist
+5. redacted callback evidence checklist
+6. workspace linking / channel sync dry-run evidence checklist
+7. redaction search checklist
+8. rollback / fallback evidence checklist
+9. internal beta 是否可解除 Hold 的條件
+10. production implementation 仍不可開始的原因
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```

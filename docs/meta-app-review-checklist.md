@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Access / Rollback Runbook Status
+
+Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md
+```
+
+Current App Review implication:
+
+- Internal beta access and rollback requirements are now documented.
+- Final App Review demo package is still not complete.
+- Permission usage proof must still be reconciled with current Meta App Dashboard settings.
+- Internal beta should remain blocked until reviewer demo materials, workspace allowlist, tester permissions, redaction search, and rollback disable path are approved.
+
 ## 2026-06-16 - Internal Beta Go/No-Go Review Status
 
 Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.

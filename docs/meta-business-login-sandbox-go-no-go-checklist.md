@@ -1,5 +1,28 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Access / Rollback Runbook
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md
+```
+
+Decision:
+
+```text
+Internal-only beta entry point: Hold
+Workspace allowlist: Hold
+User / admin permissions: Hold
+Redaction search process: Partial Pass
+Production write guard monitoring: Pass for dry-run
+Token exchange prevention: Pass for dry-run / Hold for beta implementation
+Fallback to existing Instagram OAuth: Pass
+Rollback / disable beta: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Internal Beta Go/No-Go Review
 
 Evidence:

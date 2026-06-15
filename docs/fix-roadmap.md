@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login internal beta access rollback runbook
+
+Status: access / rollback runbook documented / Internal beta still Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md`.
+- Internal-only beta entry point conditions are documented.
+- Workspace allowlist and user/admin permission conditions are documented.
+- Redaction search flow is documented.
+- Production write guard monitoring items are documented.
+- Token exchange must-not-happen checks are documented.
+- Fallback to existing Instagram OAuth flow is documented.
+- Rollback / disable beta steps are documented.
+- Internal beta remains Hold until access control, allowlist, final App Review package, redaction search, rollback disable path, and product owner sign-off are complete.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login internal beta review
 
 Status: Hold before internal beta / Production implementation No-Go.
