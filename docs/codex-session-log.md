@@ -1275,3 +1275,56 @@ docs/meta-business-login-final-app-review-demo-package-checklist.md
 
 完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
 ```
+## 2026-06-16 - Meta Business Login Final App Review Demo Package Checklist
+
+任務目標：
+
+- 根據 internal beta access / rollback runbook 與 App Review demo script，建立 final App Review demo package checklist。
+
+修改內容：
+
+- 新增 `docs/meta-business-login-final-app-review-demo-package-checklist.md`。
+- 回填 `docs/fix-roadmap.md`。
+- 回填 `docs/meta-business-login-sandbox-go-no-go-checklist.md`。
+- 回填 `docs/meta-app-review-checklist.md`。
+
+結論：
+
+```text
+Final App Review demo package: Hold
+Reviewer demo recording: Hold
+Permission usage proof: Hold
+Business / Page / IG test assets: Hold
+Account selection UX evidence: Pass
+Redacted callback evidence: Pass
+Workspace linking / channel sync dry-run evidence: Pass
+Redaction search against final package: Hold
+Rollback / fallback evidence: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+下一步建議 Codex Prompt：
+
+```text
+請根據 docs/meta-business-login-final-app-review-demo-package-checklist.md，建立 Meta Business Login final permission usage proof matrix。
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+檔案路徑：
+docs/meta-business-login-final-permission-usage-proof-matrix.md
+
+內容需包含：
+1. 每個目前請求或候選 permission / scope
+2. 對應產品畫面
+3. 使用者操作
+4. 讀取資料
+5. 寫入資料
+6. 儲存資料
+7. retention / deletion 說明
+8. reviewer demo proof
+9. 是否已具備證據
+10. 若證據不足，建議移除、延後或補證據
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```

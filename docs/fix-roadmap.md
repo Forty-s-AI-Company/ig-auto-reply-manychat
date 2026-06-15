@@ -1,5 +1,17 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login final App Review demo package checklist
+
+Status: final demo package checklist documented / Internal beta still Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-final-app-review-demo-package-checklist.md`.
+- Reviewer demo recording checklist is documented.
+- Permission usage proof checklist is documented.
+- Business / Page / IG test asset checklist is documented.
+- Account selection UX, redacted callback, workspace linking dry-run, channel sync dry-run, redaction, and rollback/fallback evidence checklists are documented.
+- Internal beta remains Hold until final reviewer recording, permission proof, test asset package, redaction search, beta access controls, rollback proof, and product owner sign-off are complete.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login internal beta access rollback runbook
 
 Status: access / rollback runbook documented / Internal beta still Hold / Production implementation No-Go.

@@ -1,5 +1,23 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Final App Review Demo Package Checklist Status
+
+Status: final demo package checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-app-review-demo-package-checklist.md
+```
+
+Current App Review implication:
+
+- Reviewer demo recording checklist is now documented.
+- Permission usage proof checklist is now documented.
+- Business / Page / IG test asset checklist is now documented.
+- Account selection UX, redacted callback, workspace linking dry-run, and channel sync dry-run evidence are documented.
+- Final App Review package remains Hold until the actual reviewer recording, permission reconciliation, test asset package, redaction search, beta access controls, rollback proof, and sign-off are complete.
+
 ## 2026-06-16 - Internal Beta Access / Rollback Runbook Status
 
 Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.

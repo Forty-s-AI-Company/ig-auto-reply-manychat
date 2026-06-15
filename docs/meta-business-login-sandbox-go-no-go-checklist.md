@@ -1,5 +1,29 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Final App Review Demo Package Checklist
+
+Evidence:
+
+```text
+docs/meta-business-login-final-app-review-demo-package-checklist.md
+```
+
+Decision:
+
+```text
+Final App Review demo package: Hold
+Reviewer demo recording: Hold
+Permission usage proof: Hold
+Business / Page / IG test assets: Hold
+Account selection UX evidence: Pass
+Redacted callback evidence: Pass
+Workspace linking / channel sync dry-run evidence: Pass
+Redaction search against final package: Hold
+Rollback / fallback evidence: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Internal Beta Access / Rollback Runbook
 
 Evidence:
