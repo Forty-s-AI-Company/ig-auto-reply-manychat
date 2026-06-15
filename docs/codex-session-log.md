@@ -1,5 +1,29 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login sandbox external evidence handoff
+
+Task:
+
+- Attempt Chrome-based Meta Developers Apps evidence collection.
+- Record blocker state without treating it as App Review evidence.
+- Do not capture or store token, authorization code, secret, raw state, raw nonce, callback URL, app secret, or app dashboard secret.
+
+Files changed:
+
+- `docs/meta-business-login-sandbox-external-evidence-handoff.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Result:
+
+- Chrome reached `https://developers.facebook.com/apps/`.
+- Page title observed: `所有應用程式 - Meta for Developers`.
+- Automation could not inspect the page DOM because another Chrome extension UI was blocking the page.
+- No App Review evidence was collected.
+
 ## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet
 
 Task:

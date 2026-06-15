@@ -31,6 +31,7 @@ Production implementation: No-Go
 | SBL-10 runbook / report / go-no-go backfill | Complete | This report plus updated sandbox docs |
 | Production isolation regression test | Complete | `tests/meta-business-login-sandbox-production-isolation.test.ts` |
 | SBL-11 local evidence packet | Complete | `src/lib/meta-business-sandbox-evidence.ts`, `tests/meta-business-login-sandbox-sbl11-evidence-packet.test.ts` |
+| External Meta evidence handoff | Hold | `docs/meta-business-login-sandbox-external-evidence-handoff.md` |
 
 ## Route Integration Update
 
@@ -174,6 +175,18 @@ Missing evidence:
 - Reviewer demo video.
 - Permission usage evidence.
 - Rollback evidence.
+
+## External Evidence Handoff Update
+
+Chrome was opened to `https://developers.facebook.com/apps/` and reached the Meta Developers Apps page title `所有應用程式 - Meta for Developers`.
+
+Automation could not inspect the page DOM because Chrome reported another extension UI was open on the page. This is not valid Meta evidence and does not change App Review status.
+
+Handoff document:
+
+```text
+docs/meta-business-login-sandbox-external-evidence-handoff.md
+```
 
 ## Go / No-Go
 

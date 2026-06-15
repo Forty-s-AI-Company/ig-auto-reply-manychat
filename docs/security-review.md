@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-15 - Meta Business Login sandbox external evidence handoff security note
+
+Scope: Chrome-based external evidence collection attempt.
+
+- Chrome reached the Meta Developers Apps page, but automation was blocked by another Chrome extension UI before DOM inspection.
+- No token, authorization code, secret, raw state, raw nonce, callback URL, app secret, or app dashboard secret was captured or written.
+- Added `docs/meta-business-login-sandbox-external-evidence-handoff.md` to record the blocker and safe handoff steps.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet security note
 
 Scope: local dry-run evidence packet helper and tests.

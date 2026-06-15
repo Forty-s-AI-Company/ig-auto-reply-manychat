@@ -1,5 +1,14 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login sandbox external evidence handoff
+
+Status: Hold, Chrome extension UI blocker.
+
+- Added `docs/meta-business-login-sandbox-external-evidence-handoff.md`.
+- Chrome reached Meta Developers Apps, but another extension UI blocked automation before page DOM inspection.
+- Next step after Chrome is unblocked: collect real Meta App Dashboard, Meta dialog, account selection UX, redacted callback, and reviewer demo evidence.
+- Internal beta and production implementation remain No-Go.
+
 ## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet
 
 Status: targeted evidence packet tests passed.

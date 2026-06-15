@@ -1,5 +1,14 @@
 # Meta App Review Checklist
 
+## 2026-06-15 - Meta Business Login sandbox external evidence handoff
+
+Status: Hold.
+
+- Chrome reached `https://developers.facebook.com/apps/` with page title `所有應用程式 - Meta for Developers`.
+- Automation could not inspect the page DOM because another Chrome extension UI was blocking the page.
+- This is not App Review evidence. Real Meta App Dashboard settings, Meta dialog UX, account selection UX, redacted callback evidence, and reviewer demo evidence are still missing.
+- Internal beta and production implementation remain blocked.
+
 ## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet review gate
 
 Status: targeted local evidence packet test passed.
