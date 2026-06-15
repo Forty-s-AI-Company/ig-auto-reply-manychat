@@ -2,7 +2,7 @@
 
 ## Latest Current Status - 2026-06-16 Controlled Callback Captured
 
-Status: account selection Pass / consent Pass / real callback evidence Pass / workspace and sync Hold.
+Status: account selection Pass / consent Pass / callback Pass / dry-run workspace linking Pass / dry-run channel sync Pass.
 
 Evidence:
 
@@ -20,8 +20,28 @@ Real callback evidence: Pass
 Redaction: Pass
 Token exchange attempted: false
 Production writes all false: true
-Workspace linking: Hold
-Channel sync: Hold
+Workspace linking dry-run: Pass
+Channel sync dry-run: Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+## Latest Current Status - 2026-06-16 SBL-13 Dry-Run Linking / Sync Passed
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+```
+
+Decision:
+
+```text
+Callback evidence mapping: Pass
+Workspace linking dry-run: Pass
+Channel sync dry-run: Pass
+Production write guard: Pass
+Redaction: Pass
 Internal beta: Hold
 Production implementation: No-Go
 ```

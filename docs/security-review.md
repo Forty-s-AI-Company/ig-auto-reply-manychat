@@ -513,6 +513,34 @@ Internal beta: Hold
 Production implementation: No-Go
 ```
 
+## 2026-06-16 - SBL-13 Workspace Linking / Channel Sync Dry-Run Security Result
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+```
+
+Security result:
+
+- Redacted callback evidence maps only to sandbox workspace linking and channel sync drafts.
+- ConnectedAccount draft keeps `wouldCreate=false` and `tokenStored=false`.
+- Channel draft keeps `wouldCreate=false` and `syncMode=dry_run`.
+- Channel sync dry-run keeps `wouldStart=false` and `tokenRequiredButNotPresent=true`.
+- Production write guard blocks ConnectedAccount / Channel / webhook / sync / refresh operations.
+- Tested payload does not contain raw authorization code, raw state, raw nonce, token, secret, full callback URL, or unmasked asset IDs.
+
+Status:
+
+```text
+Workspace linking dry-run: Pass
+Channel sync dry-run: Pass
+Production write guard: Pass
+Redaction: Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-16 - Meta Business Login Sandbox Callback Capture Guard
 
 Scope:

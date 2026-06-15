@@ -459,3 +459,24 @@ App Review implication:
 - The demo can show that the callback capture guard returns redacted evidence without token exchange or production writes.
 - The demo cannot yet claim workspace linking or channel sync is validated.
 - Before submitting App Review, workspace linking and channel sync dry-run evidence still need to be captured.
+
+## 2026-06-16 - SBL-13 Dry-Run Linking / Sync App Review Status
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+```
+
+Reviewer demo readiness:
+
+- Callback evidence can be mapped to a sandbox workspace linking draft.
+- Channel sync can be represented as a dry-run draft.
+- No production ConnectedAccount / Channel write occurs in the dry-run.
+- No token, raw code, raw state, raw nonce, full callback URL, secret, or unmasked asset ID appears in the tested dry-run payload.
+
+App Review implication:
+
+- Dry-run evidence is now sufficient for internal review of the intended linking and sync behavior.
+- App Review submission still needs a final reviewer-facing demo script and permission evidence review before internal beta.
+- Production implementation remains blocked.

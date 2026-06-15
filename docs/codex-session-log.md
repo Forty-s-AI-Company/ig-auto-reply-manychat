@@ -1107,3 +1107,66 @@ Production deploy / browser follow-up:
 6. 執行 targeted tests、npm run lint、npm run build。
 7. commit 並 push master。
 ```
+
+## 2026-06-16 - Meta Business Login Sandbox SBL-13 Workspace Linking / Channel Sync Dry-Run
+
+任務目標：
+
+- 使用已 redacted 的 `sandbox_callback_capture` evidence，驗證 workspace linking / channel sync 只能形成 sandbox dry-run draft，不建立或更新 production ConnectedAccount / Channel。
+
+修改內容：
+
+- 新增 `src/lib/meta-business-sandbox-workspace-linking.ts`。
+- 新增 `tests/meta-business-login-sandbox-sbl13-workspace-linking-sync.test.ts`。
+- 新增 `docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md`。
+- 回填 runbook / experiment report / go-no-go checklist / security-review / fix-roadmap / codex-session-log。
+
+驗證結果：
+
+```text
+npx vitest run tests/meta-business-login-sandbox-sbl13-workspace-linking-sync.test.ts
+Result: 1 test file passed, 2 tests passed
+```
+
+Gate：
+
+- Callback evidence mapping: Pass
+- Workspace linking dry-run: Pass
+- Channel sync dry-run: Pass
+- Production write guard: Pass
+- Redaction: Pass
+- Internal beta: Hold
+- Production implementation: No-Go
+
+下一步建議 Codex Prompt：
+
+```text
+請根據目前 Meta Business Login sandbox 文件與 SBL-13 dry-run evidence，建立 internal beta 前 go/no-go review。
+
+目前狀態：
+1. account selection UX: Pass
+2. consent screen: Pass
+3. redacted callback evidence: Pass
+4. workspace linking dry-run: Pass
+5. channel sync dry-run: Pass
+6. production write guard: Pass
+7. redaction: Pass
+8. internal beta: Hold
+9. production implementation: No-Go
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+請建立 docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md，內容包含：
+1. App Review readiness
+2. account selection UX evidence
+3. callback evidence
+4. workspace linking dry-run evidence
+5. channel sync dry-run evidence
+6. redaction evidence
+7. production write guard evidence
+8. rollback / fallback readiness
+9. 是否可進 internal beta
+10. 仍不可進 production implementation 的原因
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```

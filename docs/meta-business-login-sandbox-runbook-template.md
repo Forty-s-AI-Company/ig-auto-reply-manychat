@@ -704,3 +704,23 @@ Token exchange attempted: false
 Production writes all false: true
 Remaining hold: workspace linking and channel sync dry-run evidence
 ```
+
+## 2026-06-16 - SBL-13 Workspace Linking / Channel Sync Dry-Run Record
+
+```text
+Evidence file: docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+Callback evidence mapping: Pass
+Workspace linking draft: Pass
+ConnectedAccount wouldCreate: false
+ConnectedAccount tokenStored: false
+Channel draft wouldCreate: false
+Channel sync mode: dry_run
+Channel sync wouldStart: false
+Token required but not present: true
+Production write guard blocked: true
+Production write attempts: []
+Redaction result: Pass
+Targeted test: npx vitest run tests/meta-business-login-sandbox-sbl13-workspace-linking-sync.test.ts
+Targeted test result: 1 test file passed, 2 tests passed
+Remaining hold: manual go/no-go review, App Review readiness, production rollout gates
+```

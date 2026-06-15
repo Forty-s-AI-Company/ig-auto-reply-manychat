@@ -1,5 +1,26 @@
 # Meta Business Login Sandbox Experiment Report Template
 
+## 2026-06-16 - SBL-13 Workspace Linking / Channel Sync Dry-Run Result Summary
+
+Status: dry-run workspace linking Pass / dry-run channel sync Pass / production implementation No-Go.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+```
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Callback evidence mapping | Pass | Redacted callback evidence maps into sandbox workspace linking draft. |
+| Workspace linking draft | Pass | `ConnectedAccount.wouldCreate=false`, `tokenStored=false`. |
+| Channel draft | Pass | `Channel.wouldCreate=false`, `syncMode=dry_run`. |
+| Channel sync dry-run | Pass | `wouldStart=false`, token absent. |
+| Production write guard | Pass | Guard blocks ConnectedAccount / Channel / webhook / sync / refresh writes. |
+| Redaction | Pass | No raw code, raw state, token, secret, full callback URL, or unmasked asset IDs in tested draft. |
+| Internal beta | Hold | Requires manual go/no-go and App Review readiness review. |
+| Production implementation | No-Go | Still requires App Review and production rollout gates. |
+
 ## 2026-06-16 - Controlled Consent Run Result Summary
 
 Status: Guard deployed / account selection Pass / consent reached / callback Pass / workspace and sync Hold.

@@ -2,7 +2,7 @@
 
 ## Latest - 2026-06-16 Meta Business Login sandbox controlled callback captured
 
-Status: callback evidence Pass / workspace linking and channel sync Hold.
+Status: callback evidence Pass / workspace linking and channel sync dry-run Pass.
 
 - Production callback guard deployment: Pass.
 - Instagram Business Login account selection UX: Pass.
@@ -11,7 +11,9 @@ Status: callback evidence Pass / workspace linking and channel sync Hold.
 - Redaction: Pass for callback response body.
 - Token exchange attempted: false.
 - Production writes all false: true.
-- Next step: sandbox-only workspace linking and channel sync dry-run validation.
+- Workspace linking dry-run: Pass.
+- Channel sync dry-run: Pass.
+- Next step: manual sandbox go/no-go review for internal beta readiness and App Review evidence completeness.
 - Internal beta remains Hold.
 - Production implementation remains No-Go.
 
