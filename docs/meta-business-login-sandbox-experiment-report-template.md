@@ -1,8 +1,29 @@
 # Meta Business Login Sandbox Experiment Report Template
 
+## 2026-06-16 - Controlled Consent Run Result Summary
+
+Status: Guard deployed / account selection Pass / consent reached / callback Hold.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Production callback guard deployment | Pass | Redacted JSON probe succeeded without raw fake code or raw state marker. |
+| Account selection UX | Pass | `carry.digital.nomad`, `ling.yun.energy`, and use-another-profile shown. |
+| `force_reauth=true` behavior | Partial Pass | Forces login/profile selection, but did not continue to callback in this browser run. |
+| Consent screen reachability | Pass | Consent screen shown without `force_reauth=true`. |
+| Real callback evidence | Hold | Requires user to click allow. |
+| Workspace linking | Hold | Not exercised. |
+| Channel sync | Hold | Not exercised. |
+| Production implementation | No-Go | Callback, App Review, linking, sync, and rollback gates still missing. |
+
 ## 2026-06-16 - SBL-12 Controlled Callback Capture Result Summary
 
-Status: helper Pass / route integration Hold.
+Status: helper Pass / route integration Pass / real callback Hold.
 
 | Area | Result | Evidence |
 | --- | --- | --- |
@@ -14,7 +35,8 @@ Status: helper Pass / route integration Hold.
 | Token exchange | Pass | Not attempted |
 | Production writes | Pass | All write flags false |
 | Production callback behavior | Pass | Unchanged |
-| Real callback evidence | Hold | Route not integrated |
+| Route integration | Pass | Signed-state callback guard deployed and probe returned redacted JSON evidence |
+| Real callback evidence | Hold | Consent screen reached; user authorization action not clicked by Codex |
 | Production implementation | No-Go | App Review / callback / workspace / sync gates missing |
 
 ## 2026-06-16 - OAuth Profile Selection Result Summary

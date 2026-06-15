@@ -603,3 +603,24 @@ Target review date:
 | Redaction | Pass at unit / route-test level, Hold for real callback evidence | Raw code/state/full callback URL are not present in tested response bodies. |
 | Internal beta | Hold | Requires real callback evidence and workspace/channel validation. |
 | Production implementation | No-Go | Still blocked by App Review, env, callback, workspace linking, channel sync, redaction, and rollback gates. |
+
+## 2026-06-16 - Controlled Consent Run Gate Update
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+| Gate | Status | Reason |
+| --- | --- | --- |
+| Production callback guard deployment | Pass | Signed-state probe returned redacted JSON evidence. |
+| Account selection UX | Pass | Multiple Instagram profiles and use-another-profile were shown. |
+| Consent reachability | Pass | Consent screen was shown without `force_reauth=true`. |
+| `force_reauth=true` account selection | Partial Pass | It forces login/profile selection, but this browser run returned to Instagram home after profile choice. |
+| Real callback evidence | Hold | Requires the user to click allow. |
+| Workspace linking | Hold | Not exercised. |
+| Channel sync | Hold | Not exercised. |
+| Redaction | Pass for probe, Hold for real callback | Probe response was redacted; real callback still not captured. |
+| Internal beta | Hold | Still missing callback, workspace linking, and channel sync evidence. |
+| Production implementation | No-Go | Still missing App Review and production rollout gates. |

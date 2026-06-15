@@ -686,3 +686,16 @@ Do not paste:
 - access token
 - app secret
 - client secret
+
+## 2026-06-16 - Controlled Consent Run Record
+
+```text
+Production callback probe: Pass
+Account selection observed: Pass
+Profiles observed: carry.digital.nomad / ling.yun.energy / use another profile
+force_reauth behavior: Partial Pass, profile selection shown but callback did not continue
+Consent screen observed: Pass
+Allow clicked by Codex: No
+Real callback evidence captured: No
+Reason for hold: user authorization action required
+```

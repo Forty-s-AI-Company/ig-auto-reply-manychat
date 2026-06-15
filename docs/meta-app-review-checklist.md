@@ -437,3 +437,24 @@ Reviewer demo safety requirement:
 - Do not show raw authorization code, raw state, raw nonce, access token, app secret, client secret, or full callback URL in recording, logs, audit records, reports, screenshots, or documentation.
 - If a callback evidence response is shown, only show the redacted JSON fields and hashed evidence markers.
 - Do not present sandbox callback capture as a production user-facing feature.
+
+## 2026-06-16 - Controlled Consent Run App Review Status
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+Reviewer demo readiness:
+
+- Account/profile selection screen: observed.
+- Consent screen with app name: observed.
+- Privacy policy and terms links on consent screen: observed.
+- Real callback evidence: not captured because Codex stopped before clicking allow.
+
+App Review implication:
+
+- The demo can show that Instagram Business Login can present a ManyChat-like account/profile selection step.
+- The demo cannot yet claim the full authorization callback, workspace linking, or channel sync path is validated.
+- Before submitting App Review, a user-authorized run must click allow and capture only redacted callback evidence.

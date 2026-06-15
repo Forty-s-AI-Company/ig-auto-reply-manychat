@@ -577,5 +577,12 @@ Still blocked:
 Next best step:
 
 ```text
-Run one controlled browser OAuth attempt with the sandbox callback capture state marker, capture only the redacted JSON evidence, then update the runbook, experiment report, go/no-go checklist, security review, and session log.
+User-authorized next run: click allow on the Instagram consent screen during a controlled sandbox capture run, capture only the redacted callback evidence, then update the runbook, experiment report, go/no-go checklist, security review, and session log.
 ```
+
+Controlled consent run status:
+
+- Production callback guard deployment: Pass.
+- Account selection UX: Pass.
+- Consent screen reachability: Pass.
+- Real callback evidence: Hold because Codex stopped before clicking allow.

@@ -1042,6 +1042,16 @@ CI follow-up:
 - `scripts/run-tests.mjs` now requires PostgreSQL for `npm test`.
 - Updated `.github/workflows/ci.yml` to run a PostgreSQL service and provide `TEST_DATABASE_URL` / `TEST_DIRECT_URL`.
 
+Production deploy / browser follow-up:
+
+- CI passed after PostgreSQL service update.
+- Production deploy completed with Vercel.
+- Production callback probe returned redacted JSON evidence and did not expose fake code or raw sandbox state marker.
+- Controlled Instagram OAuth browser run observed account/profile selection with `carry.digital.nomad`, `ling.yun.energy`, and use-another-profile.
+- Controlled browser run reached Instagram consent screen without `force_reauth=true`.
+- Codex stopped before clicking allow because that action grants app permissions to the Instagram account.
+- Real callback evidence remains Hold until the user clicks allow during a controlled run.
+
 下一步建議 Codex Prompt：
 
 ```text

@@ -266,3 +266,38 @@ Current targeted result:
 2 test files passed
 9 tests passed
 ```
+
+## 2026-06-16 Update - Production Probe And Consent Run
+
+Production callback deployment probe:
+
+```text
+Status: Pass
+Response: redacted JSON evidence
+Raw fake code present: No
+Raw sandbox state marker present: No
+Invalid-state redirect: No
+```
+
+Browser OAuth result:
+
+```text
+force_reauth=true: account/profile selection was shown, then Instagram returned to home after profile selection.
+without force_reauth=true: consent screen was shown.
+callback evidence: Hold, because Codex stopped before clicking allow.
+```
+
+Updated gate status:
+
+| Gate | Status |
+| --- | --- |
+| Callback capture helper | Pass |
+| Route integration | Pass |
+| Production callback guard deployment | Pass |
+| Account selection UX | Pass |
+| Consent screen reachability | Pass |
+| Real callback evidence | Hold |
+| Workspace linking evidence | Hold |
+| Channel sync evidence | Hold |
+| Internal beta | Hold |
+| Production implementation | No-Go |

@@ -482,6 +482,33 @@ Scope: documentation-only ADR for Facebook Login for Business / Instagram Busine
 2. production 強制要求 `TOKEN_ENCRYPTION_KEY`
 3. 補 tenant isolation regression tests
 4. 補 billing / webhook / admin failure alerting
+## 2026-06-16 - Controlled Consent Run Security Result
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+Security result:
+
+- Production callback guard deployment probe returned redacted JSON evidence.
+- Probe response did not include raw fake code, raw sandbox state marker, token, secret, or full callback URL.
+- Instagram account selection and consent screens were observed.
+- Codex stopped before clicking allow, so no real authorization callback code was issued during the browser run.
+- Workspace linking and channel sync remain unexercised.
+
+Status:
+
+```text
+Callback guard: Pass
+Account selection: Pass
+Consent screen: Pass
+Real callback evidence: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-16 - Meta Business Login Sandbox Callback Capture Guard
 
 Scope:
