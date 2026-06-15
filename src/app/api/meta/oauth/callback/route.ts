@@ -15,6 +15,10 @@ import { getDb } from "@/lib/db";
 import { clearPopupState, readPopupState } from "@/lib/oauth/state";
 import { getPopupBridgeUrl } from "@/lib/oauth/utils";
 import { getClientIp } from "@/lib/security";
+import {
+  buildSandboxCallbackCaptureEvidence,
+  parseSandboxCallbackCaptureState,
+} from "@/lib/meta-business-sandbox-callback-capture";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -650,6 +654,27 @@ export async function GET(request: Request) {
   cookieStore.delete(META_OAUTH_STATE_COOKIE);
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);
+
+  const sandboxCaptureState = parseSandboxCallbackCaptureState(state);
+  if (sandboxCaptureState) {
+    const evidence = buildSandboxCallbackCaptureEvidence({
+      providerId: sandboxCaptureState.providerId,
+      requestId: request.headers.get("x-request-id") || sandboxCaptureState.requestId,
+      sessionWorkspaceId: workspaceId,
+      stateWorkspaceId: sandboxCaptureState.workspaceId,
+      sandboxHeader: request.headers.get("x-inboxpilot-sandbox-callback-capture"),
+      signedStateMarker: true,
+      callbackUrl: request.url,
+      code,
+      state,
+      expectedState: state,
+    });
+
+    return NextResponse.json(evidence, {
+      status: evidence.status === "success" ? 200 : 400,
+      headers: { "cache-control": "no-store" },
+    });
+  }
 
   if (providerError) {
     await recordMetaOauthFailure({

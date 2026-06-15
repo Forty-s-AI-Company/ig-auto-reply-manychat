@@ -1,0 +1,22 @@
+{
+  "fixtureId": "SBL09-WRITE-GUARD-CHANNEL-CREATE-BLOCKED-SAFE",
+  "area": "write-guard",
+  "safety": "safe",
+  "input": {
+    "mode": "dry_run",
+    "provider": "meta-business-login-sandbox",
+    "workspaceId": "workspace_6f2a1c",
+    "operation": "channel.create",
+    "selection": {
+      "businessId": "business_8c1d2e",
+      "pageId": "page_5a90bb",
+      "instagramAccountId": "ig_1ef733"
+    }
+  },
+  "expected": {
+    "allowed": false,
+    "errorType": "production_write_blocked",
+    "wouldCreateConnectedAccount": false,
+    "wouldCreateChannel": false
+  }
+}
