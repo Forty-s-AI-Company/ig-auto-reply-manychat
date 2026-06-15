@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Monitoring Report Template Status
+
+Status: monitoring report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-monitoring-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta monitoring now has a report template for beta run metadata, access monitoring, redaction / logging / audit / evidence artifact monitoring, production write guard, token exchange guard, account selection UX, consent, callback evidence, rollback / fallback health, issue / pause triggers, and continue / pause / end decisions.
+- Internal beta remains Hold until launch gates pass; if launched later, any critical monitoring failure pauses beta.
+- A clean monitoring report still does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
 ## 2026-06-16 - Internal Beta Launch Checklist Status
 
 Status: launch checklist documented / internal beta Hold / production implementation No-Go.

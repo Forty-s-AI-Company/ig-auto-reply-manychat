@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta monitoring report template security note
+
+Scope: documentation-only internal beta monitoring report template.
+
+- Added `docs/meta-business-login-internal-beta-monitoring-report-template.md`.
+- The template monitors workspace allowlist, user role, internal-only access, redaction, logging, audit, evidence artifacts, production write guard, token exchange guard, account selection UX, consent, callback evidence, rollback / fallback health, and beta pause triggers.
+- The template requires immediate beta pause for raw token, authorization code, raw state, raw nonce, full callback URL, secret, browser storage, unmasked asset ID, real customer data, token exchange, production writes, unauthorized access, fallback outage, scope drift, unresolved findings, or broken rollback.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta launch checklist security note
 
 Scope: documentation-only internal beta launch checklist.
