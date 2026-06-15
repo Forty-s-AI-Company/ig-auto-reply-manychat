@@ -1,5 +1,25 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Go/No-Go Review Status
+
+Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md
+```
+
+Current App Review conclusion:
+
+- Account selection UX evidence is present.
+- Consent screen evidence is present.
+- Redacted callback evidence is present.
+- Workspace linking and channel sync dry-run evidence is present.
+- Final reviewer-facing demo package is not complete.
+- Permission-by-permission proof still needs final reconciliation with the current Meta App Dashboard.
+- Internal beta should not start until reviewer demo materials, internal-only access controls, and rollback procedures are finalized.
+
 ## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture gate
 
 Status: helper Pass / route integration Hold.

@@ -1,5 +1,29 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Go/No-Go Review
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md
+```
+
+Decision:
+
+```text
+Account selection UX: Pass
+Consent screen: Pass
+Redacted callback evidence: Pass
+Workspace linking dry-run: Pass
+Channel sync dry-run: Pass
+Production write guard: Pass
+Redaction: Pass
+App Review readiness: Hold
+Rollback / fallback readiness: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Controlled Callback Captured
 
 Status: account selection Pass / consent Pass / callback Pass / dry-run workspace linking Pass / dry-run channel sync Pass.

@@ -1170,3 +1170,56 @@ Gate：
 
 完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
 ```
+## 2026-06-16 - Meta Business Login Sandbox Internal Beta Go/No-Go Review
+
+任務目標：
+
+- 根據目前 Meta Business Login sandbox 文件與 SBL-13 dry-run evidence，建立 internal beta 前 go/no-go review。
+
+修改內容：
+
+- 新增 `docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md`。
+- 回填 `docs/fix-roadmap.md`。
+- 回填 `docs/meta-business-login-sandbox-go-no-go-checklist.md`。
+- 回填 `docs/meta-app-review-checklist.md`。
+
+結論：
+
+```text
+Account selection UX: Pass
+Consent screen: Pass
+Redacted callback evidence: Pass
+Workspace linking dry-run: Pass
+Channel sync dry-run: Pass
+Production write guard: Pass
+Redaction: Pass
+App Review readiness: Hold
+Rollback / fallback readiness: Partial Pass
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+下一步建議 Codex Prompt：
+
+```text
+請根據 docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md，建立 Meta Business Login internal beta access / rollback runbook。
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+檔案路徑：
+docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md
+
+內容需包含：
+1. internal-only beta entry point 條件
+2. workspace allowlist 條件
+3. 使用者 / admin 權限條件
+4. redaction 搜尋流程
+5. production write guard 監控項目
+6. token exchange 不得發生的檢查項
+7. fallback 到既有 Instagram OAuth flow 的方式
+8. rollback / disable beta 的步驟
+9. internal beta 可以開始前的最終 checklist
+10. production implementation 仍不可開始的原因
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```

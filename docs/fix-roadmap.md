@@ -1,5 +1,16 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login internal beta review
+
+Status: Hold before internal beta / Production implementation No-Go.
+
+- Added `docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md`.
+- Account selection UX, consent screen, callback evidence, workspace linking dry-run, channel sync dry-run, production write guard, and redaction are Pass.
+- App Review readiness remains Hold until final reviewer demo materials and permission proof are complete.
+- Rollback / fallback readiness is Partial Pass because production fallback remains intact, but beta rollback operations still need finalization.
+- Internal beta remains Hold.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login sandbox controlled callback captured
 
 Status: callback evidence Pass / workspace linking and channel sync dry-run Pass.
