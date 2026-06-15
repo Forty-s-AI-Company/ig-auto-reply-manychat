@@ -1,5 +1,22 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Release Decision Memo Template
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-release-decision-memo-template.md
+```
+
+Decision:
+
+```text
+Internal beta release decision memo template: Ready
+Decision memo completed: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Internal Beta Evidence Execution Report Template
 
 Evidence:

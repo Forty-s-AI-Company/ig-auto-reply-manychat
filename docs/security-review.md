@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta release decision memo security note
+
+Scope: documentation-only internal beta release decision memo template.
+
+- Added `docs/meta-business-login-internal-beta-release-decision-memo-template.md`.
+- The memo requires evidence execution, package assembly, redaction, reviewer recording, screenshots, permission proof, test asset proof, internal-only access, rollback / fallback, production write guard, token exchange guard, and sign-off before internal beta can become Go.
+- If internal beta becomes Go, the memo keeps restrictions on workspace allowlist, approved user roles, redacted evidence, no production writes, no token exchange, and existing Instagram OAuth fallback.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta evidence execution report template security note
 
 Scope: documentation-only internal beta evidence execution report template.

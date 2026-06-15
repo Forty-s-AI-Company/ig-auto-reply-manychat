@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Release Decision Memo Template Status
+
+Status: release decision memo template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-release-decision-memo-template.md
+```
+
+Current App Review implication:
+
+- Internal beta release now has a decision memo template summarizing evidence execution, package assembly, redaction, recording, screenshots, permission proof, test asset proof, internal-only access, rollback / fallback, production write guard, token exchange guard, and sign-off.
+- Internal beta can only become Go when every gate is Pass and product owner sign-off is recorded.
+- A Go decision remains internal-only and does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
 ## 2026-06-16 - Internal Beta Evidence Execution Report Template Status
 
 Status: evidence execution report template documented / internal beta Hold / production implementation No-Go.
