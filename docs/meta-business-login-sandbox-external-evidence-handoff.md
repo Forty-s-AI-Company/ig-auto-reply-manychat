@@ -43,6 +43,26 @@ Automation could not read the page DOM because Chrome reported another extension
 
 This is not valid Meta App Review evidence. It only means evidence collection is blocked until the user closes or completes the blocking Chrome extension UI.
 
+## Resume Attempt Record
+
+After the user asked Codex to continue, Chrome automation could again list and claim Meta-related tabs.
+
+Observed safe metadata:
+
+```text
+Title: 所有應用程式 - Meta for Developers
+URL: https://developers.facebook.com/apps/
+```
+
+Additional observations:
+
+- DOM snapshot / page evaluate / screenshot attempts against the Meta Apps page timed out.
+- A direct navigation attempt to the Business Login settings URL redirected back to `https://developers.facebook.com/apps/`.
+- No Meta App Dashboard settings, Business Login settings, App Review status, permission status, Meta dialog UX, account selection UX, or callback evidence was collected.
+- No token, authorization code, app secret, client secret, webhook verify token, raw state, raw nonce, full callback URL, reusable authorize URL, or unmasked Meta asset id was captured.
+
+This remains a handoff state, not App Review evidence.
+
 ## Required User Handoff Step
 
 Before continuing external evidence collection:

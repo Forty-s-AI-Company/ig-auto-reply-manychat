@@ -24,6 +24,14 @@ Result:
 - Automation could not inspect the page DOM because another Chrome extension UI was blocking the page.
 - No App Review evidence was collected.
 
+Resume result:
+
+- Chrome automation later could list and claim Meta-related tabs again.
+- Safe metadata remained limited to `所有應用程式 - Meta for Developers` at `https://developers.facebook.com/apps/`.
+- DOM snapshot, page evaluate, and screenshot attempts against the Meta Apps page timed out.
+- Direct navigation to the Business Login settings URL redirected back to `https://developers.facebook.com/apps/`.
+- No App Dashboard settings, Business Login settings, permission status, App Review status, Meta dialog UX, account selection UX, or callback evidence was collected.
+
 ## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet
 
 Task:
