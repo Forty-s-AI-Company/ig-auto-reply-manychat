@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Launch Checklist Status
+
+Status: launch checklist documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-launch-checklist.md
+```
+
+Current App Review implication:
+
+- Internal beta launch now has a checklist for release memo sign-off, launch preconditions, allowlist / role / internal-only entry point, redaction / logging / audit / evidence artifacts, production write guard, token exchange guard, rollback / fallback, monitoring, pause conditions, and post-launch backfill.
+- Internal beta cannot launch unless the release decision memo records Go and every launch gate passes.
+- A launch decision remains internal-only and does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
 ## 2026-06-16 - Internal Beta Release Decision Memo Template Status
 
 Status: release decision memo template documented / internal beta Hold / production implementation No-Go.

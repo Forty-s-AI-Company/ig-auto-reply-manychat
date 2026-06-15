@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta launch checklist security note
+
+Scope: documentation-only internal beta launch checklist.
+
+- Added `docs/meta-business-login-internal-beta-launch-checklist.md`.
+- The checklist blocks internal beta launch unless release decision memo sign-off, launch preconditions, internal-only entry point, workspace allowlist, user role, redaction, logging, audit, evidence artifact, production write guard, token exchange guard, rollback, and fallback checks pass.
+- The checklist defines immediate pause conditions for raw token, authorization code, raw state, raw nonce, full callback URL, secret, browser storage, unmasked asset ID, real customer data, token exchange, production writes, unauthorized access, fallback outage, scope drift, unresolved findings, or broken rollback.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta release decision memo security note
 
 Scope: documentation-only internal beta release decision memo template.
