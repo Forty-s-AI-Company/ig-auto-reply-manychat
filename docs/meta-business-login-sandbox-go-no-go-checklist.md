@@ -1,5 +1,26 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Final Preflight Checklist
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-final-preflight-checklist.md
+```
+
+Decision:
+
+```text
+Internal beta final preflight checklist: Draft complete
+App Review package assembly: Hold
+Final redaction report: Hold
+Reviewer recording / screenshots / permission proof / test asset proof: Hold
+Internal-only access controls: Hold
+Rollback / fallback: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Final App Review Package Assembly Checklist
 
 Evidence:

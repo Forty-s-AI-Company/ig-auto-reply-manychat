@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta final preflight security note
+
+Scope: documentation-only internal beta final preflight checklist.
+
+- Added `docs/meta-business-login-internal-beta-final-preflight-checklist.md`.
+- The checklist keeps internal beta on Hold until package assembly, redaction report, reviewer recording, screenshots, permission proof, test asset proof, access controls, rollback / fallback, production write guard, token exchange guard, and sign-off are Pass.
+- The checklist requires redacted evidence only and blocks raw authorization code, raw state, raw nonce, full callback URL, token, secret, browser storage, unmasked asset IDs, and real customer data from beta evidence.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login final App Review package assembly security note
 
 Scope: documentation-only final App Review package assembly checklist.

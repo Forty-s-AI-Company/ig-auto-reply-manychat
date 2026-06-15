@@ -1,5 +1,21 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Final Preflight Checklist Status
+
+Status: internal beta final preflight checklist documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-final-preflight-checklist.md
+```
+
+Current App Review implication:
+
+- Internal beta cannot release Hold until package assembly, final redaction report, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, token exchange guard, and sign-off are Pass.
+- The checklist explicitly keeps Supabase migration / `db push` out of scope.
+- Production implementation remains No-Go even if internal beta later becomes Go.
+
 ## 2026-06-16 - Final App Review Package Assembly Checklist Status
 
 Status: package assembly checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
