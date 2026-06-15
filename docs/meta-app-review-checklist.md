@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Final App Review Package Assembly Checklist Status
+
+Status: package assembly checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-app-review-package-assembly-checklist.md
+```
+
+Current App Review implication:
+
+- Final App Review package assembly now has a gate for reviewer recording, screenshots, permission proof, redaction report, test asset proof, scope reconciliation, callback evidence, workspace linking dry-run, channel sync dry-run, and rollback / fallback proof.
+- Files cannot enter the package until redaction search, visual redaction, scope reconciliation, no-secret, no-unmasked-ID, no-real-customer-data, rollback, and sign-off gates pass.
+- Internal beta remains Hold until the actual package is assembled and every gate passes.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Final Redaction Search Execution Report Template Status
 
 Status: redaction search execution report template documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.

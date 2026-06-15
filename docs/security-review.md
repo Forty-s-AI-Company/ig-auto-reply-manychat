@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login final App Review package assembly security note
+
+Scope: documentation-only final App Review package assembly checklist.
+
+- Added `docs/meta-business-login-final-app-review-package-assembly-checklist.md`.
+- The checklist blocks raw reviewer recordings, unredacted screenshots, HAR/network exports, unsearched logs, env files, dashboard secrets, browser storage exports, database dumps, raw Meta responses, and real customer data from App Review packaging.
+- The package gate requires redaction search and visual review for token, authorization code, secret, raw state, raw nonce, full callback URL, unmasked asset ID, and real customer data exposure.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login final redaction search execution report template security note
 
 Scope: documentation-only final redaction search execution report template.

@@ -1,5 +1,16 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login final App Review package assembly checklist
+
+Status: package assembly checklist documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-final-app-review-package-assembly-checklist.md`.
+- Documented the final package checklist for reviewer recording, screenshots, permission proof, redaction report, test asset proof, scope reconciliation, redacted callback evidence, workspace linking dry-run, channel sync dry-run, and rollback / fallback proof.
+- Documented per-file gates before App Review packaging, including redaction search, visual review, scope reconciliation, no secrets, no unmasked asset IDs, no real customer data, rollback readiness, and sign-off.
+- Documented file types that must not be packaged, including raw recordings, unredacted screenshots, HAR/network exports, unsearched logs, env files, browser storage exports, database dumps, and raw Meta responses.
+- Internal beta remains Hold until the actual package is assembled and all gates pass.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login final redaction search execution report template
 
 Status: redaction search execution report template documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.

@@ -60,6 +60,12 @@ Latest redaction search execution report template:
 docs/meta-business-login-final-redaction-search-execution-report-template.md
 ```
 
+Latest App Review package assembly checklist:
+
+```text
+docs/meta-business-login-final-app-review-package-assembly-checklist.md
+```
+
 Current permission decision:
 
 ```text
@@ -69,6 +75,7 @@ Content publish / insights: defer or remove until product proof exists
 Facebook Login for Business scopes: Hold until the selected flow and asset proof are reconciled
 Reviewer recording shot list: Draft complete; final recording still Hold
 Final redaction search execution report template: Ready; execution still Hold
+Final App Review package assembly checklist: Draft complete; actual package assembly still Hold
 ```
 
 ## 1. Reviewer Demo Recording Checklist
