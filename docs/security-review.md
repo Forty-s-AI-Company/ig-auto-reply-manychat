@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta evidence collection security note
+
+Scope: documentation-only internal beta evidence collection runbook.
+
+- Added `docs/meta-business-login-internal-beta-evidence-collection-runbook.md`.
+- The runbook defines safe evidence collection for package assembly, redaction report execution, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, and token exchange guard.
+- The runbook requires redacted markers only and blocks raw authorization code, raw state, raw nonce, full callback URL, token, secret, browser storage, unmasked asset IDs, and real customer data from evidence artifacts.
+- Supabase migration / `db push` is explicitly out of scope; future Supabase migration work must first show project_id, linked project, and Supabase account email, then wait for confirmation.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta final preflight security note
 
 Scope: documentation-only internal beta final preflight checklist.

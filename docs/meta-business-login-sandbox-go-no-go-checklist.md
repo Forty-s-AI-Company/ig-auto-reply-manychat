@@ -1,5 +1,28 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Internal Beta Evidence Collection Runbook
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-evidence-collection-runbook.md
+```
+
+Decision:
+
+```text
+Internal beta evidence collection runbook: Draft complete
+Package assembly evidence: Hold
+Redaction report execution: Hold
+Reviewer recording / screenshots: Hold
+Permission proof / test asset proof: Hold
+Internal-only access controls: Hold
+Rollback / fallback: Hold
+Production write guard / token exchange guard: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Internal Beta Final Preflight Checklist
 
 Evidence:

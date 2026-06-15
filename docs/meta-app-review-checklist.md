@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Internal Beta Evidence Collection Runbook Status
+
+Status: evidence collection runbook documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-evidence-collection-runbook.md
+```
+
+Current App Review implication:
+
+- Evidence collection now has a documented process for package assembly evidence, redaction report execution, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, and token exchange guard.
+- Internal beta remains Hold until the runbook is executed against the real final package and every final go / hold record field is Pass.
+- Supabase migration / `db push` remains out of scope.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Internal Beta Final Preflight Checklist Status
 
 Status: internal beta final preflight checklist documented / internal beta Hold / production implementation No-Go.
