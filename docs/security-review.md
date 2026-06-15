@@ -495,7 +495,11 @@ Security result:
 - Production callback guard deployment probe returned redacted JSON evidence.
 - Probe response did not include raw fake code, raw sandbox state marker, token, secret, or full callback URL.
 - Instagram account selection and consent screens were observed.
-- Codex stopped before clicking allow, so no real authorization callback code was issued during the browser run.
+- The user clicked allow on the Instagram consent screen.
+- The callback response body returned `sandbox_callback_capture` redacted JSON.
+- The callback response body did not include raw authorization code, raw state, token, secret, or full callback URL.
+- `exchangeAttempted=false`.
+- All production write flags were false.
 - Workspace linking and channel sync remain unexercised.
 
 Status:
@@ -504,7 +508,7 @@ Status:
 Callback guard: Pass
 Account selection: Pass
 Consent screen: Pass
-Real callback evidence: Hold
+Real callback evidence: Pass
 Internal beta: Hold
 Production implementation: No-Go
 ```

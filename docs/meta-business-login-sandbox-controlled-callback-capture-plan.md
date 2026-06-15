@@ -284,7 +284,7 @@ Browser OAuth result:
 ```text
 force_reauth=true: account/profile selection was shown, then Instagram returned to home after profile selection.
 without force_reauth=true: consent screen was shown.
-callback evidence: Hold, because Codex stopped before clicking allow.
+callback evidence: Pass, after the user clicked allow.
 ```
 
 Updated gate status:
@@ -296,7 +296,7 @@ Updated gate status:
 | Production callback guard deployment | Pass |
 | Account selection UX | Pass |
 | Consent screen reachability | Pass |
-| Real callback evidence | Hold |
+| Real callback evidence | Pass |
 | Workspace linking evidence | Hold |
 | Channel sync evidence | Hold |
 | Internal beta | Hold |

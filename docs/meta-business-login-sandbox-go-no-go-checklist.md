@@ -1,5 +1,31 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Controlled Callback Captured
+
+Status: account selection Pass / consent Pass / real callback evidence Pass / workspace and sync Hold.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+Decision:
+
+```text
+Production callback guard deployment: Pass
+Account selection UX: Pass
+Consent screen reachability: Pass
+Real callback evidence: Pass
+Redaction: Pass
+Token exchange attempted: false
+Production writes all false: true
+Workspace linking: Hold
+Channel sync: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-16 - SBL-12 Controlled Callback Capture Update
 
 Status: helper Pass / route integration Hold.
@@ -618,9 +644,9 @@ docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
 | Account selection UX | Pass | Multiple Instagram profiles and use-another-profile were shown. |
 | Consent reachability | Pass | Consent screen was shown without `force_reauth=true`. |
 | `force_reauth=true` account selection | Partial Pass | It forces login/profile selection, but this browser run returned to Instagram home after profile choice. |
-| Real callback evidence | Hold | Requires the user to click allow. |
+| Real callback evidence | Pass | User clicked allow; response body was redacted `sandbox_callback_capture` JSON. |
 | Workspace linking | Hold | Not exercised. |
 | Channel sync | Hold | Not exercised. |
-| Redaction | Pass for probe, Hold for real callback | Probe response was redacted; real callback still not captured. |
-| Internal beta | Hold | Still missing callback, workspace linking, and channel sync evidence. |
+| Redaction | Pass | Probe and real callback response body were redacted. |
+| Internal beta | Hold | Still missing workspace linking and channel sync evidence. |
 | Production implementation | No-Go | Still missing App Review and production rollout gates. |

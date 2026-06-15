@@ -695,7 +695,12 @@ Account selection observed: Pass
 Profiles observed: carry.digital.nomad / ling.yun.energy / use another profile
 force_reauth behavior: Partial Pass, profile selection shown but callback did not continue
 Consent screen observed: Pass
+Allow clicked by user: Yes
 Allow clicked by Codex: No
-Real callback evidence captured: No
-Reason for hold: user authorization action required
+Real callback evidence captured: Yes
+Callback evidence mode: sandbox_callback_capture
+Redaction result: Pass
+Token exchange attempted: false
+Production writes all false: true
+Remaining hold: workspace linking and channel sync dry-run evidence
 ```

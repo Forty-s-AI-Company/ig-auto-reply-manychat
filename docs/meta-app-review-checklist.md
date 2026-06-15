@@ -451,10 +451,11 @@ Reviewer demo readiness:
 - Account/profile selection screen: observed.
 - Consent screen with app name: observed.
 - Privacy policy and terms links on consent screen: observed.
-- Real callback evidence: not captured because Codex stopped before clicking allow.
+- Real callback evidence: captured after the user clicked allow; response body was redacted sandbox evidence.
 
 App Review implication:
 
 - The demo can show that Instagram Business Login can present a ManyChat-like account/profile selection step.
-- The demo cannot yet claim the full authorization callback, workspace linking, or channel sync path is validated.
-- Before submitting App Review, a user-authorized run must click allow and capture only redacted callback evidence.
+- The demo can show that the callback capture guard returns redacted evidence without token exchange or production writes.
+- The demo cannot yet claim workspace linking or channel sync is validated.
+- Before submitting App Review, workspace linking and channel sync dry-run evidence still need to be captured.

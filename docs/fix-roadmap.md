@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login sandbox controlled callback captured
+
+Status: callback evidence Pass / workspace linking and channel sync Hold.
+
+- Production callback guard deployment: Pass.
+- Instagram Business Login account selection UX: Pass.
+- Consent screen reachability: Pass.
+- User-authorized callback evidence: Pass.
+- Redaction: Pass for callback response body.
+- Token exchange attempted: false.
+- Production writes all false: true.
+- Next step: sandbox-only workspace linking and channel sync dry-run validation.
+- Internal beta remains Hold.
+- Production implementation remains No-Go.
+
 ## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture helper
 
 Status: targeted helper tests passed.
@@ -577,7 +592,7 @@ Still blocked:
 Next best step:
 
 ```text
-User-authorized next run: click allow on the Instagram consent screen during a controlled sandbox capture run, capture only the redacted callback evidence, then update the runbook, experiment report, go/no-go checklist, security review, and session log.
+Run sandbox-only workspace linking and channel sync dry-run validation using the captured redacted callback evidence. Do not create production ConnectedAccount / Channel.
 ```
 
 Controlled consent run status:
@@ -585,4 +600,6 @@ Controlled consent run status:
 - Production callback guard deployment: Pass.
 - Account selection UX: Pass.
 - Consent screen reachability: Pass.
-- Real callback evidence: Hold because Codex stopped before clicking allow.
+- Real callback evidence: Pass after the user clicked allow.
+- Workspace linking: Hold.
+- Channel sync: Hold.

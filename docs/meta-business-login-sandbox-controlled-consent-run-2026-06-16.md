@@ -58,9 +58,31 @@ Terms of service link: present
 ## Callback Status
 
 ```text
-Real authorization callback: Not captured
-Reason: consent screen requires a user authorization action.
-Codex action: stopped before clicking allow.
+Real authorization callback: Captured
+User action: user clicked allow on the Instagram consent screen.
+Codex action: verified only the redacted callback response body.
+```
+
+## Redacted Callback Evidence Result
+
+```text
+Status: success
+Mode: sandbox_callback_capture
+Provider id: meta-business-instagram-sandbox
+Code: [REDACTED_CODE]
+State: [REDACTED_STATE]
+Callback URL: [REDACTED_CALLBACK_URL]
+Code hash: present
+State hash: present
+Error type: null
+Exchange attempted: false
+Production writes:
+  connectedAccount: false
+  channel: false
+  webhook: false
+  channelSync: false
+  tokenRefresh: false
+Raw leak detected in response body: false
 ```
 
 ## Security Notes
@@ -78,12 +100,12 @@ Codex action: stopped before clicking allow.
 | Production callback guard deployment | Pass | Redacted JSON probe succeeded. |
 | Account selection UX | Pass | Multiple profiles plus use-another-profile shown. |
 | Consent screen reachability | Pass | Consent screen shown without `force_reauth=true`. |
-| Real callback evidence | Hold | Requires user to click allow. |
+| Real callback evidence | Pass | User clicked allow; callback body returned redacted sandbox evidence. |
 | Workspace linking | Hold | Not exercised. |
 | Channel sync | Hold | Not exercised. |
-| Internal beta | Hold | Callback and linking evidence missing. |
+| Internal beta | Hold | Workspace linking and channel sync evidence missing. |
 | Production implementation | No-Go | App Review and production gates missing. |
 
-## Next Required Human Step
+## Next Required Sandbox Step
 
-To capture real callback evidence, the user must click `allow` on the Instagram consent screen during a controlled run. Codex can then verify that the response is redacted JSON evidence and update the runbook / report / go-no-go checklist.
+Workspace linking and channel sync still need dry-run evidence before internal beta. Do not proceed to production implementation.

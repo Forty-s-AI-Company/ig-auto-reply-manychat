@@ -1050,7 +1050,12 @@ Production deploy / browser follow-up:
 - Controlled Instagram OAuth browser run observed account/profile selection with `carry.digital.nomad`, `ling.yun.energy`, and use-another-profile.
 - Controlled browser run reached Instagram consent screen without `force_reauth=true`.
 - Codex stopped before clicking allow because that action grants app permissions to the Instagram account.
-- Real callback evidence remains Hold until the user clicks allow during a controlled run.
+- User clicked allow on the Instagram consent screen.
+- Codex verified the callback response body as `sandbox_callback_capture` redacted JSON.
+- Callback response body had redacted code/state/callback URL markers, hash markers present, `errorType=null`, `exchangeAttempted=false`, and all production write flags false.
+- Raw leak check on the response body passed for authorization code, state marker, token, secret, and full callback URL patterns.
+- Real callback evidence: Pass.
+- Workspace linking and channel sync: Hold.
 
 下一步建議 Codex Prompt：
 
@@ -1076,4 +1081,29 @@ Production deploy / browser follow-up:
 執行一次受控瀏覽器 OAuth callback capture，僅記錄 redacted JSON evidence，不得記錄 raw code、raw state、raw nonce、full callback URL、token、secret。
 
 完成後請回填 runbook / report / go-no-go checklist / security-review / fix-roadmap / codex-session-log，並執行 git status、targeted tests、npm run lint、npm run build。
+```
+## 2026-06-16 - Latest Meta Business Login Sandbox Next Prompt
+
+```text
+請繼續執行 Meta Business Login sandbox workspace linking / channel sync dry-run validation。
+
+目前狀態：
+1. production callback guard 已部署。
+2. Instagram Business Login account selection 已通過。
+3. consent screen 已到達。
+4. 使用者已手動按 allow。
+5. callback response 已確認為 sandbox_callback_capture redacted JSON。
+6. exchangeAttempted=false。
+7. productionWrites 全部為 false。
+
+請只做 sandbox-only / dry-run-first 驗證，不要改正式登入按鈕，不要改 env，不要改 Prisma schema，不要做真實 Meta token exchange，不要建立或更新 production ConnectedAccount / Channel。
+
+請完成：
+1. 建立或使用既有 dry-run workspace linking evidence 格式。
+2. 驗證 callback evidence 如何映射到 sandbox provider / workspace / channel draft。
+3. 驗證 channel sync dry-run payload 不含 token / code / secret / raw state / full callback URL。
+4. 驗證 production write guard 仍阻擋 ConnectedAccount / Channel 寫入。
+5. 回填 runbook / experiment report / go-no-go checklist / security-review / fix-roadmap / codex-session-log。
+6. 執行 targeted tests、npm run lint、npm run build。
+7. commit 並 push master。
 ```
