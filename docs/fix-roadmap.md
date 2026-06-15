@@ -1,5 +1,16 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-16 Meta Business Login final permission usage proof matrix
+
+Status: permission matrix documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.
+
+- Added `docs/meta-business-login-final-permission-usage-proof-matrix.md`.
+- Documented every current or candidate Meta / Instagram permission, product screen, user action, data read/write/store behavior, retention/deletion expectation, reviewer proof, evidence status, and recommendation.
+- Recommended the minimum Instagram Business Login candidate scope set: `instagram_business_basic`, `instagram_business_manage_messages`, and `instagram_business_manage_comments`.
+- Marked `instagram_business_content_publish` and `instagram_business_manage_insights` as defer/remove until real product proof and reviewer demo evidence exist.
+- Kept Facebook Login for Business permissions on Hold until selected-flow reconciliation and Business / Page / IG asset proof are complete.
+- Production implementation remains No-Go.
+
 ## Latest - 2026-06-16 Meta Business Login final App Review demo package checklist
 
 Status: final demo package checklist documented / Internal beta still Hold / Production implementation No-Go.

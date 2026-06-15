@@ -1,5 +1,82 @@
 # Codex Session Log
 
+## 2026-06-16 - Meta Business Login Final Permission Usage Proof Matrix
+
+任務目標：
+
+- 根據 final App Review demo package checklist，建立 Meta Business Login final permission usage proof matrix。
+- 只新增 / 更新文件，不修改產品功能程式碼、OAuth flow、callback route、登入按鈕、env 或 Prisma schema。
+
+修改內容：
+
+- 新增 `docs/meta-business-login-final-permission-usage-proof-matrix.md`。
+- 回填 `docs/meta-business-login-final-app-review-demo-package-checklist.md`。
+- 回填 `docs/meta-business-login-sandbox-go-no-go-checklist.md`。
+- 回填 `docs/meta-app-review-checklist.md`。
+- 回填 `docs/security-review.md`。
+- 回填 `docs/fix-roadmap.md`。
+- 回填 `docs/codex-session-log.md`。
+
+目前結論：
+
+```text
+Permission usage proof matrix: Draft complete
+Core Instagram Business Login scopes: candidate keep
+instagram_business_content_publish: Defer / Remove
+instagram_business_manage_insights: Defer / Remove
+Facebook Login for Business scopes: Hold pending selected-flow reconciliation
+App Review readiness: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
+驗證：
+
+```text
+git status --short --branch
+Result: master had docs-only working tree changes before commit.
+
+git diff --check
+Result: passed with Windows line-ending warnings only.
+
+npx vitest run tests/meta-business-login-sandbox-sbl08.test.ts tests/meta-business-login-sandbox-sbl12-callback-capture.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts tests/meta-business-login-sandbox-sbl13-workspace-linking-sync.test.ts
+Result: 4 test files passed, 12 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Existing Windows Prisma engine DLL lock fallback appeared and reused the existing generated client.
+
+npm test
+Result: not run; this task changed documentation only and targeted SBL tests plus lint/build passed.
+```
+
+下一個建議 Codex Prompt：
+
+```text
+請根據 docs/meta-business-login-final-permission-usage-proof-matrix.md 與 docs/meta-business-login-final-app-review-demo-package-checklist.md，建立 Meta Business Login final reviewer recording shot list。
+
+請只新增 / 更新文件，不要改產品功能程式碼，不要改 OAuth flow，不要改 callback route，不要改登入按鈕，不要改 env，不要改 Prisma schema。
+
+檔案路徑：
+docs/meta-business-login-final-reviewer-recording-shot-list.md
+
+內容需包含：
+1. 每個 permission 對應要錄到的畫面
+2. 每段錄影的操作步驟
+3. 必須遮蔽或不可出現的資訊
+4. Business / Page / IG account selection 的畫面需求
+5. Inbox / comment automation / channel detail 的畫面需求
+6. redacted callback evidence 的呈現方式
+7. workspace linking / channel sync dry-run evidence 的呈現方式
+8. App Review 提交前的 final redaction search checklist
+9. internal beta 是否可解除 Hold 的條件
+10. production implementation 仍不可開始的原因
+
+完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```
+
 ## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture helper
 
 Task:

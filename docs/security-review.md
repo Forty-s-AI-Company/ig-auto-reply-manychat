@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login final permission proof matrix security note
+
+Scope: documentation-only permission proof matrix.
+
+- Added `docs/meta-business-login-final-permission-usage-proof-matrix.md`.
+- The matrix separates current Instagram Business Login scopes, Facebook Login for Business / Page-linked candidate scopes, and Dashboard-generated candidate scopes.
+- The matrix recommends keeping only the minimum proven Instagram Business Login candidate scopes before App Review and deferring / removing content publishing and insights until product proof exists.
+- The matrix keeps token, authorization code, raw state, raw nonce, full callback URL, app secret, client secret, and webhook verify token out of docs, logs, audit records, screenshots, recordings, and browser-visible payloads.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture security note
 
 Scope: sandbox-only callback capture helper and test.

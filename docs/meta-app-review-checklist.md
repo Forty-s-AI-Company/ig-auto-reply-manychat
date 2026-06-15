@@ -1,5 +1,23 @@
 # Meta App Review Checklist
 
+## 2026-06-16 - Final Permission Usage Proof Matrix Status
+
+Status: permission matrix documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-permission-usage-proof-matrix.md
+```
+
+Current App Review implication:
+
+- Permission-by-permission proof requirements are now documented for current Instagram Business Login scopes, current Facebook / Page-linked scopes, and candidate Dashboard-generated scopes.
+- Recommended minimum Instagram Business Login set remains `instagram_business_basic`, `instagram_business_manage_messages`, and `instagram_business_manage_comments`.
+- `instagram_business_content_publish` and `instagram_business_manage_insights` should be removed or deferred until InboxPilot has product-screen evidence and reviewer demo proof.
+- Facebook Login for Business scopes remain Hold until the selected flow, Business / Page / IG asset proof, and reviewer recording are reconciled.
+- App Review readiness remains Hold until final recording, current Meta Dashboard scope reconciliation, test asset proof, redaction search, rollback proof, and sign-off are complete.
+
 ## 2026-06-16 - Final App Review Demo Package Checklist Status
 
 Status: final demo package checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.

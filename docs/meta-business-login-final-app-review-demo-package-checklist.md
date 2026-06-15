@@ -42,6 +42,21 @@ Internal beta: Hold
 Production implementation: No-Go
 ```
 
+Latest permission proof matrix:
+
+```text
+docs/meta-business-login-final-permission-usage-proof-matrix.md
+```
+
+Current permission decision:
+
+```text
+Permission usage proof matrix: Draft complete
+Core Instagram Business Login scopes: keep as candidate
+Content publish / insights: defer or remove until product proof exists
+Facebook Login for Business scopes: Hold until the selected flow and asset proof are reconciled
+```
+
 ## 1. Reviewer Demo Recording Checklist
 
 Reviewer demo recording must show the flow without exposing secrets.

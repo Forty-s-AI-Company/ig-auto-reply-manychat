@@ -1,5 +1,26 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## Latest Current Status - 2026-06-16 Final Permission Usage Proof Matrix
+
+Evidence:
+
+```text
+docs/meta-business-login-final-permission-usage-proof-matrix.md
+```
+
+Decision:
+
+```text
+Permission usage proof matrix: Draft complete
+Core Instagram Business Login scopes: candidate keep
+instagram_business_content_publish: Defer / Remove until product proof exists
+instagram_business_manage_insights: Defer / Remove until product proof exists
+Facebook Login for Business scopes: Hold pending selected-flow reconciliation
+App Review readiness: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## Latest Current Status - 2026-06-16 Final App Review Demo Package Checklist
 
 Evidence:
