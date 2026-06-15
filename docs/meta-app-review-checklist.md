@@ -1,5 +1,16 @@
 # Meta App Review Checklist
 
+## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
+
+Status: Partial Pass / Hold.
+
+- Evidence file: `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md`.
+- Captured InboxPilot App Dashboard evidence, Instagram API setup evidence, Instagram Business Login URL evidence, business login settings, and permissions evidence.
+- Meta-provided Instagram Business Login URL uses `force_reauth=true` and `response_type=code`.
+- Instagram account selection UX was partially captured: two IG profiles and "use another profile" were shown after Facebook login.
+- Callback evidence, workspace linking evidence, channel sync evidence, reviewer demo recording, and App Review submission evidence remain missing.
+- Internal beta remains Hold; production implementation remains No-Go.
+
 ## 2026-06-15 - Meta Business Login sandbox browser evidence run
 
 Status: Hold.

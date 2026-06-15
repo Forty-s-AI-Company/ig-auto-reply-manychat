@@ -1,5 +1,14 @@
 # InboxPilot Security Review
 
+## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence security note
+
+Scope: authenticated browser evidence collection.
+
+- Added `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md`.
+- Captured Meta Dashboard and OAuth evidence without revealing app secret, token, authorization code, raw state, raw nonce, full callback URL, password, OTP, cookies, local storage, or session storage.
+- Stopped before selecting an Instagram profile and before final OAuth authorization, so no production callback, ConnectedAccount write, Channel write, webhook registration, or channel sync occurred.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-15 - Meta Business Login sandbox browser evidence security note
 
 Scope: browser-based external evidence attempt.

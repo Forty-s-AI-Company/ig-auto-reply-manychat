@@ -1,5 +1,37 @@
 # Meta Business Login Sandbox Go/No-Go Checklist
 
+## 2026-06-15 - Authenticated Browser Evidence Go/No-Go Update
+
+Status: Partial Pass / Hold.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md
+```
+
+Observed:
+
+- InboxPilot Meta App Dashboard accessible.
+- InboxPilot app id: `924285843989683`.
+- Instagram app name: `manychat-auto-reply-IG`.
+- Instagram app id: `1530009762118735`.
+- Meta-provided Instagram Business Login URL uses `force_reauth=true` and `response_type=code`.
+- Business login settings show configured redirect URI, deauthorize callback URL, and data deletion request URL; values are redacted in docs.
+- Instagram profile account selection appeared after Facebook login with two profiles and "use another profile".
+- Callback evidence was not captured because the run stopped before selecting a profile and before final OAuth authorization.
+
+Decision:
+
+```text
+Meta Dashboard evidence: Pass
+Instagram Business Login URL evidence: Pass
+Account selection UX evidence: Partial Pass
+Callback evidence: Hold
+Internal beta: Hold
+Production implementation: No-Go
+```
+
 ## 2026-06-15 - Browser Evidence Run Go/No-Go Update
 
 Status: Hold / No-Go for external evidence.

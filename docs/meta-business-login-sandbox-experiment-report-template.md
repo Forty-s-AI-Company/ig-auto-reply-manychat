@@ -1,5 +1,28 @@
 # Meta Business Login Sandbox Experiment Report Template
 
+## 2026-06-15 - Authenticated Browser Evidence Result Summary
+
+Status: Partial Pass / Hold.
+
+Evidence file:
+
+```text
+docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md
+```
+
+| Area | Result | Evidence |
+| --- | --- | --- |
+| Meta App Dashboard access | Pass | InboxPilot app visible |
+| Instagram API setup | Pass | Instagram app name / app id visible |
+| Instagram Business Login URL | Pass | `force_reauth=true`, `response_type=code` |
+| Business login settings | Pass | Redirect / deauth / data deletion configured, values redacted |
+| Permissions | Partial Pass | Messaging permissions testable; content publish / insights addable |
+| Account selection UX | Partial Pass | IG profiles and "use another profile" shown |
+| Callback payload | Hold | Stopped before final OAuth authorization |
+| Workspace linking | Hold | Not exercised |
+| Channel sync | Hold | Not exercised |
+| Production implementation | No-Go | App Review and callback evidence missing |
+
 ## 2026-06-15 - SBL-06 To SBL-08 Result Summary
 
 Status: completed for targeted helper tests.

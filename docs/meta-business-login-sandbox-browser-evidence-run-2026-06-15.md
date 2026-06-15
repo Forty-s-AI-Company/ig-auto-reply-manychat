@@ -4,6 +4,15 @@ Date: 2026-06-15
 Status: Hold  
 Scope: Browser-based external evidence attempt for Meta Business Login sandbox
 
+Update:
+
+```text
+Superseded by authenticated evidence run:
+docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md
+```
+
+The first run stopped at Facebook login. After the browser was authenticated, the follow-up run captured Meta App Dashboard, Instagram Business Login URL, permissions, business login settings, and partial account selection evidence.
+
 ## Summary
 
 This run attempted to move from local sandbox scaffold validation into browser-based external evidence collection.

@@ -1,5 +1,26 @@
 # Meta Business Login Sandbox Runbook Template
 
+## 2026-06-15 - Authenticated Browser Evidence Run Record
+
+Status: Partial Pass / Hold before account authorization.
+
+| Field | Value |
+| --- | --- |
+| Run ID | `authenticated_browser_evidence_20260615_001` |
+| Evidence file | `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md` |
+| Browser surface | In-app Browser |
+| Meta Developers access | Pass |
+| InboxPilot app id | `924285843989683` |
+| Instagram app id | `1530009762118735` |
+| Instagram Business Login URL | Observed with `force_reauth=true`, `response_type=code`, callback redacted |
+| Business login settings | Redirect / deauth / data deletion fields configured; values redacted |
+| Account selection UX | Partial Pass: two IG profiles plus "use another profile" shown |
+| Callback evidence | Not captured |
+| Credentials / OTP entered | No |
+| Raw token / code / secret recorded | No |
+| Internal beta | Hold |
+| Production implementation | No-Go |
+
 ## 2026-06-15 - Browser Evidence Run Record
 
 Status: Hold at Meta login.

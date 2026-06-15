@@ -1,5 +1,36 @@
 # Codex Session Log
 
+## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
+
+Task:
+
+- Continue after the in-app Browser was authenticated into Meta Developers.
+- Capture read-only evidence for InboxPilot App Dashboard, Instagram API setup, Instagram Business Login URL, business login settings, permissions, and account selection UX.
+- Stop before selecting an Instagram profile and before final OAuth authorization.
+
+Files changed:
+
+- `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md`
+- `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`
+- `docs/meta-business-login-sandbox-implementation-final-report.md`
+- `docs/meta-business-login-sandbox-go-no-go-checklist.md`
+- `docs/meta-business-login-sandbox-runbook-template.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/codex-session-log.md`
+
+Validation / observations:
+
+- Meta Apps page showed InboxPilot app id `924285843989683`, live mode, and business `零元兄弟`.
+- InboxPilot Dashboard showed no required actions, rate limit 0% used, and Instagram / Pages / Messenger use cases.
+- Instagram API setup showed Instagram app name `manychat-auto-reply-IG`, app id `1530009762118735`, and app secret masked by Meta UI.
+- Meta-provided Instagram Business Login URL includes `force_reauth=true`, `response_type=code`, callback URL redacted, and Instagram Business scopes.
+- Business login settings showed redirect, deauthorize callback, and data deletion request fields configured; values redacted.
+- Permissions table showed required messaging permissions as testable, while content publish / insights were shown as addable.
+- Instagram OAuth flow showed login form and then IG profile account selection after Facebook login.
+- No final OAuth authorization or callback was completed.
+
 ## 2026-06-15 - Meta Business Login sandbox browser evidence run
 
 Task:

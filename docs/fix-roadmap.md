@@ -1,5 +1,15 @@
 # InboxPilot Fix Roadmap
 
+## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
+
+Status: Partial Pass / Hold.
+
+- Added `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md`.
+- Captured InboxPilot Meta App Dashboard evidence, Instagram API setup evidence, Instagram Business Login authorize URL evidence, business login settings evidence, permissions evidence, and partial account selection UX evidence.
+- Key finding: Meta-provided Instagram Business Login URL uses `force_reauth=true` and `response_type=code`.
+- Key finding: account selection UX can appear with IG profiles plus "use another profile", but callback evidence was not captured because the run stopped before selecting a profile and final authorization.
+- Internal beta remains Hold. Production implementation remains No-Go.
+
 ## 2026-06-15 - Meta Business Login sandbox browser evidence run
 
 Status: Hold at Facebook login.
