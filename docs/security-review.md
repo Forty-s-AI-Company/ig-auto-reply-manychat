@@ -1,5 +1,15 @@
 # InboxPilot Security Review
 
+## 2026-06-16 - Meta Business Login internal beta real evidence execution plan security note
+
+Scope: documentation-only real evidence execution plan.
+
+- Added `docs/meta-business-login-internal-beta-real-evidence-execution-plan.md`.
+- The plan defines real artifact collection, artifact owner/version/redaction gates, reviewer recording and screenshot order, permission proof and test asset proof collection, redaction report execution, access-control tests, rollback/fallback tests, production write guard tests, token exchange guard tests, and required template backfill.
+- The plan keeps internal beta at Hold until all real evidence gates are Pass and all sign-offs are recorded.
+- The plan explicitly blocks Supabase migration / `db push`, production OAuth flow changes, callback changes, login button changes, env changes, Prisma schema changes, production ConnectedAccount / Channel writes, and real Meta token exchange.
+- Existing production OAuth routes, callback routes, login buttons, env, Prisma schema, token storage, and production write paths were not changed.
+
 ## 2026-06-16 - Meta Business Login internal beta document index security note
 
 Scope: documentation-only internal beta document index.
