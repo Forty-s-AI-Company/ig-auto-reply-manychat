@@ -341,3 +341,37 @@ npm run load:test
   - Redis / worker / queue production readiness.
   - Observability and alerting.
   - Meta App Review and production permissions.
+
+## 2026-06-24 - Staging DB env handoff status
+
+Current status:
+
+- Vercel Preview has the non-secret staging markers required by the health guard:
+  - `APP_URL`
+  - `APP_DOMAIN`
+  - `INBOXPILOT_DEPLOYMENT_ENV`
+  - `INBOXPILOT_DB_ENV`
+  - existing `INBOXPILOT_RELEASE_CHANNEL`
+- `staging` branch deployment succeeded at Preview deployment `inboxpilot-90d03j3b3-a25814740s-projects.vercel.app`.
+- GitHub Actions `CI` and `Update Staging Alias` both passed for commit `95c55b3`.
+- `staging.carry-digital-nomad.in.net` resolves to the latest staging Preview deployment.
+- `/api/health/staging` is reachable and currently returns HTTP 503 by design because staging Supabase DB secrets have not been added yet.
+
+Remaining work:
+
+- Create or locate the independent Supabase staging project.
+- Add these Preview-only values without printing secrets:
+  - `DATABASE_URL`
+  - `DIRECT_URL`
+  - `STAGING_SUPABASE_PROJECT_REF`
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+  - `AUTH_SECRET`
+  - `TOKEN_ENCRYPTION_KEY`
+- Redeploy `staging` branch and verify `/api/health/staging` returns healthy.
+
+Risk note:
+
+- Do not reuse production Supabase values for staging.
+- Do not copy production data into staging unless a separate scrubbed-seed plan is approved.

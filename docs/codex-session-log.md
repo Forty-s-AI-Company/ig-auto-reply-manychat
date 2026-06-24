@@ -67,6 +67,69 @@ Next suggested Codex Prompt:
 限制：不要輸出 secret 值，不要碰 production DB。
 ```
 
+## 2026-06-24 - Staging Preview DB env and health verification
+
+Task goal:
+
+- Add available staging Preview environment markers to Vercel without exposing secrets.
+- Trigger a staging branch Preview deployment.
+- Verify `staging.carry-digital-nomad.in.net/api/health/staging`.
+- Do not touch production DB.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Added non-secret Preview env keys in Vercel: `APP_URL`, `APP_DOMAIN`, `INBOXPILOT_DEPLOYMENT_ENV`, `INBOXPILOT_DB_ENV`.
+- Confirmed Preview already has `INBOXPILOT_RELEASE_CHANNEL`.
+- Did not add Supabase DB URLs, Supabase service role, anon key, or auth secrets because no staging Supabase output values were available in this workspace.
+- Pushed staging commit `95c55b3` and triggered a Preview deployment.
+
+Validation:
+
+```text
+gh run list --branch staging --limit 10
+Result: CI success, Update Staging Alias success.
+
+npx vercel inspect https://staging.carry-digital-nomad.in.net --scope a25814740s-projects
+Result: staging alias points to Ready Preview deployment inboxpilot-90d03j3b3-a25814740s-projects.vercel.app.
+
+curl.exe -i https://staging.carry-digital-nomad.in.net/api/health/staging
+Result: HTTP 503 by design because staging DB secret env is still missing.
+Reasons reported: database_url_missing, direct_url_missing, staging_supabase_project_ref_missing.
+```
+
+Launch impact:
+
+- Staging deployment and alias automation are working.
+- Production DB was not touched or reused.
+- Staging DB split is not complete until real staging Supabase env values are added to Vercel Preview and `/api/health/staging` returns healthy.
+
+New risks:
+
+- No new production risk from this task.
+- Current staging Preview intentionally fails the staging health check until `DATABASE_URL`, `DIRECT_URL`, and `STAGING_SUPABASE_PROJECT_REF` point to the independent staging Supabase project.
+
+Next suggested Codex Prompt:
+
+```text
+我已經在 Supabase 建好 staging project，請用不輸出 secret 的方式把以下 staging env 加到 Vercel Preview：
+- DATABASE_URL
+- DIRECT_URL
+- STAGING_SUPABASE_PROJECT_REF
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+- AUTH_SECRET
+- TOKEN_ENCRYPTION_KEY
+
+加完後請 redeploy staging branch，並驗證 /api/health/staging 變成 healthy。
+限制：不要碰 production DB，不要輸出 secret 值。
+```
+
 ## 2026-06-24 - Release mode commit preparation
 
 Task goal:
