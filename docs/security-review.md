@@ -1,5 +1,25 @@
 # InboxPilot Security Review
 
+## 2026-06-24 - Staging DB isolation guard
+
+Scope:
+
+- Planned a dedicated Supabase staging DB architecture.
+- Added `/api/health/staging` to verify staging release / DB guard configuration.
+- Added documentation for Vercel Preview env values required to avoid production DB sharing.
+
+Security properties:
+
+- The staging health check only runs a DB connectivity ping and env guard checks.
+- It does not read application tables, does not copy data, and does not expose DB URLs, passwords, service role keys, tokens, or customer data.
+- `INBOXPILOT_DB_ENV=staging` and `STAGING_SUPABASE_PROJECT_REF` are required before staging health can pass.
+- Production Supabase credentials must not be reused in Preview.
+
+Residual risk:
+
+- The actual Supabase staging project and Vercel Preview secret values still need to be created manually.
+- Until Preview env points to a separate staging DB and `/api/health/staging` passes, production customer onboarding remains Hold.
+
 ## 2026-06-24 - Release mode proxy guard
 
 Scope:

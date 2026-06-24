@@ -108,9 +108,10 @@ INBOXPILOT_RELEASE_CHANNEL=full
 Concern:
 
 - Preview currently does not list `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `APP_URL`, Meta, PayUNI, Supabase, Google, Telegram, Redis, or cron env vars.
-- If staging should use the same DB temporarily, copy the required runtime env vars to Preview deliberately.
-- If staging should not share DB, create separate Preview/staging DB env vars instead.
+- Staging should no longer share production DB for formal launch readiness.
+- Create separate Preview/staging DB env vars from a dedicated Supabase staging project.
 - Do not assume Production env vars are available to Preview deployments.
+- Use `/api/health/staging` after deployment to verify `INBOXPILOT_DB_ENV=staging` and Supabase project ref matching.
 
 ## DB Sharing Risk
 
@@ -143,9 +144,12 @@ If Preview currently lacks DB env vars:
 - `[x]` Confirm `src/proxy.ts` blocks full-only routes and non-Instagram OAuth paths on simple production by smoke test.
 - `[ ]` Confirm Production `INBOXPILOT_RELEASE_CHANNEL=simple`.
 - `[ ]` Confirm Preview `INBOXPILOT_RELEASE_CHANNEL=full`.
-- `[ ]` Decide whether staging temporarily shares DB or receives a separate DB.
-- `[ ]` If temporarily sharing DB, explicitly add required DB/runtime env vars to Preview and mark the risk accepted.
-- `[ ]` Before real users, split Production and Staging `DATABASE_URL` / `DIRECT_URL`.
+- `[x]` Decide that formal launch readiness requires a separate staging DB.
+- `[ ]` Create a dedicated Supabase staging project.
+- `[ ]` Add staging-only `DATABASE_URL` / `DIRECT_URL` to Vercel Preview.
+- `[ ]` Add `INBOXPILOT_DB_ENV=staging` and `STAGING_SUPABASE_PROJECT_REF=<staging-ref>` to Vercel Preview.
+- `[ ]` Verify `/api/health/staging` returns `checks.staging.ok=true`.
+- `[ ]` Confirm Production `DATABASE_URL` / `DIRECT_URL` were not changed.
 - `[ ]` Remove or disable Meta env token fallback in production.
 - `[ ]` Confirm `TOKEN_ENCRYPTION_KEY` exists in Production before storing real channel tokens.
 - `[ ]` Confirm staging alias automation only updates from staging branch Preview deployments.

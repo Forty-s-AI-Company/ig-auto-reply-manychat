@@ -1,5 +1,29 @@
 # Fix Roadmap
 
+## Latest - 2026-06-24 Staging DB split plan and health check
+
+Status: planned and guarded; Supabase/Vercel secrets still need manual setup.
+
+- `[x]` Add `docs/staging-db-runbook.md`.
+- `[x]` Document Vercel Preview env values for staging-only DB.
+- `[x]` Add staging DB env guard variables.
+- `[x]` Add `/api/health/staging`.
+- `[x]` Add tests for staging health pass/fail conditions.
+- `[x]` Validate targeted health tests, lint, and build locally.
+- `[ ]` Create a separate Supabase staging project.
+- `[ ]` Set Vercel Preview `DATABASE_URL` / `DIRECT_URL` to staging DB URLs.
+- `[ ]` Set Preview auth, Supabase, PayUNI sandbox, provider, Redis, and cron env values.
+- `[ ]` Run migrations against staging DB only.
+- `[ ]` Verify staging alias health check after deployment.
+
+Hard boundary:
+
+- Do not read, copy, migrate, or seed production data while preparing staging.
+
+Validation note:
+
+- Full `npm test` currently depends on the configured Supabase pooler and failed when that host was unreachable. Re-run after test DB connectivity is stable.
+
 ## Latest - 2026-06-24 Release mode implementation and smoke tests
 
 Status: implemented locally; validated and preparing push to `master` and `staging`.

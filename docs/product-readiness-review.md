@@ -16,6 +16,15 @@ Remaining product caveats:
 - Simple release route blocking is a product-surface guard, not a replacement for auth, tenant isolation, quota enforcement, or payment checks.
 - Preview runtime env vars still need deliberate completion before staging can be treated as a dependable QA environment.
 
+## 2026-06-24 - Staging DB split readiness
+
+Status: planned and guarded; not yet provisioned.
+
+- Added a staging DB runbook with Supabase project, Vercel Preview env, migration, and health-check steps.
+- Added a staging health endpoint that checks DB connectivity and staging env guards without reading production data.
+- Production customer onboarding remains Hold until the staging Supabase project exists and `/api/health/staging` passes.
+- This change does not create the Supabase project, does not copy data, and does not run migrations.
+
 ## 2026-06-24 - Master / staging pre-launch audit
 
 Status: documented / still pre-launch hold for real customers.

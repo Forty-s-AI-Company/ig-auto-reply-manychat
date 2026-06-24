@@ -38,6 +38,7 @@ DATABASE_URL
 DIRECT_URL
 AUTH_SECRET
 APP_URL
+INBOXPILOT_RELEASE_CHANNEL
 ADMIN_EMAIL
 ADMIN_PASSWORD
 ADMIN_NAME
@@ -45,6 +46,81 @@ REDIS_URL
 ```
 
 完整列表請看 [environment-variables.md](./environment-variables.md)。
+
+## Production / Staging release channel
+
+目前採用「正式站簡易版、測試站完整規劃版」：
+
+```text
+Production: https://inboxpilot.carry-digital-nomad.in.net
+Staging:    https://staging.carry-digital-nomad.in.net
+```
+
+Vercel 環境變數設定：
+
+```text
+Production: INBOXPILOT_RELEASE_CHANNEL=simple
+Preview:    INBOXPILOT_RELEASE_CHANNEL=full
+Production: INBOXPILOT_DB_ENV=production
+Preview:    INBOXPILOT_DB_ENV=staging
+```
+
+`staging.carry-digital-nomad.in.net` 是固定 staging alias，會由 GitHub Actions 在 Vercel Preview deployment 成功後自動更新到最新 Preview URL。
+
+自動更新流程：
+
+- Workflow: `.github/workflows/update-staging-alias.yml`
+- Trigger: GitHub `deployment_status=success`、deployment environment 不是 `Production`，且 deployment ref 必須是 `staging`
+- Manual fallback: GitHub Actions `Update Staging Alias` 的 `workflow_dispatch`
+- Alias target: `staging.carry-digital-nomad.in.net`
+- Allowed source: `*.vercel.app` Preview deployment URL
+
+自動觸發只接受 `staging` branch 的 Preview deployment。其他 feature / codex / master Preview deployment 不會自動更新 staging alias；若真的需要臨時指定，可用 manual fallback 明確輸入 Preview URL。
+
+GitHub Secrets 需求：
+
+```text
+VERCEL_TOKEN   必填，Vercel token，只放在 GitHub Secrets
+VERCEL_SCOPE   選填，Vercel team / scope slug；個人專案可不填
+```
+
+手動補 alias 時可在 GitHub Actions 輸入 Preview deployment URL，或本機執行：
+
+```bash
+npx vercel alias set <preview-deployment-url> staging.carry-digital-nomad.in.net
+```
+
+注意：這個流程只更新 custom domain alias，不會部署、不會修改 DB、不會切換 release channel。開始導入真實客戶或真實金流前，必須拆成 production DB 與 staging DB。
+
+## Staging DB isolation
+
+正式上線架構需要獨立 staging Supabase project。不要讓 Preview 環境共用 Production `DATABASE_URL` / `DIRECT_URL`。
+
+Preview 必填核心 env：
+
+```text
+INBOXPILOT_RELEASE_CHANNEL=full
+INBOXPILOT_DEPLOYMENT_ENV=staging
+INBOXPILOT_DB_ENV=staging
+STAGING_SUPABASE_PROJECT_REF=<staging-project-ref>
+APP_URL=https://staging.carry-digital-nomad.in.net
+APP_DOMAIN=staging.carry-digital-nomad.in.net
+AUTH_SECRET=<staging-only-secret>
+TOKEN_ENCRYPTION_KEY=<staging-only-secret>
+DATABASE_URL=<staging-supabase-pooler-url>
+DIRECT_URL=<staging-supabase-direct-url>
+NEXT_PUBLIC_SUPABASE_URL=<staging-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<staging-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<staging-service-role-key>
+```
+
+部署後驗證：
+
+```bash
+curl -i https://staging.carry-digital-nomad.in.net/api/health/staging
+```
+
+期待 `checks.staging.ok=true`、`environment.dbEnv=staging`、`environment.releaseChannel=full`。完整 runbook 請看 [staging-db-runbook.md](./staging-db-runbook.md)。
 
 4. 部署後執行 DB migration：
 
@@ -96,6 +172,12 @@ GET /api/cron/worker
 ```
 
 建議在 Vercel Cron 或外部 scheduler 設定。
+
+AI model refresh note:
+
+- `codex_cli` and `antigravity_cli` are local CLI providers and remain opt-in by design.
+- Do not set `AI_ENABLE_LOCAL_CLI=true` in the shared Vercel / production cron environment unless that runtime actually has the corresponding CLI installed and authenticated.
+- Current recommended production setting is to leave `AI_ENABLE_LOCAL_CLI` unset, so daily refresh only covers API-backed providers.
 
 ## Webhook URLs
 

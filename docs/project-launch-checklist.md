@@ -9,6 +9,18 @@
 - `[ ]` Preview currently needs explicit DB/runtime env confirmation; do not assume Production env vars are available to Preview.
 - `[ ]` Production and staging DBs must be separated before real customer onboarding.
 
+## 2026-06-24 - Staging DB split plan
+
+- `[x]` Added staging DB runbook.
+- `[x]` Defined Vercel Preview env requirements for staging-only DB.
+- `[x]` Added `/api/health/staging` guard endpoint.
+- `[ ]` Create a separate Supabase staging project.
+- `[ ]` Add staging-only `DATABASE_URL` / `DIRECT_URL` to Vercel Preview.
+- `[ ]` Add staging-only auth, Supabase, PayUNI sandbox, Meta test, Redis, and cron env values to Vercel Preview.
+- `[ ]` Run Prisma migrations against staging DB only.
+- `[ ]` Verify `https://staging.carry-digital-nomad.in.net/api/health/staging` returns `checks.staging.ok=true`.
+- `[ ]` Confirm Production env and data were not modified.
+
 ## 2026-06-24 - Release mode implementation
 
 - `[x]` Added centralized release channel helper.

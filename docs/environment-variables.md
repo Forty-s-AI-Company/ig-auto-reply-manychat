@@ -40,6 +40,47 @@ See [Staging Environment Runbook](./staging-environment-runbook.md) for the full
 | `ADMIN_PASSWORD` | seed / admin helper 建立管理員密碼使用。 | `change-me` |
 | `ADMIN_NAME` | 預設管理員名稱。 | `Admin` |
 
+## Release Channel
+
+| 變數                         | 說明                                                                 |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `INBOXPILOT_RELEASE_CHANNEL` | `simple` 顯示正式站簡易版；`full` 顯示完整規劃版。此變數不是 secret。 |
+
+目前 Vercel 建議設定：
+
+```text
+Production: INBOXPILOT_RELEASE_CHANNEL=simple
+Preview:    INBOXPILOT_RELEASE_CHANNEL=full
+```
+
+若未設定，程式會依 host fallback：
+
+- `inboxpilot.carry-digital-nomad.in.net` 預設為 `simple`
+- 其他 host，例如 localhost / Vercel Preview，預設為 `full`
+
+## Deployment / DB Guard
+
+| 變數                           | 說明                                                                 |
+| ------------------------------ | -------------------------------------------------------------------- |
+| `INBOXPILOT_DEPLOYMENT_ENV`    | 部署環境標記：`production`、`staging`、`development` 或 `test`。       |
+| `INBOXPILOT_DB_ENV`            | DB 環境標記。Production 用 `production`，staging Preview 用 `staging`。 |
+| `STAGING_SUPABASE_PROJECT_REF` | staging Supabase project ref，用於 `/api/health/staging` 比對 DB URL。 |
+
+建議 Vercel 設定：
+
+```text
+Production:
+INBOXPILOT_DEPLOYMENT_ENV=production
+INBOXPILOT_DB_ENV=production
+
+Preview / staging branch:
+INBOXPILOT_DEPLOYMENT_ENV=staging
+INBOXPILOT_DB_ENV=staging
+STAGING_SUPABASE_PROJECT_REF=<staging-project-ref>
+```
+
+`/api/health/staging` 會使用這些值確認 staging 沒有誤接 production DB。此 endpoint 不會輸出 DB URL 或密碼。
+
 ## Google Login
 
 | 變數 | 說明 |
@@ -66,6 +107,13 @@ https://your-domain.com/api/auth/google/callback
 | `DEEPSEEK_API_KEY` | DeepSeek API key。 |
 | `CODEX_CLI_COMMAND` | Codex CLI command。 |
 | `CODEX_CLI_TIMEOUT_MS` | Codex CLI timeout。 |
+
+## AI Local CLI Opt-in
+
+- `AI_ENABLE_LOCAL_CLI` 是 local CLI provider 的顯式開關。
+- `codex_cli` 與 `antigravity_cli` 預設不納入 production / shared cron refresh。
+- 每日 `/api/cron/refresh-ai-models` 與 `npm run ai-models:refresh` 只有在 `AI_ENABLE_LOCAL_CLI=true` 時才會納入這兩個 provider。
+- 若 automation 環境沒有安裝或登入對應 CLI，建議維持關閉，避免 daily refresh 依賴機器狀態。
 
 ## OAuth / Meta / Instagram
 
@@ -150,6 +198,8 @@ Production 注意：
 
 ## Supabase
 
+Production Supabase 專案名必須是 `IG Auto Reply ManyChat`。Staging 必須使用獨立 Supabase project，不可共用 production DB。
+
 | 變數 | 說明 |
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase public URL。可以進前端。 |
@@ -157,10 +207,12 @@ Production 注意：
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key。只能放 server env。 |
 | `TEST_DATABASE_URL` | 測試資料庫 URL，`scripts/run-tests.mjs` 會建立獨立 test schema。 |
 
+Staging DB 拆分流程請看 [staging-db-runbook.md](./staging-db-runbook.md)。
+
 ## Secret Handling
 
-- 不要 commit `.env` 或 `.env.local`
-- `.env.example` 只能放 placeholder
-- `NEXT_PUBLIC_*` 會進前端 bundle，不可放 token、secret、API key
-- `SUPABASE_SERVICE_ROLE_KEY`、PayUNI key、Meta token、AI provider key 都只能放 server env
-- audit、console、文件、URL 不可記錄完整 token、secret、authorization code 或付款敏感 payload
+- 不要 commit `.env` 或 `.env.local`。
+- 可 commit `.env.example`，但只能放 placeholder。
+- `NEXT_PUBLIC_*` 會進前端 bundle，不要放 service role、API key、token、secret。
+- `SUPABASE_SERVICE_ROLE_KEY`、PayUNI key、Meta token、OpenAI key 都必須只存在 server env。
+- audit、console、文件、URL 不可記錄完整 token、secret、authorization code 或付款敏感 payload。

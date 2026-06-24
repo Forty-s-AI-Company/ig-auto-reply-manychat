@@ -1,5 +1,72 @@
 # Codex Session Log
 
+## 2026-06-24 - Staging DB split plan and health check
+
+Task goal:
+
+- Plan a production-ready staging DB split.
+- Define Vercel Preview env values.
+- Update docs and checklist.
+- Do not touch production data.
+- Add a staging health check.
+
+Files changed:
+
+- `.env.example`
+- `src/lib/health.ts`
+- `src/app/api/health/staging/route.ts`
+- `tests/health.test.ts`
+- `docs/staging-db-runbook.md`
+- `docs/environment-variables.md`
+- `docs/deployment.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added `INBOXPILOT_DEPLOYMENT_ENV`, `INBOXPILOT_DB_ENV`, and `STAGING_SUPABASE_PROJECT_REF` placeholders.
+- Added `/api/health/staging`, which validates release channel, staging DB env, DB URL presence, and Supabase project ref matching.
+- The staging health check only uses DB connectivity ping plus env guard checks. It does not query application tables or expose DB connection strings.
+- Added a staging DB runbook for separate Supabase project setup, Vercel Preview env, migration flow, and post-deploy verification.
+
+Validation:
+
+```text
+npx vitest run tests/health.test.ts
+Result: passed. 1 test file passed, 5 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Prisma generated-client fallback reused the existing client because the Windows query engine DLL was locked by a local Node process.
+
+npm test
+Result: failed because the configured Supabase pooler host was temporarily unreachable while DB-backed tests and final test-schema cleanup were running.
+Error class: PrismaClientInitializationError.
+Observed host: aws-1-ap-southeast-1.pooler.supabase.com:5432.
+```
+
+Launch impact:
+
+- Production customer onboarding remains Hold until the Supabase staging project and Preview env are actually configured and `/api/health/staging` passes.
+- No production data, schema, env, or deployment value was modified by this local change.
+
+New risks:
+
+- No new secret exposure.
+- Staging health will fail until Preview has staging-only DB env values.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我在 Supabase 建好 staging project 後，把 staging 專案輸出的 env 值逐一加到 Vercel Preview，然後觸發 staging branch deployment 並驗證 `/api/health/staging`。
+限制：不要輸出 secret 值，不要碰 production DB。
+```
+
 ## 2026-06-24 - Release mode commit preparation
 
 Task goal:
