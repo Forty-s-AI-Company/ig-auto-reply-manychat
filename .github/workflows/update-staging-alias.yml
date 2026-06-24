@@ -66,7 +66,7 @@ jobs:
             VERCEL_ARGS+=(--scope "${VERCEL_SCOPE}")
           fi
 
-          INSPECT_OUTPUT="$(npx --yes vercel@latest inspect "${DEPLOYMENT_URL}" --token "${VERCEL_TOKEN}" "${VERCEL_ARGS[@]}")"
+          INSPECT_OUTPUT="$(npx --yes vercel@latest inspect "${DEPLOYMENT_URL}" --token "${VERCEL_TOKEN}" "${VERCEL_ARGS[@]}" 2>&1)"
           echo "${INSPECT_OUTPUT}"
 
           if ! grep -Fq "https://${STAGING_BRANCH_ALIAS}" <<< "${INSPECT_OUTPUT}"; then
