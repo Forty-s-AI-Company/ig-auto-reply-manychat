@@ -1,0 +1,86 @@
+name: Update Staging Alias
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: "Vercel Preview deployment URL, for example https://inboxpilot-xxxx.vercel.app"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-alias
+  cancel-in-progress: false
+
+env:
+  STAGING_ALIAS: staging.carry-digital-nomad.in.net
+  PRODUCTION_ALIAS: inboxpilot.carry-digital-nomad.in.net
+
+jobs:
+  update-staging-alias:
+    name: Point staging alias at latest Preview deployment
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.deployment_status.state == 'success' &&
+        github.event.deployment.environment != 'Production' &&
+        github.event.deployment.ref == 'staging'
+      )
+    env:
+      DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || github.event.deployment_status.target_url }}
+      DEPLOYMENT_REF: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event.deployment.ref }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
+    steps:
+      - name: Validate Preview deployment URL
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "Missing required GitHub Secret: VERCEL_TOKEN"
+            exit 1
+          fi
+
+          if [ -z "${DEPLOYMENT_URL:-}" ]; then
+            echo "No deployment URL was provided by the GitHub deployment_status event or workflow_dispatch input."
+            exit 1
+          fi
+
+          if [ "${DEPLOYMENT_REF}" != "manual" ] && [ "${DEPLOYMENT_REF}" != "staging" ]; then
+            echo "Refusing to update staging alias from deployment ref: ${DEPLOYMENT_REF}"
+            exit 1
+          fi
+
+          HOST="$(node -e 'const value = process.env.DEPLOYMENT_URL; try { console.log(new URL(value).hostname); } catch { process.exit(1); }')"
+
+          if [[ "${HOST}" != *.vercel.app ]]; then
+            echo "Refusing to alias non-Vercel Preview host: ${HOST}"
+            exit 1
+          fi
+
+          if [[ "${HOST}" == "${STAGING_ALIAS}" || "${HOST}" == "${PRODUCTION_ALIAS}" ]]; then
+            echo "Refusing to alias a custom domain back onto staging: ${HOST}"
+            exit 1
+          fi
+
+          echo "Validated Preview deployment host: ${HOST}"
+
+      - name: Update staging alias
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERCEL_ARGS=()
+          if [ -n "${VERCEL_SCOPE:-}" ]; then
+            VERCEL_ARGS+=(--scope "${VERCEL_SCOPE}")
+          fi
+
+          npx --yes vercel@latest alias set "${DEPLOYMENT_URL}" "${STAGING_ALIAS}" \
+            --token "${VERCEL_TOKEN}" \
+            "${VERCEL_ARGS[@]}"
