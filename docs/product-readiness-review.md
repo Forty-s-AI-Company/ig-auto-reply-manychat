@@ -1,5 +1,68 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-24 - Release mode implementation readiness
+
+Status:
+
+- `master` is prepared as the simple production release path.
+- `staging` is prepared as the full release path.
+- Production simple release keeps the IG-first product surface: Home, Inbox, Contacts, IG connection, Analytics, Automations, and Referrals.
+- Full-only surfaces are hidden from simple release navigation and blocked by `src/proxy.ts`.
+- Staging / Preview remains the place to validate the full planned product surface.
+
+Remaining product caveats:
+
+- This does not split the database. Staging and production data must still be separated before real customer onboarding.
+- Simple release route blocking is a product-surface guard, not a replacement for auth, tenant isolation, quota enforcement, or payment checks.
+- Preview runtime env vars still need deliberate completion before staging can be treated as a dependable QA environment.
+
+## 2026-06-24 - Master / staging pre-launch audit
+
+Status: documented / still pre-launch hold for real customers.
+
+- `docs/master-staging-prelaunch-checklist.md` now summarizes release mode, Vercel env, and DB sharing risk.
+- Vercel env split exists for `INBOXPILOT_RELEASE_CHANNEL`.
+- Vercel Preview currently lists only `INBOXPILOT_RELEASE_CHANNEL`; staging runtime env completeness must be confirmed.
+- The release-mode implementation and smoke tests are now prepared for commit to `master` and `staging`.
+- Shared DB remains temporarily acceptable only before real customer onboarding.
+
+## 2026-06-19 - Simple production surface update
+
+Decision:
+
+- Production custom domain should run a simplified IG-first launch surface.
+- Preview / testing deployment should keep the full planned version for validation.
+- Staging custom alias is `https://staging.carry-digital-nomad.in.net`.
+- Staging alias now has a GitHub Actions auto-update workflow for successful Preview deployments.
+- The automatic staging alias workflow is restricted to successful `staging` branch Preview deployments.
+- Vercel env split is `INBOXPILOT_RELEASE_CHANNEL=simple` for Production and `full` for Preview.
+- Shared DB is temporarily accepted only because the product is not live with real customers yet.
+
+Simple production surface:
+
+- Home / dashboard
+- Inbox
+- Contacts
+- Channels with Instagram-only connection
+- Analytics
+- Automations
+- Referrals as invite/referral activity only
+
+Deferred from first production surface:
+
+- Affiliate payout / affiliate admin
+- Broadcasts
+- Sequences
+- AI settings / Knowledge Base
+- Billing / Wallet
+- Multi-platform connection beyond Instagram
+- Mock tester and internal testing surfaces
+
+Readiness implication:
+
+- This reduces first-launch product complexity and App Review surface.
+- It does not remove the need for production Meta approval, tenant isolation review, webhook reliability, billing/legal decisions, and staging/prod DB separation before real customer onboarding.
+
 更新日期：2026-06-10
 
 ## 總結

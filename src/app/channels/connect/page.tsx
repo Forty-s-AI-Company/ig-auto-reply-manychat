@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Bot, FlaskConical, Link2 } from "lucide-react";
 import { ChannelConnectionShell, GiftVisual } from "@/components/ChannelConnectionShell";
 import { requireUser } from "@/lib/auth";
+import { isSimpleRelease } from "@/lib/release-mode";
 
 const channels = [
   {
-    name: "Social Accounts",
-    description: "統一的 OAuth popup 入口，Meta、Telegram 與 Mock provider 都會從這裡進入。",
+    name: "Instagram",
+    description: "正式站先只開放 Instagram 連線，收件匣、聯絡人、自動化都會以 IG 為主。",
     href: "/channels/connect/social",
     icon: "social",
   },
@@ -40,6 +41,8 @@ const channels = [
 
 export default async function ChannelConnectionPage() {
   await requireUser();
+  const simpleRelease = await isSimpleRelease();
+  const visibleChannels = simpleRelease ? channels.filter((channel) => channel.name === "Instagram") : channels;
 
   return (
     <ChannelConnectionShell
@@ -50,7 +53,7 @@ export default async function ChannelConnectionPage() {
       visual={<GiftVisual />}
     >
       <div className="space-y-6">
-        {channels.map((channel) =>
+        {visibleChannels.map((channel) =>
           channel.disabled ? (
             <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 opacity-70 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
               <ChannelIcon type={channel.icon} />

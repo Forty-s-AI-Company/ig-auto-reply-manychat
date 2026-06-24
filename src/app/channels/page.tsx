@@ -22,6 +22,7 @@ import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProf
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
+import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type Props = {
@@ -92,7 +93,7 @@ const settingsGroups = [
 ];
 
 const channelCards = [
-  ["Social Accounts", "統一的 OAuth popup 入口，Meta、Telegram 與 Mock provider 都在這裡完成連接。", true, "/channels/connect/social"],
+  ["Instagram", "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。", true, "/channels/connect/social"],
   ["Telegram Bot", "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。", true, "/channels/connect/social"],
   ["Mock OAuth Provider", "本機測試用 provider，完整走 popup、callback、postMessage 流程。", true, "/channels/connect/social"],
   ["TikTok", "可先規劃平台入口，正式連線開放後會顯示授權按鈕。", false, ""],
@@ -140,6 +141,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
+  const simpleRelease = await isSimpleRelease();
   const [channels, tagCount, contactCount, automationCount, teamCount] = await Promise.all([
     getDb().channel.findMany({
       where: { workspaceId },
@@ -155,6 +157,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
   });
+  const visibleChannelCards = simpleRelease ? channelCards.filter(([name]) => name === "Instagram") : channelCards;
 
   return (
     <AdminShell title="設定">
@@ -232,7 +235,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <section id="platform-connect" className="space-y-3">
             <SectionTitle title="新增平台帳號" description="依照平台授權流程整理成：先選擇平台，再登入授權，成功後回到本頁顯示已連結帳號。" />
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {channelCards.map(([name, description, ready, href]) => (
+              {visibleChannelCards.map(([name, description, ready, href]) => (
                 <div key={name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>

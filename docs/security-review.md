@@ -1,5 +1,111 @@
 # InboxPilot Security Review
 
+## 2026-06-24 - Release mode proxy guard
+
+Scope:
+
+- Added release-channel based filtering for the simple production surface.
+- Added proxy checks that redirect full-only app pages away from simple production.
+- Added proxy checks that block non-Instagram OAuth entry points on simple production with a 404 JSON response.
+
+Security notes:
+
+- The proxy guard reduces accidental exposure of unfinished product areas, but it is not an authorization boundary by itself.
+- Existing route handlers must still enforce authentication, workspace / tenant isolation, rate limits, CSRF / Origin checks where applicable, and webhook / payment signature validation.
+- No tokens, secrets, authorization codes, or API keys were added to code, logs, docs, or tests in this change.
+- Shared production/staging DB remains a launch risk until split before real customer onboarding.
+
+## 2026-06-24 - Master / staging pre-launch env and DB risk note
+
+Scope:
+
+- Documented current release mode, Vercel env, and DB sharing risk in `docs/master-staging-prelaunch-checklist.md`.
+- Release-mode application code is now prepared for commit; no OAuth token exchange flow, webhook flow, payment flow, Prisma schema, token storage, or DB settings were changed.
+
+Security findings:
+
+- Production Vercel env contains runtime secrets and `INBOXPILOT_RELEASE_CHANNEL`.
+- Preview Vercel env currently lists only `INBOXPILOT_RELEASE_CHANNEL`.
+- If staging should temporarily share DB, required Preview env vars must be added intentionally rather than assumed.
+- If staging should be production-like, it needs a separate DB before real customer onboarding.
+- The local release-mode implementation and smoke tests are prepared for commit to `master` and `staging`.
+
+Residual risk:
+
+- Shared DB can let staging tests mutate production-visible data.
+- Missing Preview runtime env can make staging look deployed while failing on DB-backed routes.
+- Meta env token fallback remains a production tenant-isolation risk until removed.
+
+## 2026-06-24 - Staging alias branch guard security note
+
+Scope:
+
+- Restricted the automatic staging alias workflow to successful `staging` branch Preview deployments only.
+- Kept manual `workflow_dispatch` fallback for explicit operator-driven alias updates.
+- No application code, OAuth flow, webhook flow, payment flow, Prisma schema, or database separation was changed.
+
+Security properties:
+
+- Feature / codex / master Preview deployments no longer move `staging.carry-digital-nomad.in.net` automatically.
+- The workflow job condition requires `github.event.deployment.ref == 'staging'` for automatic deployment-status runs.
+- The shell validation step also rejects non-manual deployment refs other than `staging`.
+- Existing `*.vercel.app` host validation and Production deployment exclusion remain in place.
+
+Residual risk:
+
+- Manual workflow dispatch can still update staging alias when an operator explicitly enters a Preview deployment URL.
+- Staging and production still share a database temporarily. Preview deployments can still operate on shared data until DBs are separated.
+
+## 2026-06-24 - Staging alias automation security note
+
+Scope:
+
+- Added GitHub Actions workflow to update `staging.carry-digital-nomad.in.net` after successful non-production Vercel deployment status events.
+- Added manual `workflow_dispatch` fallback that accepts a Preview deployment URL.
+- No application code, OAuth flow, webhook flow, payment flow, Prisma schema, or database separation was changed.
+
+Security properties:
+
+- `VERCEL_TOKEN` is required as a GitHub Secret and is not stored in repository files.
+- `VERCEL_SCOPE` is optional and is also read only from GitHub Secrets.
+- The workflow only accepts deployment hosts ending in `.vercel.app` before running `vercel alias set`.
+- Production deployment events are excluded from the automatic trigger condition.
+
+Residual risk:
+
+- Staging and production still share a database temporarily. Preview deployments can still operate on shared data until DBs are separated.
+- Automatic alias updates are now branch-guarded to the `staging` deployment ref.
+
+## 2026-06-19 - Simple production release entry-point security note
+
+Scope:
+
+- Added release-channel detection for production simple release vs preview full release.
+- Added proxy-level blocking for full-only app routes on the simple production host.
+- Added proxy-level blocking for non-Instagram OAuth entry points on the simple production host.
+- Updated navigation and channel connection UI to expose Instagram-only connection on the simple production host.
+- Configured Vercel env split: Production `INBOXPILOT_RELEASE_CHANNEL=simple`, Preview `INBOXPILOT_RELEASE_CHANNEL=full`.
+- Added `staging.carry-digital-nomad.in.net` as a Vercel alias to the current Preview deployment.
+
+Security properties:
+
+- No token, secret, authorization code, API key, raw callback URL, webhook secret, or payment secret was added to frontend code, URLs, logs, docs, or audit payloads.
+- No OAuth callback storage, webhook processing, payment notification processing, Prisma schema, or tenant query logic was changed.
+- Non-Instagram providers remain available on preview / full release only.
+
+Residual risk:
+
+- Production and preview still share the same database temporarily. This is acceptable only while there are no real customer operations; split DBs before real launch.
+- Feature hiding is not a substitute for authorization. Existing route-level auth and tenant checks remain required.
+- The current staging alias points to one Preview deployment. Automate branch-domain alias updates before treating it as always-current staging.
+
+Validation:
+
+```text
+npm run lint
+Result: passed
+```
+
 ## 2026-06-16 - Meta Business Login internal beta real evidence execution plan security note
 
 Scope: documentation-only real evidence execution plan.

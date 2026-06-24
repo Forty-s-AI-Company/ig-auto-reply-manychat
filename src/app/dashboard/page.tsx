@@ -17,6 +17,7 @@ import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDashboardSummary } from "@/lib/dashboard-summary";
 import { getHealthCheckResult } from "@/lib/health";
+import { isSimpleRelease } from "@/lib/release-mode";
 import { getServerCache } from "@/lib/server-cache";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -37,6 +38,7 @@ export default async function DashboardPage() {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
+  const simpleRelease = await isSimpleRelease();
 
   const {
     contacts,
@@ -76,6 +78,7 @@ export default async function DashboardPage() {
       label: "整理知識庫",
     },
   ];
+  const visibleQuickAutomations = simpleRelease ? quickAutomations.filter((item) => item.href !== "/knowledge-base") : quickAutomations;
 
   const nextSteps = [
     {
@@ -90,8 +93,8 @@ export default async function DashboardPage() {
     },
     {
       done: messages > 0,
-      title: "送一則測試訊息並查看收件匣",
-      href: "/mock-tester",
+      title: simpleRelease ? "查看收件匣與最近訊息" : "送一則測試訊息並查看收件匣",
+      href: simpleRelease ? "/inbox" : "/mock-tester",
     },
   ];
   const healthItems = [
@@ -121,10 +124,17 @@ export default async function DashboardPage() {
                   <Inbox className="h-4 w-4" />
                   查看收件匣
                 </Link>
-                <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
-                  <Megaphone className="h-4 w-4" />
-                  新增廣播
-                </Link>
+                {simpleRelease ? (
+                  <Link href="/channels/connect" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
+                    <PlugZap className="h-4 w-4" />
+                    連接 IG
+                  </Link>
+                ) : (
+                  <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
+                    <Megaphone className="h-4 w-4" />
+                    新增廣播
+                  </Link>
+                )}
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -227,7 +237,7 @@ export default async function DashboardPage() {
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
-            {quickAutomations.map((item) => {
+            {visibleQuickAutomations.map((item) => {
               const Icon = item.icon;
               return (
                 <Link

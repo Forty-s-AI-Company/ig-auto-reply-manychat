@@ -1,5 +1,49 @@
 # Project Launch Checklist
 
+## 2026-06-24 - Master / staging pre-launch audit
+
+- `[x]` Produced `docs/master-staging-prelaunch-checklist.md`.
+- `[x]` Confirmed Vercel Production has `INBOXPILOT_RELEASE_CHANNEL`.
+- `[x]` Confirmed Vercel Preview has `INBOXPILOT_RELEASE_CHANNEL`.
+- `[x]` Prepared the release-mode implementation and smoke tests for `master` / `staging` so the simple/full split can be committed and deployed.
+- `[ ]` Preview currently needs explicit DB/runtime env confirmation; do not assume Production env vars are available to Preview.
+- `[ ]` Production and staging DBs must be separated before real customer onboarding.
+
+## 2026-06-24 - Release mode implementation
+
+- `[x]` Added centralized release channel helper.
+- `[x]` Production host defaults to simple release.
+- `[x]` Non-production hosts default to full release.
+- `[x]` `INBOXPILOT_RELEASE_CHANNEL` can override host detection for Vercel Production / Preview.
+- `[x]` Simple release hides full-only nav items and non-IG connection options.
+- `[x]` Simple release blocks full-only app routes and non-Instagram OAuth entry points in `src/proxy.ts`.
+- `[x]` Added smoke tests for release channel detection and proxy behavior.
+- `[ ]` Confirm the pushed `master` and `staging` deployments after Vercel finishes building.
+
+## 2026-06-19 - Simple production release scope
+
+Current launch direction:
+
+- `[x]` Production custom domain uses simplified IG-first product surface.
+- `[x]` Preview / testing deployment keeps full planned feature surface.
+- `[x]` `staging.carry-digital-nomad.in.net` alias points to the current Preview deployment.
+- `[x]` Staging alias auto-update workflow is documented and added through GitHub Actions.
+- `[x]` Staging alias auto-update is restricted to successful `staging` branch Preview deployments.
+- `[x]` Vercel Production env has `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- `[x]` Vercel Preview env has `INBOXPILOT_RELEASE_CHANNEL=full`.
+- `[x]` Production simple release keeps Home, Inbox, Contacts, Instagram connection, Analytics, Automations, and Referrals.
+- `[x]` Affiliate payout is not part of the first production surface.
+- `[x]` GitHub Secrets are configured in the remote repository: `VERCEL_TOKEN` and `VERCEL_SCOPE`.
+- `[ ]` Production and staging databases are still shared temporarily and must be separated before real customer onboarding.
+
+Current known URLs:
+
+```text
+Production: https://inboxpilot.carry-digital-nomad.in.net
+Staging: https://staging.carry-digital-nomad.in.net
+Current Vercel Preview backing deployment: https://inboxpilot-ap79iimgd-a25814740s-projects.vercel.app
+```
+
 更新日期：2026-06-10
 
 ## 目前判定

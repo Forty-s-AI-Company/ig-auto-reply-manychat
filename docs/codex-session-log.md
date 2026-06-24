@@ -1,5 +1,323 @@
 # Codex Session Log
 
+## 2026-06-24 - Release mode commit preparation
+
+Task goal:
+
+- Prepare the local release mode implementation as a committable change.
+- Confirm `master` is the simple release path and `staging` is the full release path.
+- Add smoke tests before pushing to both branches.
+
+Files changed:
+
+- `src/lib/release-mode.ts`
+- `src/proxy.ts`
+- `src/components/AdminShell.tsx`
+- `src/components/AdminMobileNav.tsx`
+- `src/app/dashboard/page.tsx`
+- `src/app/channels/page.tsx`
+- `src/app/channels/connect/page.tsx`
+- `src/app/channels/connect/social/page.tsx`
+- `src/app/referrals/page.tsx`
+- `tests/release-mode.test.ts`
+- `tests/release-proxy.test.ts`
+- `docs/master-staging-prelaunch-checklist.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a centralized release channel helper with host defaults and `INBOXPILOT_RELEASE_CHANNEL` override support.
+- Simple release hides full-only navigation, non-Instagram channel connection options, and payout-oriented referral copy.
+- Simple release proxy redirects full-only app pages and blocks non-Instagram OAuth entry points.
+- Added smoke tests covering host/env release detection, full-only route classification, simple production redirects, staging full behavior, and Instagram-only OAuth allowance.
+
+Validation:
+
+```text
+npx vitest run tests/release-mode.test.ts tests/release-proxy.test.ts
+Result: passed. 2 test files passed, 9 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Prisma generated-client fallback reused the existing client because the Windows query engine DLL was locked by a local Node process.
+
+npm test
+Result: passed.
+
+npm run test:e2e
+Result: passed. 10 tests passed.
+```
+
+Launch impact:
+
+- Moves the simple/full release split from local implementation toward branch-ready deployment.
+- Does not change database topology.
+
+New risks:
+
+- No new secret exposure.
+- Proxy hiding is not a substitute for route-level authorization and tenant isolation.
+- Shared DB remains accepted only while the product has no real customer traffic.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我在 Vercel 部署完成後，檢查 master production domain 與 staging alias 的 release mode 實際行為：
+1. production full-only route 應導回 dashboard
+2. staging full-only route 應可進入登入/頁面流程
+3. production 非 IG OAuth entry 應回 404
+4. staging alias 是否指向最新 staging Preview deployment
+```
+
+## 2026-06-24 - Master / Staging Pre-Launch Checklist
+
+Task goal:
+
+- Summarize current `master` / `staging` release mode, Vercel environment variables, DB sharing risk, and pre-launch checklist.
+
+Files changed:
+
+- `docs/master-staging-prelaunch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Findings:
+
+- Vercel Production lists `INBOXPILOT_RELEASE_CHANNEL` plus runtime secrets and service env vars.
+- Vercel Preview currently lists only `INBOXPILOT_RELEASE_CHANNEL`.
+- Committed `master` and `staging` branches do not include `src/lib/release-mode.ts`.
+- Local workspace contains uncommitted release-mode implementation files.
+- Staging alias automation has been verified, but staging runtime env completeness still needs a decision.
+
+Launch impact:
+
+- Documentation only.
+- Release-mode app implementation must be committed before treating Production as guaranteed simple and Staging as guaranteed full.
+- DB sharing remains temporarily accepted only before real customer onboarding.
+
+Validation:
+
+```text
+npx vercel env ls production --scope a25814740s-projects
+Result: listed Production env names only; values stayed encrypted.
+
+npx vercel env ls preview --scope a25814740s-projects
+Result: listed Preview env names only; values stayed encrypted.
+
+git show HEAD:src/lib/release-mode.ts
+Result: file is not present in committed HEAD.
+
+git show origin/staging:src/lib/release-mode.ts
+Result: file is not present in origin/staging.
+```
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把目前本機 release mode 實作整理成可提交版本，確認 master 是 simple release、staging 是 full release，補 smoke tests，然後推送到 master 和 staging。
+```
+
+## 2026-06-24 - Staging Alias Branch Guard
+
+Task goal:
+
+- Restrict automatic staging alias updates to successful `staging` branch Preview deployments only.
+- Keep manual workflow dispatch available for explicit operator-driven alias updates.
+- Do not split DB yet.
+
+Files changed:
+
+- `.github/workflows/update-staging-alias.yml`
+- `docs/deployment.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added `github.event.deployment.ref == 'staging'` to the automatic deployment-status job condition.
+- Added shell-level validation for `DEPLOYMENT_REF`, allowing only `staging` or `manual`.
+- Kept the `*.vercel.app` deployment URL guard and Production deployment exclusion.
+- No app runtime behavior, OAuth flow, webhook, billing, affiliate, Prisma schema, or DB behavior was changed.
+
+Launch impact:
+
+- Feature / codex / master Preview deployments no longer update `staging.carry-digital-nomad.in.net` automatically.
+- Staging alias now tracks the `staging` branch by default, with manual override still available.
+
+## 2026-06-24 - Staging Alias Workflow Remote Verification
+
+Task goal:
+
+- Create and configure the Vercel token required by GitHub Actions.
+- Trigger a Vercel Preview deployment and verify that `Update Staging Alias` points `staging.carry-digital-nomad.in.net` at the latest Preview deployment.
+
+Remote changes:
+
+- Added GitHub Secret `VERCEL_TOKEN`.
+- Added GitHub Secret `VERCEL_SCOPE=a25814740s-projects`.
+- Pushed `.github/workflows/update-staging-alias.yml` to `master` in commit `718461c`.
+- Temporarily pushed `codex/staging-alias-check` to trigger a Vercel Preview deployment, then deleted the branch after verification.
+
+Validation:
+
+```text
+gh workflow list:
+Result: Update Staging Alias is active.
+
+GitHub Actions Update Staging Alias:
+Result: passed.
+
+npx vercel inspect https://staging.carry-digital-nomad.in.net:
+Result: resolved to Preview deployment https://inboxpilot-303lebjos-a25814740s-projects.vercel.app.
+
+npx vercel alias list:
+Result: staging.carry-digital-nomad.in.net points to inboxpilot-303lebjos-a25814740s-projects.vercel.app.
+```
+
+Security notes:
+
+- The usable token was copied through Vercel's token dialog and stored only as a GitHub Secret.
+- The first failed setup attempt showed that Windows clipboard was not reliable for this browser flow; the final stored token was verified through Vercel API before being saved.
+- `VERCEL_SCOPE` is required for this project because alias updates need the `a25814740s-projects` scope.
+- Two earlier project-scoped Vercel tokens were created during troubleshooting but were not used by GitHub Actions.
+
+Launch impact:
+
+- Staging alias automation is now verified end-to-end.
+- Production / staging DB remains shared temporarily and still needs separation before real customer onboarding.
+
+## 2026-06-24 - Staging Alias Auto-Update Workflow
+
+Task goal:
+
+- Add an automated flow that points `staging.carry-digital-nomad.in.net` at the latest successful Vercel Preview deployment.
+- Keep production on the simple release and staging / preview on the full release.
+- Do not split DB yet.
+
+Files changed:
+
+- `.github/workflows/update-staging-alias.yml`
+- `docs/deployment.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a GitHub Actions workflow triggered by successful non-production `deployment_status` events.
+- Added a manual `workflow_dispatch` fallback for entering a Vercel Preview deployment URL.
+- The workflow validates that the target host ends in `.vercel.app` before running `vercel alias set`.
+- `VERCEL_TOKEN` must be stored in GitHub Secrets. `VERCEL_SCOPE` is optional for team-scoped projects.
+- No DB schema, Prisma migration, app runtime behavior, OAuth flow, webhook, billing, or affiliate logic was changed.
+
+Launch impact:
+
+- Staging can become a stable always-current Preview URL after the GitHub Secret is configured and the first Preview deployment event runs.
+- Production / staging DB remains shared temporarily and must be separated before real customer onboarding.
+
+New risks:
+
+- Any successful non-production Preview deployment can move the staging alias. If this should only follow the `staging` branch, add a branch/ref guard after inspecting the first deployment payload.
+
+Next suggested Codex Prompt:
+
+```text
+請在 GitHub repo secrets 確認 `VERCEL_TOKEN` 已設定後，觸發一次 Vercel Preview deployment，幫我檢查 GitHub Actions 的 Update Staging Alias 是否成功把 staging.carry-digital-nomad.in.net 指到最新 Preview。
+```
+
+## 2026-06-19 - Production Simple Release / Preview Full Release Split
+
+Task goal:
+
+- Make the custom production domain run the simplified InboxPilot launch version.
+- Keep Vercel Preview / localhost as the full planned version while the project is still pre-launch.
+- Keep the current shared database unchanged for now.
+
+Files changed:
+
+- `src/lib/release-mode.ts`
+- `src/proxy.ts`
+- `src/components/AdminShell.tsx`
+- `src/components/AdminMobileNav.tsx`
+- `src/app/dashboard/page.tsx`
+- `src/app/channels/page.tsx`
+- `src/app/channels/connect/page.tsx`
+- `src/app/channels/connect/social/page.tsx`
+- `src/app/referrals/page.tsx`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added release channel detection. `inboxpilot.carry-digital-nomad.in.net` defaults to `simple`; all other hosts default to `full`.
+- Added `INBOXPILOT_RELEASE_CHANNEL=simple|full` as an override.
+- Production simple navigation now shows only Home, Inbox, Contacts, Channels, Analytics, Automations, and Referrals.
+- Production simple channel connection surfaces Instagram only.
+- Production simple referral page presents referral activity only, not affiliate payout.
+- Full-only app routes and non-Instagram OAuth entry points are blocked on the simple production host.
+- Database schema, OAuth callback storage, webhook behavior, billing logic, and affiliate service logic were not changed.
+
+Current URLs:
+
+- Production simple site: `https://inboxpilot.carry-digital-nomad.in.net`
+- Current preview / testing deployment from Vercel CLI: `https://inboxpilot-ap79iimgd-a25814740s-projects.vercel.app`
+
+Validation:
+
+```text
+npm run lint
+Result: passed
+
+npm run build
+Result: passed. Existing Windows Prisma engine DLL lock fallback appeared and reused the existing generated client.
+
+npm test
+Result: timed out after 244 seconds before a complete result was returned.
+
+npx vitest run tests/unit tests/integration --reporter=dot
+Result: failed in existing Broadcast API tests:
+- tests/integration/api-routes.test.ts: broadcast.scheduledAt?.toISOString is not a function
+- tests/integration/api-routes.test.ts: expected "廣播資料格式不正確。" but received "廣播資料格式錯誤，請重新確認。"
+
+npm run test:e2e
+Result: passed, 10 tests passed.
+
+git diff --check
+Result: passed with Windows line-ending warnings only
+```
+
+Launch impact:
+
+- Production surface is reduced toward a simpler IG-first launch.
+- Shared DB remains acceptable only while the product is pre-launch; before real customers, production and staging data should be separated.
+
+New risks:
+
+- Preview URLs can rotate on future Vercel deployments unless a stable staging alias/domain is configured.
+- Shared DB means staging tests can still affect production-visible data until environments are separated.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 Vercel Preview 設定成固定 staging 網域，正式站維持 simple release，staging 維持 full release；先不要拆 DB，只新增環境變數與部署文件。
+```
+
 ## 2026-06-16 - Meta Business Login Final App Review Package Assembly Checklist
 
 Task:
@@ -1592,6 +1910,41 @@ Internal beta: Hold
 Production implementation: No-Go
 ```
 
+## 2026-06-16 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` and report refreshed provider counts or failures.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed
+Refreshed per workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+codex_cli / antigravity_cli: skipped by canUseAiProvider() because AI_ENABLE_LOCAL_CLI is unset and local CLI mode is disabled outside explicit opt-in.
+```
+
+Launch impact:
+
+- No launch-state change.
+
+New risks:
+
+- No new product risk found.
+- Local CLI model caches will remain stale until `AI_ENABLE_LOCAL_CLI` is explicitly enabled for refresh runs.
+
+Next suggested Codex prompt:
+
+```text
+請檢查本機 CLI 模型供應商刷新策略，評估是否要讓 codex_cli / antigravity_cli 在 automation 環境也能顯式刷新，並補上對應文件與測試。
+```
+
 下一步建議 Codex Prompt：
 
 ```text
@@ -1615,4 +1968,516 @@ docs/meta-business-login-final-permission-usage-proof-matrix.md
 10. 若證據不足，建議移除、延後或補證據
 
 完成後執行 git status、targeted tests、npm run lint、npm run build，commit 並 push master。
+```
+## 2026-06-17 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` and report refreshed provider counts or failures.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed
+Refreshed across 6 workspaces: chatgpt=10, gemini=7, deepseek=2, xai=2
+codex_cli / antigravity_cli: not present in refresh payload; current provider gating still skips local CLI providers when AI_ENABLE_LOCAL_CLI is unset.
+```
+
+Launch impact:
+
+- No launch-state change.
+
+New risks:
+
+- No new product risk found.
+- Local CLI model caches remain stale in the daily automation environment until `AI_ENABLE_LOCAL_CLI` is explicitly enabled.
+
+Next suggested Codex prompt:
+
+```text
+請檢查 AI 模型刷新流程，確認是否要讓每日 automation 顯式啟用 `AI_ENABLE_LOCAL_CLI`，並補上對 `codex_cli` / `antigravity_cli` 的刷新紀錄、測試與文件。
+```
+## 2026-06-18 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` and report refreshed provider counts or failures.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed
+Refreshed across 6 workspaces: chatgpt=10, gemini=7, deepseek=2, xai=2
+codex_cli / antigravity_cli: not refreshed, not failed. `refreshAllAiModels()` skips local CLI providers because `AI_ENABLE_LOCAL_CLI` is unset and `canUseAiProvider()` only enables them for explicit opt-in or local development.
+```
+
+Launch impact:
+
+- No launch-state change.
+
+New risks:
+
+- No new product risk found.
+- Local CLI model caches remain stale in the daily automation environment until `AI_ENABLE_LOCAL_CLI` is explicitly enabled.
+
+Next suggested Codex prompt:
+
+```text
+檢查 AI 模型刷新 automation 是否要顯式開啟 `AI_ENABLE_LOCAL_CLI`，並補一份文件說明 `codex_cli` / `antigravity_cli` 在 daily refresh 中目前為何被略過。
+```
+
+## 2026-06-19 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` and report refreshed provider counts or failures.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed
+Refreshed across 6 workspaces: chatgpt=10, gemini=7, deepseek=2, xai=2
+codex_cli / antigravity_cli: not refreshed, not failed. src/lib/ai/providers.ts keeps local CLI providers behind canUseAiProvider(), and AI_ENABLE_LOCAL_CLI is unset in this automation environment.
+```
+
+Launch impact:
+
+- No launch-state change.
+
+New risks:
+
+- No new product risk found.
+- Local CLI model caches remain stale in the daily automation environment until `AI_ENABLE_LOCAL_CLI` is explicitly enabled.
+
+Next suggested Codex prompt:
+
+```text
+檢查 AI 模�??�新 automation ?�否要顯式�???`AI_ENABLE_LOCAL_CLI=true`，並補�?`codex_cli` / `antigravity_cli` ??daily refresh ?�用?��?要�?路�?何被?��???```
+
+## 2026-06-19 - Fixed Staging Alias And Vercel Release Env Split
+
+Task goal:
+
+- Configure a fixed staging URL for the full planned release.
+- Keep production on the simple release.
+- Keep staging / preview on the full release.
+- Do not split DB yet.
+- Add environment variable documentation and deployment documentation.
+
+Vercel changes:
+
+```text
+npx vercel alias set inboxpilot-ap79iimgd-a25814740s-projects.vercel.app staging.carry-digital-nomad.in.net
+Result: passed
+
+npx vercel env add INBOXPILOT_RELEASE_CHANNEL production --value simple --yes --force --no-sensitive
+Result: passed
+
+npx vercel env add INBOXPILOT_RELEASE_CHANNEL preview --value full --yes --force --no-sensitive
+Result: passed
+
+npx vercel inspect https://staging.carry-digital-nomad.in.net
+Result: resolved to Preview deployment inboxpilot-ap79iimgd-a25814740s-projects.vercel.app
+```
+
+Current URLs:
+
+```text
+Production: https://inboxpilot.carry-digital-nomad.in.net
+Staging: https://staging.carry-digital-nomad.in.net
+Backing Preview deployment: https://inboxpilot-ap79iimgd-a25814740s-projects.vercel.app
+```
+
+Files changed:
+
+- `.env.example`
+- `docs/deployment.md`
+- `docs/environment-variables.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Important note:
+
+- `staging.carry-digital-nomad.in.net` is currently a Vercel alias to the current Preview deployment.
+- Future Preview deployments will need either branch-domain automation or a post-deploy `vercel alias set` step to keep this custom staging URL always current.
+- Production / staging DB remains shared temporarily and must be separated before real customer onboarding.
+- No DB schema, Prisma migration, OAuth callback, webhook, token storage, billing, affiliate payout, or deployment was changed.
+
+Validation:
+
+```text
+npx vercel alias list
+Result: staging.carry-digital-nomad.in.net appears under inboxpilot-ap79iimgd-a25814740s-projects.vercel.app
+
+git diff --check
+Result: passed with Windows line-ending warnings only
+```
+
+Next suggested Codex Prompt:
+
+```text
+請幫我新增 staging alias 自動更新流程：每次 staging branch 或 preview 部署完成後，自動把 staging.carry-digital-nomad.in.net 指到最新 Preview deployment；先不要拆 DB。
+```
+
+## 2026-06-19 - AI local CLI refresh policy clarification
+
+Task goal:
+
+- Decide whether the daily AI model refresh automation should enable `AI_ENABLE_LOCAL_CLI=true`.
+- If not, document `codex_cli` and `antigravity_cli` as explicit opt-in providers.
+
+Files changed:
+
+- `.env.example`
+- `README.md`
+- `docs/environment-variables.md`
+- `docs/deployment.md`
+- `tests/ai-providers.test.ts`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Decision:
+
+- Keep `AI_ENABLE_LOCAL_CLI` disabled by default in shared SaaS / cron environments.
+- `codex_cli` and `antigravity_cli` remain opt-in only.
+
+Reason:
+
+- Shared automation should not rely on machine-local CLI install state, login state, or local cache files.
+- The stable daily refresh path should remain API-backed providers only.
+
+Validation:
+
+```text
+npx vitest run tests/ai-providers.test.ts
+Result: failed due existing database credential problem in the local test environment:
+Authentication failed against database server for postgres.
+
+npm run lint
+Result: passed
+
+npm run build
+Result: passed
+Existing Prisma Windows DLL lock fallback message appeared after build and reused the generated client.
+
+npm test
+Result: timed out after 244 seconds
+```
+
+Next suggested Codex prompt:
+
+```text
+���ˬd AI provider ������Ҫ� TEST_DATABASE_URL / TEST_DIRECT_URL �O�_���T�A�צn�᭫�] tests/ai-providers.test.ts �P npm test�A�T�{ local CLI opt-in �W�h���^�k���զ������q�L�C
+```
+## 2026-06-20 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` in the project workspace.
+- Report refreshed model counts for ChatGPT, Gemini, DeepSeek, XAI, Codex CLI, and Antigravity CLI.
+- Distinguish provider failures from intentionally skipped local CLI providers.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran `npm run ai-models:refresh` from the workspace root.
+- The refresh output covered 6 workspaces and returned the same counts for each workspace: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- `codex_cli` and `antigravity_cli` did not appear in the refresh result because `refreshAllAiModels()` skips providers that fail `canUseAiProvider()`.
+- `canUseAiProvider()` only enables local CLI providers when `AI_ENABLE_LOCAL_CLI` is explicitly truthy, or when running local development outside Vercel.
+- No provider failed during this run.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+
+Workspace refresh counts:
+- segment-broadcast-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- default-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzdo1na0001vd6c5yaug9nr: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzl2a740001jm04s74lyk0c: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzn5vki0001kw04q4j3c72q: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmq5xef4z0001vdgk22tqg4bz: chatgpt=10, gemini=7, deepseek=2, xai=2
+```
+
+Launch impact:
+
+- No launch-state change. This was an operational cache refresh only.
+
+New risks:
+
+- No new product risk.
+- Local CLI provider caches remain stale in shared automation unless `AI_ENABLE_LOCAL_CLI=true` is enabled in a runtime that also guarantees CLI installation and authentication.
+
+Next suggested Codex Prompt:
+
+```text
+���ˬd `scripts/refresh-ai-models.ts` �P `src/lib/ai/providers.ts`�A���ڧ� daily AI model refresh ����X�榡�令����T�G
+1. ���\ provider ��ܼҫ��ƶq
+2. skipped provider ��ܭ�]
+3. failed provider ��ܿ��~�K�n
+
+����G
+- ����J�� provider schema
+- ���}�a cron route �P API route �^�Ǯ榡
+- �ɤW�����椸����
+```
+
+## 2026-06-21 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` in the project workspace.
+- Report refreshed model counts for ChatGPT, Gemini, DeepSeek, XAI, Codex CLI, and Antigravity CLI.
+- Distinguish provider failures from intentionally skipped local CLI providers.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran `npm run ai-models:refresh` from the workspace root.
+- The refresh output covered 6 workspaces and returned the same counts for each workspace: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failures were reported by the refresh script in this run.
+- `codex_cli` and `antigravity_cli` did not appear in the refresh result because `refreshAllAiModels()` only includes providers that pass `canUseAiProvider()`.
+- In the current automation environment, `AI_ENABLE_LOCAL_CLI` is unset, so `isLocalAiCliEnabled()` keeps local CLI providers disabled outside explicit opt-in local development.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+
+Workspace refresh counts:
+- segment-broadcast-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- default-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzdo1na0001vd6c5yaug9nr: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzl2a740001jm04s74lyk0c: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzn5vki0001kw04q4j3c72q: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmq5xef4z0001vdgk22tqg4bz: chatgpt=10, gemini=7, deepseek=2, xai=2
+```
+
+Launch impact:
+
+- No launch-state change. This was an operational cache refresh only.
+
+New risks:
+
+- No new product risk.
+- Local CLI provider caches remain stale in shared automation unless `AI_ENABLE_LOCAL_CLI=true` is enabled in a runtime that also guarantees CLI installation and authentication.
+
+Next suggested Codex Prompt:
+
+```text
+���ˬd `scripts/refresh-ai-models.ts` �P `src/lib/ai/providers.ts`�A���ڧ� daily AI model refresh ����X�榡�令����T�G
+1. ���\ provider ��ܼҫ��ƶq
+2. skipped provider ��ܭ�]
+3. failed provider ��ܿ��~�K�n
+
+����G
+- ����J�� provider schema
+- ���}�a cron route �P API route �^�Ǯ榡
+- �ɤW�����椸����
+```
+## 2026-06-22 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` in the project workspace.
+- Report refreshed model counts for ChatGPT, Gemini, DeepSeek, XAI, Codex CLI, and Antigravity CLI.
+- Distinguish provider failures from intentionally skipped local CLI providers.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran `npm run ai-models:refresh` from the workspace root.
+- The refresh output covered 6 workspaces and returned the same counts for each workspace: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failures were reported by the refresh script in this run.
+- `codex_cli` and `antigravity_cli` did not appear in the refresh result because local CLI providers are gated by `canUseAiProvider()`.
+- `src/lib/ai/providers.ts` keeps CLI providers disabled unless `AI_ENABLE_LOCAL_CLI` is explicitly enabled, or the app is running local development outside Vercel.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+
+Workspace refresh counts:
+- segment-broadcast-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- default-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzdo1na0001vd6c5yaug9nr: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzl2a740001jm04s74lyk0c: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzn5vki0001kw04q4j3c72q: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmq5xef4z0001vdgk22tqg4bz: chatgpt=10, gemini=7, deepseek=2, xai=2
+```
+
+Launch impact:
+
+- No launch-state change. This was an operational cache refresh only.
+
+New risks:
+
+- No new product risk.
+- Local CLI provider caches remain stale in shared automation unless `AI_ENABLE_LOCAL_CLI=true` is enabled in a runtime that also guarantees CLI installation and authentication.
+
+Next suggested Codex Prompt:
+
+```text
+請檢查 `scripts/refresh-ai-models.ts` 與 `src/app/api/ai-models/refresh/route.ts`，幫我把 daily AI model refresh 的輸出再整理清楚一點：
+1. 成功 provider 顯示模型數量
+2. skipped provider 顯示原因
+3. failed provider 顯示錯誤摘要
+4. local CLI provider 若被 gating 跳過，也要明確列出原因
+
+限制：
+- 不改既有 provider schema
+- 不破壞 cron route 與 API route 回傳格式
+- 補上對應單元測試
+```
+## 2026-06-23 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` in the project workspace.
+- Report refreshed model counts for ChatGPT, Gemini, DeepSeek, XAI, Codex CLI, and Antigravity CLI.
+- Distinguish provider failures from intentionally skipped local CLI providers.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran `npm run ai-models:refresh` from the workspace root.
+- The refresh output covered 6 workspaces and returned the same counts for each workspace: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failures were reported by the refresh script in this run.
+- `codex_cli` and `antigravity_cli` did not appear in the refresh result, which matches the current provider gating behavior for local CLI providers when `AI_ENABLE_LOCAL_CLI` is unset.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+
+Workspace refresh counts:
+- segment-broadcast-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- default-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzdo1na0001vd6c5yaug9nr: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzl2a740001jm04s74lyk0c: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzn5vki0001kw04q4j3c72q: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmq5xef4z0001vdgk22tqg4bz: chatgpt=10, gemini=7, deepseek=2, xai=2
+```
+
+Launch impact:
+
+- No launch-state change. This was an operational cache refresh only.
+
+New risks:
+
+- No new product risk.
+- Local CLI provider caches remain stale in shared automation unless `AI_ENABLE_LOCAL_CLI=true` is enabled in a runtime that also guarantees CLI installation and authentication.
+
+Next suggested Codex Prompt:
+
+```text
+請檢查 `scripts/refresh-ai-models.ts` 與 `src/lib/ai/providers.ts`，把 daily AI model refresh 的輸出整理成固定結構：
+1. 成功 provider 的模型數量
+2. skipped provider 的原因
+3. failed provider 的錯誤摘要
+
+限制：
+- 不要改現有 provider schema
+- 不要破壞 cron route 或 API route 呼叫格式
+- 補最小範圍測試
+```
+## 2026-06-24 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` in the project workspace.
+- Report refreshed model counts for ChatGPT, Gemini, DeepSeek, XAI, Codex CLI, and Antigravity CLI.
+- Distinguish provider failures from intentionally skipped local CLI providers.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran `npm run ai-models:refresh` from the workspace root.
+- The refresh output covered 6 workspaces and returned the same counts for each workspace: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failures were reported by the refresh script in this run.
+- `codex_cli` and `antigravity_cli` did not appear in the refresh result, matching the current local CLI opt-in behavior while `AI_ENABLE_LOCAL_CLI` is unset.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+
+Workspace refresh counts:
+- segment-broadcast-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- default-workspace: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzdo1na0001vd6c5yaug9nr: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzl2a740001jm04s74lyk0c: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmpzn5vki0001kw04q4j3c72q: chatgpt=10, gemini=7, deepseek=2, xai=2
+- cmq5xef4z0001vdgk22tqg4bz: chatgpt=10, gemini=7, deepseek=2, xai=2
+```
+
+Launch impact:
+
+- No launch-state change. This was an operational cache refresh only.
+
+New risks:
+
+- No new product risk.
+- Local CLI provider caches remain stale in shared automation unless `AI_ENABLE_LOCAL_CLI=true` is enabled in a runtime that also guarantees CLI installation and authentication.
+
+Next suggested Codex Prompt:
+
+```text
+請檢查 `scripts/refresh-ai-models.ts` 與 `src/lib/ai/providers.ts`，把 daily AI model refresh 的輸出整理成固定結構：
+1. 成功 provider 的模型數量
+2. skipped provider 的原因
+3. failed provider 的錯誤摘要
+4. local CLI provider 若被 gating 跳過，也要明確列出原因
+
+限制：
+- 不改現有 provider schema
+- 不破壞 cron route 或 API route 呼叫格式
+- 補最小範圍測試
 ```

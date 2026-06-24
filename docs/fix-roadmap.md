@@ -1,5 +1,135 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-24 Release mode implementation and smoke tests
+
+Status: implemented locally; validated and preparing push to `master` and `staging`.
+
+- `[x]` Add centralized release mode helper.
+- `[x]` Default `inboxpilot.carry-digital-nomad.in.net` to simple release.
+- `[x]` Default staging / preview / localhost to full release.
+- `[x]` Allow `INBOXPILOT_RELEASE_CHANNEL` to force `simple` or `full`.
+- `[x]` Hide full-only nav and connection options in simple release.
+- `[x]` Block full-only routes and non-Instagram OAuth entry points in simple release proxy.
+- `[x]` Add smoke tests for release detection and proxy behavior.
+- `[x]` Validate with lint, build, full test suite, and Playwright e2e.
+- `[ ]` Push the implementation to both `master` and `staging`.
+- `[ ]` Verify Vercel deployments after both pushes complete.
+
+Remaining risk:
+
+- DB is still intentionally shared for now and must be split before onboarding real customers.
+- Preview env completeness still needs explicit confirmation before staging is dependable for full end-to-end QA.
+
+## Latest - 2026-06-24 Master / Staging pre-launch checklist
+
+Status: documented; release-mode runtime implementation is now prepared for commit.
+
+- Added `docs/master-staging-prelaunch-checklist.md`.
+- Confirmed Vercel Production has `INBOXPILOT_RELEASE_CHANNEL` plus runtime secrets.
+- Confirmed Vercel Preview currently lists only `INBOXPILOT_RELEASE_CHANNEL`.
+- Prepared `src/lib/release-mode.ts`, proxy guards, simple-release UI filtering, and smoke tests for commit.
+- Marked release-mode commit/deploy and Preview env completeness as P0 before real customer onboarding.
+- DB remains temporarily shared by decision, but Vercel Preview env needs explicit confirmation before staging can be treated as production-like.
+
+Follow-up:
+
+1. Commit and push the release mode implementation to `master` and `staging`.
+2. Decide whether Preview should temporarily share Production DB vars or receive a separate staging DB.
+3. Split Production and Staging DBs before real customer onboarding.
+4. Add simple/full release smoke tests for both custom domains.
+
+## Latest - 2026-06-24 Staging alias branch guard
+
+Status: implemented locally; needs push and first `staging` branch Preview verification.
+
+- Updated `.github/workflows/update-staging-alias.yml` so automatic deployment-status runs only execute when `github.event.deployment.ref == 'staging'`.
+- Added shell-level ref validation to reject non-manual deployment refs other than `staging`.
+- Kept manual `workflow_dispatch` fallback for explicit operator-driven alias updates.
+- Updated deployment, launch, readiness, security, roadmap, and session documents.
+- No DB split, Prisma migration, app runtime change, OAuth, webhook, billing, or affiliate logic change was made.
+
+Follow-up:
+
+1. Push the workflow update to `master`.
+2. Trigger a real `staging` branch Preview deployment and verify the workflow succeeds.
+3. Confirm a non-staging Preview deployment no longer triggers `Update Staging Alias`.
+4. Split production and staging databases before onboarding real customers.
+
+## Latest - 2026-06-24 Staging alias workflow remote verification
+
+Status: verified end-to-end.
+
+- GitHub Secret `VERCEL_TOKEN` is configured.
+- GitHub Secret `VERCEL_SCOPE=a25814740s-projects` is configured and required for alias ownership.
+- `.github/workflows/update-staging-alias.yml` is pushed to `master`.
+- A temporary `codex/staging-alias-check` branch triggered a Vercel Preview deployment and GitHub `deployment_status` event.
+- `Update Staging Alias` completed successfully.
+- `https://staging.carry-digital-nomad.in.net` now resolves to `https://inboxpilot-303lebjos-a25814740s-projects.vercel.app`.
+- The temporary branch was deleted after verification.
+
+Follow-up:
+
+1. Keep `VERCEL_SCOPE` set unless the Vercel project/domain ownership changes.
+2. Rotate the GitHub `VERCEL_TOKEN` before June 24, 2027, or earlier if access policy changes.
+3. Review and delete the two unused project-scoped Vercel tokens created during troubleshooting from the Vercel Tokens page.
+4. Split production and staging databases before onboarding real customers.
+
+## Latest - 2026-06-24 Staging alias auto-update workflow
+
+Status: workflow added; first remote GitHub Actions run still needs verification after push / Preview deployment.
+
+- Added `.github/workflows/update-staging-alias.yml`.
+- The workflow listens for successful non-production GitHub `deployment_status` events and updates `staging.carry-digital-nomad.in.net` to the reported Vercel Preview deployment URL.
+- Added manual `workflow_dispatch` fallback for entering a Preview deployment URL directly.
+- The workflow requires GitHub Secret `VERCEL_TOKEN`; `VERCEL_SCOPE` is optional for team-scoped Vercel projects.
+- Source deployment host is restricted to `*.vercel.app` before running `vercel alias set`.
+- No DB split, Prisma migration, app runtime change, OAuth, webhook, billing, or affiliate logic change was made.
+
+Follow-up:
+
+1. Add `VERCEL_TOKEN` to GitHub repository secrets before relying on the workflow.
+2. Add `VERCEL_SCOPE` if the Vercel project requires a team scope.
+3. Verify the first successful Preview deployment updates `https://staging.carry-digital-nomad.in.net`.
+4. If staging should only follow the `staging` branch, add a branch/ref guard after inspecting the actual deployment payload.
+5. Split production and staging databases before onboarding real customers.
+
+## Latest - 2026-06-19 Production simple release / preview full release split
+
+Status: implemented at UI / entry-point level; DB remains shared temporarily.
+
+- Production custom domain now defaults to the simple release surface.
+- Vercel Preview / localhost defaults to the full planned version.
+- Added `INBOXPILOT_RELEASE_CHANNEL=simple|full` override for deployment control.
+- Added Vercel Production env: `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- Added Vercel Preview env: `INBOXPILOT_RELEASE_CHANNEL=full`.
+- Added staging alias: `https://staging.carry-digital-nomad.in.net` -> current Preview deployment.
+- Simple release keeps: Home, Inbox, Contacts, Instagram platform connection, Analytics, Automations, and Referrals.
+- Simple release hides or redirects: Broadcasts, Sequences, AI settings, Billing, Wallet, Affiliate, Admin payout/affiliate pages, Templates, Tags, Segments, Knowledge Base, and Mock tester.
+- Simple release blocks non-Instagram OAuth entry points at the proxy layer.
+- Referral remains a referral activity feature, not affiliate cash payout.
+- No DB schema, OAuth callback, webhook, billing, affiliate payout, or token storage changes were made.
+
+Follow-up:
+
+1. Automate `staging.carry-digital-nomad.in.net` updates via branch domain or post-preview-deploy alias command.
+2. Split production and staging databases before onboarding real customers.
+3. Add a smoke test for simple-release route redirects and non-IG OAuth blocking.
+4. Decide whether Billing should stay hidden in first launch or return as a manual-plan / contact-sales screen.
+5. Fix existing Broadcast API integration test drift: `scheduledAt` mock type and malformed payload error text.
+
+Validation:
+
+```text
+npm run lint: passed
+npm run build: passed with existing Prisma Windows DLL lock fallback
+npm run test:e2e: passed, 10 tests
+npm test: timed out after 244 seconds
+npx vitest run tests/unit tests/integration --reporter=dot: failed on existing Broadcast API integration tests
+npx vercel alias set inboxpilot-ap79iimgd-a25814740s-projects.vercel.app staging.carry-digital-nomad.in.net: passed
+npx vercel env add INBOXPILOT_RELEASE_CHANNEL production --value simple --yes --force --no-sensitive: passed
+npx vercel env add INBOXPILOT_RELEASE_CHANNEL preview --value full --yes --force --no-sensitive: passed
+```
+
 ## Latest - 2026-06-16 Meta Business Login final App Review package assembly checklist
 
 Status: package assembly checklist documented / App Review readiness Hold / Internal beta Hold / Production implementation No-Go.
@@ -687,3 +817,138 @@ Controlled consent run status:
 - Real callback evidence: Pass after the user clicked allow.
 - Workspace linking: Hold.
 - Channel sync: Hold.
+
+## 2026-06-16 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `AI_ENABLE_LOCAL_CLI` is unset, so `canUseAiProvider()` skips local CLI providers.
+
+Follow-up:
+
+- Decide whether the daily automation should keep local CLI providers opt-in only, or enable them explicitly in the refresh environment.
+## 2026-06-17 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `AI_ENABLE_LOCAL_CLI` is unset, so `canUseAiProvider()` still skips local CLI providers.
+
+Follow-up:
+
+- Decide whether the daily automation should keep local CLI providers opt-in only, or enable them explicitly in the refresh environment.
+## 2026-06-18 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `refreshAllAiModels()` skips providers that fail `canUseAiProvider()`, and local CLI providers remain disabled while `AI_ENABLE_LOCAL_CLI` is unset outside local development.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for now, or explicitly enable `AI_ENABLE_LOCAL_CLI` in the automation environment if stale CLI model caches become a problem.
+## 2026-06-19 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `refreshAllAiModels()` only includes providers that pass `canUseAiProvider()`, and local CLI providers remain disabled while `AI_ENABLE_LOCAL_CLI` is unset outside local development.
+
+Follow-up:
+
+- If this automation must also refresh local CLI caches, enable `AI_ENABLE_LOCAL_CLI=true` in the automation environment first.
+
+## 2026-06-19 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `refreshAllAiModels()` only includes providers that pass `canUseAiProvider()`, and local CLI providers remain disabled while `AI_ENABLE_LOCAL_CLI` is unset outside local development.
+
+Follow-up:
+
+- If this automation must also refresh local CLI caches, enable `AI_ENABLE_LOCAL_CLI=true` in the automation environment first.
+## 2026-06-19 - AI local CLI refresh policy
+
+Decision:
+
+- Do not enable `AI_ENABLE_LOCAL_CLI=true` in the shared daily automation environment by default.
+- Keep `codex_cli` and `antigravity_cli` as explicit opt-in providers for local development or a machine that is known to have the CLI installed and authenticated.
+
+Reason:
+
+- Daily shared cron should not depend on local CLI installation state, login state, or machine-specific PATH / cache files.
+- API-backed providers already cover the stable shared refresh path.
+
+Follow-up:
+
+- If the team later wants CLI providers in automation, enable `AI_ENABLE_LOCAL_CLI=true` only in a runtime that also guarantees CLI installation and authentication.
+- Keep docs and env examples explicit that local CLI refresh is opt-in.
+## 2026-06-20 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `refreshAllAiModels()` only includes providers that pass `canUseAiProvider()`, and local CLI providers remain disabled while `AI_ENABLE_LOCAL_CLI` is unset outside local development.
+- No provider failures were reported in this run.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+
+## 2026-06-21 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `refreshAllAiModels()` only includes providers that pass `canUseAiProvider()`, and local CLI providers remain disabled while `AI_ENABLE_LOCAL_CLI` is unset outside local development.
+- No provider failures were reported in this run.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+
+## 2026-06-22 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because `canUseAiProvider()` only enables local CLI providers when `AI_ENABLE_LOCAL_CLI` is truthy, or when running local development outside Vercel.
+- No provider failures were reported in this run.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+## 2026-06-23 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because local CLI providers remain gated behind `AI_ENABLE_LOCAL_CLI` opt-in behavior.
+- No provider failures were reported in this run.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+## 2026-06-24 - Daily AI model refresh automation status
+
+Current refresh result:
+
+- `npm run ai-models:refresh` passed.
+- Refreshed provider counts stayed at `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2` across all 6 workspaces.
+- `codex_cli` and `antigravity_cli` were not refreshed because local CLI providers remain gated behind `AI_ENABLE_LOCAL_CLI` opt-in behavior.
+- No provider failures were reported in this run.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.

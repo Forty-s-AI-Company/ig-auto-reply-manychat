@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { InboxPilotAccountDropdown } from "@/components/InboxPilotAccountDropdown";
 import { InboxPilotLogo } from "@/components/InboxPilotLogo";
 import { InboxPilotProfileMenu } from "@/components/InboxPilotProfileMenu";
+import type { ReleaseChannel } from "@/lib/release-mode";
 
 type Workspace = {
   id: string;
@@ -44,6 +45,7 @@ type AdminMobileNavProps = {
   channels: Channel[];
   selectedChannelId?: string;
   isAdmin?: boolean;
+  releaseChannel?: ReleaseChannel;
   user?: {
     name?: string | null;
     email?: string | null;
@@ -55,7 +57,7 @@ const baseNavItems = [
   { label: "首頁", href: "/dashboard", icon: Home },
   { label: "收件匣", href: "/inbox", icon: Inbox },
   { label: "聯絡人", href: "/contacts", icon: Users },
-  { label: "廣播", href: "/broadcasts", icon: Megaphone },
+  { label: "廣播活動", href: "/broadcasts", icon: Megaphone },
   { label: "自動化", href: "/automations", icon: Sparkles },
   { label: "序列", href: "/sequences", icon: Clock },
   { label: "AI", href: "/ai-settings", icon: Bot },
@@ -65,6 +67,7 @@ const baseNavItems = [
   { label: "錢包", href: "/wallet", icon: Wallet },
   { label: "渠道", href: "/channels", icon: Settings },
 ];
+const simpleNavHrefs = new Set(["/dashboard", "/inbox", "/contacts", "/channels", "/analytics", "/automations", "/referrals"]);
 
 export function AdminMobileNav({
   workspaces,
@@ -72,13 +75,15 @@ export function AdminMobileNav({
   channels,
   selectedChannelId,
   isAdmin = false,
+  releaseChannel = "full",
   user,
 }: AdminMobileNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const navItems = isAdmin
-    ? [...baseNavItems, { label: "稽核紀錄", href: "/admin/audit", icon: Shield }]
-    : baseNavItems;
+  const visibleBaseNavItems = releaseChannel === "simple" ? baseNavItems.filter((item) => simpleNavHrefs.has(item.href)) : baseNavItems;
+  const navItems = isAdmin && releaseChannel === "full"
+    ? [...visibleBaseNavItems, { label: "稽核紀錄", href: "/admin/audit", icon: Shield }]
+    : visibleBaseNavItems;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -93,7 +98,7 @@ export function AdminMobileNav({
         type="button"
         onClick={() => setOpen(true)}
         className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] text-[var(--ip-text)] shadow-sm lg:hidden"
-        aria-label="開啟導覽"
+        aria-label="開啟選單"
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -104,7 +109,7 @@ export function AdminMobileNav({
             type="button"
             className="fixed inset-0 z-[70] bg-black/35 lg:hidden"
             onClick={() => setOpen(false)}
-            aria-label="關閉導覽背景"
+            aria-label="關閉選單背景"
           />
           <aside
             className="ip-sidebar-visual fixed inset-y-0 left-0 z-[80] flex max-w-[min(86vw,320px)] flex-col shadow-2xl lg:hidden"
@@ -129,7 +134,7 @@ export function AdminMobileNav({
                 type="button"
                 onClick={() => setOpen(false)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#b8dadd] hover:bg-white/10 hover:text-white"
-                aria-label="關閉導覽"
+                aria-label="關閉選單"
               >
                 <X className="h-5 w-5" />
               </button>
