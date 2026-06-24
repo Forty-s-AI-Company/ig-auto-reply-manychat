@@ -18,6 +18,7 @@ concurrency:
 
 env:
   STAGING_ALIAS: staging.carry-digital-nomad.in.net
+  STAGING_BRANCH_ALIAS: inboxpilot-git-staging-a25814740s-projects.vercel.app
   PRODUCTION_ALIAS: inboxpilot.carry-digital-nomad.in.net
 
 jobs:
@@ -26,17 +27,14 @@ jobs:
     runs-on: ubuntu-latest
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (
-        github.event.deployment_status.state == 'success' &&
-        github.ref_name == 'staging'
-      )
+      github.event_name == 'deployment_status'
     env:
       DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || github.event.deployment_status.target_url }}
-      DEPLOYMENT_REF: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.ref_name }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
     steps:
       - name: Validate Preview deployment URL
+        id: validate
         shell: bash
         run: |
           set -euo pipefail
@@ -48,11 +46,6 @@ jobs:
 
           if [ -z "${DEPLOYMENT_URL:-}" ]; then
             echo "No deployment URL was provided by the GitHub deployment_status event or workflow_dispatch input."
-            exit 1
-          fi
-
-          if [ "${DEPLOYMENT_REF}" != "manual" ] && [ "${DEPLOYMENT_REF}" != "staging" ]; then
-            echo "Refusing to update staging alias from deployment ref: ${DEPLOYMENT_REF}"
             exit 1
           fi
 
@@ -68,9 +61,31 @@ jobs:
             exit 1
           fi
 
-          echo "Validated Preview deployment host: ${HOST}"
+          VERCEL_ARGS=()
+          if [ -n "${VERCEL_SCOPE:-}" ]; then
+            VERCEL_ARGS+=(--scope "${VERCEL_SCOPE}")
+          fi
+
+          INSPECT_OUTPUT="$(npx --yes vercel@latest inspect "${DEPLOYMENT_URL}" --token "${VERCEL_TOKEN}" "${VERCEL_ARGS[@]}")"
+          echo "${INSPECT_OUTPUT}"
+
+          if ! grep -Fq "https://${STAGING_BRANCH_ALIAS}" <<< "${INSPECT_OUTPUT}"; then
+            echo "Skipping non-staging branch Preview deployment: ${HOST}"
+            echo "should_update=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          if ! grep -Fq "● Ready" <<< "${INSPECT_OUTPUT}"; then
+            echo "Skipping staging Preview deployment because it is not Ready yet: ${HOST}"
+            echo "should_update=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          echo "Validated staging branch Preview deployment host: ${HOST}"
+          echo "should_update=true" >> "${GITHUB_OUTPUT}"
 
       - name: Update staging alias
+        if: steps.validate.outputs.should_update == 'true'
         shell: bash
         run: |
           set -euo pipefail
