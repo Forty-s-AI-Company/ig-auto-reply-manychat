@@ -28,12 +28,11 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (
         github.event.deployment_status.state == 'success' &&
-        github.event.deployment.environment != 'Production' &&
-        github.event.deployment.ref == 'staging'
+        github.ref_name == 'staging'
       )
     env:
       DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || github.event.deployment_status.target_url }}
-      DEPLOYMENT_REF: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event.deployment.ref }}
+      DEPLOYMENT_REF: ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.ref_name }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
     steps:
