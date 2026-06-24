@@ -7,6 +7,7 @@ import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
 import { listOAuthProviders } from "@/lib/oauth/registry";
+import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 const providerCopy = {
@@ -116,6 +117,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
+  const simpleRelease = await isSimpleRelease();
   const [accounts, providers, channels] = await Promise.all([
     getDb().connectedAccount.findMany({
       where: { workspaceId },
@@ -130,6 +132,8 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
   ]);
 
   const channelSummaries = buildChannelSummaries(channels);
+  const visibleAccounts = simpleRelease ? accounts.filter((account) => account.provider === "meta-instagram") : accounts;
+  const visibleProviders = simpleRelease ? providers.filter((provider) => provider.id === "meta-instagram") : providers;
 
   return (
     <ChannelConnectionShell
@@ -173,11 +177,11 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">
           <h2 className="text-lg font-semibold text-[#17191c]">已連接帳號</h2>
           <p className="mt-2 text-sm text-[#596170]">
-            目前工作區有 {accounts.length} 個 ConnectedAccount，以及 {channelSummaries.length} 個 Instagram channel。
+            目前工作區有 {visibleAccounts.length} 個 ConnectedAccount，以及 {channelSummaries.length} 個 Instagram channel。
           </p>
 
           <div className="mt-4 space-y-3">
-            {accounts.length === 0 ? (
+            {visibleAccounts.length === 0 ? (
               <>
                 <div className="rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#596170]">
                   還沒有任何 Social Login 連接。下面任選一個 provider 開始測。
@@ -227,7 +231,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                 ) : null}
               </>
             ) : (
-              accounts.map((account) => {
+              visibleAccounts.map((account) => {
                 const syncedChannels = findSyncedChannels(account, channelSummaries);
 
                 return (
@@ -293,7 +297,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         </div>
 
         <div className="grid gap-4">
-          {providers.map((provider) => {
+          {visibleProviders.map((provider) => {
             const copy = providerCopy[provider.id];
             const Icon = copy.icon;
             const authorizeHref = buildAuthorizeHref(provider.id);

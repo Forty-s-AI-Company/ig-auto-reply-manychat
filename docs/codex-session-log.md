@@ -1,5 +1,80 @@
 # Codex Session Log
 
+## 2026-06-24 - Release mode commit preparation
+
+Task goal:
+
+- Prepare the local release mode implementation as a committable change.
+- Confirm `master` is the simple release path and `staging` is the full release path.
+- Add smoke tests before pushing to both branches.
+
+Files changed:
+
+- `src/lib/release-mode.ts`
+- `src/proxy.ts`
+- `src/components/AdminShell.tsx`
+- `src/components/AdminMobileNav.tsx`
+- `src/app/dashboard/page.tsx`
+- `src/app/channels/page.tsx`
+- `src/app/channels/connect/page.tsx`
+- `src/app/channels/connect/social/page.tsx`
+- `src/app/referrals/page.tsx`
+- `tests/release-mode.test.ts`
+- `tests/release-proxy.test.ts`
+- `docs/master-staging-prelaunch-checklist.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a centralized release channel helper with host defaults and `INBOXPILOT_RELEASE_CHANNEL` override support.
+- Simple release hides full-only navigation, non-Instagram channel connection options, and payout-oriented referral copy.
+- Simple release proxy redirects full-only app pages and blocks non-Instagram OAuth entry points.
+- Added smoke tests covering host/env release detection, full-only route classification, simple production redirects, staging full behavior, and Instagram-only OAuth allowance.
+
+Validation:
+
+```text
+npx vitest run tests/release-mode.test.ts tests/release-proxy.test.ts
+Result: passed. 2 test files passed, 9 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Prisma generated-client fallback reused the existing client because the Windows query engine DLL was locked by a local Node process.
+
+npm test
+Result: passed.
+
+npm run test:e2e
+Result: passed. 10 tests passed.
+```
+
+Launch impact:
+
+- Moves the simple/full release split from local implementation toward branch-ready deployment.
+- Does not change database topology.
+
+New risks:
+
+- No new secret exposure.
+- Proxy hiding is not a substitute for route-level authorization and tenant isolation.
+- Shared DB remains accepted only while the product has no real customer traffic.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我在 Vercel 部署完成後，檢查 master production domain 與 staging alias 的 release mode 實際行為：
+1. production full-only route 應導回 dashboard
+2. staging full-only route 應可進入登入/頁面流程
+3. production 非 IG OAuth entry 應回 404
+4. staging alias 是否指向最新 staging Preview deployment
+```
+
 ## 2026-06-13 - Staging preflight checklist
 
 - Read `AGENTS.md`, `docs/staging-environment-runbook.md`, `docs/environment-variables.md`, `docs/security-review.md`, and `docs/fix-roadmap.md`.

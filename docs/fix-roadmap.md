@@ -1,5 +1,25 @@
 # Fix Roadmap
 
+## Latest - 2026-06-24 Release mode implementation and smoke tests
+
+Status: implemented locally; validated and preparing push to `master` and `staging`.
+
+- `[x]` Add centralized release mode helper.
+- `[x]` Default `inboxpilot.carry-digital-nomad.in.net` to simple release.
+- `[x]` Default staging / preview / localhost to full release.
+- `[x]` Allow `INBOXPILOT_RELEASE_CHANNEL` to force `simple` or `full`.
+- `[x]` Hide full-only nav and connection options in simple release.
+- `[x]` Block full-only routes and non-Instagram OAuth entry points in simple release proxy.
+- `[x]` Add smoke tests for release detection and proxy behavior.
+- `[x]` Validate with lint, build, full test suite, and Playwright e2e.
+- `[ ]` Push the implementation to both `master` and `staging`.
+- `[ ]` Verify Vercel deployments after both pushes complete.
+
+Remaining risk:
+
+- DB is still intentionally shared for now and must be split before onboarding real customers.
+- Preview env completeness still needs explicit confirmation before staging is dependable for full end-to-end QA.
+
 ## 2026-06-13 Update - Staging preflight checklist
 
 - Completed read-only staging preflight checklist.

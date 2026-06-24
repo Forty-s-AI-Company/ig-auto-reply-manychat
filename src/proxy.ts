@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { getReleaseChannelForHost, isFullOnlyAppPath } from "@/lib/release-mode";
 
 const EXTERNAL_POST_PREFIXES = [
   "/api/automation-webhooks/",
@@ -31,10 +32,45 @@ function getRequestId(request: NextRequest) {
   return request.headers.get("x-request-id") || crypto.randomUUID();
 }
 
+function isBlockedSimpleOAuthPath(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  if (pathname.startsWith("/api/oauth/") && !pathname.startsWith("/api/oauth/meta-instagram/")) return true;
+  if (pathname === "/api/meta/oauth/start" && request.nextUrl.searchParams.get("mode") !== "instagram") return true;
+  if (pathname.startsWith("/oauth/providers/")) return true;
+  return false;
+}
+
 export function proxy(request: NextRequest) {
   const requestId = getRequestId(request);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-request-id", requestId);
+  const pathname = request.nextUrl.pathname;
+
+  const releaseChannel = getReleaseChannelForHost(request.nextUrl.host);
+
+  if (releaseChannel === "simple" && isBlockedSimpleOAuthPath(request)) {
+    if (pathname.startsWith("/api/")) {
+      const response = NextResponse.json({ error: "Provider is not available on the simple production release." }, { status: 404 });
+      response.headers.set("x-request-id", requestId);
+      return response;
+    }
+
+    const url = request.nextUrl.clone();
+    url.pathname = "/channels/connect/social";
+    url.search = "";
+    const response = NextResponse.redirect(url, 307);
+    response.headers.set("x-request-id", requestId);
+    return response;
+  }
+
+  if (releaseChannel === "simple" && isFullOnlyAppPath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.search = "";
+    const response = NextResponse.redirect(url, 307);
+    response.headers.set("x-request-id", requestId);
+    return response;
+  }
 
   if (!isMutating(request.method)) {
     const response = NextResponse.next({ request: { headers: requestHeaders } });
@@ -42,7 +78,6 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  const pathname = request.nextUrl.pathname;
   if (EXTERNAL_POST_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
     const response = NextResponse.next({ request: { headers: requestHeaders } });
     response.headers.set("x-request-id", requestId);
@@ -76,5 +111,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/api/:path*",
+  matcher: ["/api/:path*", "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };

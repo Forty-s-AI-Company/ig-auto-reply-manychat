@@ -2,10 +2,12 @@ import { AdminShell } from "@/components/AdminShell";
 import { requireUser } from "@/lib/auth";
 import { getReferralDashboard } from "@/lib/billing/referral-service";
 import { formatTwd } from "@/lib/billing";
+import { isSimpleRelease } from "@/lib/release-mode";
 
 export default async function ReferralsPage() {
   const user = await requireUser();
   const dashboard = await getReferralDashboard(user.id);
+  const simpleRelease = await isSimpleRelease();
 
   return (
     <AdminShell title="推薦活動">
@@ -17,11 +19,13 @@ export default async function ReferralsPage() {
             {dashboard.referralUrl}
           </p>
           <p className="mt-3 text-sm text-zinc-400">
-            有效推薦會讓雙方各 +1 天試用；推薦人額外 +300 trial events，最高試用 20 天、最高 7,000 events。
+            {simpleRelease
+              ? "目前推薦活動只記錄邀請連結、推薦名單與試用加值，暫不提供聯盟分潤或現金獎金。"
+              : "有效推薦會讓雙方各 +1 天試用；推薦人額外 +300 trial events，最高試用 20 天、最高 7,000 events。"}
           </p>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className={`grid gap-4 ${simpleRelease ? "md:grid-cols-2" : "md:grid-cols-3"}`}>
           <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
             <p className="text-sm text-zinc-400">已推薦</p>
             <p className="mt-2 text-2xl font-semibold">{dashboard.attributions.length}</p>
@@ -30,10 +34,12 @@ export default async function ReferralsPage() {
             <p className="text-sm text-zinc-400">試用天數獎勵</p>
             <p className="mt-2 text-2xl font-semibold">{dashboard.trialDaysEarned}</p>
           </div>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-            <p className="text-sm text-zinc-400">折抵金</p>
-            <p className="mt-2 text-2xl font-semibold">{formatTwd(dashboard.creditsEarned)}</p>
-          </div>
+          {simpleRelease ? null : (
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+              <p className="text-sm text-zinc-400">折抵金</p>
+              <p className="mt-2 text-2xl font-semibold">{formatTwd(dashboard.creditsEarned)}</p>
+            </div>
+          )}
         </section>
 
         <section className="rounded-lg border border-zinc-800 bg-zinc-900">

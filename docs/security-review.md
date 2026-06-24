@@ -1,5 +1,19 @@
 # InboxPilot Security Review
 
+## 2026-06-24 - Release mode proxy guard
+
+Scope:
+
+- Added release-channel based filtering for the simple production surface.
+- Added proxy checks that redirect full-only app pages away from simple production.
+- Added proxy checks that block non-Instagram OAuth entry points on simple production with a 404 JSON response.
+
+Security notes:
+
+- The proxy guard reduces accidental exposure of unfinished product areas, but it is not an authorization boundary by itself.
+- Existing route handlers must still enforce authentication, workspace / tenant isolation, rate limits, CSRF / Origin checks where applicable, and webhook / payment signature validation.
+- No tokens, secrets, authorization codes, or API keys were added to code, logs, docs, or tests in this change.
+- Shared production/staging DB remains a launch risk until split before real customer onboarding.
 
 ## 2026-06-13 Update - Staging environment isolation
 

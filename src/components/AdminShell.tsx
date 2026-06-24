@@ -10,6 +10,7 @@ import { ALL_IG_ACCOUNTS, IG_ACCOUNT_SCOPE_COOKIE } from "@/lib/account-scope";
 import { getCurrentUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
+import { getCurrentReleaseChannel } from "@/lib/release-mode";
 import { getServerCache } from "@/lib/server-cache";
 import { getCurrentWorkspace, getUserWorkspaces } from "@/lib/workspaces";
 
@@ -17,7 +18,7 @@ const basePrimaryNavItems = [
   { label: "首頁", href: "/dashboard", icon: Home, iconName: "home" },
   { label: "收件匣", href: "/inbox", icon: Inbox, iconName: "inbox" },
   { label: "聯絡人", href: "/contacts", icon: Users, iconName: "users" },
-  { label: "廣播", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
+  { label: "廣播活動", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
   { label: "自動化", href: "/automations", icon: Sparkles, iconName: "sparkles" },
   { label: "序列", href: "/sequences", icon: Clock, iconName: "clock" },
   { label: "AI", href: "/ai-settings", icon: Bot, iconName: "bot" },
@@ -28,6 +29,7 @@ const basePrimaryNavItems = [
   { label: "渠道", href: "/channels", icon: Settings, iconName: "settings" },
 ] as const;
 
+const simplePrimaryNavHrefs = new Set(["/dashboard", "/inbox", "/contacts", "/channels", "/analytics", "/automations", "/referrals"]);
 const adminNavItem = { label: "稽核紀錄", href: "/admin/audit", icon: Shield, iconName: "shield" } as const;
 const ADMIN_SHELL_CACHE_TTL_MS = 5_000;
 
@@ -45,7 +47,10 @@ export async function AdminShell({
   const workspace = await getCurrentWorkspace();
   const user = await getCurrentUser();
   const isAdmin = user?.role === "admin";
-  const primaryNavItems = isAdmin ? [...basePrimaryNavItems, adminNavItem] : basePrimaryNavItems;
+  const releaseChannel = await getCurrentReleaseChannel();
+  const visibleBaseNavItems =
+    releaseChannel === "simple" ? basePrimaryNavItems.filter((item) => simplePrimaryNavHrefs.has(item.href)) : basePrimaryNavItems;
+  const primaryNavItems = isAdmin && releaseChannel === "full" ? [...visibleBaseNavItems, adminNavItem] : visibleBaseNavItems;
   const cookieStore = await cookies();
   const instagramChannels = await getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
     getDb().channel.findMany({
@@ -145,6 +150,7 @@ export async function AdminShell({
                 channels={serializedAccountChannels}
                 selectedChannelId={selectedChannelId}
                 isAdmin={isAdmin}
+                releaseChannel={releaseChannel}
                 user={mobileUser}
               />
               <h1 className="truncate text-[24px] font-semibold text-[var(--ip-text)]">{title}</h1>
