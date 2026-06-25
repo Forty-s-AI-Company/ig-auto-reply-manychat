@@ -55,6 +55,52 @@ npx prisma migrate deploy
 依部署平台不同，可在 release job、CI pipeline 或本機指向 production DB 執行。
 正式執行前請先照 [database-migration-runbook.md](./database-migration-runbook.md) 做 staging dry-run 與 rollback 準備。
 
+### Custom domain alias automation
+
+Production 與 staging custom domain 由 GitHub Actions 明確更新，不依賴 Vercel 自動指派：
+
+```text
+Production: inboxpilot.carry-digital-nomad.in.net
+Staging:    staging.carry-digital-nomad.in.net
+```
+
+Vercel project setting:
+
+- `autoAssignCustomDomains=false`
+- 原因：避免 Production redeploy 自動把 `staging.carry-digital-nomad.in.net` 接到 Production deployment。
+
+Staging 自動更新流程：
+
+- Workflow: `.github/workflows/update-staging-alias.yml`
+- Trigger: GitHub `deployment_status=success` 或手動 `workflow_dispatch`
+- Allowed source: `staging` branch 的 Ready Preview deployment
+- Alias target: `staging.carry-digital-nomad.in.net`
+- Guard: 若 Vercel inspect 顯示 `target=production`，直接跳過
+
+Production 自動更新流程：
+
+- Workflow: `.github/workflows/update-production-alias.yml`
+- Trigger: GitHub `deployment_status=success` 或手動 `workflow_dispatch`
+- Allowed source: Ready Production deployment
+- Alias target: `inboxpilot.carry-digital-nomad.in.net`
+- Guard: 若 Vercel inspect 不是 `target=production`，直接跳過
+
+這兩個 workflow 彼此互斥，並且都拒絕把 custom domain 當成 source URL，避免 domain alias loop。
+
+GitHub Secrets 需求：
+
+```text
+VERCEL_TOKEN   必填
+VERCEL_SCOPE   選填，Vercel team / scope slug；個人專案可不填
+```
+
+手動 fallback：
+
+```bash
+npx vercel alias set <preview-deployment-url> staging.carry-digital-nomad.in.net
+npx vercel alias set <production-deployment-url> inboxpilot.carry-digital-nomad.in.net
+```
+
 ## Worker 部署
 
 Next.js web process 不會常駐處理 job。正式環境需另外部署 worker：

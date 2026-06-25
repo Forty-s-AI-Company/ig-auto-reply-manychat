@@ -903,6 +903,14 @@ Follow-up:
 
 - Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
 
+## 2026-06-26 - Alias workflow PR safety
+
+- `[x]` Prepare alias workflow changes on a non-default branch instead of pushing directly to `master`.
+- `[x]` Harden staging alias automation so Production deployments cannot update `staging.carry-digital-nomad.in.net`.
+- `[x]` Add Production alias automation so only Ready Production deployments can update `inboxpilot.carry-digital-nomad.in.net`.
+- `[x]` Document the Vercel `autoAssignCustomDomains=false` operating model and manual fallback commands.
+- `[x]` Confirmed the draft PR branch created a Ready Vercel Preview deployment and no Production deployment.
+
 ## 2026-06-21 - Daily AI model refresh automation status
 
 Current refresh result:

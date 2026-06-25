@@ -54,6 +54,55 @@ npm run test:e2e
 Result: passed. 10 tests passed.
 ```
 
+## 2026-06-26 - Alias workflow draft PR
+
+Task goal:
+
+- Create a draft PR for alias workflow changes without pushing directly to `master`.
+- Confirm the PR branch does not produce a Production deployment.
+- Allow only Preview deployment behavior for the PR branch.
+
+Files changed:
+
+- `.github/workflows/update-staging-alias.yml`
+- `.github/workflows/update-production-alias.yml`
+- `docs/deployment.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Created the PR branch from `origin/master` in a separate worktree to avoid including local dirty worktree changes or unpushed `master` commits.
+- Hardened the staging alias workflow to skip Production deployments.
+- Added a Production alias workflow that only accepts Ready Production deployments.
+- Documented the Vercel custom-domain workflow model and manual fallback commands.
+
+Validation:
+
+```text
+Draft PR: https://github.com/Forty-s-AI-Company/ig-auto-reply-manychat/pull/1
+PR branch: codex/alias-workflow-domain-guards
+Vercel status: passed.
+Vercel deployment: target=preview, status=Ready, id=dpl_H1A1vjzubmg6jHPCuTsQpdwL6jqA.
+Staging alias workflow: passed and skipped because the deployment was not the staging branch Preview alias.
+Production alias workflow: passed and skipped because the deployment target was preview, not production.
+CI lint-test: passed for push and pull_request events.
+```
+
+Launch impact:
+
+- No runtime launch-state change until the PR is merged.
+
+New risks:
+
+- If merged without verifying Vercel behavior, workflow-file changes on the default branch could affect future alias automation.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我在這個 draft PR merge 前，再跑一次 production/staging alias workflow manual verification，確認 custom domain 仍互斥且健康。
+```
+
 Launch impact:
 
 - Moves the simple/full release split from local implementation toward branch-ready deployment.
