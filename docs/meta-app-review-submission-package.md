@@ -95,6 +95,10 @@ Do not request permissions that are not shown in the reviewer walkthrough.
 
 ### Product Walkthrough Recording
 
+Detailed recording plan:
+
+- `docs/meta-reviewer-recording-shot-list.md`
+
 Required scenes:
 
 1. Start on production homepage.
