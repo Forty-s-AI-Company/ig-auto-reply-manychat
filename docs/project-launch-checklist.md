@@ -135,3 +135,21 @@ Current Vercel Preview backing deployment: https://inboxpilot-ap79iimgd-a2581474
 - `[ ]` 高併發 load test 收斂
 - `[ ]` queue-first ingestion / durable processing
 - `[ ]` 補齊 WhatsApp / TikTok / SMS / LINE 正式產品化
+
+## 2026-06-26 - Public paid launch control room
+
+- `[x]` PR #5 has been merged into `master` with the Meta App Review package, reviewer recording shot list, screenshot redaction checklist, reviewer-safe test asset handoff checklist, and PayUNI go-live checklist.
+- `[x]` Master CI passed after merge: lint, test, and build.
+- `[x]` Merge-created Vercel deployment was Preview-only and Ready; no manual Production redeploy was performed in this step.
+- `[x]` Production custom domain still points to a Ready Production deployment.
+- `[x]` Staging custom domain still points to a Ready Preview deployment.
+- `[x]` Production `/api/health` returns `status=ok`, `database.ok=true`, and `redis.ok=true`.
+- `[x]` Staging `/api/health/staging` returns `status=ok`, `dbEnv=staging`, `releaseChannel=full`, and `vercelEnv=preview`.
+- `[x]` Added the launch control room: `docs/public-paid-launch-control-room.md`.
+- `[ ]` Meta App Review / Advanced Access / Business Verification must be completed manually before public paid launch.
+- `[ ]` PAYUNi production merchant approval and first low-value live checkout smoke must be completed manually before public paid launch.
+
+Current decision:
+
+- Private beta / whitelist: Go.
+- Public paid launch: Hold until Meta and PayUNI external gates are complete.

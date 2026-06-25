@@ -353,3 +353,33 @@ Readiness implication:
 - Meta production 權限與 reviewer 流程仍未完全收斂
 - 多租戶安全邊界還沒全收乾淨
 - 對外法務與帳務頁文案仍需整理
+
+## 2026-06-26 - Public paid launch control decision
+
+Status:
+
+- Private beta / whitelist launch: Go.
+- Public paid launch: Hold.
+
+Completed:
+
+- Production runtime health is ok.
+- Staging runtime health is ok and isolated as `dbEnv=staging`.
+- Prisma production migration-history baseline is complete.
+- Alias automation has guarded production/staging behavior.
+- Meta App Review package, recording shot list, screenshot redaction checklist, reviewer-safe handoff checklist, and PayUNI go-live checklist are merged.
+- `docs/public-paid-launch-control-room.md` now provides the final execution order.
+
+Remaining public paid launch gates:
+
+1. Meta App Review / Advanced Access / Business Verification approval.
+2. Reviewer-safe Meta test assets and final redacted recording/screenshots.
+3. PAYUNi production merchant approval.
+4. Explicit controlled enablement of `PAYUNI_ALLOW_PRODUCTION=true`.
+5. First low-value production checkout smoke with callback/idempotency/audit verification.
+6. Final human read of Billing, Terms, Privacy, and Data Deletion pages.
+
+Product readiness implication:
+
+- Codex-direct launch packaging is complete.
+- The remaining blockers are external approval or live-payment operations, so they should stay manual and recorded in the launch log.
