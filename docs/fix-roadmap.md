@@ -5,7 +5,9 @@
 Current status:
 
 - `[x]` PR #2 merged to `master` at `5d014be`.
+- `[x]` PR #3 merged to `master` at `cf9e80c`.
 - `[x]` Production deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni` is Ready.
+- `[x]` Controlled production deployment `dpl_GGk9zyF3r1F1hZ6ons3Fzfh6y5hL` is Ready and backs the production custom domain.
 - `[x]` Production custom domain points to the PR #2 production deployment.
 - `[x]` Production `/api/health` is ok.
 - `[x]` Staging alias remains on Preview and `/api/health/staging` is ok.

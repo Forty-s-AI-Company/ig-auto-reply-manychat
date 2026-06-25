@@ -5,6 +5,7 @@
 Scope:
 
 - Confirmed PR #2 is deployed to the production target at deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni`.
+- Confirmed PR #3 is merged and deployed through controlled production deployment `dpl_GGk9zyF3r1F1hZ6ons3Fzfh6y5hL`.
 - Confirmed production custom domain resolves to the PR #2 production deployment.
 - Confirmed production `/api/health` is ok.
 - Confirmed staging remains on a Preview deployment and `/api/health/staging` is ok.

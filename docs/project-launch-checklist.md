@@ -3,8 +3,11 @@
 ## 2026-06-26 - PR #2 post-deploy launch readiness delta
 
 - `[x]` PR #2 is merged into `master` at merge commit `5d014be`.
+- `[x]` PR #3 is merged into `master` at merge commit `cf9e80c`.
 - `[x]` Production was deployed after PR #2 and is Ready at deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni`.
+- `[x]` Production was redeployed after PR #3 through controlled Vercel CLI deployment `dpl_GGk9zyF3r1F1hZ6ons3Fzfh6y5hL`.
 - `[x]` `https://inboxpilot.carry-digital-nomad.in.net` resolves to the PR #2 production deployment.
+- `[x]` `https://inboxpilot.carry-digital-nomad.in.net` resolves to the controlled PR #3 production deployment after running `Update Production Alias`.
 - `[x]` `https://staging.carry-digital-nomad.in.net` remains on a Preview deployment from the `staging` branch.
 - `[x]` Production `/api/health` returned `status=ok` with database and redis checks ok.
 - `[x]` Staging `/api/health/staging` returned `status=ok`, `deployment=staging`, `dbEnv=staging`, `releaseChannel=full`, and `vercelEnv=preview`.
