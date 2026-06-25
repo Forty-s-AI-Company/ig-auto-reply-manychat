@@ -2985,3 +2985,60 @@ Next suggested Codex Prompt:
 ```text
 請幫我把 Meta App Review operator workbook 做成乾淨 PR，跑 lint/build/docs checks，PR 建好後不要登入 Meta、不要送審、不要碰 DB。
 ```
+
+## 2026-06-26 - Meta App Review day-of recording run card
+
+Task goal:
+
+- Create a concise day-of operating card for Meta App Review recording and submission preparation.
+- Split the card into recording prep, during recording, screenshots, Dashboard fill checklist, and pre-submit check.
+- Do not log in to Meta Dashboard, submit review, touch DB, or output secrets.
+
+Files changed:
+
+- `docs/meta-app-review-day-of-recording-run-card.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a short operator run card distilled from `docs/meta-app-review-operator-submission-workbook.md`.
+- The card includes the exact recording sequence, screenshot filenames, Dashboard field checklist, permission evidence mapping, redaction search, and Go / Hold rules.
+- The card repeats the hard boundaries against credentials, raw OAuth callback values, env screens, dashboard secrets, and real customer data.
+
+Validation:
+
+```text
+Read source docs
+Result: meta operator workbook and Meta App Review checklist reviewed.
+
+Scope
+Result: documentation-only; no Meta login, no App Review submission, no DB command, no payment action, and no secret output.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: blocked in the clean worktree because DATABASE_URL or TEST_DATABASE_URL is required. Production DB was not used for tests.
+```
+
+Launch impact:
+
+- Human Meta review prep is easier to execute on recording day.
+- Public paid launch remains Hold until Meta approval and PayUNI production gates are completed.
+
+New risks:
+
+- No new runtime risk.
+- Real artifacts still require secure external handling and manual redaction review.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 Meta App Review day-of recording run card 做成乾淨 PR，跑 lint/build/docs checks，PR 建好後不要登入 Meta、不要送審、不要碰 DB。
+```
