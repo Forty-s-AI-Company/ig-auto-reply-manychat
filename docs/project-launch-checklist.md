@@ -1,5 +1,20 @@
 # Project Launch Checklist
 
+## 2026-06-26 - Public paid launch gate cleanup
+
+- `[x]` Added production deployment env helper for runtime-sensitive guards.
+- `[x]` Disabled production Meta global env fallback for channel token and Instagram business account id paths.
+- `[x]` Production webhook channel updates no longer add `META_PAGE_ACCESS_TOKEN` fallback markers.
+- `[x]` Production execution of `scripts/refresh-meta-token.mjs` is blocked.
+- `[x]` Added regression coverage for production Meta fallback disablement.
+- `[x]` Added PayUNI Production SOP.
+- `[x]` Updated Billing, Terms, Privacy, and Data Deletion copy for controlled payments, PayUNI handling, refunds, workspace isolation, and audit retention.
+- `[ ]` Deploy this change through the controlled Production deployment process.
+- `[ ]` Re-run Production `/api/health`, tenant-safe smoke, and simple-release smoke after deployment.
+- `[ ]` Complete broader tenant isolation regression coverage before public paid launch.
+- `[ ]` Complete Meta App Review / Advanced Access / Business Verification evidence.
+- `[ ]` Complete PayUNI merchant review and first low-value production checkout smoke.
+
 ## 2026-06-24 - Master / staging pre-launch audit
 
 - `[x]` Produced `docs/master-staging-prelaunch-checklist.md`.

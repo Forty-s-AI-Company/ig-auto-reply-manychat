@@ -24,6 +24,10 @@ function payuniGatewayLabel() {
   return hostname.includes("sandbox") || hostname.includes("test") ? "PayUNI 測試站" : "PayUNI 正式站";
 }
 
+function payuniProductionEnabled() {
+  return process.env.PAYUNI_ALLOW_PRODUCTION === "true";
+}
+
 function ProgressBar({ label, used, limit }: { label: string; used: number; limit: number }) {
   const percent = progress(used, limit);
   return (
@@ -69,6 +73,11 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
 
         <ManualActionNotice title="需要你操作：PayUNI 付款" tone="cyan" stackIndex={params?.payment ? 1 : 0}>
           <p>信用卡資料、OTP、3D 驗證都會在 PayUNI 頁面完成；系統只接收回傳結果，不會保存卡號。</p>
+          {!payuniProductionEnabled() ? (
+            <p className="mt-2">
+              目前正式自動扣款仍在受控開通階段；若你是白名單客戶，可以先由營運人員人工確認付款與方案啟用。
+            </p>
+          ) : null}
         </ManualActionNotice>
 
         <section className="ip-dashboard-card p-5">
@@ -86,6 +95,7 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
               </span>
               <span className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 font-medium text-amber-800">
                 {payuniGatewayLabel()}
+                {!payuniProductionEnabled() ? " / 受控開通" : ""}
               </span>
             </div>
           </div>

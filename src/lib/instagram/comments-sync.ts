@@ -2,6 +2,7 @@ import type { Channel } from "@prisma/client";
 import { executeAutomation } from "@/lib/automation/engine";
 import {
   findMetaChannelForComment,
+  getMetaGlobalInstagramBusinessAccountId,
   getMetaChannelConfig,
   likeInstagramComment,
   type MetaCommentEvent,
@@ -229,7 +230,7 @@ export async function syncInstagramCommentsFromActiveAutomations() {
 
     const config = getMetaChannelConfig(channel.configJson);
     const instagramBusinessAccountId =
-      config.instagramBusinessAccountId || config.instagramOauthUserId || process.env.META_INSTAGRAM_BUSINESS_ACCOUNT_ID || "";
+      config.instagramBusinessAccountId || config.instagramOauthUserId || getMetaGlobalInstagramBusinessAccountId();
 
     for (const mediaId of mediaIds) {
       const comments = await fetchMediaComments({ mediaId, channel });

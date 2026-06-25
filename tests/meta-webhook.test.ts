@@ -1,6 +1,6 @@
 import { createHmac } from "crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
+import { buildWebhookChannelConfig, POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
 import { metaAdapter, parseMetaWebhookComments, parseMetaWebhookMessages } from "@/lib/channels/meta";
 
 function sign(body: string, secret: string) {
@@ -153,6 +153,27 @@ describe("Meta webhook", () => {
       messaging_type: "RESPONSE",
       recipient: { comment_id: "comment-1" },
       message: { text: "私訊傳給你囉" },
+    });
+  });
+
+  it("does not add global Meta fallback env markers to webhook channel config in production", () => {
+    vi.stubEnv("INBOXPILOT_DEPLOYMENT_ENV", "production");
+    vi.stubEnv("META_PAGE_ID", "global-page-id");
+    vi.stubEnv("META_PAGE_ACCESS_TOKEN", "global-page-token");
+    vi.stubEnv("META_INSTAGRAM_BUSINESS_ACCOUNT_ID", "global-ig-id");
+
+    expect(buildWebhookChannelConfig({}, false)).toEqual({});
+  });
+
+  it("can add global Meta fallback env markers outside production for local smoke paths", () => {
+    vi.stubEnv("INBOXPILOT_DEPLOYMENT_ENV", "development");
+    vi.stubEnv("META_PAGE_ID", "local-page-id");
+    vi.stubEnv("META_INSTAGRAM_BUSINESS_ACCOUNT_ID", "local-ig-id");
+
+    expect(buildWebhookChannelConfig({}, false)).toEqual({
+      pageId: "local-page-id",
+      instagramBusinessAccountId: "local-ig-id",
+      tokenEnv: "META_PAGE_ACCESS_TOKEN",
     });
   });
 });

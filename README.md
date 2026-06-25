@@ -109,4 +109,5 @@ docs           Product, ops, security and API docs
 - [環境變數](./docs/environment-variables.md)
 - [API 文件](./docs/api.md)
 - [ERD](./docs/erd.md)
+- [PayUNI Production SOP](./docs/payuni-production-sop.md)
 - [Codex Windows Setup](./docs/codex-windows-setup.md)

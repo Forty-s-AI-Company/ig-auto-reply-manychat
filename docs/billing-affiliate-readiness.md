@@ -1,5 +1,19 @@
 # Billing / Affiliate Readiness
 
+## 2026-06-26 - PayUNI production SOP and billing copy cleanup
+
+- Added [PayUNI Production SOP](./payuni-production-sop.md).
+- Billing page now labels PayUNI production as controlled until `PAYUNI_ALLOW_PRODUCTION=true`.
+- Terms now state that card number, CVV, OTP, and 3-D Secure data are handled by PayUNI/bank pages, not stored by InboxPilot.
+- Terms now include refund/cancellation and workspace data-boundary language.
+- Privacy policy now describes payment metadata retention and workspace/channel data isolation.
+- Data Deletion page now clarifies Meta channel token deletion and payment/audit record retention boundaries.
+
+Billing launch implication:
+
+- Documentation and customer-facing copy are improved enough for private beta and whitelist customers.
+- Public paid launch remains Hold until production merchant review, first low-value production checkout smoke, notify/return idempotency evidence, refund/settlement owner assignment, and deployment of this change.
+
 更新日期：2026-06-10
 
 ## PayUNI 目前狀態
