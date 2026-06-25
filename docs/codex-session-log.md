@@ -1,5 +1,50 @@
 # Codex Session Log
 
+## 2026-06-26 - Meta reviewer-safe test asset handoff checklist
+
+Task goal:
+
+- Create a reviewer-safe test asset handoff checklist for Meta App Review preparation.
+- Do not log in to Meta Dashboard.
+- Do not submit App Review.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added reviewer-safe asset inventory, account requirements, Instagram/Facebook asset requirements, synthetic demo data rules, secure handoff methods, reviewer instruction note template, pre-handoff smoke, post-review cleanup, and Go / Hold criteria.
+- Linked the handoff checklist from the submission package, reviewer recording shot list, screenshot checklist, Meta checklist, and roadmap.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Meta App Review handoff preparation is more complete, but actual submission remains Hold until assets are prepared, smoked, redacted, and signed off.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, deployment, Meta Dashboard, or App Review submission change was made.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 PR #5 merge，merge 後只確認 CI、Vercel Preview、production/staging alias 與 health；不要 production redeploy、不要送審、不要碰 DB。
+```
+
 ## 2026-06-26 - Meta App Review screenshot and redaction checklist
 
 Task goal:

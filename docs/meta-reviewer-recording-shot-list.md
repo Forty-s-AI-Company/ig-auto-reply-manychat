@@ -12,6 +12,7 @@ Related documents:
 
 - `docs/meta-app-review-submission-package.md`
 - `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-reviewer-test-asset-handoff-checklist.md`
 
 ## Recording Goal
 

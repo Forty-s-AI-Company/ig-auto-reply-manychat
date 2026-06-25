@@ -12,6 +12,7 @@ Related documents:
 
 - `docs/meta-app-review-submission-package.md`
 - `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-reviewer-test-asset-handoff-checklist.md`
 
 ## Screenshot Package Goal
 

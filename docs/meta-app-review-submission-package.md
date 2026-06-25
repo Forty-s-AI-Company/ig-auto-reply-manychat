@@ -141,6 +141,10 @@ Every screenshot needs a redaction pass before upload.
 
 ### Reviewer Test Assets
 
+Detailed handoff plan:
+
+- `docs/meta-reviewer-test-asset-handoff-checklist.md`
+
 Prepare these outside this file; never paste credentials here.
 
 - Reviewer test account email.
