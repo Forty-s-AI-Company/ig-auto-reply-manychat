@@ -1059,3 +1059,20 @@ Decision:
 
 - Private beta / whitelist remains Go.
 - Public paid launch remains Hold until the external Meta and PayUNI gates are completed.
+
+## 2026-06-26 - Meta App Review operator workbook
+
+Current status:
+
+- `[x]` Added `docs/meta-app-review-operator-submission-workbook.md`.
+- `[x]` Consolidated the Meta App Review preparation flow into one operator-facing workbook.
+- `[x]` Included recording steps, screenshot list, Meta Dashboard fields, permission mapping, redaction review, and upload manifest.
+- `[ ]` Capture final reviewer recording and screenshots.
+- `[ ]` Prepare reviewer-safe credentials through secure handoff.
+- `[ ]` Manually fill Meta Dashboard fields.
+- `[ ]` Manually submit App Review.
+
+Decision:
+
+- Meta App Review package preparation is ready for human execution.
+- Public paid launch remains Hold until Meta approval is actually granted.
