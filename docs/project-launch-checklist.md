@@ -153,3 +153,11 @@ Current decision:
 
 - Private beta / whitelist: Go.
 - Public paid launch: Hold until Meta and PayUNI external gates are complete.
+
+## 2026-06-26 - Meta App Review operator package
+
+- `[x]` Added `docs/meta-app-review-operator-submission-workbook.md`.
+- `[x]` Consolidated reviewer recording, screenshot capture, Dashboard field checklist, permission evidence mapping, safe submission text, redaction review, and upload manifest into one operator-facing package.
+- `[ ]` Human operator still needs to prepare reviewer-safe credentials through a secure handoff method.
+- `[ ]` Human operator still needs to capture the final recording/screenshots and run visual redaction review.
+- `[ ]` Human operator still needs to fill Meta Dashboard and submit manually.

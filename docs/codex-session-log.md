@@ -2928,3 +2928,60 @@ Next suggested Codex Prompt:
 ```text
 請幫我依照 docs/public-paid-launch-control-room.md 跑一次最後 30 分鐘 pre-launch 只讀檢查：Production/Staging health、alias、latest CI、Vercel deployments、Meta/PayUNI 文件完整性；不要送審、不要刷卡、不要碰 DB。
 ```
+
+## 2026-06-26 - Meta App Review operator submission workbook
+
+Task goal:
+
+- Prepare a human operator package for Meta App Review submission.
+- Base it on `docs/public-paid-launch-control-room.md`, `docs/meta-app-review-submission-package.md`, and `docs/meta-reviewer-recording-shot-list.md`.
+- Do not log in to Meta Dashboard, submit review, or output secrets.
+
+Files changed:
+
+- `docs/meta-app-review-operator-submission-workbook.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a single operator-facing workbook for the real manual Meta App Review preparation flow.
+- The workbook covers safe working folder structure, reviewer-safe asset prep, recording order, screenshot list, Meta Dashboard field checklist, permission evidence mapping, safe submission text, redaction review, upload manifest, and Go / Hold rules.
+- The workbook explicitly excludes Meta Dashboard login, upload, submission, secrets, raw OAuth values, and real customer data.
+
+Validation:
+
+```text
+Read source docs
+Result: public launch control room, submission package, recording shot list, screenshot redaction checklist, and reviewer asset handoff checklist reviewed.
+
+Scope
+Result: documentation-only; no Meta login, no App Review submission, no DB command, no payment action, and no secret output.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: blocked in the clean worktree because DATABASE_URL or TEST_DATABASE_URL is required. Production DB was not used for tests.
+```
+
+Launch impact:
+
+- Meta App Review preparation is more executable for a human operator.
+- Public paid launch remains Hold until Meta approval is actually submitted and granted.
+
+New risks:
+
+- No new runtime risk.
+- Operational risk remains: real reviewer credentials and artifacts must be handled outside git/docs through secure handoff and redaction review.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 Meta App Review operator workbook 做成乾淨 PR，跑 lint/build/docs checks，PR 建好後不要登入 Meta、不要送審、不要碰 DB。
+```

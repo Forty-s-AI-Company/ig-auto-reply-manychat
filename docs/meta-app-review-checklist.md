@@ -802,3 +802,14 @@ App Review implication:
 - Dry-run evidence is now sufficient for internal review of the intended linking and sync behavior.
 - App Review submission still needs a final reviewer-facing demo script and permission evidence review before internal beta.
 - Production implementation remains blocked.
+
+## 2026-06-26 - Operator submission workbook
+
+- Added `docs/meta-app-review-operator-submission-workbook.md`.
+- The workbook consolidates the launch control room, submission package, recording shot list, screenshot redaction checklist, and reviewer-safe asset handoff into one manual operator workflow.
+- It covers reviewer-safe asset preparation, 4-6 minute recording order, screenshot capture list, Meta Dashboard field checklist, permission evidence mapping, safe submission text draft, final redaction review, upload manifest template, and Go / Hold rules.
+
+App Review implication:
+
+- Submission preparation is now operationally ready for a human operator.
+- Actual Meta Dashboard login, upload, App Review submission, Business Verification, Advanced Access approval, and reviewer credential handoff are still manual gates.
