@@ -1067,6 +1067,7 @@ Current status:
 - `[x]` Added `docs/meta-app-review-operator-submission-workbook.md`.
 - `[x]` Consolidated the Meta App Review preparation flow into one operator-facing workbook.
 - `[x]` Included recording steps, screenshot list, Meta Dashboard fields, permission mapping, redaction review, and upload manifest.
+- `[x]` Added `docs/meta-app-review-day-of-recording-run-card.md` as a concise day-of checklist for the human operator.
 - `[ ]` Capture final reviewer recording and screenshots.
 - `[ ]` Prepare reviewer-safe credentials through secure handoff.
 - `[ ]` Manually fill Meta Dashboard fields.

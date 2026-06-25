@@ -158,6 +158,7 @@ Current decision:
 
 - `[x]` Added `docs/meta-app-review-operator-submission-workbook.md`.
 - `[x]` Consolidated reviewer recording, screenshot capture, Dashboard field checklist, permission evidence mapping, safe submission text, redaction review, and upload manifest into one operator-facing package.
+- `[x]` Added `docs/meta-app-review-day-of-recording-run-card.md` for the actual recording/submission-prep day.
 - `[ ]` Human operator still needs to prepare reviewer-safe credentials through a secure handoff method.
 - `[ ]` Human operator still needs to capture the final recording/screenshots and run visual redaction review.
 - `[ ]` Human operator still needs to fill Meta Dashboard and submit manually.

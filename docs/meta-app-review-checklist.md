@@ -813,3 +813,14 @@ App Review implication:
 
 - Submission preparation is now operationally ready for a human operator.
 - Actual Meta Dashboard login, upload, App Review submission, Business Verification, Advanced Access approval, and reviewer credential handoff are still manual gates.
+
+## 2026-06-26 - Day-of recording run card
+
+- Added `docs/meta-app-review-day-of-recording-run-card.md`.
+- The run card condenses the operator workbook into day-of steps: recording prep, recording sequence, screenshot capture, Dashboard fill checklist, and pre-submit review.
+- It keeps the same hard boundaries: no Meta Dashboard login from Codex, no submission, no secrets, no raw OAuth values, and no real customer data.
+
+App Review implication:
+
+- The human operator now has both a full workbook and a short day-of checklist.
+- App Review remains Hold until the operator records real artifacts, fills Meta Dashboard manually, and submits for approval.
