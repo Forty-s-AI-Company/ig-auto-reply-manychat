@@ -5,7 +5,9 @@
 Status: deployed and improved, still Hold for public paid launch.
 
 - PR #2 is merged into `master` at `5d014be`.
+- PR #3 is merged into `master` at `cf9e80c`.
 - Production deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni` is Ready and backs `https://inboxpilot.carry-digital-nomad.in.net`.
+- Controlled production deployment `dpl_GGk9zyF3r1F1hZ6ons3Fzfh6y5hL` is Ready and now backs `https://inboxpilot.carry-digital-nomad.in.net`.
 - Production `/api/health` is ok, and the public Instagram connect page returns HTTP 200.
 - Staging alias remains on Preview and `/api/health/staging` is ok.
 - Production Meta global fallback hardening is now live on the formal production target. In production runtime, channel token and Instagram business account id resolution no longer falls back to global Meta env values.

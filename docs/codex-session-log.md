@@ -55,6 +55,7 @@ Result: HTTP 200.
 Launch impact:
 
 - PR #2 hardening is now deployed to production.
+- PR #3 route-level tenant isolation regression coverage is merged, CI-passed, and deployed through controlled production deployment `dpl_GGk9zyF3r1F1hZ6ons3Fzfh6y5hL`.
 - Production Meta global fallback is considered live-disabled because the deployed code checks the production runtime target before allowing fallback.
 - First non-DB tenant isolation regression coverage now exists for channels, contacts, automations, and PayUNI checkout scope.
 - Public paid launch remains Hold until authenticated/DB-backed tenant isolation tests, Meta App Review evidence, and PayUNI production smoke are complete.
