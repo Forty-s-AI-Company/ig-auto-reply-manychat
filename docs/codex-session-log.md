@@ -1,5 +1,76 @@
 # Codex Session Log
 
+## 2026-06-26 - PR #2 post-deploy launch readiness delta
+
+Task goal:
+
+- Confirm PR #2 deployment state after merge.
+- Confirm production Meta fallback hardening is live on the production target.
+- Summarize remaining Meta App Review, PayUNI production, and tenant isolation gates.
+- Do not touch DB, run Prisma commands, run SQL, change schema, or print secrets.
+
+Files changed:
+
+- `tests/tenant-isolation-routes.test.ts`
+- `tests/meta-webhook.test.ts`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Verification:
+
+```text
+npx vitest run tests/tenant-isolation-routes.test.ts tests/meta-channel-config.test.ts tests/meta-webhook.test.ts tests/billing-checkout-route.test.ts
+Result: passed. 4 test files, 18 tests.
+
+npx vitest run tests/tenant-isolation-routes.test.ts tests/meta-channel-config.test.ts tests/meta-webhook.test.ts tests/billing-checkout-route.test.ts tests/release-mode.test.ts tests/release-proxy.test.ts tests/security.test.ts tests/webhook-security.test.ts tests/rate-limit.test.ts tests/compliance.test.ts tests/faq.test.ts tests/meta-business-login-sandbox-production-isolation.test.ts
+Result: passed. 12 test files, 43 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npx vercel inspect https://inboxpilot.carry-digital-nomad.in.net --scope a25814740s-projects
+Result: production deployment dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni is Ready.
+
+npx vercel inspect https://staging.carry-digital-nomad.in.net --scope a25814740s-projects
+Result: staging alias remains on a Preview deployment.
+
+curl https://inboxpilot.carry-digital-nomad.in.net/api/health
+Result: status=ok, database ok, redis ok.
+
+curl https://staging.carry-digital-nomad.in.net/api/health/staging
+Result: status=ok, deployment=staging, dbEnv=staging, releaseChannel=full, vercelEnv=preview.
+
+curl https://inboxpilot.carry-digital-nomad.in.net/channels/connect/instagram
+Result: HTTP 200.
+```
+
+Launch impact:
+
+- PR #2 hardening is now deployed to production.
+- Production Meta global fallback is considered live-disabled because the deployed code checks the production runtime target before allowing fallback.
+- First non-DB tenant isolation regression coverage now exists for channels, contacts, automations, and PayUNI checkout scope.
+- Public paid launch remains Hold until authenticated/DB-backed tenant isolation tests, Meta App Review evidence, and PayUNI production smoke are complete.
+
+New risks:
+
+- No new DB/schema risk.
+- Existing operational risk remains: any workspace that depended on global Meta fallback must reconnect with tenant-scoped channel credentials.
+- `npm test` requires `TEST_DATABASE_URL` or `DATABASE_URL` and runs `prisma db push` against an isolated test schema; it was not run against production DB.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我做 authenticated tenant-safe smoke：用測試 workspace 驗證 Meta channel reconnect、Inbox/Contacts isolation、Automation scope、Billing guard，不碰 production schema、不輸出 secret。
+```
+
 ## 2026-06-26 - Public paid launch gate cleanup
 
 Task goal:

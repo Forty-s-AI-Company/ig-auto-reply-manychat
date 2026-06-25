@@ -1,5 +1,16 @@
 import { createHmac } from "crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const mocks = vi.hoisted(() => ({
+  db: {
+    channel: {
+      findUnique: vi.fn(),
+    },
+  },
+}));
+
+vi.mock("@/lib/db", () => ({ getDb: () => mocks.db }));
+
 import { buildWebhookChannelConfig, POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
 import { metaAdapter, parseMetaWebhookComments, parseMetaWebhookMessages } from "@/lib/channels/meta";
 
@@ -11,6 +22,7 @@ describe("Meta webhook", () => {
   beforeEach(async () => {
     vi.restoreAllMocks();
     vi.unstubAllEnvs();
+    mocks.db.channel.findUnique.mockResolvedValue(null);
   });
 
   it("parses Instagram text messages and ignores echoes", () => {

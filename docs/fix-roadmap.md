@@ -1,5 +1,25 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 PR #2 production deployment delta
+
+Current status:
+
+- `[x]` PR #2 merged to `master` at `5d014be`.
+- `[x]` Production deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni` is Ready.
+- `[x]` Production custom domain points to the PR #2 production deployment.
+- `[x]` Production `/api/health` is ok.
+- `[x]` Staging alias remains on Preview and `/api/health/staging` is ok.
+- `[x]` Production Meta global fallback hardening is live on the formal production target.
+- `[x]` Added route-level tenant isolation regression tests for channels, contacts, manual automation run, and PayUNI checkout scope.
+- `[x]` Non-DB launch regression suite passed: 12 files, 43 tests.
+
+Remaining:
+
+- `[ ]` Run authenticated channel reconnect smoke for tenant-scoped Meta credentials.
+- `[ ]` Complete Meta App Review / Advanced Access / Business Verification evidence.
+- `[ ]` Complete PayUNI production merchant approval and first low-value production checkout smoke.
+- `[ ]` Run DB-backed tenant isolation regression tests against staging/fresh test DB.
+
 ## Latest - 2026-06-26 Public paid launch gate cleanup
 
 Current status:
@@ -23,8 +43,9 @@ Validation:
 
 Remaining:
 
-- `[ ]` Deploy this change through the controlled Production deployment process.
-- `[ ]` Re-run Production `/api/health`, tenant-safe smoke, and simple-release smoke after deployment.
+- `[x]` Deploy this change through the controlled Production deployment process.
+- `[x]` Re-run Production `/api/health` and public simple-release smoke after deployment.
+- `[ ]` Run authenticated tenant-safe smoke after deployment.
 - `[ ]` Expand tenant isolation regression tests beyond the first Meta fallback guard coverage.
 - `[ ]` Complete Meta App Review / Advanced Access / Business Verification evidence.
 - `[ ]` Complete PayUNI merchant review and first low-value production checkout smoke.
