@@ -1,5 +1,16 @@
 # 部署文件
 
+## Public paid launch gate deployment note
+
+The public paid launch cleanup closes local code/documentation gates only. It should be deployed through the controlled Production deployment process, then verified with:
+
+- Production `/api/health`.
+- Tenant-safe smoke for unauthenticated workspace-scoped APIs.
+- Simple-release smoke on the production custom domain.
+- Staging `/api/health/staging` to confirm staging alias isolation.
+
+Do not run Prisma, SQL, `migrate deploy`, or `db push` for this cleanup unless a later PR explicitly includes schema or data changes.
+
 InboxPilot 可部署到 Vercel 或任何支援 Node.js 的平台。正式環境需搭配 PostgreSQL 與背景 worker。
 
 ## 架構

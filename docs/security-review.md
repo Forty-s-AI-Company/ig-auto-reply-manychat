@@ -1,5 +1,21 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - Production Meta fallback hardening
+
+Scope:
+
+- Added a deployment-env helper so security-sensitive runtime behavior can distinguish `production`, `staging`, `development`, and `test`.
+- Disabled global Meta env fallback in production deployment envs.
+- Blocked production use of `META_PAGE_ACCESS_TOKEN`, `META_PAGE_ID`, and `META_INSTAGRAM_BUSINESS_ACCOUNT_ID` as substitutes for workspace/channel credentials.
+- Blocked production execution of `scripts/refresh-meta-token.mjs`.
+- Added regression tests for production fallback disablement and non-production smoke fallback behavior.
+
+Security decision:
+
+- The main production Meta global fallback path is closed locally.
+- No secret values, DB URLs, tokens, connection strings, DB commands, Prisma commands, SQL, schema changes, or migrations were introduced.
+- Public paid launch still requires deployment of this change, broader tenant isolation regression tests, and final Meta App Review evidence.
+
 ## 2026-06-24 - Release mode proxy guard
 
 Scope:

@@ -1,5 +1,74 @@
 # Codex Session Log
 
+## 2026-06-26 - Public paid launch gate cleanup
+
+Task goal:
+
+- Close the production Meta global env fallback gate.
+- Add first tenant isolation regression coverage around Meta fallback behavior.
+- Add PayUNI production SOP.
+- Improve legal / billing copy for public paid launch readiness.
+- Do not deploy, touch DB, run migrations, or print secrets.
+
+Files changed:
+
+- `src/lib/deployment-env.ts`
+- `src/lib/channels/meta.ts`
+- `src/lib/instagram/comments-sync.ts`
+- `src/app/api/webhooks/meta/route.ts`
+- `scripts/refresh-meta-token.mjs`
+- `tests/meta-channel-config.test.ts`
+- `tests/meta-webhook.test.ts`
+- `src/app/billing/page.tsx`
+- `src/app/terms-of-service/page.tsx`
+- `src/app/privacy-policy/page.tsx`
+- `src/app/data-deletion/page.tsx`
+- `docs/payuni-production-sop.md`
+- `README.md`
+- launch/security/billing/Meta readiness docs
+
+Implementation notes:
+
+- Added a deployment env helper that reads `INBOXPILOT_DEPLOYMENT_ENV`, `INBOXPILOT_DB_ENV`, `VERCEL_ENV`, and `NODE_ENV`.
+- Disabled global Meta env fallback in production deployment envs.
+- Production no longer uses global `META_PAGE_ACCESS_TOKEN` or `META_INSTAGRAM_BUSINESS_ACCOUNT_ID` as a substitute for channel-level credentials.
+- Meta webhook channel config no longer writes global fallback token markers in production.
+- Instagram comment sync no longer falls back to global IG business account id in production.
+- `scripts/refresh-meta-token.mjs` refuses production runtime markers.
+- Billing page, Terms, Privacy, and Data Deletion copy now describe controlled payments, PayUNI handling, refunds, workspace isolation, and audit retention.
+
+Validation:
+
+```text
+npx vitest run tests/meta-channel-config.test.ts tests/billing-checkout-route.test.ts
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run payuni:smoke
+Result: passed.
+```
+
+Launch impact:
+
+- Main local code gate for production Meta global fallback is closed.
+- Public paid launch still requires deployment of this change, broader tenant isolation regression tests, Meta App Review evidence, and PayUNI production merchant/smoke evidence.
+
+New risks:
+
+- Production Meta flows now require valid channel-level credentials; workspaces relying on global fallback must reconnect their channel before production use.
+- No new DB/schema risk.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我部署 public paid launch gate cleanup 到 Production，部署後驗證 /api/health、tenant-safe smoke、simple-release smoke，並確認 staging alias 沒被改動；不要碰 DB。
+```
+
 ## 2026-06-24 - Release mode commit preparation
 
 Task goal:

@@ -1,5 +1,22 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Public paid launch gate cleanup
+
+Status: improved, still Hold for public paid launch.
+
+- Production Meta global env fallback is disabled in code for production deployment envs.
+- Production now requires tenant-scoped channel token/account binding instead of falling back to `META_PAGE_ACCESS_TOKEN` or `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`.
+- Meta webhook channel config no longer adds global fallback token markers in production.
+- The Meta token refresh script now refuses production runtime markers.
+- First regression tests cover production fallback disablement and non-production smoke fallback behavior.
+- PayUNI Production SOP is documented.
+- Billing, Terms, Privacy, and Data Deletion copy now explain controlled payment enablement, PayUNI handling, refund/cancellation boundaries, workspace isolation, and audit retention.
+
+Product readiness decision:
+
+- Private beta / whitelist usage can continue.
+- Public paid launch remains Hold until this change is deployed, broader tenant isolation tests pass, Meta App Review evidence is complete, and PayUNI production smoke is verified.
+
 ## 2026-06-24 - Release mode implementation readiness
 
 Status:

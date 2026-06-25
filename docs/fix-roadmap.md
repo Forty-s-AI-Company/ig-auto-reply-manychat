@@ -1,5 +1,34 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 Public paid launch gate cleanup
+
+Current status:
+
+- `[x]` Added deployment-env helper for production/staging/development/test runtime decisions.
+- `[x]` Disabled production Meta global env fallback for token and Instagram business account id paths.
+- `[x]` Production webhook channel config no longer adds `META_PAGE_ACCESS_TOKEN` fallback marker.
+- `[x]` Instagram comment sync no longer falls back to global IG business account id in production.
+- `[x]` Production execution of `scripts/refresh-meta-token.mjs` is blocked.
+- `[x]` Added regression tests for production fallback disablement and non-production fallback behavior.
+- `[x]` Added `docs/payuni-production-sop.md`.
+- `[x]` Updated Billing, Terms, Privacy, and Data Deletion copy for controlled payments, PayUNI handling, refund/cancellation, workspace isolation, and audit retention.
+
+Validation:
+
+- `npx vitest run tests/meta-channel-config.test.ts tests/billing-checkout-route.test.ts`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run payuni:smoke`: passed.
+- `npm test`: blocked in the current local environment by unavailable DB-backed test connectivity.
+
+Remaining:
+
+- `[ ]` Deploy this change through the controlled Production deployment process.
+- `[ ]` Re-run Production `/api/health`, tenant-safe smoke, and simple-release smoke after deployment.
+- `[ ]` Expand tenant isolation regression tests beyond the first Meta fallback guard coverage.
+- `[ ]` Complete Meta App Review / Advanced Access / Business Verification evidence.
+- `[ ]` Complete PayUNI merchant review and first low-value production checkout smoke.
+
 ## Latest - 2026-06-24 Release mode implementation and smoke tests
 
 Status: implemented locally; validated and preparing push to `master` and `staging`.

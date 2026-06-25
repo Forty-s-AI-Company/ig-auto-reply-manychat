@@ -1,5 +1,18 @@
 # Meta App Review Checklist
 
+## 2026-06-26 - Production Meta global fallback hardening
+
+- Production code now disables global Meta env fallback for channel tokens and Instagram business account ids.
+- Production webhook channel updates no longer write global fallback token markers.
+- Production token refresh via `scripts/refresh-meta-token.mjs` is blocked by runtime markers.
+- Staging and development can still use fallback behavior for controlled smoke tests, but public production must use workspace/channel OAuth credentials.
+- Added regression tests for production fallback disablement.
+
+App Review implication:
+
+- This closes one multi-tenant production safety gate.
+- App Review itself is still not complete: final reviewer recording, permission proof, test asset proof, redirect URI review, Advanced Access / Business Verification evidence, and redaction review are still required.
+
 ## 2026-06-16 - Internal Beta Real Evidence Execution Plan Status
 
 Status: real evidence execution plan documented / internal beta Hold / App Review submission preparation Hold / production implementation No-Go.

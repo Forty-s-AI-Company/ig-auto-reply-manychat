@@ -24,7 +24,15 @@ export default function PrivacyPolicyPage() {
         },
         {
           title: "第三方服務",
-          body: "InboxPilot 可能使用 Meta、Vercel、Supabase、PayUni 等服務供應商。這些服務只會在必要範圍內處理資料，例如代管、資料庫、OAuth 與付款通知。",
+          body: "InboxPilot 可能使用 Meta、Vercel、Supabase、PayUNI 等服務供應商。這些服務只會在必要範圍內處理資料，例如代管、資料庫、OAuth、訊息事件與付款通知。",
+        },
+        {
+          title: "付款資料",
+          body: "信用卡號、CVV、OTP 與 3D 驗證會在 PayUNI 或銀行頁面處理，InboxPilot 不會保存完整卡號或驗證碼。我們只保存必要的訂單、發票、付款狀態、交易識別碼與稽核紀錄，用於對帳、客服、退款與防止濫用。",
+        },
+        {
+          title: "資料隔離",
+          body: "Workspace、channel、聯絡人、對話、自動化與帳務資料會依權限隔離。正式環境不應使用全域 Meta token 代替使用者連接的 channel token。",
         },
         {
           title: "資料刪除",
