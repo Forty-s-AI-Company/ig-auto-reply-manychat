@@ -1,5 +1,18 @@
 # Meta App Review Checklist
 
+## 2026-06-26 - Submission package prepared
+
+- Added [Meta App Review Submission Package](./meta-app-review-submission-package.md).
+- The package defines production URLs, permission matrix, reviewer recording scenes, screenshot list, test asset requirements, dashboard fields, redaction gate, submission draft text, and Go / Hold criteria.
+- No Meta submission was performed.
+- No Meta Dashboard settings were changed.
+- No secrets, tokens, authorization codes, or reviewer credentials were recorded.
+
+Current decision:
+
+- App Review submission preparation is improved.
+- Actual submission remains Hold until reviewer test assets, recording/screenshots, permission matrix, redaction review, Business Verification / Advanced Access status, and product/security sign-off are complete.
+
 ## 2026-06-26 - PR #2 production deployment delta
 
 - PR #2 production Meta fallback hardening is deployed to the production target.

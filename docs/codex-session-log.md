@@ -1,5 +1,55 @@
 # Codex Session Log
 
+## 2026-06-26 - Meta App Review and PayUNI go-live package preparation
+
+Task goal:
+
+- Prepare Meta App Review submission package and PayUNI production go-live checklist.
+- Do not submit Meta App Review.
+- Do not enable PayUNI production charging.
+- Do not execute a live card transaction.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-app-review-submission-package.md`
+- `docs/payuni-production-go-live-checklist.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Meta package now defines production URLs, permission evidence, reviewer recording scenes, screenshots, test assets, dashboard checks, redaction gate, draft submission text, and Go / Hold criteria.
+- PayUNI checklist now defines production env names, dashboard checks, pre-go-live validation, controlled enablement, callback verification, rollback, and Go / Hold criteria.
+- External references checked: Meta App Review, Meta data deletion callback, Instagram app setup, PAYUNi SDK usage, and PAYUNi public site.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Public paid launch preparation is clearer, but actual public paid launch remains Hold.
+- Remaining gates require real reviewer/test assets, Meta submission/approval, PAYUNi merchant approval/live smoke, and authenticated tenant-safe smoke.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, or deployment change was made.
+- Operational risk remains if an operator skips the redaction gate or enables PayUNI production without the controlled smoke.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我根據 docs/meta-app-review-submission-package.md 製作 Meta reviewer recording shot list 與逐步錄影腳本，不登入 Meta Dashboard、不送審、不輸出 secret。
+```
+
 ## 2026-06-26 - PR #2 post-deploy launch readiness delta
 
 Task goal:
