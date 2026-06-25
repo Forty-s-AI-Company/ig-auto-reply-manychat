@@ -1033,3 +1033,29 @@ Current refresh result:
 Follow-up:
 
 - Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+
+## 2026-06-26 - Public paid launch control room
+
+Current status:
+
+- `[x]` PR #5 is merged into `master`.
+- `[x]` Master CI passed after merge.
+- `[x]` Production and staging health checks are ok.
+- `[x]` Production and staging aliases remain mutually isolated.
+- `[x]` Meta App Review submission package and reviewer handoff documents are merged.
+- `[x]` PayUNI production go-live checklist is merged.
+- `[x]` Added `docs/public-paid-launch-control-room.md` as the final launch decision hub.
+
+Remaining:
+
+- `[ ]` Meta App Review / Advanced Access / Business Verification approval.
+- `[ ]` Final reviewer recording, screenshot package, permission proof, and redaction sign-off.
+- `[ ]` PAYUNi production merchant approval.
+- `[ ]` Controlled `PAYUNI_ALLOW_PRODUCTION=true` enablement.
+- `[ ]` First low-value production checkout smoke.
+- `[ ]` Final billing/legal/support owner sign-off.
+
+Decision:
+
+- Private beta / whitelist remains Go.
+- Public paid launch remains Hold until the external Meta and PayUNI gates are completed.

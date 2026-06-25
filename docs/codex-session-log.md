@@ -2856,3 +2856,75 @@ Next suggested Codex Prompt:
 - 不破壞 cron route 或 API route 呼叫格式
 - 補最小範圍測試
 ```
+
+## 2026-06-26 - Public paid launch control room
+
+Task goal:
+
+- Continue launch readiness work without asking for additional confirmation.
+- Merge the already-prepared launch package state into a final launch control room.
+- Keep the task limited to documentation and read-only verification.
+- Do not submit Meta App Review, enable PayUNI live charging, run production checkout, touch DB, or print secrets.
+
+Files changed:
+
+- `docs/public-paid-launch-control-room.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Created a clean worktree from `origin/master` to avoid mixing unrelated dirty files from the main workspace.
+- Added a single launch control room that links Meta App Review, PayUNI go-live, production/staging health, alias isolation, and final Go/Hold rules.
+- Recorded that Codex-direct launch gates are complete enough for private beta / whitelist usage.
+- Kept public paid launch on Hold because Meta App Review and PayUNI production operations require external approval and manual operator action.
+
+Validation:
+
+```text
+PR #5
+Result: merged into master.
+
+Master CI
+Result: passed after merge; lint, test, and build completed successfully.
+
+npm ci
+Result: passed. npm audit reports existing findings: 2 low, 3 moderate, 1 high.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npx vitest run tests/meta-channel-config.test.ts tests/billing-checkout-route.test.ts --reporter=dot
+Result: passed. 2 test files passed, 5 tests passed.
+
+npm test
+Result: blocked in the clean worktree because DATABASE_URL or TEST_DATABASE_URL is required. Production DB was not used for tests.
+
+Production health
+Result: status=ok, database.ok=true, redis.ok=true.
+
+Staging health
+Result: status=ok, dbEnv=staging, releaseChannel=full, vercelEnv=preview.
+```
+
+Launch impact:
+
+- Launch state is clearer and more actionable.
+- Private beta / whitelist remains Go.
+- Public paid launch remains Hold until Meta approval and PayUNI live-payment gates are completed.
+
+New risks:
+
+- No new runtime, DB, deployment, or secret risk.
+- The remaining risk is operational: public launch must not proceed until the external approval/payment gates are manually completed and recorded.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我依照 docs/public-paid-launch-control-room.md 跑一次最後 30 分鐘 pre-launch 只讀檢查：Production/Staging health、alias、latest CI、Vercel deployments、Meta/PayUNI 文件完整性；不要送審、不要刷卡、不要碰 DB。
+```
