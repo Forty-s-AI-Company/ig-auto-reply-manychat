@@ -1,11 +1,11 @@
-name: Update Staging Alias
+name: Update Production Alias
 
 on:
   deployment_status:
   workflow_dispatch:
     inputs:
       deployment_url:
-        description: "Vercel Preview deployment URL, for example https://inboxpilot-xxxx.vercel.app"
+        description: "Vercel Production deployment URL, for example https://inboxpilot-xxxx.vercel.app"
         required: true
         type: string
 
@@ -13,17 +13,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: staging-alias
+  group: production-alias
   cancel-in-progress: false
 
 env:
-  STAGING_ALIAS: staging.carry-digital-nomad.in.net
-  STAGING_BRANCH_ALIAS: inboxpilot-git-staging-a25814740s-projects.vercel.app
   PRODUCTION_ALIAS: inboxpilot.carry-digital-nomad.in.net
+  STAGING_ALIAS: staging.carry-digital-nomad.in.net
 
 jobs:
-  update-staging-alias:
-    name: Point staging alias at latest Preview deployment
+  update-production-alias:
+    name: Point production alias at latest Production deployment
     runs-on: ubuntu-latest
     if: >-
       github.event_name == 'workflow_dispatch' ||
@@ -36,7 +35,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
     steps:
-      - name: Validate Preview deployment URL
+      - name: Validate Production deployment URL
         id: validate
         shell: bash
         run: |
@@ -55,12 +54,12 @@ jobs:
           HOST="$(node -e 'const value = process.env.DEPLOYMENT_URL; try { console.log(new URL(value).hostname); } catch { process.exit(1); }')"
 
           if [[ "${HOST}" != *.vercel.app ]]; then
-            echo "Refusing to alias non-Vercel Preview host: ${HOST}"
+            echo "Refusing to alias non-Vercel deployment host: ${HOST}"
             exit 1
           fi
 
-          if [[ "${HOST}" == "${STAGING_ALIAS}" || "${HOST}" == "${PRODUCTION_ALIAS}" ]]; then
-            echo "Refusing to alias a custom domain back onto staging: ${HOST}"
+          if [[ "${HOST}" == "${PRODUCTION_ALIAS}" || "${HOST}" == "${STAGING_ALIAS}" ]]; then
+            echo "Refusing to alias a custom domain back onto production: ${HOST}"
             exit 1
           fi
 
@@ -72,28 +71,22 @@ jobs:
           INSPECT_OUTPUT="$(npx --yes vercel@latest inspect "${DEPLOYMENT_URL}" --token "${VERCEL_TOKEN}" "${VERCEL_ARGS[@]}" 2>&1)"
           echo "${INSPECT_OUTPUT}"
 
-          if grep -Eq "target[[:space:]]+production" <<< "${INSPECT_OUTPUT}"; then
-            echo "Skipping Production deployment: ${HOST}"
-            echo "should_update=false" >> "${GITHUB_OUTPUT}"
-            exit 0
-          fi
-
-          if ! grep -Fq "https://${STAGING_BRANCH_ALIAS}" <<< "${INSPECT_OUTPUT}"; then
-            echo "Skipping non-staging branch Preview deployment: ${HOST}"
+          if ! grep -Eq "target[[:space:]]+production" <<< "${INSPECT_OUTPUT}"; then
+            echo "Skipping non-Production deployment: ${HOST}"
             echo "should_update=false" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
           if ! grep -Fq "● Ready" <<< "${INSPECT_OUTPUT}"; then
-            echo "Skipping staging Preview deployment because it is not Ready yet: ${HOST}"
+            echo "Skipping Production deployment because it is not Ready yet: ${HOST}"
             echo "should_update=false" >> "${GITHUB_OUTPUT}"
             exit 0
           fi
 
-          echo "Validated staging branch Preview deployment host: ${HOST}"
+          echo "Validated Production deployment host: ${HOST}"
           echo "should_update=true" >> "${GITHUB_OUTPUT}"
 
-      - name: Update staging alias
+      - name: Update production alias
         if: steps.validate.outputs.should_update == 'true'
         shell: bash
         run: |
@@ -104,6 +97,6 @@ jobs:
             VERCEL_ARGS+=(--scope "${VERCEL_SCOPE}")
           fi
 
-          npx --yes vercel@latest alias set "${DEPLOYMENT_URL}" "${STAGING_ALIAS}" \
+          npx --yes vercel@latest alias set "${DEPLOYMENT_URL}" "${PRODUCTION_ALIAS}" \
             --token "${VERCEL_TOKEN}" \
             "${VERCEL_ARGS[@]}"
