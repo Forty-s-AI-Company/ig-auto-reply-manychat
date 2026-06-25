@@ -1,5 +1,17 @@
 # Project Launch Checklist
 
+## 2026-06-26 - Meta / PayUNI launch package preparation
+
+- `[x]` Prepared Meta App Review submission package: `docs/meta-app-review-submission-package.md`.
+- `[x]` Prepared PayUNI production go-live checklist: `docs/payuni-production-go-live-checklist.md`.
+- `[x]` Documented Meta reviewer recording, screenshot, permission matrix, redaction, dashboard, and Go / Hold requirements.
+- `[x]` Documented PayUNI production env, dashboard, controlled enablement, callback verification, rollback, and Go / Hold requirements.
+- `[x]` Did not submit Meta App Review.
+- `[x]` Did not enable PayUNI production checkout.
+- `[x]` Did not execute a live card transaction.
+- `[ ]` Complete Meta reviewer assets, recording, screenshots, redaction review, and final submission.
+- `[ ]` Complete PayUNI merchant approval and operator-approved low-value production smoke.
+
 ## 2026-06-26 - PR #2 post-deploy launch readiness delta
 
 - `[x]` PR #2 is merged into `master` at merge commit `5d014be`.

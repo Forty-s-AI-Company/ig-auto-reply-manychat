@@ -1,5 +1,26 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 Meta / PayUNI launch package preparation
+
+Current status:
+
+- `[x]` Added `docs/meta-app-review-submission-package.md`.
+- `[x]` Added `docs/meta-reviewer-recording-shot-list.md`.
+- `[x]` Added `docs/meta-app-review-screenshot-redaction-checklist.md`.
+- `[x]` Added `docs/meta-reviewer-test-asset-handoff-checklist.md`.
+- `[x]` Added `docs/payuni-production-go-live-checklist.md`.
+- `[x]` Meta submission package covers reviewer flow, screenshots, permission matrix, dashboard fields, redaction gate, draft text, and Go / Hold criteria.
+- `[x]` PayUNI go-live checklist covers env names, PAYUNi dashboard checks, preflight, controlled enablement, callback verification, rollback, and Go / Hold criteria.
+- `[x]` No Meta submission was performed.
+- `[x]` No PayUNI live checkout was enabled or executed.
+
+Remaining:
+
+- `[ ]` Capture real Meta reviewer recording/screenshots with redaction.
+- `[ ]` Fill exact Meta Dashboard permission names and complete Business Verification / Advanced Access evidence.
+- `[ ]` Confirm PAYUNi production merchant approval and run operator-approved low-value live smoke.
+- `[ ]` Run authenticated tenant-safe smoke using a test workspace.
+
 ## Latest - 2026-06-26 PR #2 production deployment delta
 
 Current status:

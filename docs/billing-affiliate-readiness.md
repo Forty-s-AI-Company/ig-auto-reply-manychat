@@ -1,5 +1,18 @@
 # Billing / Affiliate Readiness
 
+## 2026-06-26 - PayUNI production go-live checklist prepared
+
+- Added [PayUNI Production Go-Live Checklist](./payuni-production-go-live-checklist.md).
+- The checklist defines required Vercel Production env names, PAYUNi dashboard checks, pre-go-live validation, controlled enablement, callback verification, rollback, and Go / Hold criteria.
+- No `PAYUNI_ALLOW_PRODUCTION=true` switch was performed.
+- No production checkout or live card transaction was executed.
+- No PayUNI secret, Hash Key, Hash IV, Merchant ID value, or transaction credential was recorded.
+
+Current decision:
+
+- PayUNI production readiness is operationally clearer.
+- Public paid launch remains Hold until merchant approval, operator-approved low-value production smoke, callback/idempotency evidence, and refund/settlement ownership are complete.
+
 ## 2026-06-26 - PR #2 post-deploy PayUNI delta
 
 - PR #2 billing/legal copy and PayUNI Production SOP are now deployed to the production target.

@@ -1,5 +1,190 @@
 # Codex Session Log
 
+## 2026-06-26 - Meta reviewer-safe test asset handoff checklist
+
+Task goal:
+
+- Create a reviewer-safe test asset handoff checklist for Meta App Review preparation.
+- Do not log in to Meta Dashboard.
+- Do not submit App Review.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added reviewer-safe asset inventory, account requirements, Instagram/Facebook asset requirements, synthetic demo data rules, secure handoff methods, reviewer instruction note template, pre-handoff smoke, post-review cleanup, and Go / Hold criteria.
+- Linked the handoff checklist from the submission package, reviewer recording shot list, screenshot checklist, Meta checklist, and roadmap.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Meta App Review handoff preparation is more complete, but actual submission remains Hold until assets are prepared, smoked, redacted, and signed off.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, deployment, Meta Dashboard, or App Review submission change was made.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 PR #5 merge，merge 後只確認 CI、Vercel Preview、production/staging alias 與 health；不要 production redeploy、不要送審、不要碰 DB。
+```
+
+## 2026-06-26 - Meta App Review screenshot and redaction checklist
+
+Task goal:
+
+- Create a Meta App Review screenshot checklist and redaction checklist.
+- Do not log in to Meta Dashboard.
+- Do not submit App Review.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added required screenshot list, per-screenshot redaction checklist, package-level redaction checklist, search commands, screenshot manifest template, and Go / Hold criteria.
+- Linked the screenshot/redaction checklist from the submission package, reviewer recording shot list, Meta checklist, and roadmap.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Meta App Review artifact preparation is more complete, but actual submission remains Hold until real screenshots, redaction review, permission matrix, reviewer assets, and sign-off are complete.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, deployment, Meta Dashboard, or App Review submission change was made.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我根據 Meta submission package 製作 reviewer-safe test asset handoff checklist，不登入 Meta Dashboard、不送審、不輸出 secret。
+```
+
+## 2026-06-26 - Meta reviewer recording shot list
+
+Task goal:
+
+- Create a Meta reviewer recording shot list and step-by-step recording script based on `docs/meta-app-review-submission-package.md`.
+- Do not log in to Meta Dashboard.
+- Do not submit App Review.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a 4-6 minute reviewer walkthrough plan covering login, workspace context, Instagram connection, Inbox, Contacts, Automations, Privacy, Data Deletion, Terms, and closing scene.
+- Added shot-by-shot narration cues, evidence goals, redaction notes, pause/restart rules, post-recording checklist, file naming suggestions, and Go / Hold criteria.
+- Linked the shot list from the Meta App Review submission package and Meta checklist.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Meta App Review package preparation is more actionable, but actual submission remains Hold until real reviewer assets, recording, screenshots, redaction review, permission matrix, and sign-off are complete.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, deployment, Meta Dashboard, or App Review submission change was made.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我根據 docs/meta-reviewer-recording-shot-list.md 製作 Meta App Review 截圖清單與 redaction checklist，不登入 Meta Dashboard、不送審、不輸出 secret。
+```
+
+## 2026-06-26 - Meta App Review and PayUNI go-live package preparation
+
+Task goal:
+
+- Prepare Meta App Review submission package and PayUNI production go-live checklist.
+- Do not submit Meta App Review.
+- Do not enable PayUNI production charging.
+- Do not execute a live card transaction.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/payuni-production-go-live-checklist.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Meta package now defines production URLs, permission evidence, reviewer recording scenes, screenshots, test assets, dashboard checks, redaction gate, draft submission text, and Go / Hold criteria.
+- Meta reviewer recording shot list now defines a 4-6 minute reviewer walkthrough, scene-by-scene narration, redaction rules, and post-recording review checklist.
+- PayUNI checklist now defines production env names, dashboard checks, pre-go-live validation, controlled enablement, callback verification, rollback, and Go / Hold criteria.
+- External references checked: Meta App Review, Meta data deletion callback, Instagram app setup, PAYUNi SDK usage, and PAYUNi public site.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Public paid launch preparation is clearer, but actual public paid launch remains Hold.
+- Remaining gates require real reviewer/test assets, Meta submission/approval, PAYUNi merchant approval/live smoke, and authenticated tenant-safe smoke.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, or deployment change was made.
+- Operational risk remains if an operator skips the redaction gate or enables PayUNI production without the controlled smoke.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我根據 docs/meta-app-review-submission-package.md 製作 Meta reviewer recording shot list 與逐步錄影腳本，不登入 Meta Dashboard、不送審、不輸出 secret。
+```
+
 ## 2026-06-26 - PR #2 post-deploy launch readiness delta
 
 Task goal:

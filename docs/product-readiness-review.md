@@ -1,5 +1,20 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Meta / PayUNI launch package preparation
+
+Status: package prepared, public paid launch still Hold.
+
+- Added `docs/meta-app-review-submission-package.md`.
+- Added `docs/payuni-production-go-live-checklist.md`.
+- Meta package now defines reviewer materials, permission evidence, production URLs, redaction gates, and final Go / Hold criteria.
+- PayUNI checklist now defines production env/dashboard checks, controlled enablement, callback/idempotency verification, rollback, and final Go / Hold criteria.
+- No Meta submission was performed.
+- No PayUNI live charging was enabled or executed.
+
+Readiness implication:
+
+- The remaining public paid launch blockers are now mostly external/operator gates: Meta reviewer assets/submission approval, PayUNI merchant approval/live smoke, and final authenticated tenant-safe smoke.
+
 ## 2026-06-26 - PR #2 production deployment delta
 
 Status: deployed and improved, still Hold for public paid launch.
