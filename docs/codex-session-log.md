@@ -1,5 +1,49 @@
 # Codex Session Log
 
+## 2026-06-26 - Meta App Review screenshot and redaction checklist
+
+Task goal:
+
+- Create a Meta App Review screenshot checklist and redaction checklist.
+- Do not log in to Meta Dashboard.
+- Do not submit App Review.
+- Do not print or store secrets.
+
+Files changed:
+
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-reviewer-recording-shot-list.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added required screenshot list, per-screenshot redaction checklist, package-level redaction checklist, search commands, screenshot manifest template, and Go / Hold criteria.
+- Linked the screenshot/redaction checklist from the submission package, reviewer recording shot list, Meta checklist, and roadmap.
+
+Validation:
+
+```text
+git diff --check
+Result: passed.
+```
+
+Launch impact:
+
+- Meta App Review artifact preparation is more complete, but actual submission remains Hold until real screenshots, redaction review, permission matrix, reviewer assets, and sign-off are complete.
+
+New risks:
+
+- No code, DB, schema, env, payment, OAuth runtime, deployment, Meta Dashboard, or App Review submission change was made.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我根據 Meta submission package 製作 reviewer-safe test asset handoff checklist，不登入 Meta Dashboard、不送審、不輸出 secret。
+```
+
 ## 2026-06-26 - Meta reviewer recording shot list
 
 Task goal:

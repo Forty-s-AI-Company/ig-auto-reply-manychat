@@ -4,6 +4,7 @@
 
 - Added [Meta App Review Submission Package](./meta-app-review-submission-package.md).
 - Added [Meta Reviewer Recording Shot List](./meta-reviewer-recording-shot-list.md).
+- Added [Meta App Review Screenshot and Redaction Checklist](./meta-app-review-screenshot-redaction-checklist.md).
 - The package defines production URLs, permission matrix, reviewer recording scenes, screenshot list, test asset requirements, dashboard fields, redaction gate, submission draft text, and Go / Hold criteria.
 - No Meta submission was performed.
 - No Meta Dashboard settings were changed.

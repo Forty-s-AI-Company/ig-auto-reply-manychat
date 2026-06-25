@@ -120,6 +120,10 @@ Recording rules:
 
 ### Screenshot Package
 
+Detailed screenshot and redaction plan:
+
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+
 Required screenshots:
 
 - Login page.

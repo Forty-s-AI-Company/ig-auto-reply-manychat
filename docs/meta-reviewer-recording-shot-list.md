@@ -8,6 +8,11 @@ This document turns `docs/meta-app-review-submission-package.md` into a concrete
 
 Do not log in to Meta Developer Dashboard from this flow. Do not submit App Review. Do not show secrets, tokens, authorization codes, raw callback URLs, env pages, database dashboards, or real customer data.
 
+Related documents:
+
+- `docs/meta-app-review-submission-package.md`
+- `docs/meta-app-review-screenshot-redaction-checklist.md`
+
 ## Recording Goal
 
 Show that a reviewer can understand and reproduce the InboxPilot Instagram flow:
