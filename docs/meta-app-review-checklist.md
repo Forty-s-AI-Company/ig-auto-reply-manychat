@@ -1,5 +1,22 @@
 # Meta App Review Checklist
 
+## 2026-06-26 - PR #2 production deployment delta
+
+- PR #2 production Meta fallback hardening is deployed to the production target.
+- Production runtime no longer uses global Meta env fallback for channel token or Instagram business account id resolution.
+- Production webhook channel config no longer writes global fallback token markers.
+- Production health is ok after deployment.
+
+Remaining App Review gates:
+
+- Record final reviewer walkthrough for the production-like flow.
+- Confirm requested permissions and Advanced Access requirements.
+- Confirm Business Verification status.
+- Prepare test Instagram / Facebook assets and account access instructions.
+- Verify redirect URI, callback URL, data deletion URL, Terms, and Privacy Policy URLs.
+- Complete evidence redaction review so no token, authorization code, secret, customer data, or internal URL leaks into the submission package.
+- Run an authenticated reconnect smoke for a workspace/channel that uses real tenant-scoped credentials.
+
 ## 2026-06-26 - Production Meta global fallback hardening
 
 - Production code now disables global Meta env fallback for channel tokens and Instagram business account ids.

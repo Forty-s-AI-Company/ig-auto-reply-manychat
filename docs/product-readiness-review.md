@@ -1,5 +1,23 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - PR #2 production deployment delta
+
+Status: deployed and improved, still Hold for public paid launch.
+
+- PR #2 is merged into `master` at `5d014be`.
+- Production deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni` is Ready and backs `https://inboxpilot.carry-digital-nomad.in.net`.
+- Production `/api/health` is ok, and the public Instagram connect page returns HTTP 200.
+- Staging alias remains on Preview and `/api/health/staging` is ok.
+- Production Meta global fallback hardening is now live on the formal production target. In production runtime, channel token and Instagram business account id resolution no longer falls back to global Meta env values.
+- Route-level tenant isolation regression coverage now includes channels, contacts, manual automation run, and PayUNI checkout idempotency/invoice scope.
+- Non-DB launch regression suite passed: 12 files, 43 tests.
+
+Remaining launch gates:
+
+- Meta App Review: complete reviewer recording, permission proof, test asset proof, redirect URI review, Advanced Access / Business Verification evidence, and redaction review.
+- PayUNI production: complete merchant approval, enable production only through the SOP, run a first low-value production checkout, verify notify/return idempotency, and assign refund/settlement ownership.
+- Tenant isolation: run authenticated smoke and DB-backed tests against staging/fresh test DB for workspace-scoped channels, inbox, contacts, automations, billing, and webhook/callback paths.
+
 ## 2026-06-26 - Public paid launch gate cleanup
 
 Status: improved, still Hold for public paid launch.
@@ -15,7 +33,7 @@ Status: improved, still Hold for public paid launch.
 Product readiness decision:
 
 - Private beta / whitelist usage can continue.
-- Public paid launch remains Hold until this change is deployed, broader tenant isolation tests pass, Meta App Review evidence is complete, and PayUNI production smoke is verified.
+- Public paid launch remains Hold until authenticated/DB-backed tenant isolation tests pass, Meta App Review evidence is complete, and PayUNI production smoke is verified.
 
 ## 2026-06-24 - Release mode implementation readiness
 

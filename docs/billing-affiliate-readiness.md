@@ -1,5 +1,21 @@
 # Billing / Affiliate Readiness
 
+## 2026-06-26 - PR #2 post-deploy PayUNI delta
+
+- PR #2 billing/legal copy and PayUNI Production SOP are now deployed to the production target.
+- Production `/api/health` is ok after deployment.
+- Added route-level regression coverage confirming PayUNI checkout idempotency lookup and invoice creation are scoped to the current workspace and user.
+- No PayUNI production checkout was executed in this delta.
+- No DB commands, Prisma commands, SQL, migrations, schema changes, or secret output were used.
+
+Remaining PayUNI production gates:
+
+- Confirm PayUNI production merchant approval and final production credentials in Vercel Production.
+- Keep production checkout blocked until the SOP explicitly enables `PAYUNI_ALLOW_PRODUCTION=true`.
+- Run one low-value production checkout after the controlled switch.
+- Verify notify/return idempotency using real production callbacks.
+- Assign an owner for refunds, settlement reconciliation, failed payment support, and customer billing copy review.
+
 ## 2026-06-26 - PayUNI production SOP and billing copy cleanup
 
 - Added [PayUNI Production SOP](./payuni-production-sop.md).
@@ -12,7 +28,7 @@
 Billing launch implication:
 
 - Documentation and customer-facing copy are improved enough for private beta and whitelist customers.
-- Public paid launch remains Hold until production merchant review, first low-value production checkout smoke, notify/return idempotency evidence, refund/settlement owner assignment, and deployment of this change.
+- Public paid launch remains Hold until production merchant review, first low-value production checkout smoke, notify/return idempotency evidence, and refund/settlement owner assignment.
 
 更新日期：2026-06-10
 

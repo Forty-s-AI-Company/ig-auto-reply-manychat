@@ -1,5 +1,30 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - PR #2 production deployment security delta
+
+Scope:
+
+- Confirmed PR #2 is deployed to the production target at deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni`.
+- Confirmed production custom domain resolves to the PR #2 production deployment.
+- Confirmed production `/api/health` is ok.
+- Confirmed staging remains on a Preview deployment and `/api/health/staging` is ok.
+- Added route-level tenant isolation regression tests for channel update, contact read/tagging, manual automation run, and PayUNI checkout idempotency/invoice scope.
+- Confirmed the non-DB launch regression suite passes.
+- No DB commands, Prisma commands, SQL, migrations, schema changes, or secret output were used for this delta.
+
+Security decision:
+
+- Production Meta global fallback hardening is live on the formal production runtime.
+- Production must now rely on tenant/workspace channel credentials for Meta token and Instagram business account id resolution.
+- This closes the main global Meta fallback risk, but it does not replace authenticated tenant isolation testing.
+- The first route-level tenant isolation regression layer is now covered without DB access.
+
+Residual risk:
+
+- Workspaces that previously relied on global Meta fallback need channel reconnect before production use.
+- Authenticated tenant isolation smoke and DB-backed tests still need coverage across channels, inbox, contacts, automations, billing, and webhook/callback paths.
+- Meta App Review and PayUNI production approval remain external launch gates.
+
 ## 2026-06-26 - Production Meta fallback hardening
 
 Scope:
@@ -14,7 +39,7 @@ Security decision:
 
 - The main production Meta global fallback path is closed locally.
 - No secret values, DB URLs, tokens, connection strings, DB commands, Prisma commands, SQL, schema changes, or migrations were introduced.
-- Public paid launch still requires deployment of this change, broader tenant isolation regression tests, and final Meta App Review evidence.
+- Public paid launch still requires broader tenant isolation regression tests and final Meta App Review evidence.
 
 ## 2026-06-24 - Release mode proxy guard
 

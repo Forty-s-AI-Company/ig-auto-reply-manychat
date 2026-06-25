@@ -1,5 +1,22 @@
 # Project Launch Checklist
 
+## 2026-06-26 - PR #2 post-deploy launch readiness delta
+
+- `[x]` PR #2 is merged into `master` at merge commit `5d014be`.
+- `[x]` Production was deployed after PR #2 and is Ready at deployment `dpl_2Ramd6D54Xn1qc7vxxsgXGXacUni`.
+- `[x]` `https://inboxpilot.carry-digital-nomad.in.net` resolves to the PR #2 production deployment.
+- `[x]` `https://staging.carry-digital-nomad.in.net` remains on a Preview deployment from the `staging` branch.
+- `[x]` Production `/api/health` returned `status=ok` with database and redis checks ok.
+- `[x]` Staging `/api/health/staging` returned `status=ok`, `deployment=staging`, `dbEnv=staging`, `releaseChannel=full`, and `vercelEnv=preview`.
+- `[x]` Production Instagram connect page returned HTTP 200.
+- `[x]` Production Meta global fallback hardening is live by deployed code plus production deployment target: production runtime disables fallback to global `META_PAGE_ACCESS_TOKEN` and `META_INSTAGRAM_BUSINESS_ACCOUNT_ID`.
+- `[x]` Added route-level tenant isolation regression tests for channel update, contact read/tagging, manual automation run, and PayUNI checkout idempotency/invoice scope.
+- `[x]` Non-DB launch regression suite passed: 12 files, 43 tests.
+- `[ ]` Authenticated channel reconnect smoke is still required for any workspace that previously depended on global Meta fallback.
+- `[ ]` Meta App Review / Advanced Access / Business Verification evidence remains a public paid launch gate.
+- `[ ]` PayUNI production merchant approval and first low-value production checkout smoke remain public paid launch gates.
+- `[ ]` DB-backed tenant isolation regression suite still needs to run against staging/fresh test DB before public paid launch.
+
 ## 2026-06-26 - Public paid launch gate cleanup
 
 - `[x]` Added production deployment env helper for runtime-sensitive guards.
@@ -9,9 +26,11 @@
 - `[x]` Added regression coverage for production Meta fallback disablement.
 - `[x]` Added PayUNI Production SOP.
 - `[x]` Updated Billing, Terms, Privacy, and Data Deletion copy for controlled payments, PayUNI handling, refunds, workspace isolation, and audit retention.
-- `[ ]` Deploy this change through the controlled Production deployment process.
-- `[ ]` Re-run Production `/api/health`, tenant-safe smoke, and simple-release smoke after deployment.
-- `[ ]` Complete broader tenant isolation regression coverage before public paid launch.
+- `[x]` Deploy this change through the controlled Production deployment process.
+- `[x]` Re-run Production `/api/health` and public simple-release smoke after deployment.
+- `[x]` Add first broader route-level tenant isolation regression coverage.
+- `[ ]` Run authenticated tenant-safe smoke after deployment.
+- `[ ]` Run DB-backed tenant isolation regression coverage against staging/fresh test DB before public paid launch.
 - `[ ]` Complete Meta App Review / Advanced Access / Business Verification evidence.
 - `[ ]` Complete PayUNI merchant review and first low-value production checkout smoke.
 
