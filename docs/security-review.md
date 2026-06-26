@@ -1,5 +1,76 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - Autopilot report cleanup closeout
+
+Scope:
+
+- Cleaned transient autopilot reports after the runner exited.
+- Re-ran a no-value reports secret-pattern scan.
+- Confirmed no production deployment, production DB/schema write, Meta action, or PayUNI production action occurred during cleanup.
+
+Security decision:
+
+- Report handling blocker is closed: `reports/autopilot-live.log` and other raw output artifacts with secret-pattern matches were removed.
+- Reports secret-pattern scan now returns `NO_MATCHES`.
+- Report files remain ignored by git.
+- Tracked diff remains documentation plus `package-lock.json`; no `.env*`, Prisma/Supabase schema, Vercel config, GitHub workflow, Meta App Review, PayUNI production, or custom domain alias changes were detected.
+
+Residual risk:
+
+- Meta App Review and PayUNI production remain human-only external gates.
+- Authenticated route smoke / E2E is still required before preview readiness can be marked complete.
+
+## 2026-06-26 - Unattended safety reviewer refresh
+
+Scope:
+
+- Reviewed current source/docs/report/git diff for unattended autopilot safety.
+- Checked secret leakage, `.env*` modifications, Prisma/Supabase schema risk, destructive DB command risk, tenant/auth/webhook/payment boundaries, Meta App Review boundaries, PayUNI sandbox/prod separation, Vercel Production deployment risk, and custom domain alias crossing.
+
+Security decision:
+
+- Safety remains Fail because `reports/autopilot-live.log` is locked by another process and still has secret-pattern matches.
+- Git diff itself is clean for the configured secret-pattern scan.
+- Tracked diff is limited to docs plus `package-lock.json`; no `.env*`, Prisma/Supabase schema, Vercel config, GitHub workflow, Meta App Review, PayUNI production, or custom domain alias changes were detected.
+- Removed writable sensitive report outputs: `reports/codex-output-loop-1.md` and `reports/qa-output-loop-1.md`.
+
+Residual risk:
+
+- Do not share, archive, upload, or treat `reports/` as safe until `reports/autopilot-live.log` is released by the active runner and deleted or redacted.
+- Meta App Review and PayUNI production remain human-only external gates.
+
+## 2026-06-26 - Unattended loop 1 readiness refresh
+
+Scope:
+
+- Refreshed QA/safety evidence after local environment readiness improved.
+- Verified Vercel/Supabase/PayUNI state without printing secret values.
+- Cleaned stale generated output reports that had sensitive-pattern hits.
+
+Security decision:
+
+- Safety remains Fail only because `reports/autopilot-live.log` is locked by active autopilot runner processes.
+- Other generated reports were cleaned: after removing stale raw output files, the reports scan excluding the locked live log no longer found DB URL, OpenAI key, private key, or Slack token patterns.
+- No `.env*`, Prisma schema/migration, Vercel config, Meta dashboard/App Review, PayUNI production setting, or production DB change was made.
+
+Validation:
+
+```text
+npm install: passed.
+npm run lint: passed.
+npm test: passed.
+npm run build: passed.
+npm run payuni:smoke: passed against sandbox.
+npm audit --audit-level=high: passed.
+Vercel Production / Preview env-name inspection: TOKEN_ENCRYPTION_KEY present, values not printed.
+Supabase project inspection: read-only pass, local link points to test project.
+```
+
+Residual risk:
+
+- Do not share, archive, or upload `reports/` until the active runner releases `reports/autopilot-live.log` and that file is deleted or redacted.
+- PayUNI production and Meta App Review remain human-only external gates.
+
 ## 2026-06-26 - Unattended safety reviewer report
 
 Scope:

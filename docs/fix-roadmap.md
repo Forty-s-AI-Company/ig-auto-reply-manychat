@@ -1,5 +1,87 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 Autopilot report cleanup closeout
+
+Current status:
+
+- `[x]` Autopilot runner exited cleanly.
+- `[x]` Removed ignored transient report artifacts, including `reports/autopilot-live.log`.
+- `[x]` Re-ran reports secret-pattern scan after cleanup.
+- `[x]` Reports scan returned `NO_MATCHES`.
+- `[x]` Confirmed report files are ignored and not tracked by git.
+- `[ ]` QA remains blocked by missing authenticated route smoke / E2E for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- `[ ]` Public paid launch remains blocked by Meta App Review and PayUNI production go-live.
+
+Next:
+
+- Add authenticated route smoke / E2E evidence for the logged-in product surfaces.
+- Keep Meta App Review submission and PayUNI production checkout outside unattended automation.
+
+## Latest - 2026-06-26 Unattended safety reviewer refresh
+
+Current safety status:
+
+- `[x]` Reviewed source/docs/report/git diff for the requested unattended autopilot safety checklist.
+- `[x]` Confirmed tracked diff is limited to docs and `package-lock.json`.
+- `[x]` Confirmed no `.env*`, Prisma/Supabase schema, Vercel config, GitHub workflow, PayUNI production switch, Meta dashboard/App Review, or custom domain alias diff.
+- `[x]` Removed writable sensitive report outputs: `reports/codex-output-loop-1.md` and `reports/qa-output-loop-1.md`.
+- `[x]` Rewrote `reports/safety-report.md` with exactly one safety status line.
+- `[x]` `npm run lint` passed.
+- `[x]` `npm test` passed.
+- `[x]` `npm run build` passed.
+- `[ ]` Safety remains Fail because `reports/autopilot-live.log` is locked by another process and still has secret-pattern matches.
+
+Next:
+
+- Stop or let finish the active autopilot/logging process that owns `reports/autopilot-live.log`.
+- Delete or redact `reports/autopilot-live.log`.
+- Re-run the reports secret-pattern scan and regenerate `reports/safety-report.md`.
+- Keep Meta App Review submission and PayUNI production checkout outside unattended automation.
+
+## Latest - 2026-06-26 Unattended autopilot QA reviewer refresh
+
+Current QA status:
+
+- `[x]` Reviewed the requested autopilot evidence set for homepage, login, dashboard, inbox, contacts, Instagram connect, analytics, automations, referrals, pricing/billing, and docs readiness.
+- `[x]` Rewrote `reports/qa-report.md` with exactly one QA status line.
+- `[x]` Confirmed current evidence has passing lint, test, build, PayUNI sandbox smoke, Vercel/Supabase read-only readiness, selected route smoke, and remote health checks.
+- `[ ]` QA remains Fail because authenticated route smoke / E2E evidence is still missing for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- `[ ]` QA remains Fail because `reports/autopilot-live.log` still needs cleanup and a clean reports secret-pattern scan before reports are safe.
+- `[ ]` Public paid launch remains Hold because Meta App Review and PayUNI production go-live remain manual external gates.
+
+Next:
+
+- Stop or let finish the active runner, clean `reports/autopilot-live.log`, then regenerate safety evidence.
+- Add authenticated smoke / E2E coverage for the core logged-in product pages.
+- Keep Meta App Review submission and PayUNI production checkout outside unattended automation.
+
+## Latest - 2026-06-26 Unattended loop 1 readiness refresh
+
+Current status:
+
+- `[x]` Rechecked Vercel CLI auth/link; local project link exists for InboxPilot.
+- `[x]` Confirmed Vercel Production env names include `TOKEN_ENCRYPTION_KEY` without printing values.
+- `[x]` Confirmed Vercel Preview env names include `TOKEN_ENCRYPTION_KEY` without printing values.
+- `[x]` Confirmed Supabase CLI read-only project inspection works and local link points to the test project.
+- `[x]` `npm install` passed.
+- `[x]` `npm run lint` passed.
+- `[x]` `npm test` passed against local non-production test DB.
+- `[x]` `npm run build` passed.
+- `[x]` `npm run payuni:smoke` passed against sandbox.
+- `[x]` `npm audit --audit-level=high` passed.
+- `[x]` Current `package-lock.json` delta is from safe npm install/audit-fix handling; no new dependency was added.
+- `[x]` Removed stale raw output reports with sensitive-pattern hits.
+- `[ ]` `reports/autopilot-live.log` is still locked by active autopilot runner processes and must be cleaned after they finish.
+- `[ ]` Authenticated route smoke / E2E remains needed for Inbox, Contacts, Analytics, Automations, Referrals, and Billing.
+- `[ ]` Meta App Review and PayUNI production go-live remain external/manual.
+
+Next:
+
+- Let the active autopilot runner finish, then delete or redact `reports/autopilot-live.log`.
+- Re-run reports secret-pattern scan and regenerate `reports/safety-report.md`.
+- Add authenticated route smoke or E2E evidence for the core app surfaces.
+- Do not run production deployment or PayUNI production checkout in the unattended path.
+
 ## Latest - 2026-06-26 Final autopilot stop report
 
 Current status:

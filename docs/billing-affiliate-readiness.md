@@ -1,5 +1,17 @@
 # Billing / Affiliate Readiness
 
+## 2026-06-26 - Autopilot PayUNI sandbox refresh
+
+- `npm run payuni:smoke` now passes locally against sandbox behavior.
+- Vercel Production and Preview env-name inspection confirms PayUNI-related env names exist, but values were not printed.
+- PayUNI production remains disabled in the unattended path.
+- No production checkout, live card transaction, production callback verification, or `PAYUNI_ALLOW_PRODUCTION=true` switch was performed.
+
+Billing launch implication:
+
+- Sandbox regression is now available for unattended checks.
+- Public paid launch remains Hold until PayUNI production merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency verification, and refund/settlement owner sign-off are completed manually.
+
 ## 2026-06-26 - Autopilot PayUNI sandbox boundary
 
 - InboxPilot Autopilot is allowed to run `npm run payuni:smoke`.

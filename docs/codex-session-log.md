@@ -1,5 +1,245 @@
 # Codex Session Log
 
+## 2026-06-26 - Autopilot report cleanup closeout
+
+Task goal:
+
+- Clean transient autopilot report artifacts after the runner exited.
+- Re-run a no-value secret-pattern scan over `reports/`.
+- Keep production deployment, production DB, Meta App Review, and PayUNI production untouched.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+
+Implementation notes:
+
+- Removed ignored transient report artifacts, including `reports/autopilot-live.log` and raw output files that had secret-pattern matches.
+- Re-ran the reports scan without printing any matched values.
+- Confirmed the reports scan returned no matches after cleanup.
+- Confirmed `reports/` is gitignored and no report files are tracked.
+
+Validation:
+
+```text
+reports secret-pattern scan
+Result: NO_MATCHES.
+
+git check-ignore -v reports/final-report.md reports/safety-report.md reports/human-required.md
+Result: reports are ignored by .gitignore.
+```
+
+Launch impact:
+
+- Report handling risk from the locked live log is closed.
+- Preview readiness still needs authenticated route smoke / E2E for core logged-in pages.
+- Public paid launch remains Hold for Meta App Review and PayUNI production go-live.
+
+New risks:
+
+- No new runtime, DB, deployment, payment, OAuth, or secret risk was introduced.
+
+Next suggested Codex Prompt:
+
+```text
+請補 authenticated route smoke / E2E for Dashboard、Inbox、Contacts、Instagram connect、Analytics、Automations、Referrals、Billing；不要 production deploy、不要碰 production DB、不要送 Meta App Review、不要切 PayUNI production。
+```
+
+## 2026-06-26 - Unattended safety reviewer refresh
+
+Task goal:
+
+- Review source code changes, docs changes, reports, and git diff for unattended autopilot safety.
+- Check for hardcoded secrets/env values, `.env*`, production DB/schema risk, destructive Prisma/Supabase commands, tenant/auth/webhook/payment risk, Meta App Review boundaries, PayUNI sandbox/prod separation, Vercel Production deployment risk, and custom domain alias crossing.
+- Fix only critical documentation/report issues when safe.
+- Write `reports/safety-report.md` with exactly one safety status line.
+
+Files changed:
+
+- `reports/safety-report.md`
+- `reports/codex-output-loop-1.md`
+- `reports/qa-output-loop-1.md`
+- `docs/security-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Confirmed tracked diff is limited to docs and `package-lock.json`.
+- Confirmed no `.env*`, Prisma/Supabase schema, Vercel config, GitHub workflow, PayUNI production switch, Meta dashboard/App Review, or custom domain alias diff.
+- Git diff secret-pattern scan was clean.
+- Removed writable report outputs with sensitive-pattern matches: `reports/codex-output-loop-1.md` and `reports/qa-output-loop-1.md`.
+- Could not delete `reports/autopilot-live.log` because another process still owns it; recorded the blocker as `HUMAN_REQUIRED`.
+
+Validation:
+
+```text
+git diff --stat
+Result: docs and package-lock only.
+
+git diff --name-only -- .env*
+Result: no .env diff.
+
+git diff --name-only -- prisma prisma/schema.prisma prisma/migrations supabase
+Result: no Prisma/Supabase schema diff.
+
+git diff --name-only -- .github vercel.json .vercelignore
+Result: no deployment config diff.
+
+git diff secret-pattern scan
+Result: clean.
+
+reports secret-pattern scan after targeted cleanup
+Result: only reports/autopilot-live.log still matches; file is locked by another process.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed. Existing audit best-effort stderr appeared in a webhook test, but the command exited 0.
+
+npm run build
+Result: passed.
+```
+
+Launch impact:
+
+- No production deployment, DB/schema write, Meta action, PayUNI production action, or domain alias action was performed.
+- Safety remains Fail until the locked live log is deleted or redacted and report scan is clean.
+- Public paid launch remains Hold.
+
+New risks:
+
+- No new runtime risk was introduced.
+- Report handling risk remains until `reports/autopilot-live.log` is cleaned.
+
+Next suggested Codex Prompt:
+
+```text
+請在停止 autopilot/logging 程序後，刪除或遮罩 reports/autopilot-live.log，重跑 reports secret-pattern scan，然後重新產生 reports/safety-report.md；不要 production deploy、不要碰 DB、不要輸出任何 secret。
+```
+
+## 2026-06-26 - Unattended autopilot QA reviewer refresh
+
+Task goal:
+
+- Review the unattended autopilot evidence for homepage, login, dashboard, inbox, contacts, Instagram connect, analytics, automations, referrals, pricing/billing, and docs readiness.
+- Write `reports/qa-report.md` with exactly one QA status line.
+- Do not start a dev server, touch `.env*`, deploy Production, submit Meta App Review, run PayUNI production, or write production DB/schema.
+
+Files changed:
+
+- `reports/qa-report.md`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Reviewed required project docs and the requested autopilot reports.
+- Set QA to Fail because authenticated route smoke / E2E evidence is missing for core app surfaces and `reports/autopilot-live.log` still requires human cleanup before reports are safe.
+- Confirmed the available evidence shows lint, test, build, PayUNI sandbox smoke, Vercel/Supabase readiness, route smoke for selected public routes, and remote health checks passed.
+- Did not modify application code, env files, Prisma schema/migrations, Meta settings, PayUNI production settings, or deployment configuration.
+
+Validation:
+
+```text
+Evidence reviewed:
+- AUTOPILOT.md
+- reports/codex-dev-report.md
+- reports/route-smoke.md
+- reports/lint-loop-1.log
+- reports/test-loop-1.log
+- reports/build-loop-1.log
+- reports/payuni-smoke-loop-1.log
+- reports/vercel-report.md
+- reports/supabase-report.md
+- reports/health-report.md
+```
+
+Launch impact:
+
+- No runtime launch-state change.
+- Preview readiness remains Fail until authenticated route smoke / E2E and locked log cleanup are complete.
+- Public paid launch remains Hold until Meta App Review and PayUNI production gates are completed manually.
+
+New risks:
+
+- No new product, DB, deployment, payment, OAuth, or secret risk was introduced.
+
+Next suggested Codex Prompt:
+
+```text
+請在 active autopilot runner 結束後，刪除或遮罩 reports/autopilot-live.log，重跑 reports secret-pattern scan，然後補 authenticated route smoke / E2E for Dashboard、Inbox、Contacts、Instagram connect、Analytics、Automations、Referrals、Billing；不要 production deploy、不要碰 production DB、不要送 Meta App Review、不要切 PayUNI production。
+```
+
+## 2026-06-26 - Unattended loop 1 readiness refresh
+
+Task goal:
+
+- Refresh the unattended loop readiness state without touching production DB, Meta App Review, PayUNI production, or `.env*`.
+- Fix stale QA / safety / final reports where current local evidence is now better than older loop output.
+- Keep any active runner / locked log issue as `HUMAN_REQUIRED`.
+
+Files changed:
+
+- `reports/human-required.md`
+- `reports/qa-report.md`
+- `reports/safety-report.md`
+- `reports/final-report.md`
+- `reports/codex-dev-report.md`
+- `package-lock.json`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/billing-affiliate-readiness.md`
+
+Implementation notes:
+
+- Verified Vercel CLI is authenticated and local project link exists.
+- Kept the current `package-lock.json` npm lockfile delta from the safe install/audit-fix path; no new dependency was added.
+- Verified Production and Preview env names include `TOKEN_ENCRYPTION_KEY`; values were not printed.
+- Verified Supabase CLI can list projects read-only and local link points to the test project.
+- Verified PayUNI sandbox smoke passes.
+- Removed stale raw output reports with secret-pattern hits: `reports/final-output-maxloops.md` and `reports/safety-output-loop-1.md`.
+- Could not delete `reports/autopilot-live.log` because the active autopilot runner still owns it.
+
+Validation:
+
+```text
+npm install: passed.
+npm run lint: passed.
+npm test: passed.
+npm run build: passed.
+npm run payuni:smoke: passed against sandbox.
+npm audit --audit-level=high: passed; 2 moderate findings remain.
+npx vercel env ls production --scope a25814740s-projects: passed; TOKEN_ENCRYPTION_KEY name present.
+npx vercel env ls preview --scope a25814740s-projects: passed; TOKEN_ENCRYPTION_KEY name present.
+supabase projects list: passed; read-only metadata available.
+```
+
+Launch impact:
+
+- Local quality gates and sandbox PayUNI readiness improved.
+- Preview readiness remains `HUMAN_REQUIRED` until `reports/autopilot-live.log` is cleaned and authenticated route smoke / E2E is added.
+- Public paid launch remains Hold until Meta App Review and PayUNI production gates are completed manually.
+
+New risks:
+
+- No new runtime risk.
+- Existing report-handling risk remains until the active runner releases `reports/autopilot-live.log`.
+
+Next suggested Codex Prompt:
+
+```text
+請在 active autopilot runner 結束後，刪除或遮罩 reports/autopilot-live.log，重跑 reports secret-pattern scan，然後補 authenticated route smoke / E2E for Inbox、Contacts、Analytics、Automations、Referrals、Billing；不要 production deploy、不要碰 production DB、不要送 Meta App Review、不要切 PayUNI production。
+```
+
 ## 2026-06-26 - Final autopilot stop report
 
 Task goal:

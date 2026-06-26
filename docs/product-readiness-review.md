@@ -1,5 +1,31 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Autopilot report cleanup closeout
+
+Status: report handling blocker cleared; preview QA still needs authenticated smoke.
+
+- `reports/autopilot-live.log` and raw output artifacts were removed after the runner exited.
+- Reports secret-pattern scan returned `NO_MATCHES`.
+- Local gates from the autopilot run remain green: lint, test, build, PayUNI sandbox smoke, route smoke, Production health, and staging health.
+- Preview readiness still needs authenticated route smoke / E2E for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- Public paid launch remains Hold until Meta App Review and PayUNI production go-live are completed manually.
+
+## 2026-06-26 - Unattended loop 1 readiness refresh
+
+Status: local gates improved, still HUMAN_REQUIRED for final preview readiness.
+
+- Local quality gates now pass: `npm install`, `npm run lint`, `npm test`, `npm run build`, `npm run payuni:smoke`, and `npm audit --audit-level=high`.
+- PayUNI sandbox smoke now passes locally; PayUNI production remains blocked by policy.
+- Vercel project link and env-name inspection are now complete enough to confirm `TOKEN_ENCRYPTION_KEY` exists in Production and Preview without exposing values.
+- Supabase CLI read-only project inspection works, and the local link points to the test project.
+- Preview readiness still cannot be marked ready while `reports/autopilot-live.log` is locked and authenticated route smoke / E2E evidence is missing.
+
+Readiness implication:
+
+- Sandbox/test-safe autopilot readiness improved.
+- Private beta / whitelist remains Go with controlled operations.
+- Public paid launch remains Hold until Meta App Review approval, PayUNI production merchant go-live, live low-value smoke, and final legal/billing review are complete.
+
 ## 2026-06-26 - Unattended loop 1 readiness delta
 
 Status: safer, still HUMAN_REQUIRED for preview/staging completion.
