@@ -1,5 +1,53 @@
 # Codex Session Log
 
+## 2026-06-26 - CI / nightly authenticated route smoke PR
+
+Task goal:
+
+- Add authenticated route smoke to CI and nightly automation.
+- Force the smoke to use `TEST_DATABASE_URL`.
+- Confirm the production DB guard blocks accidental production execution.
+- Keep the PR clean and exclude unrelated dirty files.
+
+Files changed:
+
+- `.github/workflows/ci.yml`
+- `package.json`
+- `scripts/ensure-e2e-admin.ts`
+- `tests/e2e/authenticated-route-smoke-guard.ts`
+- `tests/e2e/public-and-auth.spec.ts`
+- `tests/authenticated-route-smoke-guard.test.ts`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added CI `workflow_dispatch` and nightly schedule.
+- CI now prepares the PostgreSQL service with Prisma migrations, creates the E2E admin through a guarded script, and runs authenticated Playwright smoke.
+- The authenticated smoke guard requires `TEST_DATABASE_URL` and refuses production markers.
+- No Production deployment, Production DB access, Meta App Review submission, or PayUNI production transaction was performed.
+
+Validation:
+
+```text
+npx vitest run tests/authenticated-route-smoke-guard.test.ts
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed locally against a disposable PostgreSQL test DB.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed locally against TEST_DATABASE_URL.
+
+npm run build
+Result: passed.
+```
+
 ## 2026-06-26 - Meta reviewer-safe test asset handoff checklist
 
 Task goal:

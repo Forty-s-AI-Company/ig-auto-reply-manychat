@@ -1,5 +1,12 @@
 # Meta App Review Checklist
 
+## 2026-06-26 - Instagram connect CI smoke
+
+- Authenticated route smoke now covers the Instagram connect entry route in CI and nightly automation.
+- The smoke verifies the internal Social Accounts page renders the Instagram OAuth provider.
+- The smoke does not click OAuth, log in to Meta, open Meta Dashboard, or submit App Review.
+- App Review remains Hold until real reviewer assets, recording, screenshots, permission proof, and dashboard submission are complete.
+
 ## 2026-06-26 - Submission package prepared
 
 - Added [Meta App Review Submission Package](./meta-app-review-submission-package.md).
