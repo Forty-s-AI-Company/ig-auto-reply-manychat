@@ -31,6 +31,13 @@ Billing launch implication:
 - The smoke runs against `TEST_DATABASE_URL` and refuses Production DB markers.
 - PayUNI production remains disabled until the controlled production go-live checklist is approved.
 
+## 2026-06-27 - Simple-release Billing gate smoke
+
+- Playwright simple-release smoke now verifies that `/billing` is gated to `/dashboard?alert=feature_gated&feature=billing`.
+- Dashboard shows the feature-gated notice and points full-version testers to the Staging site.
+- This is a product-surface smoke only; no PayUNI checkout, PayUNI production credential, live card transaction, or production DB action was used.
+- CI now runs this check in the dedicated `simple-release-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+
 ## 2026-06-26 - PayUNI production go-live checklist prepared
 
 - Added [PayUNI Production Go-Live Checklist](./payuni-production-go-live-checklist.md).

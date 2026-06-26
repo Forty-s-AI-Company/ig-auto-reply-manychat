@@ -14,7 +14,7 @@ const DEFAULT_GRAPH_API_VERSION = "v25.0";
 type MetaOAuthMode = "facebook" | "instagram";
 type MetaBusinessLoginPreference = "facebook" | "instagram";
 
-const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "facebook";
+const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "instagram";
 const DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
 const DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH = "/api/instagram/oauth/callback";
 

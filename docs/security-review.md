@@ -1066,3 +1066,178 @@ Remaining hold:
 - Do not use production DB credentials for unattended tests.
 - Do not let autopilot submit Meta App Review or access reviewer credentials.
 - Do not let autopilot enable PayUNI production or execute live card transactions.
+
+## 2026-06-27 - Contact detail write path review
+
+Scope:
+
+- Added `PATCH /api/contacts/[id]`.
+- Added Contact detail client editing for username, email, phone, and contact tag assignment/removal.
+- Hardened `/api/contacts/[id]/tags` write operations.
+
+Security properties:
+
+- Contact PATCH requires API auth, same-origin validation, selected IG account scope, and workspace-scoped contact lookup before update.
+- Optional contact custom field upserts reuse `upsertContactFieldValue`, which validates workspace ownership of field definitions and contacts.
+- Contact tag add/remove now validates same-origin request, contact scope, and tag ownership in the current workspace before writing `ContactTag`.
+- No production DB, migration, deployment, Meta App Review, or PayUNI production action was performed.
+
+Residual risk:
+
+- Add authenticated browser smoke for the new write flow.
+- Consider rate limiting contact update endpoints if high-frequency edits become a production abuse concern.
+
+## 2026-06-27 - Meta OAuth error disclosure review
+
+Scope:
+
+- Improved `/api/meta/oauth/callback` error redirects.
+- Updated `/channels/connect/social` error rendering.
+- Adjusted simple release proxy behavior for legacy Meta start routes.
+
+Security properties:
+
+- User-facing `meta_error` values are generated from safe mapped Chinese copy instead of raw provider errors.
+- Audit metadata still records a redacted technical reason for debugging.
+- OAuth callback redirects include `meta_error_code` for support context without exposing authorization code, state, token, app secret, or callback URL.
+- Simple release still blocks explicit Facebook MBS mode while allowing the default legacy start route to resolve to Instagram.
+
+Residual risk:
+
+- Browser smoke should verify that the error alert renders without leaking raw OAuth query values.
+- Meta App Review, Advanced Access, and Business Verification remain external/manual gates.
+
+## 2026-06-27 - Contacts batch tagging write path review
+
+Scope:
+
+- Added `POST /api/contacts/batch-tags`.
+- Added Contacts UI selection and batch add tag.
+- Extended E2E seed and smoke tests for local/test DB only.
+
+Security properties:
+
+- Batch tag writes require API auth and same-origin validation.
+- The target tag must belong to the current workspace.
+- Target contacts are reloaded server-side using the current workspace and selected Instagram account scope before any `ContactTag` write.
+- The request accepts at most 100 unique contact ids per batch.
+- The E2E seed refuses missing `TEST_DATABASE_URL` and refuses the production Supabase project ref before writing test data.
+- No production DB, migration, deployment, Meta App Review, or PayUNI production action was performed.
+
+Validation:
+
+```text
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 10 tests passed.
+
+npm test
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed with local/test TEST_DATABASE_URL.
+```
+
+Residual risk:
+
+- Batch remove tag should reuse the same workspace / selected-IG scoping pattern.
+- If batch operations expand beyond tagging, add rate limiting or tighter batch-size policy for higher-risk writes.
+
+## 2026-06-27 - Browser smoke and contact tag idempotency review
+
+Scope:
+
+- Added browser smoke coverage for Contact detail editing and tag management.
+- Added browser smoke coverage for Meta OAuth error rendering and simple-release provider visibility.
+- Added browser smoke coverage for simple-release `/billing` gated redirect and Dashboard notice.
+- Changed single-contact tag add to use duplicate-safe `createMany({ skipDuplicates: true })`.
+
+Security properties:
+
+- E2E seed still requires `TEST_DATABASE_URL` and refuses the production Supabase project ref before writing test data.
+- Contact tag add still validates same-origin, API auth, current contact scope, and current workspace tag ownership before writing.
+- Duplicate tag submissions now become idempotent instead of surfacing a Prisma unique constraint error.
+- Meta error smoke uses safe user-facing copy and does not include raw OAuth code, state, token, app secret, callback URL, or reviewer credentials.
+- Simple release smoke does not log in to Meta, submit App Review, run PayUNI production, or touch production DB.
+
+Validation:
+
+```text
+npm run test:e2e:auth
+Result: passed. 16 passed, 4 simple-release tests skipped in full-release mode.
+
+INBOXPILOT_RELEASE_CHANNEL=simple Playwright focused smoke
+Result: passed. 4 tests passed.
+```
+
+Residual risk:
+
+- Split full-release and simple-release browser smoke into separate CI jobs so simple-release checks do not rely on a manual focused command.
+
+## 2026-06-27 - Playwright CI release-mode separation
+
+Scope:
+
+- Split Playwright browser smoke into general full-release auth smoke, Contacts auth smoke, and simple-release smoke.
+- Added separate GitHub Actions jobs for full-release and simple-release smoke.
+
+Security properties:
+
+- Both CI smoke jobs require PostgreSQL service-backed `TEST_DATABASE_URL`.
+- Existing authenticated smoke guard still refuses missing `TEST_DATABASE_URL`, production DB env markers, and the production Supabase project ref.
+- Simple-release smoke runs with `INBOXPILOT_RELEASE_CHANNEL=simple` and does not use production aliases or production deployment.
+- No Meta Dashboard login, App Review submission, PayUNI production transaction, Prisma production migration, or production DB write is involved.
+
+Validation:
+
+```text
+npx vitest run tests/authenticated-route-smoke-guard.test.ts --reporter=dot
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple
+Result: passed.
+```
+
+Residual risk:
+
+- Watch the first remote GitHub Actions run for Playwright flakes introduced by isolated jobs.
+
+## 2026-06-27 - Contacts batch remove and segment creation review
+
+Scope:
+
+- Added `DELETE /api/contacts/batch-tags`.
+- Added `POST /api/contacts/segments`.
+- Extended Segment filters with optional `q` support.
+- Added browser smoke fixture isolation and hydration wait markers.
+
+Security properties:
+
+- Batch remove requires API auth and same-origin validation.
+- The target tag must belong to the current workspace before any delete occurs.
+- Target contacts are reloaded server-side under the current workspace and selected Instagram channel scope before `ContactTag` deletion.
+- Contact-filter Segment creation requires API auth and same-origin validation.
+- Segment creation validates workspace-owned tags and uses the server-side selected Instagram channel scope instead of trusting a client-supplied channel id.
+- E2E writes still require local/test `TEST_DATABASE_URL` and refuse production Supabase refs.
+
+Validation:
+
+```text
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 13 tests passed.
+
+npm run test:e2e:contacts
+Result: passed. 6 tests passed.
+
+npm run test:e2e
+Result: passed. 18 passed, 4 expected simple-release skips.
+```
+
+Residual risk:
+
+- If Segment filters later add custom fields or advanced boolean logic, add explicit per-field workspace validation before saving the filter JSON.

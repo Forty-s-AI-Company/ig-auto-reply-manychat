@@ -242,3 +242,61 @@ Current decision:
 - Sandbox/test-safe autopilot: Go.
 - Private beta / whitelist: Go.
 - Public paid launch: Hold until Meta approval and PayUNI production gates are complete.
+
+## 2026-06-27 - Contact detail edit readiness
+
+- `[x]` Contact detail page uses the same bright theme direction as the Contacts list.
+- `[x]` Username, email, and phone can be edited and persisted through `PATCH /api/contacts/[id]`.
+- `[x]` Contact tags can be assigned and removed from the detail page.
+- `[x]` Contact tag writes validate both the current contact scope and the current workspace tag scope.
+- `[x]` `npm run lint`, focused route tests, `npm run build`, and `npm run test:e2e` passed.
+- `[x]` Full `npm test` passed in the latest local run.
+- `[x]` Authenticated browser smoke covers contact detail edit, cancel, save success toast, tag add, and tag remove.
+
+## 2026-06-27 - IG connection error feedback
+
+- `[x]` `/api/meta/oauth/start` defaults to Instagram.
+- `[x]` Simple release allows the default Instagram start path and blocks explicit `mode=facebook`.
+- `[x]` OAuth callback redirects include safe Chinese `meta_error` copy and `meta_error_code`.
+- `[x]` `/channels/connect/social` renders `meta_error` in a red alert.
+- `[x]` `npm run lint`, focused OAuth/proxy tests, `npm run build`, and `npm run test:e2e` passed.
+- `[x]` Full `npm test` passed in the latest local run.
+- `[x]` Playwright smoke covers Meta error alert rendering and simple-release provider visibility.
+
+## 2026-06-27 - Simple release Full-only gate notice
+
+- `[x]` Full-only simple-release routes redirect to `/dashboard?alert=feature_gated&feature=<route>`.
+- `[x]` Dashboard displays a warning toast with the Staging full-release URL.
+- `[x]` `npm run lint`, `npx vitest run tests/release-proxy.test.ts`, `npm run build`, `npm test`, and rerun `npm run test:e2e` passed.
+- `[x]` Playwright simple-release smoke verifies `/billing` gated redirect and Dashboard feature notice.
+
+## 2026-06-27 - Contacts filters and batch tagging
+
+- `[x]` Contacts filter button opens a real filter panel.
+- `[x]` Contacts supports query-backed status filtering.
+- `[x]` Contacts supports query-backed tag filtering through the filter panel and sidebar tag links.
+- `[x]` Contact row checkboxes support selected-contact batch add tag.
+- `[x]` Batch tag API validates same-origin, auth, workspace tag ownership, and current workspace / selected IG contact scope.
+- `[x]` `npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot`, `npm run lint`, `npm run build`, `npm test`, and `npm run test:e2e:auth` passed.
+- `[ ]` Add batch remove tag before treating Contacts bulk operations as complete.
+- `[ ]` Add create-segment-from-filter workflow if launch operators need reusable audiences.
+
+## 2026-06-27 - Playwright smoke CI split
+
+- `[x]` Full-release authenticated smoke runs in a dedicated CI job.
+- `[x]` Contacts authenticated smoke runs as an explicit script inside the full-release smoke job.
+- `[x]` Simple-release smoke runs in a dedicated CI job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- `[x]` Both smoke jobs use PostgreSQL service-backed `TEST_DATABASE_URL`.
+- `[x]` Production DB guard remains active for authenticated smoke.
+- `[x]` Local validation passed: `npm run test:e2e:auth`, `npm run test:e2e:contacts`, and simple-release `npm run test:e2e:simple`.
+- `[ ]` Confirm the next GitHub Actions run completes both new Playwright jobs without flakes.
+
+## 2026-06-27 - Contacts batch operations closeout
+
+- `[x]` Selected contacts can batch add tag.
+- `[x]` Selected contacts can batch remove tag.
+- `[x]` Current Contacts filter can be saved as a Segment.
+- `[x]` Segment filters preserve search text, subscription status, tag, and selected Instagram channel scope.
+- `[x]` Tenant isolation tests cover batch remove and contact-filter segment creation.
+- `[x]` Authenticated Playwright smoke covers batch add/remove and segment creation.
+- `[ ]` Add clearer empty-state guidance for filtered Contacts before broader operator onboarding.

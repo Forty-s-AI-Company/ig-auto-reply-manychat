@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/AdminShell";
+import { ContactDetailEditor } from "@/components/ContactDetailEditor";
 import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
@@ -24,49 +25,64 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
-  const contact = await getDb().contact.findFirst({
-    where: { id, ...channelWhere },
-    include: {
-      channel: { select: publicChannelSelect },
-      tags: { include: { tag: true } },
-      conversations: {
-        orderBy: { updatedAt: "desc" },
-        include: { messages: { orderBy: { createdAt: "asc" } } },
+  const [contact, allTags] = await Promise.all([
+    getDb().contact.findFirst({
+      where: { id, ...channelWhere },
+      include: {
+        channel: { select: publicChannelSelect },
+        tags: { include: { tag: true } },
+        conversations: {
+          orderBy: { updatedAt: "desc" },
+          include: { messages: { orderBy: { createdAt: "asc" } } },
+        },
       },
-    },
-  });
+    }),
+    getDb().tag.findMany({ where: { workspaceId }, orderBy: { name: "asc" } }),
+  ]);
   if (!contact) notFound();
 
   return (
-    <AdminShell title="Contact">
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-semibold">{contact.displayName}</h2>
-          <p className="text-sm text-zinc-400">
-            {contact.channel.name} / {contact.externalId} / {consentLabel(contact.consentStatus)}
-          </p>
-        </div>
-        <section className="rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-sm">
-          <p>使用者名稱：{contact.username || "-"}</p>
-          <p>Email：{contact.email || "-"}</p>
-          <p>電話：{contact.phone || "-"}</p>
-          <p>標籤：{contact.tags.map(({ tag }) => tag.name).join(", ") || "-"}</p>
-        </section>
+    <AdminShell title="聯絡人詳情">
+      <div className="min-h-[calc(100vh-100px)] space-y-6 rounded-lg border border-[#d7dbe0] bg-[#f8fafc] p-5">
+        <ContactDetailEditor
+          contact={{
+            id: contact.id,
+            displayName: contact.displayName,
+            externalId: contact.externalId,
+            username: contact.username,
+            email: contact.email,
+            phone: contact.phone,
+            consentLabel: consentLabel(contact.consentStatus),
+            channelName: contact.channel.name,
+            tags: contact.tags.map(({ tag }) => ({
+              tag: { id: tag.id, name: tag.name, color: tag.color },
+            })),
+          }}
+          allTags={allTags.map((tag) => ({ id: tag.id, name: tag.name, color: tag.color }))}
+        />
         {contact.conversations.map((conversation) => (
-          <section key={conversation.id} className="rounded-lg border border-zinc-800 bg-zinc-900">
-            <div className="border-b border-zinc-800 px-4 py-3 text-sm font-medium">
+          <section key={conversation.id} className="rounded-lg border border-[#d7dbe0] bg-white shadow-sm">
+            <div className="border-b border-[#e4e7ec] px-4 py-3 text-sm font-medium text-[#111827]">
               對話 / {statusLabel(conversation.status)}
             </div>
             <div className="space-y-2 p-4">
               {conversation.messages.map((message) => (
-                <div key={message.id} className="text-sm">
-                  <span className="text-zinc-500">{directionLabel(message.direction)}</span>{" "}
-                  {message.text}
+                <div key={message.id} className="rounded-md bg-[#f8fafc] px-3 py-2 text-sm text-[#344054]">
+                  <span className="font-medium text-[#667085]">{directionLabel(message.direction)}</span>{" "}
+                  <span>{message.text}</span>
                 </div>
               ))}
+              {conversation.messages.length === 0 ? (
+                <p className="text-sm text-[#98a2b3]">這個對話目前沒有訊息。</p>
+              ) : null}
             </div>
           </section>
         ))}
+        {contact.conversations.length === 0 ? (
+          <section className="rounded-lg border border-[#d7dbe0] bg-white p-6 text-sm text-[#667085] shadow-sm">
+            目前沒有對話紀錄。
+          </section>
+        ) : null}
       </div>
     </AdminShell>
   );

@@ -27,6 +27,18 @@ const mocks = vi.hoisted(() => ({
     contact: {
       findFirst: vi.fn(),
       findMany: vi.fn(),
+      update: vi.fn(),
+    },
+    tag: {
+      findFirst: vi.fn(),
+    },
+    contactTag: {
+      upsert: vi.fn(),
+      createMany: vi.fn(),
+      deleteMany: vi.fn(),
+    },
+    segment: {
+      create: vi.fn(),
     },
     automation: {
       findFirst: vi.fn(),
@@ -84,7 +96,10 @@ import { POST as automationRunPost } from "@/app/api/automations/[id]/run/route"
 import { PUT as automationPut } from "@/app/api/automations/[id]/route";
 import { POST as billingCheckoutPost } from "@/app/api/billing/payuni/checkout/route";
 import { PATCH as channelPatch } from "@/app/api/channels/[id]/route";
+import { DELETE as contactBatchTagsDelete, POST as contactBatchTagsPost } from "@/app/api/contacts/batch-tags/route";
+import { POST as contactSegmentPost } from "@/app/api/contacts/segments/route";
 import { GET as contactGet } from "@/app/api/contacts/[id]/route";
+import { PATCH as contactPatch } from "@/app/api/contacts/[id]/route";
 import { POST as contactTagPost } from "@/app/api/contacts/[id]/tags/route";
 
 function jsonRequest(url: string, body: unknown) {
@@ -171,6 +186,179 @@ describe("tenant isolation route regressions", () => {
         channel: { workspaceId: "workspace-a" },
       },
       select: { id: true },
+    });
+  });
+
+  it("does not update a contact from another workspace", async () => {
+    mocks.db.contact.findFirst.mockResolvedValue(null);
+
+    const response = await contactPatch(
+      new Request("http://local.test/api/contacts/contact-b", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ username: "new-name", email: "lead@example.com", phone: "0912345678" }),
+      }),
+      { params: Promise.resolve({ id: "contact-b" }) },
+    );
+
+    expect(response.status).toBe(404);
+    expect(mocks.db.contact.findFirst).toHaveBeenCalledWith({
+      where: {
+        id: "contact-b",
+        channel: { workspaceId: "workspace-a" },
+      },
+      select: { id: true },
+    });
+    expect(mocks.db.contact.update).not.toHaveBeenCalled();
+  });
+
+  it("does not attach a tag unless the tag belongs to the current workspace", async () => {
+    mocks.db.contact.findFirst.mockResolvedValue({ id: "contact-a" });
+    mocks.db.tag.findFirst.mockResolvedValue(null);
+
+    const response = await contactTagPost(jsonRequest("http://local.test/api/contacts/contact-a/tags", { tagId: "tag-b" }), {
+      params: Promise.resolve({ id: "contact-a" }),
+    });
+
+    expect(response.status).toBe(404);
+    expect(mocks.db.tag.findFirst).toHaveBeenCalledWith({
+      where: { id: "tag-b", workspaceId: "workspace-a" },
+      select: { id: true },
+    });
+    expect(mocks.db.contactTag.createMany).not.toHaveBeenCalled();
+  });
+
+  it("batch tags only contacts scoped to the current workspace", async () => {
+    mocks.db.tag.findFirst.mockResolvedValue({ id: "tag-a" });
+    mocks.db.contact.findMany.mockResolvedValue([{ id: "contact-a" }]);
+    mocks.db.contactTag.createMany.mockResolvedValue({ count: 1 });
+
+    const response = await contactBatchTagsPost(
+      jsonRequest("http://local.test/api/contacts/batch-tags", {
+        contactIds: ["contact-a", "contact-b"],
+        tagId: "tag-a",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toEqual({ ok: true, count: 1, scopedCount: 1 });
+    expect(mocks.db.tag.findFirst).toHaveBeenCalledWith({
+      where: { id: "tag-a", workspaceId: "workspace-a" },
+      select: { id: true },
+    });
+    expect(mocks.db.contact.findMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["contact-a", "contact-b"] },
+        channel: { workspaceId: "workspace-a" },
+      },
+      select: { id: true },
+    });
+    expect(mocks.db.contactTag.createMany).toHaveBeenCalledWith({
+      data: [{ contactId: "contact-a", tagId: "tag-a" }],
+      skipDuplicates: true,
+    });
+  });
+
+  it("does not batch tag contacts when the tag is outside the current workspace", async () => {
+    mocks.db.tag.findFirst.mockResolvedValue(null);
+
+    const response = await contactBatchTagsPost(
+      jsonRequest("http://local.test/api/contacts/batch-tags", {
+        contactIds: ["contact-a"],
+        tagId: "tag-b",
+      }),
+    );
+
+    expect(response.status).toBe(404);
+    expect(mocks.db.contact.findMany).not.toHaveBeenCalled();
+    expect(mocks.db.contactTag.createMany).not.toHaveBeenCalled();
+  });
+
+  it("batch removes tags only from contacts scoped to the current workspace", async () => {
+    mocks.db.tag.findFirst.mockResolvedValue({ id: "tag-a" });
+    mocks.db.contact.findMany.mockResolvedValue([{ id: "contact-a" }]);
+    mocks.db.contactTag.deleteMany.mockResolvedValue({ count: 1 });
+
+    const response = await contactBatchTagsDelete(
+      jsonRequest("http://local.test/api/contacts/batch-tags", {
+        contactIds: ["contact-a", "contact-b"],
+        tagId: "tag-a",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toEqual({ ok: true, count: 1, scopedCount: 1 });
+    expect(mocks.db.tag.findFirst).toHaveBeenCalledWith({
+      where: { id: "tag-a", workspaceId: "workspace-a" },
+      select: { id: true },
+    });
+    expect(mocks.db.contact.findMany).toHaveBeenCalledWith({
+      where: {
+        id: { in: ["contact-a", "contact-b"] },
+        channel: { workspaceId: "workspace-a" },
+      },
+      select: { id: true },
+    });
+    expect(mocks.db.contactTag.deleteMany).toHaveBeenCalledWith({
+      where: {
+        tagId: "tag-a",
+        contactId: { in: ["contact-a"] },
+      },
+    });
+  });
+
+  it("does not create a contact-filter segment when the tag is outside the current workspace", async () => {
+    mocks.db.tag.findFirst.mockResolvedValue(null);
+
+    const response = await contactSegmentPost(
+      jsonRequest("http://local.test/api/contacts/segments", {
+        name: "Cross workspace segment",
+        q: "lead",
+        status: "opted_in",
+        tagId: "tag-b",
+      }),
+    );
+
+    expect(response.status).toBe(404);
+    expect(mocks.db.tag.findFirst).toHaveBeenCalledWith({
+      where: { id: "tag-b", workspaceId: "workspace-a" },
+      select: { id: true },
+    });
+    expect(mocks.db.segment.create).not.toHaveBeenCalled();
+  });
+
+  it("creates contact-filter segments with workspace and selected Instagram channel scope", async () => {
+    mocks.getSelectedInstagramChannelId.mockResolvedValue("channel-a");
+    mocks.db.tag.findFirst.mockResolvedValue({ id: "tag-a" });
+    mocks.db.segment.create.mockResolvedValue({ id: "segment-a", name: "Filtered leads" });
+
+    const response = await contactSegmentPost(
+      jsonRequest("http://local.test/api/contacts/segments", {
+        name: "Filtered leads",
+        description: "from contacts",
+        q: "lead",
+        status: "opted_in",
+        tagId: "tag-a",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toEqual({ id: "segment-a", name: "Filtered leads" });
+    expect(mocks.db.segment.create).toHaveBeenCalledWith({
+      data: {
+        workspaceId: "workspace-a",
+        name: "Filtered leads",
+        description: "from contacts",
+        filterJson: {
+          q: "lead",
+          consentStatus: "opted_in",
+          tagId: "tag-a",
+          channelId: "channel-a",
+        },
+      },
     });
   });
 

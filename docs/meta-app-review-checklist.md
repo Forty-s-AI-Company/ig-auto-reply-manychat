@@ -843,3 +843,17 @@ App Review implication:
 
 - The human operator now has both a full workbook and a short day-of checklist.
 - App Review remains Hold until the operator records real artifacts, fills Meta Dashboard manually, and submits for approval.
+
+## 2026-06-27 - Meta OAuth failure feedback
+
+- OAuth callback failures now redirect back to `/channels/connect/social` with a safe Chinese `meta_error` and support-oriented `meta_error_code`.
+- Missing Instagram messaging permissions and no usable Instagram channel cases now surface actionable copy about App Review, Sandbox/test accounts, Professional/Business Account status, and Facebook Page linkage.
+- The social connect page renders these errors in a red alert instead of silently returning to the connection screen.
+- Simple release keeps only the Instagram provider visible and blocks explicit Facebook MBS mode.
+- Playwright simple-release smoke now verifies the red error alert and confirms Facebook / Meta Login and `meta-facebook` entry points are not visible.
+- CI now runs this simple-release smoke in a dedicated `simple-release-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+
+App Review implication:
+
+- This improves operator and user diagnosis while App Review is still pending.
+- It does not complete App Review, Advanced Access, Business Verification, reviewer asset recording, or final submission.

@@ -89,7 +89,11 @@ describe("SBL-12 production callback sandbox capture guard", () => {
     const response = await GET(request);
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toContain("/channels/connect/social?meta_error=invalid_state");
+    const location = response.headers.get("location") || "";
+    const redirectUrl = new URL(location);
+    expect(redirectUrl.pathname).toBe("/channels/connect/social");
+    expect(redirectUrl.searchParams.get("meta_error_code")).toBe("invalid_state");
+    expect(redirectUrl.searchParams.get("meta_error")).toContain("登入驗證已失效");
     expect(mocks.recordAuditEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         action: "oauth_callback_failed",

@@ -40,6 +40,7 @@ type SocialConnectPageProps = {
     oauth_message?: string;
     oauth_display_name?: string;
     meta_error?: string;
+    meta_error_code?: string;
   }>;
 };
 
@@ -171,7 +172,18 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
           </div>
         ) : null}
         {params.meta_error ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{params.meta_error}</div>
+          <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+              <div className="space-y-1 leading-6">
+                <p className="font-semibold text-red-900">連接失敗</p>
+                <p>{params.meta_error}</p>
+                {params.meta_error_code ? (
+                  <p className="text-xs text-red-700">錯誤代碼：{params.meta_error_code}</p>
+                ) : null}
+              </div>
+            </div>
+          </div>
         ) : null}
 
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">

@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { assertSameOriginRequest } from "@/lib/security";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function POST(request: Request, { params }: Params) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const { id } = await params;
@@ -21,17 +25,21 @@ export async function POST(request: Request, { params }: Params) {
     select: { id: true },
   });
   if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  const tag = await getDb().tag.findFirst({ where: { id: tagId, workspaceId }, select: { id: true } });
+  if (!tag) return NextResponse.json({ error: "找不到這個工作區的標籤。" }, { status: 404 });
 
-  const item = await getDb().contactTag.upsert({
-    where: { contactId_tagId: { contactId: id, tagId } },
-    update: {},
-    create: { contactId: id, tagId },
+  const item = await getDb().contactTag.createMany({
+    data: [{ contactId: id, tagId }],
+    skipDuplicates: true,
   });
 
   return NextResponse.json(item);
 }
 
 export async function DELETE(request: Request, { params }: Params) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
   const { id } = await params;
@@ -46,6 +54,8 @@ export async function DELETE(request: Request, { params }: Params) {
     select: { id: true },
   });
   if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  const tag = await getDb().tag.findFirst({ where: { id: tagId, workspaceId }, select: { id: true } });
+  if (!tag) return NextResponse.json({ error: "找不到這個工作區的標籤。" }, { status: 404 });
 
   await getDb().contactTag.deleteMany({ where: { contactId: id, tagId } });
   return NextResponse.json({ ok: true });
