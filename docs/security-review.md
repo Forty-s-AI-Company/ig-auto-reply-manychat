@@ -1,5 +1,26 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - Authenticated route smoke CI guard
+
+Scope:
+
+- Added CI and nightly authenticated Playwright smoke for launch-critical authenticated pages.
+- Added a `TEST_DATABASE_URL`-only guard and a guarded E2E admin seed script.
+
+Security properties:
+
+- Authenticated route smoke refuses to run without `TEST_DATABASE_URL`.
+- Authenticated route smoke refuses production project ref `lmwvzskffzozuiamjxvc`.
+- Authenticated route smoke refuses `INBOXPILOT_DB_ENV=production`.
+- The E2E admin seed script uses `TEST_DATABASE_URL` and refuses production DB markers before writing.
+- Instagram connect smoke renders the internal connect page only and does not click OAuth.
+- Billing smoke renders the billing page only and does not submit checkout.
+
+Decision:
+
+- CI/nightly authenticated route smoke is safe to run against the GitHub Actions PostgreSQL service.
+- No Production DB, Production deployment, Meta App Review submission, or PayUNI production transaction is involved.
+
 ## 2026-06-26 - PR #2 production deployment security delta
 
 Scope:

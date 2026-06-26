@@ -1,5 +1,18 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 CI / nightly authenticated route smoke
+
+Current status:
+
+- `[x]` Added authenticated Playwright smoke coverage for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- `[x]` Added CI and nightly schedule execution with a PostgreSQL service `TEST_DATABASE_URL`.
+- `[x]` Added a guarded E2E admin seed script that refuses production DB and missing `TEST_DATABASE_URL`.
+- `[x]` Added unit tests for missing `TEST_DATABASE_URL`, production Supabase project ref, explicit production marker, and safe local DB.
+
+Hard boundary:
+
+- Keep authenticated route smoke on `TEST_DATABASE_URL`; do not run it against Production DB.
+
 ## Latest - 2026-06-26 Meta / PayUNI launch package preparation
 
 Current status:
