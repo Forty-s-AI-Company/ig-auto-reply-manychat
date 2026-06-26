@@ -1,5 +1,18 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Unattended autopilot readiness package
+
+Status: preview/staging automation prepared.
+
+- Added a project-specific autopilot runner to automate code/docs fixes, lint/test/build, PayUNI sandbox smoke, Vercel Preview readiness, Supabase readiness, route smoke, QA, safety review, and final reports.
+- Missing secrets, logins, external approvals, Meta reviewer actions, or PayUNI production readiness are recorded as `HUMAN_REQUIRED` instead of guessed.
+- Production DB/schema writes and PayUNI production switching are not part of unattended automation.
+
+Product readiness implication:
+
+- The project can now run longer unattended preview/staging improvement loops.
+- Public paid launch remains Hold until Meta App Review, PayUNI production go-live, tenant isolation evidence, and final operator review are complete.
+
 ## 2026-06-26 - Meta / PayUNI launch package preparation
 
 Status: package prepared, public paid launch still Hold.

@@ -1,5 +1,18 @@
 # Billing / Affiliate Readiness
 
+## 2026-06-26 - Autopilot PayUNI sandbox boundary
+
+- InboxPilot Autopilot is allowed to run `npm run payuni:smoke`.
+- Autopilot must keep PayUNI in sandbox.
+- Autopilot must not set `PAYUNI_ALLOW_PRODUCTION=true`.
+- Autopilot must not run a real production checkout or production card transaction.
+- If PayUNI sandbox merchant/signing values are missing, Autopilot writes `HUMAN_REQUIRED` and continues other safe work.
+
+Billing launch implication:
+
+- Sandbox regression can be part of unattended overnight checks.
+- Production PayUNI go-live remains a separate controlled operator task.
+
 ## 2026-06-26 - PayUNI production go-live checklist prepared
 
 - Added [PayUNI Production Go-Live Checklist](./payuni-production-go-live-checklist.md).

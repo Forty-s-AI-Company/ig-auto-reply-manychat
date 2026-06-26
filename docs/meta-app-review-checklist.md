@@ -1,5 +1,18 @@
 # Meta App Review Checklist
 
+## 2026-06-26 - Autopilot Meta boundary
+
+- InboxPilot Autopilot may prepare docs, run code checks, and review Meta readiness evidence.
+- Autopilot must not log in to Meta Dashboard.
+- Autopilot must not submit App Review.
+- Autopilot must not upload reviewer videos, screenshots, or test assets.
+- Autopilot must not print OAuth codes, callback query strings, access tokens, app secrets, or reviewer credentials.
+- Missing Meta dashboard/test-user/reviewer actions are written to `reports/human-required.md`.
+
+App Review implication:
+
+- The overnight runner can keep the package organized, but actual Meta submission remains a human controlled step.
+
 ## 2026-06-26 - Submission package prepared
 
 - Added [Meta App Review Submission Package](./meta-app-review-submission-package.md).

@@ -1,5 +1,34 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-26 Unattended autopilot package
+
+Current status:
+
+- `[x]` Added InboxPilot Autopilot documentation and Windows entry points.
+- `[x]` Added `scripts/autopilot-full.py` to run Codex development loops, quality gates, PayUNI sandbox smoke, Vercel/Supabase readiness, route smoke, QA, safety, and final reporting.
+- `[x]` Added project-specific safety guards for Meta, PayUNI, Production DB/schema, Vercel Production deployment, and secret leakage.
+- `[x]` Added `docs/autopilot-code-review.md` comparing the ReplyPilot reference approach with InboxPilot-specific hardening.
+
+Next operational step:
+
+```powershell
+$env:AUTOPILOT_MAX_LOOPS="1"
+$env:INBOXPILOT_AUTOPILOT_PREVIEW_DEPLOY="0"
+npm run autopilot
+```
+
+Then review:
+
+- `reports/final-report.md`
+- `reports/human-required.md`
+- `reports/safety-report.md`
+
+Hard boundary:
+
+- Keep PayUNI sandbox.
+- Do not let unattended automation submit Meta App Review.
+- Do not let unattended automation write production DB/schema.
+
 ## Latest - 2026-06-26 Meta / PayUNI launch package preparation
 
 Current status:

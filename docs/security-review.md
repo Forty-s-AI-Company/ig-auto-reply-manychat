@@ -1,5 +1,32 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - Unattended autopilot security review
+
+Scope:
+
+- Added InboxPilot unattended automation package.
+- Reviewed ReplyPilot reference autopilot and adapted it to InboxPilot's production, Meta, Supabase, Vercel, and PayUNI risk model.
+
+Security properties:
+
+- Reports are gitignored under `reports/`.
+- `.env*` files remain ignored except `.env.example`.
+- Autopilot prompts forbid printing or committing secrets, DB URLs, service role keys, OAuth codes, callback query strings, cookies, and PayUNI signing values.
+- Production DB/schema writes are blocked by policy: no `prisma db push`, `prisma migrate deploy`, `prisma migrate reset`, destructive SQL, or production Supabase writes.
+- Meta Dashboard login and App Review submission are blocked.
+- PayUNI production switch and live payment are blocked; sandbox smoke remains the allowed path.
+- Vercel Preview deployment is allowed when authenticated; Production deployment remains disabled by default and requires `INBOXPILOT_AUTOPILOT_ALLOW_PRODUCTION=1`.
+
+Residual risk:
+
+- The runner coordinates AI subprocesses and shell commands, so it is a policy guard, not a hard OS sandbox.
+- Generated reports are scanned for known forbidden command patterns, but a human should still review `reports/safety-report.md` and `reports/final-report.md` after overnight runs.
+
+Decision:
+
+- Acceptable for unattended preview/staging readiness work.
+- Not approved for unattended Meta submission, PayUNI production go-live, production DB/schema changes, or production customer launch.
+
 ## 2026-06-26 - PR #2 production deployment security delta
 
 Scope:

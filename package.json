@@ -25,6 +25,7 @@
     "ai-models:refresh": "tsx scripts/refresh-ai-models.ts",
     "meta:refresh-token": "node scripts/refresh-meta-token.mjs",
     "worker": "tsx scripts/worker.ts",
+    "autopilot": "powershell -NoProfile -ExecutionPolicy Bypass -File run-autopilot.ps1",
     "reset-db": "prisma migrate reset --force"
   },
   "dependencies": {

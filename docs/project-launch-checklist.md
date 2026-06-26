@@ -1,5 +1,14 @@
 # Project Launch Checklist
 
+## 2026-06-26 - InboxPilot unattended autopilot package
+
+- `[x]` Added InboxPilot-specific unattended autopilot entry points: `npm run autopilot`, `run-autopilot.ps1`, and `run-autopilot.cmd`.
+- `[x]` Added `scripts/autopilot-full.py` with Codex development, quality gates, PayUNI sandbox smoke, Vercel Preview readiness, Supabase readiness, route smoke, QA, safety, and final report phases.
+- `[x]` Added `AUTOPILOT.md` and `docs/autopilot-code-review.md`.
+- `[x]` Reports are ignored under `reports/`.
+- `[x]` Default policy keeps PayUNI sandbox, blocks Meta App Review submission, blocks production DB/schema writes, and blocks Production deployment unless explicitly enabled by env.
+- `[ ]` First real overnight run still needs operator review of `reports/final-report.md` and `reports/human-required.md`.
+
 ## 2026-06-26 - Meta / PayUNI launch package preparation
 
 - `[x]` Prepared Meta App Review submission package: `docs/meta-app-review-submission-package.md`.

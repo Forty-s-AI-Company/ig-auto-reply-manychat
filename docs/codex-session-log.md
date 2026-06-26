@@ -1,5 +1,76 @@
 # Codex Session Log
 
+## 2026-06-26 - InboxPilot unattended autopilot package
+
+Task goal:
+
+- Code review the ReplyPilot autopilot reference.
+- Build an InboxPilot-specific unattended AI programmer loop.
+- Keep PayUNI sandbox, avoid Meta submission, avoid production DB/schema writes, and avoid secret leakage.
+
+Files changed:
+
+- `.gitignore`
+- `AUTOPILOT.md`
+- `run-autopilot.ps1`
+- `run-autopilot.cmd`
+- `scripts/autopilot-full.py`
+- `scripts/autopilot_full_start.py`
+- `package.json`
+- `README.md`
+- `docs/autopilot-code-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Created a Windows-friendly `npm run autopilot` entry point.
+- Added a Python loop that runs Codex development, npm install, lint, test, build, PayUNI sandbox smoke, local route smoke, Vercel readiness, Supabase readiness, Codex QA, Codex safety, and final reporting.
+- Reports are written to `reports/`, which is now gitignored.
+- Missing credentials, logins, OTP, CAPTCHA, Meta dashboard actions, or PayUNI sandbox values are recorded in `reports/human-required.md`.
+- Production DB/schema writes are blocked by prompt guard and forbidden-command report scan.
+- PayUNI production switching and Meta App Review submission remain blocked.
+
+Validation:
+
+```text
+py -m py_compile scripts/autopilot-full.py scripts/autopilot_full_start.py
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: blocked because this clean worktree has no `DATABASE_URL` or `TEST_DATABASE_URL`. Production DB was not used.
+
+npm run payuni:smoke
+Result: blocked because sandbox `PAYUNI_MERCHANT_ID` is not configured in this clean worktree. PayUNI production was not used.
+```
+
+Launch impact:
+
+- Preview/staging readiness can now be advanced by an unattended local runner.
+- Public paid launch remains Hold until Meta, PayUNI production, tenant isolation, and final operator gates are completed.
+
+New risks:
+
+- The runner coordinates AI and shell commands, so it is not a hard sandbox.
+- Operator should review `reports/final-report.md`, `reports/safety-report.md`, and `reports/human-required.md` after overnight runs.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我跑一次 AUTOPILOT_MAX_LOOPS=1 且不部署 Preview 的 dry-run，確認 reports/final-report.md / human-required.md / safety-report.md 的格式與內容。
+```
+
 ## 2026-06-26 - Meta reviewer-safe test asset handoff checklist
 
 Task goal:
