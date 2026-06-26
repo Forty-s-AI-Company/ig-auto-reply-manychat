@@ -52,6 +52,14 @@ Product readiness implication:
 
 - The project can now run longer unattended preview/staging improvement loops.
 - Public paid launch remains Hold until Meta App Review, PayUNI production go-live, tenant isolation evidence, and final operator review are complete.
+## 2026-06-26 - CI / nightly authenticated smoke readiness
+
+Status: automated non-production smoke added.
+
+- CI and nightly automation now run authenticated route smoke for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- The smoke path requires `TEST_DATABASE_URL` and refuses Production DB markers.
+- This improves regression confidence for private beta and public paid launch preparation.
+- Public paid launch still remains Hold for Meta App Review and PayUNI production go-live evidence.
 
 ## 2026-06-26 - Meta / PayUNI launch package preparation
 

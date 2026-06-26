@@ -3,6 +3,9 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 19 * * *"
 
 jobs:
   lint-test:
@@ -26,7 +29,12 @@ jobs:
       DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
       TEST_DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
       TEST_DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      INBOXPILOT_DB_ENV: test
+      INBOXPILOT_DEPLOYMENT_ENV: test
+      INBOXPILOT_RELEASE_CHANNEL: full
+      PAYUNI_ALLOW_PRODUCTION: "false"
       AUTH_SECRET: ci-secret-used-only-for-tests-please-rotate
+      TOKEN_ENCRYPTION_KEY: ci-token-encryption-key-used-only-for-tests
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: admin123456
       ADMIN_NAME: Admin
@@ -41,4 +49,8 @@ jobs:
       - run: npx prisma generate
       - run: npm run lint
       - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npx prisma migrate deploy --schema prisma/schema.prisma
+      - run: npm run e2e:admin:ensure
+      - run: npm run test:e2e:auth
       - run: npm run build

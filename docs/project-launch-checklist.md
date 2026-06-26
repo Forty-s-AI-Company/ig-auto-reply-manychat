@@ -50,6 +50,13 @@
 - `[x]` Reports are ignored under `reports/`.
 - `[x]` Default policy keeps PayUNI sandbox, blocks Meta App Review submission, blocks production DB/schema writes, and blocks Production deployment unless explicitly enabled by env.
 - `[ ]` First real overnight run still needs operator review of `reports/final-report.md` and `reports/human-required.md`.
+## 2026-06-26 - CI / nightly authenticated route smoke
+
+- `[x]` Added authenticated route smoke for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- `[x]` Added CI and nightly scheduled execution using PostgreSQL service-backed `TEST_DATABASE_URL`.
+- `[x]` Added production DB guard coverage so authenticated smoke refuses missing `TEST_DATABASE_URL`, production project ref, and explicit production DB markers.
+- `[x]` Added guarded E2E admin seed script that refuses to write unless `TEST_DATABASE_URL` is present and non-production.
+- `[x]` Confirmed smoke does not click Meta OAuth, submit Meta App Review, submit PayUNI checkout, or switch PayUNI production.
 
 ## 2026-06-26 - Meta / PayUNI launch package preparation
 

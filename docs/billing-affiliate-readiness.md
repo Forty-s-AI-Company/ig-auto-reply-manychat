@@ -24,6 +24,12 @@ Billing launch implication:
 
 - Sandbox regression can be part of unattended overnight checks.
 - Production PayUNI go-live remains a separate controlled operator task.
+## 2026-06-26 - Billing CI authenticated smoke
+
+- Authenticated route smoke now covers the Billing page in CI and nightly automation.
+- The smoke renders the Billing page only and does not submit PayUNI checkout.
+- The smoke runs against `TEST_DATABASE_URL` and refuses Production DB markers.
+- PayUNI production remains disabled until the controlled production go-live checklist is approved.
 
 ## 2026-06-26 - PayUNI production go-live checklist prepared
 
