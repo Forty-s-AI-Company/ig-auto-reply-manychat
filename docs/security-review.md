@@ -1,5 +1,65 @@
 # InboxPilot Security Review
 
+## 2026-06-26 - Unattended safety reviewer report
+
+Scope:
+
+- Reviewed current source/docs/report/git diff after unattended loop 1.
+- Checked `.env*`, Prisma/schema risk, destructive DB command risk, tenant/auth/webhook/payment/Meta/Vercel/domain boundaries, and report leakage risk.
+
+Security decision:
+
+- Safety review is Fail because `reports/autopilot-live.log` is locked by an active logging process and still has secret-pattern matches.
+- Tracked source/docs diff did not modify `.env*`, Prisma schema/migrations, Vercel workflow/config, custom domain alias logic, PayUNI production switching, or Meta dashboard/submission behavior.
+- `src/lib/deployment-env.ts` and `src/lib/secrets.ts` changes remain security-positive: plain `NODE_ENV=production` now maps to production behavior, and production token encryption requires a dedicated `TOKEN_ENCRYPTION_KEY`.
+
+Action taken:
+
+- Redacted writable report outputs where safe.
+- Wrote `reports/safety-report.md` with Fail status.
+- Added a `HUMAN_REQUIRED` item for deleting or redacting the locked live log after the runner releases it.
+
+Residual risk:
+
+- Do not share, archive, upload, or treat `reports/` as safe until the locked live log is removed or redacted and the secret-pattern scan is clean.
+
+## 2026-06-26 - Unattended loop 1 production encryption hardening
+
+Scope:
+
+- Hardened deployment environment detection.
+- Hardened secret encryption key selection.
+- Ran a non-force npm audit fix for supply-chain risk reduction.
+
+Security changes:
+
+- `src/lib/deployment-env.ts` now treats `NODE_ENV=production` as production if no explicit InboxPilot/Vercel deployment marker is present.
+- `src/lib/secrets.ts` now requires `TOKEN_ENCRYPTION_KEY` in production and rejects using the same value as `AUTH_SECRET`.
+- `tests/security.test.ts` covers both behaviors.
+- `package-lock.json` was updated by non-force `npm audit fix`, removing the high-severity audit finding.
+
+Validation:
+
+```text
+npx vitest run tests/security.test.ts tests/unit/core-utils.test.ts tests/meta-channel-config.test.ts --reporter=dot
+Result: passed. 3 files, 19 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm audit --audit-level=high
+Result: passed. Remaining audit findings are 2 moderate Next/PostCSS force-only findings.
+```
+
+Residual risk:
+
+- Vercel Production and Preview env names must be checked for `TOKEN_ENCRYPTION_KEY` before deploying this change.
+- Full DB-backed tests remain blocked locally until an isolated test DB URL is provided.
+- PayUNI sandbox smoke remains blocked locally until sandbox env values are provided.
+
 ## 2026-06-26 - Unattended autopilot security review
 
 Scope:
@@ -873,3 +933,45 @@ Remaining hold:
 - Real callback evidence is still missing.
 - Workspace linking and channel sync remain dry-run only.
 - Internal beta and production implementation remain blocked until App Review, UX, callback security, redaction, rollback, and workspace linking gates pass.
+
+## 2026-06-26 - Autopilot local secret and environment handling
+
+Scope:
+
+- Continued autopilot setup after the operator provided a Supabase access token through a secure local input page.
+- Linked local CLIs without printing token, DB URL, PayUNI signing values, or Supabase keys.
+
+Security properties:
+
+- Supabase access token was used only for `supabase login` and then removed from the temporary local capture file.
+- Supabase production project ref was verified read-only, but the local Supabase link was set to staging ref `ndhtwqtshselqwgjenjd`.
+- Vercel Preview staging env metadata was pulled without printing values.
+- PayUNI values copied into ignored `.env.local` are sandbox/test values only.
+- Local tests use local Supabase Postgres, not production DB.
+- `supabase/.temp/` is ignored to avoid committing local link state.
+- `reports/autopilot-live.log` was removed after a prior safety scan flagged secret-like text in the transient live log.
+
+Validation:
+
+```text
+npm run payuni:smoke
+Result: passed against sandbox configuration.
+
+npm test
+Result: passed with local Supabase test DB.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm audit --audit-level=high
+Result: passed; two moderate findings remain for separate dependency review.
+```
+
+Remaining hold:
+
+- Do not use production DB credentials for unattended tests.
+- Do not let autopilot submit Meta App Review or access reviewer credentials.
+- Do not let autopilot enable PayUNI production or execute live card transactions.

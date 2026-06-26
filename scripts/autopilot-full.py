@@ -385,7 +385,6 @@ def vercel_readiness(loop: int) -> None:
 def supabase_readiness(loop: int) -> None:
     lines = ["# Supabase readiness", ""]
     commands = [
-        ["supabase", "status"],
         ["supabase", "projects", "list"],
     ]
     for index, command in enumerate(commands, start=1):

@@ -1,5 +1,19 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Unattended loop 1 readiness delta
+
+Status: safer, still HUMAN_REQUIRED for preview/staging completion.
+
+- Production runtime classification is safer for non-Vercel or minimally configured production runtimes because `NODE_ENV=production` now maps to production behavior.
+- Token encryption is safer because production no longer falls back from `TOKEN_ENCRYPTION_KEY` to `AUTH_SECRET`.
+- High-severity npm audit exposure was removed through non-force lockfile updates.
+- Production and staging public health checks remain ok.
+
+Readiness implication:
+
+- Preview/staging launch readiness improved, but this change should not be deployed until Vercel Production and Preview env names are confirmed to include `TOKEN_ENCRYPTION_KEY`.
+- Public paid launch remains Hold because DB-backed tenant tests, Meta App Review, PayUNI production approval, and PayUNI live smoke are still incomplete.
+
 ## 2026-06-26 - Unattended autopilot readiness package
 
 Status: preview/staging automation prepared.
@@ -396,3 +410,25 @@ Product readiness implication:
 
 - Codex-direct launch packaging is complete.
 - The remaining blockers are external approval or live-payment operations, so they should stay manual and recorded in the launch log.
+
+## 2026-06-26 - Autopilot readiness implication
+
+Status:
+
+- Autopilot can now run with Supabase CLI auth, Vercel CLI project link, local Supabase test DB, and PayUNI sandbox smoke.
+- The local execution path is suitable for overnight code/docs/test loops when production DB, Meta submission, and PayUNI production switching remain blocked.
+- The test path uses local Supabase Postgres instead of production DB.
+
+Product readiness implication:
+
+- Engineering automation readiness improved.
+- Public paid launch status does not change: still Hold until Meta App Review approval and PayUNI production go-live are completed manually.
+
+Remaining product gates:
+
+1. Meta App Review / Advanced Access / Business Verification approval.
+2. Final reviewer recording and screenshot package.
+3. PAYUNi production merchant approval.
+4. Controlled `PAYUNI_ALLOW_PRODUCTION=true` enablement.
+5. First low-value production checkout smoke.
+6. Final legal, billing, refund, privacy, and support copy read-through.

@@ -1,10 +1,26 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { isProductionDeploymentEnv } from "@/lib/deployment-env";
 
 const SECRET_PREFIX = "enc:v1";
 const LOCAL_DEV_ENCRYPTION_SECRET = "local-dev-token-encryption-secret-change-before-production";
+const MIN_PRODUCTION_ENCRYPTION_KEY_LENGTH = 32;
 
 function getEncryptionSecret() {
-  return process.env.TOKEN_ENCRYPTION_KEY || process.env.AUTH_SECRET || LOCAL_DEV_ENCRYPTION_SECRET;
+  const tokenEncryptionKey = process.env.TOKEN_ENCRYPTION_KEY?.trim();
+
+  if (isProductionDeploymentEnv()) {
+    if (!tokenEncryptionKey || tokenEncryptionKey.length < MIN_PRODUCTION_ENCRYPTION_KEY_LENGTH) {
+      throw new Error("TOKEN_ENCRYPTION_KEY must be set to a strong production-only value.");
+    }
+
+    if (process.env.AUTH_SECRET?.trim() && tokenEncryptionKey === process.env.AUTH_SECRET.trim()) {
+      throw new Error("TOKEN_ENCRYPTION_KEY must be separate from AUTH_SECRET in production.");
+    }
+
+    return tokenEncryptionKey;
+  }
+
+  return tokenEncryptionKey || process.env.AUTH_SECRET || LOCAL_DEV_ENCRYPTION_SECRET;
 }
 
 function getEncryptionKey() {
