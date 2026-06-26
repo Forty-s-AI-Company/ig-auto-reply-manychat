@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 type SegmentFilter = {
+  q?: string | null;
   tagId?: string | null;
   consentStatus?: "opted_in" | "opted_out" | "unknown" | null;
   channelId?: string | null;
@@ -19,6 +20,11 @@ export function segmentContactWhere(workspaceId: string, filterJson: unknown): P
 
   if (filter.channelId) {
     where.channelId = filter.channelId;
+  }
+
+  if (filter.q?.trim()) {
+    const q = filter.q.trim();
+    where.OR = [{ displayName: { contains: q } }, { username: { contains: q } }, { email: { contains: q } }];
   }
 
   if (filter.consentStatus) {

@@ -1,5 +1,18 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-27 Daily AI model refresh automation
+
+Current refresh result:
+
+- `[x]` `npm run ai-models:refresh` passed.
+- `[x]` `default-workspace` refreshed with `chatgpt=10`, `gemini=7`, `deepseek=2`, and `xai=2`.
+- `[x]` No provider failures were reported.
+- `[x]` `codex_cli` and `antigravity_cli` were not included in the refresh payload, matching the existing `AI_ENABLE_LOCAL_CLI` opt-in policy.
+
+Follow-up:
+
+- Keep local CLI providers opt-in for shared automation unless the runtime explicitly guarantees CLI installation and authentication.
+
 ## Latest - 2026-06-26 Autopilot report cleanup closeout
 
 Current status:
@@ -1307,3 +1320,171 @@ Decision:
 
 - Autopilot local execution readiness: Go for sandbox/test-safe unattended runs.
 - Public paid launch: Hold until Meta and PayUNI external gates are complete.
+
+## 2026-06-27 - Contacts sidebar tag creation
+
+Current status:
+
+- `[x]` Converted the Contacts sidebar tag Plus icon from a static Lucide icon into an accessible button.
+- `[x]` Added a lightweight create-tag dialog with tag name input, color picker, and preset color swatches.
+- `[x]` Reused the existing `/api/tags` POST route for auth, same-origin validation, workspace scoping, and database writes.
+- `[x]` Refreshes the Contacts Server Component after successful creation so the new tag appears in the sidebar.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npx vitest run tests/integration/api-routes.test.ts -t tags --reporter=dot`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run test:e2e`: passed with existing authenticated smoke skips.
+
+Remaining:
+
+- `[ ]` Implement the Contacts filter button behavior.
+- `[ ]` Implement sidebar tag filtering.
+- `[ ]` Implement contact selection batch actions, including batch add/remove tag.
+
+## 2026-06-27 - Contact detail edit and tag management
+
+Current status:
+
+- `[x]` Reworked Contact detail from dark zinc panels to the bright Contacts page theme.
+- `[x]` Added editable username, email, and phone fields with save/cancel controls.
+- `[x]` Added contact-level tag assignment and removal.
+- `[x]` Added `PATCH /api/contacts/[id]` for contact updates and optional custom field upserts.
+- `[x]` Hardened contact tag writes with same-origin and workspace-scoped tag validation.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot`: passed.
+- `npx vitest run tests/integration/api-routes.test.ts -t tags --reporter=dot`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e`: passed with existing authenticated smoke skips.
+- `npm test`: blocked by intermittent Windows/Vitest child-process crash code `3221225477`; focused tests passed.
+
+Remaining:
+
+- `[ ]` Add authenticated Playwright smoke for Contact detail edit/save/cancel and tag add/remove.
+- `[ ]` Continue Contacts page feature completion: filter button, sidebar tag filter, and batch actions.
+
+## 2026-06-27 - Meta OAuth error UX
+
+Current status:
+
+- `[x]` Legacy `/api/meta/oauth/start` now defaults to Instagram instead of Facebook.
+- `[x]` Simple release proxy allows `/api/meta/oauth/start` with no mode and still blocks explicit `mode=facebook`.
+- `[x]` Meta OAuth callback maps invalid state, cancelled authorization, missing permissions, no usable IG channel, and Meta config failures to safe Chinese messages.
+- `[x]` `/channels/connect/social` renders `meta_error` in a prominent red alert with `meta_error_code`.
+- `[x]` Focused tests cover error mapping, invalid-state redirect, and simple proxy behavior.
+
+Remaining:
+
+- `[ ]` Add browser smoke for visible `meta_error` alert rendering.
+- `[ ]` Add browser smoke confirming simple release does not show `meta-facebook` or Facebook MBS entry points.
+- `[ ]` Complete Meta App Review / Advanced Access / Business Verification before public paid launch.
+
+## 2026-06-27 - Simple release gated feature notice
+
+Current status:
+
+- `[x]` Full-only simple-release redirects now preserve intent through `alert=feature_gated`.
+- `[x]` Redirects include a route-derived `feature` key such as `billing`, `broadcasts`, or `ai-settings`.
+- `[x]` Dashboard renders a warning toast that explains controlled production enablement and links to the Staging full release.
+- `[x]` Release proxy test coverage was updated.
+
+Remaining:
+
+- `[ ]` Add Playwright smoke for the `/billing` to Dashboard gated-feature toast flow.
+- `[ ]` Continue reducing hidden/disabled simple-release paths so users do not need to discover gated routes by trial and error.
+
+## 2026-06-27 - Contacts filters and batch tagging
+
+Current status:
+
+- `[x]` Converted the Contacts filter button into a real filter panel.
+- `[x]` Added query-backed status and tag filtering on the Contacts page.
+- `[x]` Converted sidebar contact status and tag items into real filter navigation.
+- `[x]` Added contact row selection and selected-contact batch add tag.
+- `[x]` Added `POST /api/contacts/batch-tags` with same-origin, auth, workspace tag validation, and workspace / selected-IG contact scoping.
+- `[x]` Extended authenticated Playwright smoke to cover filter, tag filter, and batch add tag.
+
+Validation:
+
+- `npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run test:e2e:auth`: passed with local/test `TEST_DATABASE_URL`.
+
+Remaining:
+
+- `[ ]` Add batch remove tag.
+- `[ ]` Add "create Segment from current filter" if operators need reusable filtered audiences.
+- `[ ]` Add empty-state guidance for filtered Contacts so users know how to clear filters.
+
+## 2026-06-27 - Authenticated Playwright smoke closeout
+
+Current status:
+
+- `[x]` Contact detail edit/cancel/save success toast is covered by authenticated Playwright smoke.
+- `[x]` Contact detail tag add/remove is covered by authenticated Playwright smoke.
+- `[x]` Meta OAuth failure alert rendering is covered by simple-release Playwright smoke.
+- `[x]` Simple release provider visibility is covered by Playwright smoke; Facebook / Meta Login and `meta-facebook` are hidden.
+- `[x]` Simple release `/billing` gate redirect and Dashboard feature notice are covered by Playwright smoke.
+- `[x]` Single-contact tag add is duplicate-safe under parallel tests through `createMany({ skipDuplicates: true })`.
+
+Remaining:
+
+- `[x]` Split full-release and simple-release Playwright smoke into separate CI jobs.
+- `[ ]` Keep Meta App Review and PayUNI production go-live as manual external gates.
+
+## 2026-06-27 - Playwright smoke CI split
+
+Current status:
+
+- `[x]` Moved Contacts browser smoke into `tests/e2e/contacts-auth.spec.ts`.
+- `[x]` Moved simple-release browser smoke into `tests/e2e/simple-release.spec.ts`.
+- `[x]` Kept public/auth general route smoke in `tests/e2e/public-and-auth.spec.ts`.
+- `[x]` Added `npm run test:e2e:contacts`.
+- `[x]` Added `npm run test:e2e:simple`.
+- `[x]` Added CI `full-release-auth-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=full`.
+- `[x]` Added CI `simple-release-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- `[x]` Both CI smoke jobs use `TEST_DATABASE_URL` and the existing production DB guard.
+
+Remaining:
+
+- `[ ]` Push/open a PR for the CI split changes so GitHub Actions can run `full-release-auth-smoke` and `simple-release-smoke` remotely.
+- `[ ]` Monitor the first remote GitHub Actions run that actually contains the two split smoke jobs.
+
+Remote check:
+
+- 2026-06-27 checked GitHub Actions run `28264282091`.
+- Result was success, but the run only contained the older `lint-test` job on commit `541f9ae47991cca35890b6757c1314903e6e7fed`.
+- No remote flakes were available to fix yet because the split CI workflow is still local.
+
+## 2026-06-27 - Contacts batch remove and segment-from-filter
+
+Current status:
+
+- `[x]` Added selected-contact batch remove tag through `DELETE /api/contacts/batch-tags`.
+- `[x]` Added Contacts "建立分眾" dialog.
+- `[x]` Added `POST /api/contacts/segments` to persist current Contacts filters as Segment filters.
+- `[x]` Segment filters now support `q` search conditions.
+- `[x]` Batch remove and segment creation enforce auth, same-origin, workspace tag validation, and selected Instagram channel / workspace scoping.
+- `[x]` Authenticated Playwright smoke covers batch add, batch remove, create segment, contact detail edit, and contact detail tag management.
+- `[x]` Smoke fixtures are project-isolated to avoid desktop/mobile parallel contamination.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run test:e2e:contacts`: passed.
+- `npm run test:e2e`: passed with 18 passed and 4 expected simple-release skips.
+
+Remaining:
+
+- `[ ]` Add filtered empty-state guidance so operators know how to clear `q`, status, or tag filters.
+- `[ ]` Consider saved-segment preview counts inside the Contacts create-segment dialog if operators need confidence before saving.

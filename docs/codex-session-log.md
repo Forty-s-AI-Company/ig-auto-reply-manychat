@@ -1,5 +1,48 @@
 # Codex Session Log
 
+## 2026-06-27 - Daily AI model refresh automation
+
+Task goal:
+
+- Run `npm run ai-models:refresh` for the daily model cache refresh.
+- Report provider model counts and any provider / CLI failures.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Ran the refresh command from the project workspace.
+- The refresh completed successfully for `default-workspace`.
+- Refreshed provider counts: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failures were reported by the script.
+- `codex_cli` and `antigravity_cli` were not present in the refresh payload, consistent with the existing local CLI opt-in behavior when `AI_ENABLE_LOCAL_CLI` is not enabled.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed. default-workspace refreshed with chatgpt=10, gemini=7, deepseek=2, xai=2.
+```
+
+Launch impact:
+
+- No product launch-state change.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- No new runtime risk.
+- If local CLI caches must be refreshed by this automation, the automation environment still needs explicit `AI_ENABLE_LOCAL_CLI=true` plus installed/authenticated CLI tools.
+
+Next suggested Codex Prompt:
+
+```text
+請維持每日執行 npm run ai-models:refresh；若要納入 codex_cli / antigravity_cli，先確認該 automation runtime 已安裝並登入 CLI，再設定 AI_ENABLE_LOCAL_CLI=true。
+```
+
 ## 2026-06-26 - Autopilot report cleanup closeout
 
 Task goal:
@@ -3751,4 +3794,614 @@ Next suggested Codex Prompt:
 
 ```text
 請幫我跑一次 npm run autopilot，完成後只整理 reports 狀態與 blocking items，不碰 production DB、不送 Meta 審核、不切 PayUNI production。
+```
+
+## 2026-06-27 - Full Codebase QA & Architecture Gap Diagnostics
+
+Task goal:
+
+- Perform a thorough static code and architecture QA audit for the entire InboxPilot project.
+- Map the feature surface, identify real gaps vs. release mode gating, and trace backend API integrations.
+- Generate a comprehensive, high-stakes production-ready test report and actionable Codex prompts for feature gaps.
+
+Files changed:
+
+- `docs/codex-session-log.md`
+
+Findings:
+
+- Identified that the production app (https://inboxpilot.carry-digital-nomad.in.net) runs on the `simple` release channel, which blocks and redirects Full-only features (e.g., Billing, Broadcasts, Sequences, AI Settings, Knowledge Base, Admin, Affiliate, Mock Tester, Segments, Tags, Templates, Wallet) to `/dashboard` or returns 404 via `src/proxy.ts` and `src/lib/release-mode.ts`.
+- Confirmed that the database layer and API route integrations for Inbox, Contacts, Automations, and Billing are fully implemented and connected (not mocked), but require the `full` release channel (or Staging at staging.carry-digital-nomad.in.net) to be exposed.
+- Identified core gaps in Plan Enforcement, subscription state lifecycle handling (expired/past_due/unpaid), PayUNI production onboarding boundaries, and localized Chinese text encoding.
+
+Validation:
+
+- Performed extensive read-only codebase and route proxy inspection. All key findings are fully verified against the Next.js routing, middleware, and database schemas.
+
+## 2026-06-27 - Contacts tag create interaction fix
+
+Task goal:
+
+- Fix the static Plus icon beside the Contacts sidebar tag heading.
+- Let users create a tag from the Contacts page without converting the page Server Component into a Client Component.
+
+Files changed:
+
+- `src/app/contacts/page.tsx`
+- `src/components/ContactTagCreateButton.tsx`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+
+Implementation notes:
+
+- Added `ContactTagCreateButton` as a small Client Component for the tag creation interaction.
+- Replaced the static sidebar Plus icon with the interactive button.
+- The dialog collects tag name and color, posts `{ name, color }` to `/api/tags`, and calls `router.refresh()` after success so the Server Component reloads tags from the database.
+- Existing `/api/tags` auth, same-origin, validation, and workspace scoping were reused unchanged.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/integration/api-routes.test.ts -t tags --reporter=dot
+Result: passed. 2 tests passed, 5 skipped.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run test:e2e
+Result: passed. 6 passed, 6 skipped by existing authenticated smoke conditions.
+```
+
+Notes:
+
+- Running the full `tests/integration/api-routes.test.ts` file still exposes two pre-existing broadcast test mismatches unrelated to this tag UI fix.
+- No production DB, Meta App Review, PayUNI production, migration, or deployment action was performed.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我檢查 Contacts 頁面其他假按鈕與未完成互動，優先修復「篩選」按鈕、標籤篩選、聯絡人勾選後批次加標籤，並補上對應 smoke tests；不要碰 production DB。
+```
+
+## 2026-06-27 - Contact detail edit and tag management
+
+Task goal:
+
+- Rework the Contact detail page from the dark zinc panel into the same bright visual language as the Contacts list.
+- Add editable username, email, phone, save/cancel controls, tag add/remove interaction, and a persistent PATCH API for contact updates.
+
+Files changed:
+
+- `src/app/contacts/[id]/page.tsx`
+- `src/components/ContactDetailEditor.tsx`
+- `src/app/api/contacts/[id]/route.ts`
+- `src/app/api/contacts/[id]/tags/route.ts`
+- `tests/tenant-isolation-routes.test.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+
+Implementation notes:
+
+- Kept the Contact detail page as a Server Component for database loading.
+- Added `ContactDetailEditor` as the focused Client Component for field editing, tag assignment/removal, toast feedback, and `router.refresh()`.
+- Added `PATCH /api/contacts/[id]` for username, email, phone, and optional custom field upserts.
+- Hardened `/api/contacts/[id]/tags` with same-origin checks and tag workspace validation before contact-tag writes.
+- Converted the page surface to `bg-[#f8fafc]`, white cards, and `border-[#d7dbe0]` borders.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 8 tests passed.
+
+npx vitest run tests/integration/api-routes.test.ts -t tags --reporter=dot
+Result: passed. 2 tests passed, 5 skipped.
+
+npm run build
+Result: passed.
+
+npm run test:e2e
+Result: passed. 6 passed, 6 skipped by existing authenticated smoke conditions.
+
+npm test
+Result: not cleanly completed. The Vitest child process exited with Windows crash code 3221225477 on rerun after passing earlier batches. No assertion failure was reported for this change; focused route/security tests passed.
+```
+
+Launch impact:
+
+- Improves Contacts feature completeness and visual consistency.
+- No production DB, migration, deployment, Meta App Review, or PayUNI production action was performed.
+
+New risks:
+
+- Contact detail editing now exposes a real write path, so future QA should include authenticated browser smoke for field save, cancel, tag add, and tag remove.
+- The tag route hardening may reveal any existing client code that tried to attach cross-workspace or missing tags; this is intended behavior.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我替聯絡人詳情頁補 Playwright authenticated smoke：測試 username/email/phone 編輯、取消、儲存成功 toast、標籤新增與移除；使用 TEST_DATABASE_URL，不碰 production DB。
+```
+
+## 2026-06-27 - Meta OAuth error feedback and simple-mode IG entry hardening
+
+Task goal:
+
+- Improve `/api/meta/oauth/start` and `/api/meta/oauth/callback` failure handling for IG connection flows.
+- Show clear Chinese error feedback on `/channels/connect/social` when `meta_error` is present.
+- Keep simple release free of Facebook MBS entry points and avoid proxy-blocked default Meta start behavior.
+
+Files changed:
+
+- `src/app/api/meta/oauth/start/route.ts`
+- `src/app/api/meta/oauth/callback/route.ts`
+- `src/app/channels/connect/social/page.tsx`
+- `src/proxy.ts`
+- `tests/meta-oauth.test.ts`
+- `tests/release-proxy.test.ts`
+- `tests/meta-business-login-sandbox-sbl12-callback-route.test.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+
+Implementation notes:
+
+- Changed legacy `/api/meta/oauth/start` default mode from Facebook to Instagram.
+- Updated simple release proxy behavior so `/api/meta/oauth/start` without `mode` is allowed to default to Instagram, while explicit `mode=facebook` remains blocked.
+- Added safe Meta OAuth error mapping for invalid state, cancelled authorization, missing permissions, no usable Instagram channel, and Meta configuration errors.
+- Callback redirects now include `meta_error` with a user-facing Chinese message and `meta_error_code` for support/debug context.
+- `/channels/connect/social` now renders `meta_error` in a prominent red alert with title and error code.
+- Simple release already filters visible providers to `meta-instagram`; this change keeps the legacy default route aligned with that UI.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/meta-oauth.test.ts tests/release-proxy.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts --reporter=dot
+Result: passed. 14 tests passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e
+Result: passed. 6 passed, 6 skipped by existing authenticated smoke conditions.
+
+npm test
+Result: not cleanly completed. The final Vitest child process exited with Windows crash code 3221225477 after earlier batches passed. No assertion failure was reported for this change; focused tests passed.
+```
+
+Launch impact:
+
+- IG connection failures should now be understandable to users instead of silently returning or showing raw OAuth strings.
+- Public paid launch remains Hold until Meta App Review / Advanced Access / Business Verification and PayUNI production gates are completed.
+- No production DB, deployment, Meta Dashboard login, App Review submission, or PayUNI production action was performed.
+
+New risks:
+
+- No secret or OAuth code/state is intentionally surfaced in the browser. URL messages are generated from safe mapped copy.
+- The default legacy Meta start route now favors Instagram. Full-release Facebook paths still exist through explicit Facebook provider routes.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我替 IG 連接失敗情境補 Playwright smoke：模擬 /channels/connect/social?meta_error=... 顯示紅色錯誤 Alert，並確認 simple release 看不到 meta-facebook / Facebook MBS 入口；不要登入 Meta、不要送審。
+```
+
+## 2026-06-27 - Simple release full-feature gate notice
+
+Task goal:
+
+- Improve the simple release UX when a user attempts to open Full-only routes such as Billing, Broadcasts, or AI Settings.
+- Redirect to Dashboard with an explanatory alert instead of silently returning to Dashboard.
+
+Files changed:
+
+- `src/proxy.ts`
+- `src/app/dashboard/page.tsx`
+- `tests/release-proxy.test.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+
+Implementation notes:
+
+- Full-only simple-release redirects now go to `/dashboard?alert=feature_gated&feature=<route>`.
+- Dashboard reads `alert=feature_gated` and renders a warning toast using `DismissibleNoticeToast`.
+- The toast tells users the feature is controlled on the production operating release and links to `https://staging.carry-digital-nomad.in.net` for full-version testing.
+- Added release proxy coverage for the new query parameters.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/release-proxy.test.ts --reporter=dot
+Result: passed. 7 tests passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run test:e2e
+Result: first run had a transient chromium title timeout; rerun passed. 6 passed, 6 skipped by existing authenticated smoke conditions.
+```
+
+Launch impact:
+
+- Improves user clarity on Production simple release.
+- No production deployment, DB, Meta, App Review, or PayUNI production action was performed.
+
+New risks:
+
+- No new security or data risk.
+- Browser smoke for the actual gated redirect and dashboard toast should be added before considering this flow fully covered.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我補 simple release Full-only gate 的 Playwright smoke：在 simple release host/env 下訪問 /billing，確認導到 /dashboard?alert=feature_gated 並顯示 staging 測試站提示；不要部署 Production。
+```
+
+## 2026-06-27 - Contacts filters and batch tagging
+
+Task goal:
+
+- Fix remaining fake / incomplete Contacts page interactions.
+- Prioritize the filter button, tag filtering, and selected-contact batch add tag.
+- Add smoke coverage without touching production DB.
+
+Files changed:
+
+- `src/app/contacts/page.tsx`
+- `src/components/ContactsListClient.tsx`
+- `src/app/api/contacts/batch-tags/route.ts`
+- `scripts/ensure-e2e-admin.ts`
+- `tests/tenant-isolation-routes.test.ts`
+- `tests/e2e/public-and-auth.spec.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+
+Implementation notes:
+
+- Kept the Contacts page as a Server Component for auth and database loading.
+- Added `ContactsListClient` for interactive filtering, sidebar status/tag navigation, table selection, and batch add tag.
+- Added query-backed filters: `q`, `status`, and `tag`.
+- Added `POST /api/contacts/batch-tags`, with same-origin validation, API auth, workspace-scoped tag validation, and selected Instagram channel/workspace-scoped contact lookup before writing `ContactTag`.
+- Extended the guarded E2E seed to create a local/test-only Instagram channel, two contacts, and smoke tags.
+
+Validation:
+
+```text
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 10 tests passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed. Existing Meta webhook audit mock stderr appeared, but the command exited 0.
+
+npm run e2e:admin:ensure
+Result: initial run correctly refused missing TEST_DATABASE_URL. Reran with a one-process local TEST_DATABASE_URL mapped from localhost DATABASE_URL, guarded against the production Supabase ref, and seeded local test data.
+
+npx playwright test tests/e2e/public-and-auth.spec.ts -g "filters contacts"
+Result: passed. 2 tests passed across desktop and mobile.
+
+npm run test:e2e:auth
+Result: passed. 14 tests passed.
+```
+
+Launch impact:
+
+- Contacts is more complete for private beta: filtering and batch tagging are now functional instead of decorative.
+- No production DB, production deployment, Meta App Review, or PayUNI production action was performed.
+
+New risks:
+
+- A new Contacts write API exists. It is scoped to current workspace and selected IG account, validates same-origin requests, and only writes tags that belong to the current workspace.
+- Future follow-up should add batch remove tag and saved segment creation if operators expect full CRM-style bulk workflows.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我檢查 Contacts 後續批次操作缺口，優先補「批次移除標籤」與「依目前篩選建立分眾 Segment」，並補 tenant isolation tests 與 authenticated Playwright smoke；不要碰 production DB，不要部署 Production。
+```
+
+## 2026-06-27 - Authenticated smoke coverage for contact detail, Meta error, and simple gate
+
+Task goal:
+
+- Add Playwright authenticated smoke for Contact detail edit/cancel/save/tag add/tag remove.
+- Add Playwright smoke for Meta OAuth failure alert rendering and simple release hiding Facebook / MBS entry points.
+- Add Playwright smoke for simple release `/billing` gating and Dashboard feature-gated notice.
+- Use `TEST_DATABASE_URL`; do not touch production DB, deploy Production, log in to Meta, submit App Review, or run PayUNI production.
+
+Files changed:
+
+- `src/components/ContactDetailEditor.tsx`
+- `src/app/api/contacts/[id]/tags/route.ts`
+- `scripts/ensure-e2e-admin.ts`
+- `tests/tenant-isolation-routes.test.ts`
+- `tests/e2e/public-and-auth.spec.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+
+Implementation notes:
+
+- Added stable `data-testid` attributes to the Contact detail editor for field and tag smoke tests.
+- Extended guarded E2E seed with a fixed detail contact and a detail tag; the seed still refuses missing `TEST_DATABASE_URL` and production Supabase refs.
+- Added authenticated Playwright smoke for cancel/save persistence, success toast, tag add, and tag remove.
+- Added simple-release-only Playwright smoke for `/channels/connect/social?meta_error=...` and `/billing` gated redirect / Dashboard notice.
+- The simple-release smoke is skipped during the normal full-release e2e run and is verified separately with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- Changed single-contact tag add from `upsert` to `createMany({ skipDuplicates: true })` so repeated clicks or parallel smoke projects do not fail on the `contactId_tagId` unique constraint.
+
+Validation:
+
+```text
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 10 tests passed.
+
+npm run lint
+Result: passed.
+
+npx playwright test tests/e2e/public-and-auth.spec.ts -g "edits contact detail"
+Result: passed. 2 tests passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npx playwright test tests/e2e/public-and-auth.spec.ts -g "Meta OAuth failure|gates simple-release"
+Result: passed. 4 tests passed.
+
+npm run test:e2e:auth
+Result: passed. 16 passed, 4 simple-release tests skipped as expected in full-release mode.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed. Existing Meta webhook audit mock stderr appeared, but the command exited 0.
+```
+
+Launch impact:
+
+- Contact detail, Meta error handling, and simple release feature-gating now have browser-level regression evidence.
+- No production DB, production deployment, Meta Dashboard login, App Review submission, or PayUNI production action was performed.
+
+New risks:
+
+- No new external-platform or payment risk.
+- The tag add route is safer under duplicate submissions because it now skips duplicate `ContactTag` inserts instead of surfacing a unique constraint failure.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 Contacts 相關 smoke tests 拆成獨立 Playwright spec，並在 CI 中分成 full-release auth smoke 與 simple-release smoke 兩個 job；維持 TEST_DATABASE_URL guard，不碰 production DB、不部署 Production。
+```
+
+## 2026-06-27 - Split Playwright smoke specs and CI jobs
+
+Task goal:
+
+- Split Contacts-related Playwright smoke into a dedicated spec.
+- Split simple-release smoke into a dedicated spec.
+- Add separate CI jobs for full-release authenticated smoke and simple-release smoke.
+- Keep `TEST_DATABASE_URL` guard; do not touch production DB or deploy Production.
+
+Files changed:
+
+- `.github/workflows/ci.yml`
+- `package.json`
+- `tests/e2e/public-and-auth.spec.ts`
+- `tests/e2e/contacts-auth.spec.ts`
+- `tests/e2e/simple-release.spec.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+- `docs/meta-app-review-checklist.md`
+- `docs/billing-affiliate-readiness.md`
+
+Implementation notes:
+
+- `public-and-auth.spec.ts` now covers public navigation, auth guard, and general authenticated launch routes only.
+- `contacts-auth.spec.ts` now owns Contacts filter / batch tag and Contact detail edit / tag smoke.
+- `simple-release.spec.ts` now owns simple-release Meta error visibility and `/billing` gated notice smoke.
+- Added `npm run test:e2e:contacts` and `npm run test:e2e:simple`.
+- CI now has separate jobs:
+  - `full-release-auth-smoke`: `INBOXPILOT_RELEASE_CHANNEL=full`, seeds test DB, runs auth smoke and Contacts smoke.
+  - `simple-release-smoke`: `INBOXPILOT_RELEASE_CHANNEL=simple`, seeds test DB, runs simple-release smoke.
+- Both Playwright jobs use PostgreSQL service-backed `TEST_DATABASE_URL` and keep production DB markers blocked.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/authenticated-route-smoke-guard.test.ts --reporter=dot
+Result: passed. 4 tests passed.
+
+npm run e2e:admin:ensure
+Result: passed with local TEST_DATABASE_URL mapped from a localhost DB and production ref guard.
+
+npm run test:e2e:auth
+Result: passed. 12 tests passed.
+
+npm run test:e2e:contacts
+Result: passed. 4 tests passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple
+Result: passed. 4 tests passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed. Existing Meta webhook audit mock stderr appeared, but the command exited 0.
+```
+
+Launch impact:
+
+- CI now verifies full-release and simple-release browser behavior separately, reducing accidental release-mode regressions.
+- No production DB, production deployment, Meta Dashboard login, App Review submission, or PayUNI production action was performed.
+
+New risks:
+
+- CI runtime is longer because Playwright now runs in two separate jobs with isolated Postgres services.
+- This is intentional to avoid full/simple release mode contamination.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我檢查 GitHub Actions 跑完後的 full-release-auth-smoke 與 simple-release-smoke job 結果，若有 flakes 只修測試穩定性，不碰 production DB、不部署 Production。
+```
+
+## 2026-06-27 - GitHub Actions split smoke remote check
+
+Task goal:
+
+- Check the latest GitHub Actions CI result for the newly split `full-release-auth-smoke` and `simple-release-smoke` jobs.
+- If flakes exist, only fix test stability.
+- Do not touch production DB or deploy Production.
+
+Findings:
+
+- Latest remote CI run checked: `28264282091`.
+- Workflow result: success.
+- Remote commit checked by GitHub Actions: `541f9ae47991cca35890b6757c1314903e6e7fed`.
+- Job list in that run only contained `lint-test`.
+- The new split jobs are still local workspace changes and have not run remotely yet.
+
+Decision:
+
+- No remote Playwright flakes were available to fix.
+- No test code was changed during this check.
+- Next step is to push/open a PR for the split CI changes, then review the first remote run that actually contains `full-release-auth-smoke` and `simple-release-smoke`.
+
+Validation:
+
+```text
+gh run view 28264282091 --json jobs --jq '.jobs[] | [.name,.status,.conclusion,.databaseId,.startedAt,.completedAt] | @tsv'
+Result: lint-test completed success.
+
+git rev-parse HEAD
+Result: 541f9ae47991cca35890b6757c1314903e6e7fed.
+
+git rev-parse origin/master
+Result: 541f9ae47991cca35890b6757c1314903e6e7fed.
+```
+
+Launch impact:
+
+- No launch status change.
+- No production DB access, production deployment, Meta submission, or PayUNI production action was performed.
+
+## 2026-06-27 - Contacts batch remove tag and create segment from filter
+
+Task goal:
+
+- Close the remaining Contacts bulk-operation gaps.
+- Add selected-contact batch remove tag.
+- Add "create Segment from current Contacts filter".
+- Add tenant isolation tests and authenticated Playwright smoke.
+- Do not touch production DB or deploy Production.
+
+Files changed:
+
+- `src/app/api/contacts/batch-tags/route.ts`
+- `src/app/api/contacts/segments/route.ts`
+- `src/components/ContactsListClient.tsx`
+- `src/components/SegmentsClient.tsx`
+- `src/lib/segments.ts`
+- `src/lib/validation.ts`
+- `scripts/ensure-e2e-admin.ts`
+- `tests/tenant-isolation-routes.test.ts`
+- `tests/e2e/contacts-auth.spec.ts`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/security-review.md`
+
+Implementation notes:
+
+- Added `DELETE /api/contacts/batch-tags` to remove a selected tag from selected contacts.
+- The delete path reuses the same safeguards as batch add: same-origin check, API auth, workspace-owned tag validation, selected Instagram channel / workspace contact scoping, and a 100-contact batch cap.
+- Added `POST /api/contacts/segments` so Contacts can create a Segment from the current `q`, `status`, `tagId`, and selected Instagram channel scope.
+- Extended Segment filters with optional `q` search support and preserved `q` in the Segments editor.
+- Added a Contacts "建立分眾" dialog and a "批次移除標籤" action.
+- Added a client hydration marker for Contacts so Playwright does not click SSR checkboxes before React event handlers are attached.
+- Stabilized authenticated smoke by using per-project E2E contacts and a per-run login rate-limit nonce.
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed. 13 tests passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed. Existing Meta webhook audit mock stderr appeared, but the command exited 0.
+
+npm run e2e:admin:ensure
+Result: passed with local TEST_DATABASE_URL guard.
+
+npm run test:e2e:contacts
+Result: passed. 6 tests passed.
+
+npm run test:e2e
+Result: passed. 18 passed, 4 simple-release tests skipped in full-release mode.
+```
+
+Launch impact:
+
+- Contacts bulk operations are more complete for private beta use.
+- Segment creation from active Contacts filters is now available without exposing production-only or external platform flows.
+- No production DB, production deployment, Meta App Review, or PayUNI production action was performed.
+
+New risks:
+
+- A new Segment creation route exists under Contacts. It validates same-origin requests, auth, current workspace, workspace-owned tag, and selected Instagram channel scope before writing.
+- Segment filters now support `q`; broadcast/segment recipient logic will honor that search condition through `segmentContactWhere`.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我把 Contacts 批次移除標籤與建立分眾這批變更整理成乾淨 PR，排除 unrelated dirty files；推 PR 後只監控 CI full-release-auth-smoke / simple-release-smoke，不部署 Production、不碰 production DB。
 ```

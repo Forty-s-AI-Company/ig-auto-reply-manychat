@@ -9,6 +9,7 @@ type Segment = {
   name: string;
   description?: string | null;
   filterJson: {
+    q?: string | null;
     tagId?: string | null;
     consentStatus?: "opted_in" | "opted_out" | "unknown" | null;
     channelId?: string | null;
@@ -21,6 +22,7 @@ type Draft = {
   id?: string;
   name: string;
   description: string;
+  q: string;
   tagId: string;
   consentStatus: string;
   channelId: string;
@@ -30,6 +32,7 @@ type Draft = {
 const emptyDraft: Draft = {
   name: "高互動名單",
   description: "最近互動且同意接收廣播的聯絡人",
+  q: "",
   tagId: "",
   consentStatus: "opted_in",
   channelId: "",
@@ -41,6 +44,7 @@ function toDraft(segment: Segment): Draft {
     id: segment.id,
     name: segment.name,
     description: segment.description || "",
+    q: segment.filterJson.q || "",
     tagId: segment.filterJson.tagId || "",
     consentStatus: segment.filterJson.consentStatus || "",
     channelId: segment.filterJson.channelId || "",
@@ -55,6 +59,7 @@ function toPayload(draft: Draft) {
     name: draft.name.trim(),
     description: draft.description.trim() || null,
     filterJson: {
+      q: draft.q.trim() || null,
       tagId: draft.tagId || null,
       consentStatus: draft.consentStatus || null,
       channelId: draft.channelId || null,
@@ -193,6 +198,14 @@ export function SegmentsClient({
               <textarea
                 value={draft.description}
                 onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+                className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block text-zinc-400">搜尋字</span>
+              <input
+                value={draft.q}
+                onChange={(event) => setDraft({ ...draft, q: event.target.value })}
                 className="w-full rounded-md border border-zinc-700 bg-zinc-950 px-3 py-2"
               />
             </label>

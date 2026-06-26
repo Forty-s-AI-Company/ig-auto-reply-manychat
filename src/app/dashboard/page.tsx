@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
@@ -25,6 +26,21 @@ function directionLabel(direction: string) {
   return { inbound: "用戶訊息", outbound: "自動回覆" }[direction] || direction;
 }
 
+const gatedFeatureLabels: Record<string, string> = {
+  billing: "金流",
+  broadcasts: "廣播",
+  "ai-settings": "AI 設定",
+  "knowledge-base": "知識庫",
+  segments: "分眾",
+  sequences: "序列",
+  tags: "標籤管理",
+  wallet: "錢包",
+  admin: "管理後台",
+  affiliate: "聯盟行銷",
+  templates: "範本",
+  "mock-tester": "測試工具",
+};
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-TW", {
     month: "2-digit",
@@ -34,8 +50,13 @@ function formatDate(value: Date) {
   }).format(value);
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ alert?: string; feature?: string }>;
+}) {
   await requireUser();
+  const params = searchParams ? await searchParams : {};
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const simpleRelease = await isSimpleRelease();
@@ -112,6 +133,17 @@ export default async function DashboardPage() {
   return (
     <AdminShell title="首頁">
       <div className="space-y-6">
+        {params.alert === "feature_gated" ? (
+          <DismissibleNoticeToast title="此功能目前受控開通" tone="warning">
+            {`此功能${params.feature ? `（${gatedFeatureLabels[params.feature] || params.feature}）` : ""}在正式營運版中受控開通。若您是白名單測試用戶或想體驗完整版，請使用我們的 Staging 測試站台：`}
+            <a
+              href="https://staging.carry-digital-nomad.in.net"
+              className="font-semibold text-[#0057b8] underline underline-offset-2"
+            >
+              https://staging.carry-digital-nomad.in.net
+            </a>
+          </DismissibleNoticeToast>
+        ) : null}
         <section className="grid gap-5 xl:grid-cols-[1fr_340px]">
           <div className="space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">

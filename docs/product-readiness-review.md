@@ -466,3 +466,104 @@ Remaining product gates:
 4. Controlled `PAYUNI_ALLOW_PRODUCTION=true` enablement.
 5. First low-value production checkout smoke.
 6. Final legal, billing, refund, privacy, and support copy read-through.
+
+## 2026-06-27 - Contact detail feature completeness
+
+Status:
+
+- Contact detail now matches the bright Contacts list visual language.
+- Username, email, and phone are editable from the detail page.
+- Contact-level tag add/remove is available from the detail page.
+- The page keeps Server Component data loading and isolates browser interactivity in a focused Client Component.
+
+Readiness implication:
+
+- Contacts feature completeness improved for private beta.
+- Public paid launch status does not change; Meta App Review and PayUNI production gates remain external/manual blockers.
+- Add authenticated browser smoke for this workflow before treating it as fully regression-covered.
+
+## 2026-06-27 - Instagram connection failure UX
+
+Status:
+
+- Meta OAuth callback failures now surface safe Chinese error messages on the social connection page.
+- Simple release keeps the product flow aligned to Instagram by defaulting the legacy Meta start route to Instagram and blocking explicit Facebook MBS mode.
+- The social connection page shows `meta_error` as a red alert instead of a quiet plain-text message.
+
+Readiness implication:
+
+- Private beta diagnosis is improved when IG connection fails.
+- Public paid launch remains Hold until Meta App Review / Advanced Access / Business Verification are complete.
+- Add browser smoke for the alert rendering and simple-mode provider visibility.
+
+## 2026-06-27 - Simple release gated feature notice
+
+Status:
+
+- Full-only routes on the simple production release now redirect to Dashboard with `alert=feature_gated`.
+- Dashboard shows a warning toast explaining that the feature is controlled in the production operating release.
+- The toast points whitelist testers and full-version evaluators to `https://staging.carry-digital-nomad.in.net`.
+
+Readiness implication:
+
+- Production simple release is clearer for users who reach gated features.
+- Public paid launch status does not change.
+- Add browser smoke for the gated redirect and toast before treating it as fully regression-covered.
+
+## 2026-06-27 - Contacts filter and batch tagging completeness
+
+Status:
+
+- Contacts search, subscription-status filter, tag filter, sidebar filter navigation, row selection, and selected-contact batch add tag are now implemented.
+- The batch tag write path uses `POST /api/contacts/batch-tags` and limits writes to contacts visible to the current workspace / selected Instagram account scope.
+- Authenticated Playwright smoke now verifies filtering and batch tagging with local/test DB seed data.
+
+Readiness implication:
+
+- Contacts is closer to a usable private-beta CRM surface instead of a static list.
+- Public paid launch status does not change; Meta App Review and PayUNI production gates remain external/manual blockers.
+- Remaining Contacts UX gaps are lower-risk: batch remove tag, segment creation from filters, and clearer filtered empty states.
+
+## 2026-06-27 - Browser smoke coverage closeout
+
+Status:
+
+- Contact detail edit/cancel/save and tag add/remove now have authenticated Playwright smoke coverage.
+- Meta OAuth failure rendering now has Playwright smoke coverage with safe Chinese `meta_error` copy and error code display.
+- Simple release now has Playwright smoke coverage for hiding Facebook / Meta Login provider entries.
+- Simple release `/billing` gating now has Playwright smoke coverage for redirect parameters and Dashboard feature-gated notice.
+
+Readiness implication:
+
+- Private beta regression confidence improved for Contacts and IG connection diagnostics.
+- Public paid launch status does not change; Meta App Review approval and PayUNI production go-live remain external/manual blockers.
+- Consider splitting full-release and simple-release Playwright smoke into separate CI jobs so both release modes are continuously verified.
+
+## 2026-06-27 - Release-mode smoke CI split
+
+Status:
+
+- Full-release authenticated smoke and Contacts smoke now run separately from simple-release smoke in CI.
+- Simple-release smoke has its own `INBOXPILOT_RELEASE_CHANNEL=simple` job, so `/billing` gate and Instagram-only provider visibility are no longer hidden inside the full-release path.
+- Contacts smoke has its own spec, making Contacts regressions easier to diagnose without scanning the general route smoke.
+
+Readiness implication:
+
+- Regression confidence improved for both Production simple release and Staging/full release.
+- Public paid launch status does not change; external Meta App Review and PayUNI production gates remain manual blockers.
+- Next CI run should be reviewed once to confirm the new job split is stable.
+
+## 2026-06-27 - Contacts bulk operations and segment creation
+
+Status:
+
+- Contacts now supports selected-contact batch add tag and batch remove tag.
+- Contacts can save the current filter state as a reusable Segment.
+- Segment filters now include optional search text (`q`) in addition to tag, consent status, channel, and recent inbound window.
+- Browser smoke fixtures were isolated per Playwright project to prevent desktop/mobile parallel test contamination.
+
+Readiness implication:
+
+- Contacts is now closer to a usable private-beta CRM surface for daily operator workflows.
+- Public paid launch status does not change; Meta App Review and PayUNI production gates remain external/manual blockers.
+- Remaining Contacts UX improvements are lower-risk: clearer filtered empty states and optional segment preview counts.

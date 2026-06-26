@@ -49,8 +49,95 @@ jobs:
       - run: npx prisma generate
       - run: npm run lint
       - run: npm test
+      - run: npm run build
+
+  full-release-auth-smoke:
+    runs-on: ubuntu-latest
+    needs: lint-test
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: inboxpilot_ci
+          POSTGRES_USER: inboxpilot
+          POSTGRES_PASSWORD: inboxpilot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U inboxpilot -d inboxpilot_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      INBOXPILOT_DB_ENV: test
+      INBOXPILOT_DEPLOYMENT_ENV: test
+      INBOXPILOT_RELEASE_CHANNEL: full
+      PAYUNI_ALLOW_PRODUCTION: "false"
+      AUTH_SECRET: ci-secret-used-only-for-tests-please-rotate
+      TOKEN_ENCRYPTION_KEY: ci-token-encryption-key-used-only-for-tests
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin123456
+      ADMIN_NAME: Admin
+      DEMO_LINK: https://example.com/demo-download
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
       - run: npx playwright install --with-deps chromium
       - run: npx prisma migrate deploy --schema prisma/schema.prisma
       - run: npm run e2e:admin:ensure
       - run: npm run test:e2e:auth
-      - run: npm run build
+      - run: npm run test:e2e:contacts
+
+  simple-release-smoke:
+    runs-on: ubuntu-latest
+    needs: lint-test
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: inboxpilot_ci
+          POSTGRES_USER: inboxpilot
+          POSTGRES_PASSWORD: inboxpilot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U inboxpilot -d inboxpilot_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DATABASE_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      TEST_DIRECT_URL: postgresql://inboxpilot:inboxpilot@localhost:5432/inboxpilot_ci
+      INBOXPILOT_DB_ENV: test
+      INBOXPILOT_DEPLOYMENT_ENV: test
+      INBOXPILOT_RELEASE_CHANNEL: simple
+      PAYUNI_ALLOW_PRODUCTION: "false"
+      AUTH_SECRET: ci-secret-used-only-for-tests-please-rotate
+      TOKEN_ENCRYPTION_KEY: ci-token-encryption-key-used-only-for-tests
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin123456
+      ADMIN_NAME: Admin
+      DEMO_LINK: https://example.com/demo-download
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx playwright install --with-deps chromium
+      - run: npx prisma migrate deploy --schema prisma/schema.prisma
+      - run: npm run e2e:admin:ensure
+      - run: npm run test:e2e:simple

@@ -23,7 +23,10 @@ describe("release proxy smoke tests", () => {
     const response = proxy(request("https://inboxpilot.carry-digital-nomad.in.net/billing"));
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://inboxpilot.carry-digital-nomad.in.net/dashboard");
+    const location = new URL(response.headers.get("location") || "");
+    expect(location.pathname).toBe("/dashboard");
+    expect(location.searchParams.get("alert")).toBe("feature_gated");
+    expect(location.searchParams.get("feature")).toBe("billing");
   });
 
   it("does not redirect full-only app routes on staging full release", () => {
@@ -53,6 +56,24 @@ describe("release proxy smoke tests", () => {
     expect(response.headers.get("location")).toBeNull();
   });
 
+  it("allows the legacy Meta start route to default to Instagram on the simple production host", () => {
+    delete process.env.INBOXPILOT_RELEASE_CHANNEL;
+
+    const response = proxy(request("https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/start"));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
+  it("blocks explicit Facebook MBS mode on the simple production host", async () => {
+    delete process.env.INBOXPILOT_RELEASE_CHANNEL;
+
+    const response = proxy(request("https://inboxpilot.carry-digital-nomad.in.net/api/meta/oauth/start?mode=facebook"));
+
+    expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({ error: "Provider is not available on the simple production release." });
+  });
+
   it("lets the full release env override expose full routes on production host", () => {
     process.env.INBOXPILOT_RELEASE_CHANNEL = "full";
 
@@ -62,4 +83,3 @@ describe("release proxy smoke tests", () => {
     expect(response.headers.get("location")).toBeNull();
   });
 });
-
