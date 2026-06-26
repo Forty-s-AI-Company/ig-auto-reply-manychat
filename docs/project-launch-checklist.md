@@ -1,5 +1,55 @@
 # Project Launch Checklist
 
+## 2026-06-26 - Autopilot report cleanup closeout
+
+- `[x]` Autopilot runner exited cleanly.
+- `[x]` Removed ignored transient report artifacts, including `reports/autopilot-live.log`.
+- `[x]` Reports secret-pattern scan returned `NO_MATCHES`.
+- `[x]` Confirmed report files are ignored and not tracked by git.
+- `[ ]` Add authenticated route smoke / E2E for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- `[ ]` Complete Meta App Review and PayUNI production go-live before public paid launch.
+
+## 2026-06-26 - Unattended loop 1 readiness refresh
+
+- `[x]` Vercel CLI is authenticated and local project link exists.
+- `[x]` Vercel Production env names include `TOKEN_ENCRYPTION_KEY`; values were not printed.
+- `[x]` Vercel Preview env names include `TOKEN_ENCRYPTION_KEY`; values were not printed.
+- `[x]` Supabase CLI can read project metadata, and local link points to the test project.
+- `[x]` `npm install` passed.
+- `[x]` `npm run lint` passed.
+- `[x]` `npm test` passed against local non-production test DB.
+- `[x]` `npm run build` passed.
+- `[x]` `npm run payuni:smoke` passed against sandbox.
+- `[x]` `npm audit --audit-level=high` passed.
+- `[ ]` `reports/autopilot-live.log` remains locked by active runner processes; clean it before treating reports as safe.
+- `[ ]` Add authenticated route smoke / E2E for Inbox, Contacts, Analytics, Automations, Referrals, and Billing.
+- `[ ]` Public paid launch still requires Meta App Review approval and PayUNI production go-live.
+
+## 2026-06-26 - Unattended loop 1 production safety hardening
+
+- `[x]` Hardened production deployment detection so plain `NODE_ENV=production` is treated as production when no explicit InboxPilot/Vercel env is present.
+- `[x]` Production secret encryption now requires a dedicated `TOKEN_ENCRYPTION_KEY` and rejects reusing `AUTH_SECRET`.
+- `[x]` Added regression tests for production deployment fallback and token encryption key enforcement.
+- `[x]` Ran non-force `npm audit fix` and removed the high-severity audit finding.
+- `[x]` `npm run lint` passed.
+- `[x]` Focused Vitest passed: `tests/security.test.ts`, `tests/unit/core-utils.test.ts`, `tests/meta-channel-config.test.ts`.
+- `[x]` `npm run build` passed.
+- `[x]` Production `/api/health` returned `status=ok`, database ok, redis ok.
+- `[x]` Staging `/api/health/staging` returned `status=ok`, `deployment=staging`, `dbEnv=staging`, `releaseChannel=full`, and `vercelEnv=preview`.
+- `[ ]` Full `npm test` still needs an isolated `TEST_DATABASE_URL` or safe non-production `DATABASE_URL`.
+- `[ ]` PayUNI sandbox smoke still needs local sandbox env names/values.
+- `[ ]` Supabase CLI is still unavailable on PATH.
+- `[ ]` Local Vercel project link is missing; env-name inspection and Preview deployment were not performed.
+- `[ ]` Confirm Vercel Production and Preview include `TOKEN_ENCRYPTION_KEY` before deploying this change.
+
+## 2026-06-26 - InboxPilot unattended autopilot package
+
+- `[x]` Added InboxPilot-specific unattended autopilot entry points: `npm run autopilot`, `run-autopilot.ps1`, and `run-autopilot.cmd`.
+- `[x]` Added `scripts/autopilot-full.py` with Codex development, quality gates, PayUNI sandbox smoke, Vercel Preview readiness, Supabase readiness, route smoke, QA, safety, and final report phases.
+- `[x]` Added `AUTOPILOT.md` and `docs/autopilot-code-review.md`.
+- `[x]` Reports are ignored under `reports/`.
+- `[x]` Default policy keeps PayUNI sandbox, blocks Meta App Review submission, blocks production DB/schema writes, and blocks Production deployment unless explicitly enabled by env.
+- `[ ]` First real overnight run still needs operator review of `reports/final-report.md` and `reports/human-required.md`.
 ## 2026-06-26 - CI / nightly authenticated route smoke
 
 - `[x]` Added authenticated route smoke for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
@@ -170,3 +220,25 @@ Current decision:
 - `[ ]` Human operator still needs to prepare reviewer-safe credentials through a secure handoff method.
 - `[ ]` Human operator still needs to capture the final recording/screenshots and run visual redaction review.
 - `[ ]` Human operator still needs to fill Meta Dashboard and submit manually.
+
+## 2026-06-26 - Autopilot readiness update
+
+- `[x]` Supabase CLI authenticated with a secure local token input flow; token value was not printed or committed.
+- `[x]` Supabase staging project ref confirmed as `ndhtwqtshselqwgjenjd`.
+- `[x]` Supabase production project ref confirmed as `lmwvzskffzozuiamjxvc`.
+- `[x]` Local Supabase link points to staging, not production.
+- `[x]` Vercel CLI linked to the InboxPilot project.
+- `[x]` Vercel Preview staging env metadata can be pulled without printing secret values.
+- `[x]` PayUNI sandbox env exists locally in ignored `.env.local`.
+- `[x]` PayUNI sandbox smoke passes.
+- `[x]` Local test DB uses local Supabase Postgres for `npm test`.
+- `[x]` `npm test`, `npm run lint`, `npm run build`, and `npm audit --audit-level=high` pass.
+- `[ ]` Two moderate Next/PostCSS advisories remain; force update path is not launch-safe without a separate dependency review.
+- `[ ]` Do not enable PayUNI production values until the production go-live SOP is approved.
+- `[ ]` Do not submit Meta App Review from autopilot; keep it as a human-run dashboard action.
+
+Current decision:
+
+- Sandbox/test-safe autopilot: Go.
+- Private beta / whitelist: Go.
+- Public paid launch: Hold until Meta approval and PayUNI production gates are complete.

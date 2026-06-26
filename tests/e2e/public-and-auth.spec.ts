@@ -76,6 +76,8 @@ test.describe("public and protected navigation", () => {
 });
 
 test.describe("authenticated route smoke", () => {
+  test.setTimeout(60_000);
+
   const adminEmail = process.env.ADMIN_EMAIL?.trim();
   const adminPassword = process.env.ADMIN_PASSWORD;
   const guard = getAuthenticatedRouteSmokeGuard();

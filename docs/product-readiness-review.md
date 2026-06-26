@@ -1,5 +1,57 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-26 - Autopilot report cleanup closeout
+
+Status: report handling blocker cleared; preview QA still needs authenticated smoke.
+
+- `reports/autopilot-live.log` and raw output artifacts were removed after the runner exited.
+- Reports secret-pattern scan returned `NO_MATCHES`.
+- Local gates from the autopilot run remain green: lint, test, build, PayUNI sandbox smoke, route smoke, Production health, and staging health.
+- Preview readiness still needs authenticated route smoke / E2E for Dashboard, Inbox, Contacts, Instagram connect, Analytics, Automations, Referrals, and Billing.
+- Public paid launch remains Hold until Meta App Review and PayUNI production go-live are completed manually.
+
+## 2026-06-26 - Unattended loop 1 readiness refresh
+
+Status: local gates improved, still HUMAN_REQUIRED for final preview readiness.
+
+- Local quality gates now pass: `npm install`, `npm run lint`, `npm test`, `npm run build`, `npm run payuni:smoke`, and `npm audit --audit-level=high`.
+- PayUNI sandbox smoke now passes locally; PayUNI production remains blocked by policy.
+- Vercel project link and env-name inspection are now complete enough to confirm `TOKEN_ENCRYPTION_KEY` exists in Production and Preview without exposing values.
+- Supabase CLI read-only project inspection works, and the local link points to the test project.
+- Preview readiness still cannot be marked ready while `reports/autopilot-live.log` is locked and authenticated route smoke / E2E evidence is missing.
+
+Readiness implication:
+
+- Sandbox/test-safe autopilot readiness improved.
+- Private beta / whitelist remains Go with controlled operations.
+- Public paid launch remains Hold until Meta App Review approval, PayUNI production merchant go-live, live low-value smoke, and final legal/billing review are complete.
+
+## 2026-06-26 - Unattended loop 1 readiness delta
+
+Status: safer, still HUMAN_REQUIRED for preview/staging completion.
+
+- Production runtime classification is safer for non-Vercel or minimally configured production runtimes because `NODE_ENV=production` now maps to production behavior.
+- Token encryption is safer because production no longer falls back from `TOKEN_ENCRYPTION_KEY` to `AUTH_SECRET`.
+- High-severity npm audit exposure was removed through non-force lockfile updates.
+- Production and staging public health checks remain ok.
+
+Readiness implication:
+
+- Preview/staging launch readiness improved, but this change should not be deployed until Vercel Production and Preview env names are confirmed to include `TOKEN_ENCRYPTION_KEY`.
+- Public paid launch remains Hold because DB-backed tenant tests, Meta App Review, PayUNI production approval, and PayUNI live smoke are still incomplete.
+
+## 2026-06-26 - Unattended autopilot readiness package
+
+Status: preview/staging automation prepared.
+
+- Added a project-specific autopilot runner to automate code/docs fixes, lint/test/build, PayUNI sandbox smoke, Vercel Preview readiness, Supabase readiness, route smoke, QA, safety review, and final reports.
+- Missing secrets, logins, external approvals, Meta reviewer actions, or PayUNI production readiness are recorded as `HUMAN_REQUIRED` instead of guessed.
+- Production DB/schema writes and PayUNI production switching are not part of unattended automation.
+
+Product readiness implication:
+
+- The project can now run longer unattended preview/staging improvement loops.
+- Public paid launch remains Hold until Meta App Review, PayUNI production go-live, tenant isolation evidence, and final operator review are complete.
 ## 2026-06-26 - CI / nightly authenticated smoke readiness
 
 Status: automated non-production smoke added.
@@ -392,3 +444,25 @@ Product readiness implication:
 
 - Codex-direct launch packaging is complete.
 - The remaining blockers are external approval or live-payment operations, so they should stay manual and recorded in the launch log.
+
+## 2026-06-26 - Autopilot readiness implication
+
+Status:
+
+- Autopilot can now run with Supabase CLI auth, Vercel CLI project link, local Supabase test DB, and PayUNI sandbox smoke.
+- The local execution path is suitable for overnight code/docs/test loops when production DB, Meta submission, and PayUNI production switching remain blocked.
+- The test path uses local Supabase Postgres instead of production DB.
+
+Product readiness implication:
+
+- Engineering automation readiness improved.
+- Public paid launch status does not change: still Hold until Meta App Review approval and PayUNI production go-live are completed manually.
+
+Remaining product gates:
+
+1. Meta App Review / Advanced Access / Business Verification approval.
+2. Final reviewer recording and screenshot package.
+3. PAYUNi production merchant approval.
+4. Controlled `PAYUNI_ALLOW_PRODUCTION=true` enablement.
+5. First low-value production checkout smoke.
+6. Final legal, billing, refund, privacy, and support copy read-through.

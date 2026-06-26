@@ -22,6 +22,7 @@ export function getInboxPilotDeploymentEnv(): InboxPilotDeploymentEnv {
 
   if (process.env.VERCEL_ENV === "production") return "production";
   if (process.env.VERCEL_ENV === "preview") return "staging";
+  if (process.env.NODE_ENV === "production") return "production";
   if (process.env.NODE_ENV === "test") return "test";
   if (process.env.NODE_ENV === "development") return "development";
 
