@@ -1,5 +1,6 @@
 import os
 import re
+import hashlib
 import shutil
 import subprocess
 import sys
@@ -19,6 +20,7 @@ DEV_PORT = int(os.environ.get("INBOXPILOT_AUTOPILOT_PORT", "3041"))
 APP_URL = f"http://localhost:{DEV_PORT}"
 
 MAX_LOOPS = int(os.environ.get("AUTOPILOT_MAX_LOOPS", "8"))
+SAME_ERROR_LIMIT = int(os.environ.get("AUTOPILOT_SAME_ERROR_LIMIT", "3"))
 CODEX_TIMEOUT_SECONDS = int(os.environ.get("CODEX_TIMEOUT_SECONDS", "1200"))
 CODEX_CMD = "codex.cmd" if os.name == "nt" else "codex"
 PREVIEW_DEPLOY = os.environ.get("INBOXPILOT_AUTOPILOT_PREVIEW_DEPLOY", "1") == "1"
@@ -231,6 +233,67 @@ def run_codex(prompt: str, output_file: Path) -> int:
     return exit_code
 
 
+def failure_signature(kind: str, paths: list[Path]) -> str:
+    chunks = [kind]
+    for path in paths:
+        if path.exists():
+            chunks.append(path.read_text(encoding="utf-8", errors="replace")[-5000:])
+    return hashlib.sha256("\n".join(chunks).encode("utf-8", errors="replace")).hexdigest()[:16]
+
+
+def write_deferred_blocker(kind: str, signature: str, loop: int, paths: list[Path]) -> None:
+    report = REPORTS_DIR / "deferred-blockers.md"
+    evidence = "\n".join(f"- `{path.relative_to(ROOT_DIR)}`" for path in paths)
+    existing = report.read_text(encoding="utf-8", errors="replace") if report.exists() else ""
+    marker = f"{kind}:{signature}"
+    if marker in existing:
+        return
+    with report.open("a", encoding="utf-8") as file:
+        file.write(
+            f"\n## {kind} deferred at loop {loop}\n\n"
+            f"- signature: `{signature}`\n"
+            f"- reason: same failure reached AUTOPILOT_SAME_ERROR_LIMIT={SAME_ERROR_LIMIT}\n"
+            f"- evidence:\n{evidence}\n"
+        )
+
+
+def should_defer_failure(
+    kind: str,
+    loop: int,
+    paths: list[Path],
+    repeated_failures: dict[str, int],
+    deferred_blockers: list[str],
+) -> bool:
+    signature = failure_signature(kind, paths)
+    repeated_failures[signature] = repeated_failures.get(signature, 0) + 1
+    if repeated_failures[signature] < SAME_ERROR_LIMIT:
+        return False
+
+    blocker = f"{kind}:{signature}"
+    if blocker not in deferred_blockers:
+        deferred_blockers.append(blocker)
+    write_deferred_blocker(kind, signature, loop, paths)
+    prompt = f"""
+The same {kind} failure has repeated {repeated_failures[signature]} times.
+
+Read:
+- docs/UNATTENDED_AUTOPILOT_POLICY.md
+- reports/deferred-blockers.md
+- docs/fix-roadmap.md
+- docs/project-launch-checklist.md
+- reports
+
+Do not keep retrying the exact same fix now.
+Mark this blocker as deferred in docs/fix-roadmap.md or reports/final-report.md.
+Then complete another safe, useful task that does not depend on this blocker.
+If no other safe task exists, write reports/final-report.md with STATUS=DEFERRED_BLOCKER and exact next steps.
+
+Never modify .env or print secrets.
+"""
+    run_codex(prompt, REPORTS_DIR / f"codex-defer-{kind}-loop-{loop}.md")
+    return True
+
+
 def kill_process_tree(pid: int) -> None:
     if os.name == "nt":
         subprocess.run(
@@ -423,6 +486,8 @@ def main() -> None:
     print(f"Reports: {REPORTS_DIR}", flush=True)
     stop_dev_server()
     preflight_cli_report()
+    repeated_failures: dict[str, int] = {}
+    deferred_blockers: list[str] = []
 
     for loop in range(1, MAX_LOOPS + 1):
         write_step(f"LOOP {loop} / {MAX_LOOPS}")
@@ -464,9 +529,11 @@ Required outputs:
 - Write reports/codex-dev-report.md summarizing files changed, commands considered, remaining blockers, and human-required items.
 
 Do not ask questions. Continue until a safe stopping point.
-"""
+        """
         codex_exit = run_codex(developer_prompt, REPORTS_DIR / f"codex-output-loop-{loop}.md")
         if codex_exit != 0:
+            if should_defer_failure("codex", loop, [REPORTS_DIR / f"codex-output-loop-{loop}.md"], repeated_failures, deferred_blockers):
+                continue
             append_human_required(f"Codex developer step failed in loop {loop}; see reports/codex-output-loop-{loop}.md.")
             break
 
@@ -476,6 +543,8 @@ Do not ask questions. Continue until a safe stopping point.
             timeout=600,
         )
         if install_exit != 0:
+            if should_defer_failure("install", loop, [REPORTS_DIR / f"npm-install-loop-{loop}.log"], repeated_failures, deferred_blockers):
+                continue
             append_human_required(f"npm install failed in loop {loop}.")
             continue
 
@@ -485,6 +554,8 @@ Do not ask questions. Continue until a safe stopping point.
             timeout=600,
         )
         if lint_exit != 0:
+            if should_defer_failure("lint", loop, [REPORTS_DIR / f"lint-loop-{loop}.log"], repeated_failures, deferred_blockers):
+                continue
             continue
 
         test_exit = run_command(
@@ -493,6 +564,8 @@ Do not ask questions. Continue until a safe stopping point.
             timeout=900,
         )
         if test_exit != 0:
+            if should_defer_failure("test", loop, [REPORTS_DIR / f"test-loop-{loop}.log"], repeated_failures, deferred_blockers):
+                continue
             append_human_required(f"npm test failed or needs a non-production TEST_DATABASE_URL in loop {loop}.")
 
         build_exit = run_command(
@@ -501,6 +574,8 @@ Do not ask questions. Continue until a safe stopping point.
             timeout=900,
         )
         if build_exit != 0:
+            if should_defer_failure("build", loop, [REPORTS_DIR / f"build-loop-{loop}.log"], repeated_failures, deferred_blockers):
+                continue
             continue
 
         payuni_exit = run_command(
@@ -509,6 +584,8 @@ Do not ask questions. Continue until a safe stopping point.
             timeout=300,
         )
         if payuni_exit != 0:
+            if should_defer_failure("payuni-smoke", loop, [REPORTS_DIR / f"payuni-smoke-loop-{loop}.log"], repeated_failures, deferred_blockers):
+                continue
             append_human_required(f"PayUNI sandbox smoke failed or missing sandbox env in loop {loop}.")
 
         if RUN_E2E:
@@ -588,6 +665,11 @@ SAFETY_STATUS=FAIL
         qa_passed = file_contains(REPORTS_DIR / "qa-report.md", r"QA_STATUS=PASS")
         safety_passed = file_contains(REPORTS_DIR / "safety-report.md", r"SAFETY_STATUS=PASS")
         forbidden_clean = scan_for_forbidden_commands()
+
+        if not qa_passed and should_defer_failure("qa", loop, [REPORTS_DIR / "qa-report.md"], repeated_failures, deferred_blockers):
+            continue
+        if not safety_passed and should_defer_failure("safety", loop, [REPORTS_DIR / "safety-report.md"], repeated_failures, deferred_blockers):
+            continue
 
         if qa_passed and safety_passed and forbidden_clean and build_exit == 0 and lint_exit == 0:
             final_prompt = f"""
