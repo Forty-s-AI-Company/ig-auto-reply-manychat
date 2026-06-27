@@ -300,3 +300,11 @@ Current decision:
 - `[x]` Tenant isolation tests cover batch remove and contact-filter segment creation.
 - `[x]` Authenticated Playwright smoke covers batch add/remove and segment creation.
 - `[ ]` Add clearer empty-state guidance for filtered Contacts before broader operator onboarding.
+
+## 2026-06-27 - Instagram metadata fallback PR
+
+- `[x]` ID-only Instagram channels are preserved in account switching UI.
+- `[x]` Profile refresh errors are safe Chinese messages instead of raw Meta errors.
+- `[x]` Automations channel-scope expectation is documented in UI.
+- `[x]` Clean PR validation passed: targeted Vitest, `npm run lint`, `npm run build`, and local Docker PostgreSQL-backed `npm test`.
+- `[ ]` Merge only after review; deploy Production later through controlled manual deployment.

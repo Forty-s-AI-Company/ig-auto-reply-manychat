@@ -13,8 +13,11 @@ type Channel = {
   id: string;
   name: string;
   displayName?: string;
+  subtitle?: string;
   username?: string;
   avatarUrl?: string;
+  avatarFallback?: string;
+  metadataStatus?: "complete" | "partial";
 };
 
 type InboxPilotAccountDropdownProps = {
@@ -97,7 +100,6 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
 
   const currentChannel = selectedChannel || sortedChannels[0];
   const currentName = currentChannel?.displayName || currentChannel?.name || "尚未連接平台帳號";
-  const connectedLabel = channels.length === 1 ? "已連接 1 個平台帳號" : `已連接 ${channels.length} 個平台帳號`;
 
   return (
     <div ref={rootRef} className="relative z-50">
@@ -138,10 +140,19 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                       <span className="truncate text-sm font-medium text-[#34363a]">{channel.displayName || channel.name}</span>
+                      {channel.metadataStatus === "partial" ? (
+                        <span
+                          className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[10px] font-black text-amber-950"
+                          title="尚未取得完整帳號名稱與頭像"
+                          aria-label="尚未取得完整帳號名稱與頭像"
+                        >
+                          !
+                        </span>
+                      ) : null}
                       <PlanBadge />
                     </div>
                     <p className="mt-0.5 truncate text-[11px] text-[#667085]">
-                      {channel.username ? `@${channel.username}` : connectedLabel}
+                      {channel.subtitle || (channel.username ? `@${channel.username}` : "尚未取得帳號資料")}
                     </p>
                   </div>
                   <span
@@ -205,7 +216,7 @@ function InstagramAvatar({ channel, size }: { channel?: Channel; size: "sm" | "m
           // eslint-disable-next-line @next/next/no-img-element
           <img src={channel.avatarUrl} alt={channel.displayName || channel.name || "Instagram"} className="h-full w-full object-cover" />
         ) : (
-          "IG"
+          channel?.avatarFallback || "IG"
         )}
       </div>
       <PlanBadge className={`absolute ${badgeClass} z-20`} compact />

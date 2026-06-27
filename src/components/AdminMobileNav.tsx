@@ -35,8 +35,11 @@ type Channel = {
   id: string;
   name: string;
   displayName?: string;
+  subtitle?: string;
   username?: string;
   avatarUrl?: string;
+  avatarFallback?: string;
+  metadataStatus?: "complete" | "partial";
 };
 
 type AdminMobileNavProps = {

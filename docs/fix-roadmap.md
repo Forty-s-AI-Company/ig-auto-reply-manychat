@@ -1488,3 +1488,18 @@ Remaining:
 
 - `[ ]` Add filtered empty-state guidance so operators know how to clear `q`, status, or tag filters.
 - `[ ]` Consider saved-segment preview counts inside the Contacts create-segment dialog if operators need confidence before saving.
+
+## 2026-06-27 - Instagram metadata fallback and safe refresh errors
+
+Current status:
+
+- `[x]` ID-only Instagram channels remain visible in the sidebar account switcher.
+- `[x]` ID-only channels use a clearer display name, fallback avatar, explanatory subtitle, and partial metadata marker.
+- `[x]` Instagram Login profile refresh uses the Instagram Graph profile endpoint before Facebook object reads.
+- `[x]` Meta raw refresh failures are mapped to safe Chinese messages without leaking `fbtrace_id`.
+- `[x]` Automations explicitly remains workspace-scoped until a channel-scope schema exists.
+
+Remaining:
+
+- `[ ]` After merge and controlled Production deployment, verify the sidebar shows both ID-only and username-backed channels.
+- `[ ]` Decide later whether Automations needs a channel-scoped data model and migration.
