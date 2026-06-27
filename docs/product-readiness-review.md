@@ -1,5 +1,19 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox AI reply suggestion product pass
+
+Status: improved for beta operator usability; provider-backed AI remains a later gate.
+
+- Inbox composer `AI 回覆建議` now creates a reviewable reply draft instead of only showing a coming-soon notice.
+- The draft generator uses local deterministic rules from the latest inbound message, so it does not require OpenAI/Gemini/Antigravity/Codex CLI credentials and does not expose secrets.
+- Operators still review and manually send the message, keeping the feature safe for beta usage.
+- Authenticated Inbox Playwright smoke now verifies the AI suggestion button fills the composer and no longer displays a `尚未開放` notice.
+
+Readiness implication:
+
+- One visible Inbox fake-button gap is closed.
+- Public paid launch still remains Hold until provider-backed AI reply design, media/voice composer decisions, Channels/Automations/Analytics audits, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox mobile RWD search/filter repair
 
 Status: improved for mobile private beta Inbox usage; still not a public paid launch Go.

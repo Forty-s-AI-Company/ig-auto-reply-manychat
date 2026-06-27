@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox AI reply suggestion product pass
+
+Current status:
+
+- `[x]` Fixed Inbox composer `AI 回覆建議` so it no longer behaves like a visible coming-soon button.
+- `[x]` Added a safe local reply-draft generator based on the latest inbound message, without requiring external AI provider secrets.
+- `[x]` The generated text is inserted into the composer as a draft only; the operator still reviews and manually sends it.
+- `[x]` Added authenticated Inbox Playwright smoke coverage for clicking `AI 回覆建議`, verifying draft text, and confirming the UI no longer reports `尚未開放`.
+
+Remaining:
+
+- `[ ]` True provider-backed AI reply generation still needs product/API design, user API-key configuration, cost controls, and error handling.
+- `[ ]` Media attachment and voice message buttons still need either scoped implementation or clearer disabled UX.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox mobile RWD search/filter repair
 
 Current status:

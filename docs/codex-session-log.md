@@ -4579,3 +4579,27 @@ Launch impact:
 
 - Test stability only.
 - No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
+
+## 2026-06-28 - Inbox AI reply suggestion product pass
+
+Task:
+
+- Continue the product-functionality autopilot loop and close a visible Inbox "looks clickable but only says coming soon" gap.
+
+Changes:
+
+- Replaced the Inbox composer `AI 回覆建議` coming-soon handler with a safe local draft generator.
+- The generator reads the latest inbound message and creates a pricing/setup/thanks/general reply draft.
+- The draft is inserted into the composer, with an in-page notice reminding the operator to review before sending.
+- Added authenticated Inbox Playwright coverage for the AI reply suggestion interaction.
+
+Validation:
+
+- `npm run lint`, `npm run build`, `npm test`, and authenticated Inbox Playwright smoke passed against a local non-production Docker PostgreSQL database.
+- Antigravity CLI `agy --print` returned no stdout and did not create `reports/qa-report.md`, so this round used Codex fallback QA instead of claiming external QA completion.
+
+Launch impact:
+
+- Improves Inbox beta usability without requiring external AI API keys.
+- True provider-backed AI suggestions still need product/API design and cost/error controls.
+- No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
