@@ -102,7 +102,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
   const currentChannel = selectedChannel || sortedChannels[0];
   const currentName = currentChannel?.displayName || currentChannel?.name || "尚未連接平台帳號";
   return (
-    <div ref={rootRef} className="relative z-50">
+    <div ref={rootRef} className="relative z-50" data-testid="account-dropdown">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
@@ -110,6 +110,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
           open ? "border-white/18 bg-white/12" : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
         aria-expanded={open}
+        data-testid="account-dropdown-trigger"
       >
         <InstagramAvatar channel={currentChannel} size="sm" />
         <div className="min-w-0 flex-1">
@@ -130,6 +131,8 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   type="button"
                   disabled={isPending}
                   onClick={() => changeAccount(channel.id)}
+                  data-testid="account-channel-option"
+                  data-channel-id={channel.id}
                   className={`flex h-[52px] w-full items-center gap-3 rounded-sm border px-2 text-left text-sm ${
                     channel.id === selectedChannelId || (!selectedChannelId && channel.id === sortedChannels[0]?.id)
                       ? "border-[#b6eef2] bg-[var(--primary-soft)]"

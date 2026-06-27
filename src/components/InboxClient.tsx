@@ -558,7 +558,9 @@ export function InboxClient({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p className="truncate text-sm font-semibold text-[#111827]">{conversation.contact.displayName}</p>
-                        <span className="text-xs text-[#667085]">{latestAt(conversation)}</span>
+                        <span className="text-xs text-[#667085]" suppressHydrationWarning>
+                          {latestAt(conversation)}
+                        </span>
                       </div>
                       <p className="mt-1 truncate text-sm text-[#667085]">{latestMessage(conversation)}</p>
                       <div className="mt-1 flex items-center gap-2 text-xs text-[#006fe6]">
@@ -682,7 +684,9 @@ export function InboxClient({
                               <p className="mb-1 text-xs font-semibold text-amber-700">內部備註</p>
                             ) : null}
                             <p className="whitespace-pre-wrap">{message.text || "空白訊息"}</p>
-                            <p className="mt-1 text-right text-[11px] text-[#98a2b3]">{dateLabel(message.createdAt)}</p>
+                            <p className="mt-1 text-right text-[11px] text-[#98a2b3]" suppressHydrationWarning>
+                              {dateLabel(message.createdAt)}
+                            </p>
                           </div>
                         </div>
                       ))}

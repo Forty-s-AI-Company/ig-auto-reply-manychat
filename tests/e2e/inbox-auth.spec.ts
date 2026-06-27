@@ -35,15 +35,15 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
 
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
-    await page.getByRole("button", { name: /E2E/ }).first().click();
-    await page.getByRole("button", { name: /E2E Alt/ }).click();
+    await page.getByTestId("account-dropdown-trigger").first().click();
+    await page.getByTestId("account-channel-option").filter({ hasText: "E2E Alt" }).click();
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
     await expect(page.locator("body")).toContainText("E2E Inbox 第二 IG channel scope 對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 主要對話");
 
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
-    await page.getByRole("button", { name: /E2E Alt/ }).first().click();
-    await page.locator("button").filter({ hasText: "E2E", hasNotText: "Alt" }).last().click();
+    await page.getByTestId("account-dropdown-trigger").first().click();
+    await page.getByTestId("account-channel-option").filter({ hasText: "E2E", hasNotText: "Alt" }).click();
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
     await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 第二 IG channel scope 對話");
