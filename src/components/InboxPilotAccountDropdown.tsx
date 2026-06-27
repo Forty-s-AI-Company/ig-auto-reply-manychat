@@ -100,7 +100,6 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
 
   const currentChannel = selectedChannel || sortedChannels[0];
   const currentName = currentChannel?.displayName || currentChannel?.name || "尚未連接平台帳號";
-
   return (
     <div ref={rootRef} className="relative z-50">
       <button
@@ -140,15 +139,6 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                       <span className="truncate text-sm font-medium text-[#34363a]">{channel.displayName || channel.name}</span>
-                      {channel.metadataStatus === "partial" ? (
-                        <span
-                          className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[10px] font-black text-amber-950"
-                          title="尚未取得完整帳號名稱與頭像"
-                          aria-label="尚未取得完整帳號名稱與頭像"
-                        >
-                          !
-                        </span>
-                      ) : null}
                       <PlanBadge />
                     </div>
                     <p className="mt-0.5 truncate text-[11px] text-[#667085]">
@@ -219,6 +209,15 @@ function InstagramAvatar({ channel, size }: { channel?: Channel; size: "sm" | "m
           channel?.avatarFallback || "IG"
         )}
       </div>
+      {channel?.metadataStatus === "partial" ? (
+        <span
+          className="absolute -right-1 bottom-0 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-white bg-amber-400 text-[8px] font-black text-amber-950"
+          title="尚未取得完整帳號名稱與頭像"
+          aria-label="尚未取得完整帳號名稱與頭像"
+        >
+          !
+        </span>
+      ) : null}
       <PlanBadge className={`absolute ${badgeClass} z-20`} compact />
     </div>
   );
