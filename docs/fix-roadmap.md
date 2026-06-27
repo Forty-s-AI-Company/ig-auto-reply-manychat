@@ -1518,3 +1518,18 @@ Current status:
 Remaining:
 
 - `[ ]` If another machine or session needs Antigravity support, ensure `agy` is on PATH or set `ANTIGRAVITY_CLI_COMMAND` explicitly.
+
+## Latest - 2026-06-28 Windows test runner crash diagnostics
+
+Current status:
+
+- `[x]` Added reusable test batching helpers for `scripts/run-tests.mjs`.
+- `[x]` `npm test` now prints the active Vitest batch before each run.
+- `[x]` If a multi-file batch exits with the known Windows access violation code `3221225477`, the runner re-runs each file in that batch individually to identify whether the crash is file-specific or batch-level.
+- `[x]` Added unit coverage for batching, batch labels, and Windows crash-diagnostic gating.
+- `[x]` Hardened authenticated Playwright smoke login setup with a bounded retry for transient CI `ECONNRESET` failures.
+
+Remaining:
+
+- `[ ]` Re-run full `npm test` in the affected Windows environment and use the new diagnostic output if `3221225477` appears again.
+- `[ ]` Keep production DB, Production deploy, Meta App Review, and PayUNI production outside this diagnostic path.

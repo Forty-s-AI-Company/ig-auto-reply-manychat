@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Page, type TestInfo } from "@playwright/test";
 import dotenv from "dotenv";
 import { getAuthenticatedRouteSmokeGuard } from "./authenticated-route-smoke-guard";
 
@@ -46,6 +46,32 @@ async function expectAuthenticatedRoute(page: Page, route: AuthenticatedRouteSmo
   await expect(page.locator("body")).toContainText(route.bodyText);
 }
 
+async function loginForAuthenticatedSmoke(page: Page, testInfo: TestInfo, email: string, password: string) {
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await page.request.post("/api/auth/login", {
+        data: { email, password },
+        headers: {
+          origin: "http://127.0.0.1:3041",
+          "x-forwarded-for": `e2e-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}-${attempt}`,
+        },
+      });
+
+      if (response.ok()) return;
+      lastError = new Error(`Login returned HTTP ${response.status()}`);
+    } catch (error) {
+      lastError = error;
+    }
+
+    await page.waitForTimeout(250 * attempt);
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Login request failed.");
+}
+
 test.describe("public and protected navigation", () => {
   test("renders the public landing page and reaches login", async ({ page }) => {
     await page.goto("/");
@@ -86,14 +112,7 @@ test.describe("authenticated route smoke", () => {
 
   test.beforeEach(async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    const response = await page.request.post("/api/auth/login", {
-      data: { email: adminEmail, password: adminPassword },
-      headers: {
-        origin: "http://127.0.0.1:3041",
-        "x-forwarded-for": `e2e-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}`,
-      },
-    });
-    expect(response.ok()).toBeTruthy();
+    await loginForAuthenticatedSmoke(page, testInfo, adminEmail, adminPassword);
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/dashboard/);
   });
