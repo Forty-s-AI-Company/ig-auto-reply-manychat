@@ -75,6 +75,11 @@ test.describe("inbox authenticated smoke", () => {
     await page.getByText("E2E Inbox 主要對話").click();
     await expect(page.getByText("E2E 測試聯絡人 A").first()).toBeVisible();
 
+    await page.getByRole("button", { name: "AI 回覆建議" }).click();
+    await expect(page.getByTestId("inbox-composer-textarea")).toHaveValue(/謝謝您的訊息/);
+    await expect(page.getByTestId("inbox-notice")).toContainText(/已依最新訊息產生.+回覆草稿/);
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
     await page.getByRole("button", { name: "備註", exact: true }).click();
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);
     await page.getByTestId("inbox-send-message").click();

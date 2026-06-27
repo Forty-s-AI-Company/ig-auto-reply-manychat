@@ -77,6 +77,49 @@ function latestMessage(conversation: Conversation) {
   return conversation.messages[conversation.messages.length - 1]?.text || "尚無訊息";
 }
 
+function latestInboundText(conversation: Conversation) {
+  return [...conversation.messages].reverse().find((message) => message.direction === "inbound" && message.text?.trim())?.text?.trim() || "";
+}
+
+function buildReplySuggestion(conversation: Conversation) {
+  const inboundText = latestInboundText(conversation);
+  const name = conversation.contact.displayName || conversation.contact.username || "您好";
+  const firstName = name.trim().split(/\s+/)[0] || name;
+
+  if (!inboundText) {
+    return {
+      text: "",
+      reason: "目前這個對話沒有可參考的客戶訊息，請先手動輸入回覆內容。",
+    };
+  }
+
+  if (/價格|價錢|費用|方案|多少|price|pricing/i.test(inboundText)) {
+    return {
+      text: `${firstName} 您好，謝謝詢問！目前可以先參考我們的方案頁面；如果您方便，也可以告訴我預計使用的人數與 Instagram 帳號數，我再幫您建議適合的方案。`,
+      reason: "已依最新訊息產生價格詢問回覆草稿，送出前請再確認內容。",
+    };
+  }
+
+  if (/怎麼|如何|教學|設定|連接|登入|login|connect|setup/i.test(inboundText)) {
+    return {
+      text: `${firstName} 您好，我可以協助您設定。請先確認目前使用的 Instagram 是商業或創作者帳號，並已連到對應的 Meta / Facebook 資產；如果畫面有錯誤訊息，也可以截圖給我，我會依照狀況協助排查。`,
+      reason: "已依最新訊息產生設定協助回覆草稿，送出前請再確認內容。",
+    };
+  }
+
+  if (/謝謝|感謝|thank/i.test(inboundText)) {
+    return {
+      text: `${firstName} 不客氣！如果後續還有任何問題，直接回覆這邊就可以，我們會再協助您。`,
+      reason: "已依最新訊息產生致謝回覆草稿，送出前請再確認內容。",
+    };
+  }
+
+  return {
+    text: `${firstName} 您好，謝謝您的訊息！我先幫您確認內容，稍後會再回覆更完整的資訊。`,
+    reason: "已依最新訊息產生一般回覆草稿，送出前請再確認內容。",
+  };
+}
+
 function latestAt(conversation: Conversation) {
   const value = conversation.messages[conversation.messages.length - 1]?.createdAt;
   if (!value) return "";
@@ -236,6 +279,18 @@ export function InboxClient({
 
   function showComingSoon(feature: string) {
     showNotice("info", `${feature} 目前尚未開放；文字回覆、內部備註、指派、標籤與提醒已可使用。`);
+  }
+
+  function applyReplySuggestion() {
+    if (!selected) return;
+    const suggestion = buildReplySuggestion(selected);
+    if (!suggestion.text) {
+      showNotice("info", suggestion.reason);
+      return;
+    }
+    setActiveTab("reply");
+    setText(suggestion.text);
+    showNotice("info", suggestion.reason);
   }
 
   async function readError(response: Response, fallback: string) {
@@ -757,7 +812,7 @@ export function InboxClient({
                           <ComposerIconButton label="表情符號" onClick={() => showComingSoon("表情符號")} icon={<Smile className="h-5 w-5" />} />
                           <ComposerIconButton label="圖片上傳" onClick={() => showComingSoon("圖片上傳")} icon={<ImageIcon className="h-5 w-5" />} />
                           <ComposerIconButton label="語音訊息" onClick={() => showComingSoon("語音訊息")} icon={<Mic className="h-5 w-5" />} />
-                          <ComposerIconButton label="AI 回覆建議" onClick={() => showComingSoon("AI 回覆建議")} icon={<Bot className="h-5 w-5" />} />
+                          <ComposerIconButton label="AI 回覆建議" onClick={applyReplySuggestion} icon={<Bot className="h-5 w-5" />} />
                         </div>
                         <button
                           type="button"
