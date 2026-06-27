@@ -3,6 +3,11 @@ import { randomBytes } from "node:crypto";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { loadProjectEnv } from "./load-env.mjs";
+import {
+  buildTestBatches,
+  formatBatchLabel,
+  shouldDiagnoseBatchFailure,
+} from "./run-tests-plan.mjs";
 
 loadProjectEnv();
 
@@ -59,9 +64,49 @@ function run(command, args) {
         return;
       }
 
-      reject(new Error(`${command} ${args.join(" ")} exited with ${code}`));
+      const error = new Error(`${command} ${args.join(" ")} exited with ${code}`);
+      error.exitCode = code;
+      reject(error);
     });
   });
+}
+
+async function runVitestBatch(batch) {
+  await run(process.execPath, [
+    vitestBin,
+    "run",
+    "--no-file-parallelism",
+    "--maxWorkers",
+    "1",
+    "--reporter",
+    "dot",
+    ...(withCoverage ? ["--coverage"] : []),
+    ...batch,
+  ]);
+}
+
+async function diagnoseBatchFailure(batch, error) {
+  const failedFiles = [];
+  console.error(
+    `Vitest crashed while running a multi-file batch with exit ${error.exitCode}. Re-running files one by one to isolate the trigger.`,
+  );
+
+  for (const testFile of batch) {
+    try {
+      console.error(`Diagnostic rerun: ${testFile}`);
+      await runVitestBatch([testFile]);
+    } catch (fileError) {
+      failedFiles.push(`${testFile} (exit ${fileError.exitCode ?? "unknown"})`);
+    }
+  }
+
+  if (failedFiles.length > 0) {
+    throw new Error(`Vitest batch failed; isolated failing file(s): ${failedFiles.join(", ")}`);
+  }
+
+  throw new Error(
+    `Vitest batch crashed with exit ${error.exitCode}, but every file passed when rerun individually. Suspect batch-level runner instability in: ${batch.join(", ")}`,
+  );
 }
 
 try {
@@ -71,22 +116,19 @@ try {
     .sort()
     .map((fileName) => path.join("tests", fileName));
 
-  const batches = withCoverage
-    ? [testFiles]
-    : Array.from({ length: Math.ceil(testFiles.length / 6) }, (_, index) => testFiles.slice(index * 6, index * 6 + 6));
+  const batches = buildTestBatches(testFiles, { withCoverage });
 
-  for (const batch of batches) {
-    await run(process.execPath, [
-      vitestBin,
-      "run",
-      "--no-file-parallelism",
-      "--maxWorkers",
-      "1",
-      "--reporter",
-      "dot",
-      ...(withCoverage ? ["--coverage"] : []),
-      ...batch,
-    ]);
+  for (const [index, batch] of batches.entries()) {
+    console.log(`Running ${formatBatchLabel(batch, index, batches.length)}`);
+    try {
+      await runVitestBatch(batch);
+    } catch (error) {
+      if (shouldDiagnoseBatchFailure({ code: error.exitCode, batch, withCoverage })) {
+        await diagnoseBatchFailure(batch, error);
+      }
+
+      throw error;
+    }
   }
 } finally {
   const { PrismaClient } = await import("@prisma/client");

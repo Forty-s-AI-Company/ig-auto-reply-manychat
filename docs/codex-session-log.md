@@ -4460,3 +4460,32 @@ Launch impact:
 
 - Improves local / self-hosted Antigravity CLI bridge reliability.
 - Does not change production DB, deployment, Meta App Review, PayUNI production behavior, or application data model.
+
+## 2026-06-28 - Windows test runner crash diagnostics
+
+Task:
+
+- Improve `npm test` diagnostics for the intermittent Windows Vitest child-process exit `3221225477` without touching production DB, deployments, Meta App Review, or PayUNI production.
+
+Changes:
+
+- Added `scripts/run-tests-plan.mjs` for reusable test batching and crash-diagnostic policy.
+- Updated `scripts/run-tests.mjs` to print each active batch before running Vitest.
+- When a multi-file non-coverage batch exits with the known Windows access violation code, the runner now re-runs each file in that batch individually and reports either isolated failing files or a batch-level runner instability.
+- Added focused unit coverage for batching, batch labels, and diagnostic gating.
+- Hardened the authenticated Playwright smoke login setup with a bounded retry after one duplicate CI run failed on a transient `apiRequestContext.post: read ECONNRESET`.
+
+Validation:
+
+- `npm ci` completed in the clean PR worktree.
+- `npx vitest run tests/unit/run-tests-plan.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- Antigravity CLI `agy` was available, but print mode returned no report output; fallback QA was recorded in `reports/qa-report.md` and excluded from commit scope.
+- Full `npm test` was deferred to GitHub CI because this clean worktree intentionally does not include `.env.local` or local `TEST_DATABASE_URL`.
+- PR CI initially showed one passing and one failing duplicate `full-release-auth-smoke` job; the failing run was isolated to a transient login request `ECONNRESET`, so the retry hardening was added and revalidated locally with lint, focused Vitest, and build.
+
+Launch impact:
+
+- Improves unattended test-gate diagnostics only.
+- Does not change product runtime behavior, production DB, Production deployment, Meta App Review, PayUNI production behavior, or application data model.
