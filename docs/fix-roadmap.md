@@ -1,5 +1,22 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox mobile RWD search/filter repair
+
+Current status:
+
+- `[x]` PR #21 Inbox functionality repair has been merged into `master`.
+- `[!]` Post-merge master CI exposed a Contacts smoke race where desktop/mobile workers could create the same segment name and report `同名分眾已存在`.
+- `[x]` Fixed the Contacts smoke race by making the segment name project/worker specific.
+- `[x]` Fixed mobile Inbox search discoverability by adding a mobile search row above the conversation layout.
+- `[x]` Fixed mobile Inbox filter usability by exposing a mobile filter button and mobile-safe fixed filter panel.
+- `[x]` Restored `npm run test:e2e:inbox` to run both desktop Chromium and mobile Chrome projects.
+- `[x]` Verified Inbox authenticated smoke passes against local Docker PostgreSQL `TEST_DATABASE_URL` for both desktop and mobile.
+
+Remaining:
+
+- `[ ]` Continue Inbox product audit for true media attachment, voice message, AI reply suggestion, automation pause, and sequence subscription product/API work.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox functionality repair round 1
 
 Current Inbox audit:

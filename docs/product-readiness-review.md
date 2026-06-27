@@ -1,5 +1,20 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox mobile RWD search/filter repair
+
+Status: improved for mobile private beta Inbox usage; still not a public paid launch Go.
+
+- PR #21 was merged into `master`, but post-merge master CI exposed a Contacts authenticated smoke race from duplicate segment names across parallel desktop/mobile workers.
+- The Contacts smoke race is fixed by generating project/worker-specific segment names; this is test stability only and does not change product behavior.
+- Mobile Inbox now has a visible search field and a mobile filter button, instead of relying on a desktop header control that is hidden on small viewports.
+- The filter panel now uses a mobile-safe fixed layout with an explicit Done button, while preserving the desktop popover behavior.
+- Inbox authenticated smoke now runs both desktop Chromium and mobile Chrome projects through `npm run test:e2e:inbox`.
+
+Readiness implication:
+
+- Mobile Inbox search/filter is less likely to feel unfinished during beta usage.
+- Public paid launch remains Hold until remaining Inbox advanced actions, Channels, Automations, Analytics, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox functionality repair round 1
 
 Status: improved for private beta desktop operator use; still needs mobile Inbox RWD follow-up.

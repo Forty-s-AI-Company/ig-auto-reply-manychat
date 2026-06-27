@@ -4528,3 +4528,34 @@ Launch impact:
 - Desktop Inbox product completeness and selected IG account scoping are improved.
 - No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
 - Remaining Inbox P2: mobile header search/filter discoverability should be handled in a separate RWD pass.
+
+## 2026-06-28 - Inbox mobile RWD search/filter repair
+
+Task:
+
+- Review and merge PR #21, then continue Inbox product completeness work without touching production DB or deploying Production.
+
+Post-merge status:
+
+- PR #21 merged into `master` at `eb1bc0539fdf279efdd815aab3969446c0c4c809`.
+- Vercel deployments observed after merge were Preview deployments only.
+- Production and staging alias workflows completed successfully on the merge commit.
+- Master CI exposed a Contacts authenticated smoke race: parallel desktop/mobile workers could create the same segment name and trigger `同名分眾已存在`.
+
+Changes:
+
+- Added a mobile-only Inbox search row so mobile users can search conversations while the desktop header is hidden.
+- Added a mobile filter button and mobile-safe fixed filter panel with a Done action.
+- Restored `npm run test:e2e:inbox` to run both desktop Chromium and mobile Chrome projects.
+- Stabilized the Contacts segment smoke by making generated segment names project/worker specific.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e:inbox`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` for Chromium and mobile Chrome.
+
+Launch impact:
+
+- Improves mobile Inbox beta usability and CI signal quality.
+- No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.

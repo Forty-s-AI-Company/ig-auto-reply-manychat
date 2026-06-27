@@ -27,6 +27,12 @@ test.describe("inbox authenticated smoke", () => {
     expect(response.ok(), `login failed with ${response.status()}: ${await response.text()}`).toBeTruthy();
   });
 
+  async function selectSidebarInstagramChannel(page: import("@playwright/test").Page, channelName: string, excludeText?: string) {
+    await page.locator('[data-testid="account-dropdown-trigger"]:visible').click();
+    const option = page.locator('[data-testid="account-channel-option"]:visible').filter({ hasText: channelName });
+    await (excludeText ? option.filter({ hasNotText: excludeText }) : option).click();
+  }
+
   test("loads, scopes by Instagram channel, filters, selects a conversation, and shows clear send feedback", async ({ page }, testInfo) => {
     const isMobileProject = testInfo.project.name.includes("mobile");
 
@@ -35,30 +41,34 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
 
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
-    await page.getByTestId("account-dropdown-trigger").first().click();
-    await page.getByTestId("account-channel-option").filter({ hasText: "E2E Alt" }).click();
+    await selectSidebarInstagramChannel(page, "E2E Alt");
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
     await expect(page.locator("body")).toContainText("E2E Inbox 第二 IG channel scope 對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 主要對話");
 
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
-    await page.getByTestId("account-dropdown-trigger").first().click();
-    await page.getByTestId("account-channel-option").filter({ hasText: "E2E", hasNotText: "Alt" }).click();
+    await selectSidebarInstagramChannel(page, "E2E", "Alt");
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
     await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 第二 IG channel scope 對話");
 
-    await page.getByPlaceholder("搜尋收件匣對話").fill("未讀篩選");
+    const searchInput = isMobileProject ? page.getByTestId("inbox-mobile-search") : page.getByPlaceholder("搜尋收件匣對話");
+    await searchInput.fill("未讀篩選");
     await expect(page.locator("body")).toContainText("E2E Inbox 未讀篩選對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 主要對話");
 
-    await page.getByRole("button", { name: "篩選", exact: true }).click();
+    if (isMobileProject) {
+      await page.getByTestId("inbox-mobile-filter-button").click();
+    } else {
+      await page.getByRole("button", { name: "篩選", exact: true }).click();
+    }
     await expect(page.getByTestId("inbox-filter-panel")).toBeVisible();
     await page.getByTestId("inbox-filter-unread").check();
     await expect(page.locator("body")).toContainText("E2E Inbox 未讀篩選對話");
 
-    await page.getByPlaceholder("搜尋收件匣對話").fill("");
+    await searchInput.fill("");
     await page.getByTestId("inbox-filter-unread").uncheck();
+    if (isMobileProject) await page.getByTestId("inbox-close-filter-panel").click();
     await page.getByTestId("inbox-select-all").check();
     await expect(page.locator("body")).toContainText(/標記已讀 \d+/);
 

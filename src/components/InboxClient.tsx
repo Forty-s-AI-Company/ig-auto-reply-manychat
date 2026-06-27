@@ -14,6 +14,7 @@ import {
   MessageCircle,
   Mic,
   MoreVertical,
+  Search,
   Send,
   Smile,
   User,
@@ -387,6 +388,28 @@ export function InboxClient({
       data-testid="inbox-client"
       data-ready="true"
     >
+      <div className="flex shrink-0 items-center gap-2 border-b border-[#d7dbe0] bg-white p-3 sm:hidden">
+        <label className="relative min-w-0 flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="h-10 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6]"
+            placeholder="搜尋對話"
+            data-testid="inbox-mobile-search"
+          />
+        </label>
+        <button
+          type="button"
+          onClick={() => setShowFilterHint((current) => !current)}
+          className={`h-10 shrink-0 rounded-md border px-3 text-sm ${
+            showFilterHint ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]" : "border-[#d7dbe0] text-[#344054]"
+          }`}
+          data-testid="inbox-mobile-filter-button"
+        >
+          篩選
+        </button>
+      </div>
       <div className="grid min-h-0 flex-1 grid-cols-[224px_minmax(0,1fr)]">
         <aside className="border-r border-[#d7dbe0] bg-[#f7f7f7]">
           <div className="space-y-1 p-3 text-sm">
@@ -464,7 +487,10 @@ export function InboxClient({
               篩選
             </ToolbarButton>
             {showFilterHint ? (
-              <div className="absolute left-[468px] top-11 z-20 w-72 rounded-md border border-[#d7dbe0] bg-white p-3 text-xs text-[#667085] shadow-lg" data-testid="inbox-filter-panel">
+              <div
+                className="fixed left-4 right-4 top-20 z-50 w-auto rounded-md border border-[#d7dbe0] bg-white p-3 text-xs text-[#667085] shadow-lg sm:absolute sm:left-[468px] sm:right-auto sm:top-11 sm:w-72"
+                data-testid="inbox-filter-panel"
+              >
                 <p className="mb-3 font-semibold text-[#111827]">收件匣篩選</p>
                 <label className="mb-2 block">
                   <span className="mb-1 block">狀態</span>
@@ -512,6 +538,14 @@ export function InboxClient({
                   className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc]"
                 >
                   重設篩選
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowFilterHint(false)}
+                  className="mt-2 h-8 w-full rounded-md bg-[#006fe6] text-white sm:hidden"
+                  data-testid="inbox-close-filter-panel"
+                >
+                  完成
                 </button>
               </div>
             ) : null}
