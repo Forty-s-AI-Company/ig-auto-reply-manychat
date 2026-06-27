@@ -1,5 +1,53 @@
 # Codex Session Log
 
+## 2026-06-28 - Inbox contact panel actions UX pass
+
+Task goal:
+
+- Continue the Inbox product completeness repair loop after PR #27.
+- Replace the right contact panel `更多聯絡人操作` fake notice with a small usable action menu.
+- Keep the change local to Inbox UI and authenticated smoke coverage.
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a contact actions popover in the Inbox contact panel.
+- The popover includes a real `開啟聯絡人詳情` link to the contact detail page.
+- Riskier operations such as exporting contact data and blocking/unsubscribing now show explicit temporarily-disabled guidance instead of `尚未開放`.
+- Extended authenticated Inbox Playwright smoke to verify the contact actions menu and disabled guidance on desktop.
+
+Validation:
+
+- `git diff --check`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e:inbox`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` for desktop Chromium and mobile Chrome.
+- `npm test`: local Windows / Node 24 runner hit the known Vitest batch exit `3221225477` in batch 3; the diagnostic rerun passed every file in that batch individually. GitHub CI remains the full-suite merge gate.
+- `agy --model "Gemini 3.5 Flash (High)" --print`: exited successfully and wrote ignored `reports/qa-report.md`; the QA report approved the change for PR.
+
+Launch impact:
+
+- Reduces another misleading fake interaction in the Inbox contact panel.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- Low. The change is UI-only except for the existing contact detail link.
+
+Next suggested Codex Prompt:
+
+```text
+請繼續 InboxPilot 產品完整性修復，下一輪優先 audit Channels 的「渠道/設定」命名與連接流程：列出看得到但不能用的互動，先修最小可用或清楚 disabled UX，補 smoke，不碰 production DB、不部署 Production。
+```
+
 ## 2026-06-28 - Inbox header disabled UX pass
 
 Task goal:

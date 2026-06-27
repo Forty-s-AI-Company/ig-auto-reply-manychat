@@ -1,5 +1,13 @@
 # Project Launch Checklist
 
+## 2026-06-28 - Inbox contact panel actions UX pass
+
+- `[x]` Replaced Inbox contact panel `更多聯絡人操作` fake notice with a small action menu.
+- `[x]` Added a real `開啟聯絡人詳情` link for the selected contact.
+- `[x]` Converted export and block/unsubscribe into clear temporarily-disabled guidance instead of `尚未開放`.
+- `[x]` Added authenticated Inbox smoke coverage for the desktop contact actions menu.
+- `[ ]` Contact export and block/unsubscribe still require permission, sync, and audit design before launch.
+
 ## 2026-06-28 - Inbox header disabled UX pass
 
 - `[x]` Converted Inbox conversation header `視訊通話` and `更多操作` from fake coming-soon buttons into clearly disabled-looking controls with in-page guidance.

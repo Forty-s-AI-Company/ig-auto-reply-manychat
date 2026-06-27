@@ -1,5 +1,19 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox contact panel actions UX pass
+
+Status: improved for beta operator trust; contact export and block/unsubscribe remain future permission/audit gates.
+
+- Inbox contact panel `更多聯絡人操作` now opens a small action menu instead of showing a generic `尚未開放` notice.
+- Operators can open the selected contact detail page directly from the menu.
+- Export and block/unsubscribe actions explain why they are temporarily disabled and what operational controls are still required.
+- Authenticated Inbox Playwright smoke verifies the menu and disabled guidance on desktop.
+
+Readiness implication:
+
+- Inbox has one fewer misleading visible control during beta usage.
+- Public paid launch still remains Hold until contact export governance, block/unsubscribe sync rules, Channels/Automations/Analytics audits, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox header disabled UX pass
 
 Status: improved for beta operator trust; real video calling and richer conversation actions remain future product/API gates.
