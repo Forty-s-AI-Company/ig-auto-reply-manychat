@@ -1,5 +1,20 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox header disabled UX pass
+
+Status: improved for beta operator trust; real video calling and richer conversation actions remain future product/API gates.
+
+- Inbox conversation header `視訊通話` and `更多操作` no longer behave like generic coming-soon fake buttons.
+- The controls now look intentionally unavailable, use accessible labels, and explain why the related flow is not enabled yet.
+- The user-facing message points operators back to text replies or other working Inbox tools instead of making the feature feel broken.
+- The Inbox filter panel now has a visible close action on desktop and mobile, preventing it from blocking conversation header controls.
+- Authenticated Inbox Playwright smoke verifies both controls show clear guidance and no longer display `尚未開放`.
+
+Readiness implication:
+
+- Inbox has fewer misleading visible controls for beta usage.
+- Public paid launch still remains Hold until real media/voice delivery design, richer conversation actions, Channels/Automations/Analytics audits, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox media composer disabled UX pass
 
 Status: improved for beta operator trust; real media/voice sending remains a future product/API gate.

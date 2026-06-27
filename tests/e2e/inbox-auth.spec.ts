@@ -68,7 +68,8 @@ test.describe("inbox authenticated smoke", () => {
 
     await searchInput.fill("");
     await page.getByTestId("inbox-filter-unread").uncheck();
-    if (isMobileProject) await page.getByTestId("inbox-close-filter-panel").click();
+    await page.getByTestId("inbox-close-filter-panel").click();
+    await expect(page.getByTestId("inbox-filter-panel")).toBeHidden();
     await page.getByTestId("inbox-select-all").check();
     await expect(page.locator("body")).toContainText(/標記已讀 \d+/);
 
@@ -94,6 +95,16 @@ test.describe("inbox authenticated smoke", () => {
     await page.getByRole("button", { name: /語音訊息/ }).click();
     await expect(page.getByTestId("inbox-notice")).toContainText("語音訊息 目前已暫時停用");
     await expect(page.getByTestId("inbox-notice")).toContainText("音訊上傳、格式轉換與 Instagram 附件送出流程");
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
+    await page.getByTestId("inbox-video-call-button").click();
+    await expect(page.getByTestId("inbox-notice")).toContainText("視訊通話 目前已暫時停用");
+    await expect(page.getByTestId("inbox-notice")).toContainText("即時通話服務、權限控管與客服排班流程");
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
+    await page.getByTestId("inbox-more-actions-button").click();
+    await expect(page.getByTestId("inbox-notice")).toContainText("更多對話操作 目前已暫時停用");
+    await expect(page.getByTestId("inbox-notice")).toContainText("批次封存、匯出、轉交與封鎖");
     await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
 
     await page.getByRole("button", { name: "備註", exact: true }).click();

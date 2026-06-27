@@ -1,5 +1,53 @@
 # Codex Session Log
 
+## 2026-06-28 - Inbox header disabled UX pass
+
+Task goal:
+
+- Continue the Inbox product completeness repair loop.
+- Fix the Inbox conversation header `視訊通話` and `更多操作` fake-button issue.
+- Fix the desktop Inbox filter panel close affordance found during real E2E smoke.
+- Keep the change small, local, and non-production.
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Replaced the old `showComingSoon` copy for the conversation header actions with clearer unavailable-feature notices.
+- Restyled `視訊通話` and `更多操作` as intentionally unavailable-looking controls with dashed borders, muted color, accessible labels, and dedicated test ids.
+- Kept the filter panel `完成` button visible on desktop and mobile, so operators can close the panel before continuing with conversation actions.
+- Added authenticated Playwright coverage to assert the new in-page notices and confirm the UI no longer shows `尚未開放`.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e:inbox`: initial run was skipped because no `TEST_DATABASE_URL` was provided; local TEST_DATABASE_URL rerun initially found the desktop filter panel blocked the conversation header, so the close affordance was fixed. Final rerun passed for desktop Chromium and mobile Chrome.
+- `npm test`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` across 8 batches.
+- `agy --model "Gemini 3.5 Flash (High)" --print`: exited successfully and wrote ignored `reports/qa-report.md`; the QA report approved the change for PR. Codex validation is the source of record for the real TEST_DATABASE_URL E2E and full `npm test` runs.
+
+Launch impact:
+
+- Reduces misleading fake-button UX in Inbox.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- Low. The change is UI-only and does not enable new external side effects.
+
+Next suggested Codex Prompt:
+
+```text
+請幫我跑 Inbox 這次修復的驗證：npm run lint、npm run build、npm run test:e2e:inbox；若都過了，再檢查是否還有其他 Inbox 標頭的假按鈕。
+```
+
 ## 2026-06-28 - Inbox media composer disabled UX pass
 
 Task goal:

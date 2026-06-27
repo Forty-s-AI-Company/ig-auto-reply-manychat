@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox header disabled UX pass
+
+Current status:
+
+- `[x]` Replaced Inbox conversation header `視訊通話` and `更多操作` coming-soon behavior with explicit temporarily-disabled UX.
+- `[x]` The controls now use disabled visual styling, accessible labels, and an in-page explanation that they are intentionally unavailable until the related product flow is implemented.
+- `[x]` Kept the Inbox filter panel close action visible on desktop and mobile after E2E found the desktop panel could block conversation header controls.
+- `[x]` Added authenticated Inbox Playwright smoke coverage so both controls no longer report `尚未開放` or feel like broken buttons.
+
+Remaining:
+
+- `[ ]` Implement real video calling after the product/API, permission, and delivery design is ready.
+- `[ ]` Implement richer conversation actions after the product/API surface is designed.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox media composer disabled UX pass
 
 Current status:
