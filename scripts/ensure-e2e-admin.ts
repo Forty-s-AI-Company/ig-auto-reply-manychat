@@ -6,6 +6,7 @@ const PRODUCTION_SUPABASE_PROJECT_REF = "lmwvzskffzozuiamjxvc";
 const DEFAULT_WORKSPACE_ID = "default-workspace";
 const DEFAULT_WORKSPACE_SLUG = "default";
 const E2E_CHANNEL_NAME = "Instagram E2E";
+const E2E_ALT_CHANNEL_NAME = "Instagram E2E Alt";
 
 config({ path: ".env", quiet: true });
 config({ path: ".env.local", override: false, quiet: true });
@@ -66,6 +67,17 @@ async function main() {
       name: E2E_CHANNEL_NAME,
       enabled: true,
       configJson: { source: "e2e-smoke" },
+    },
+  });
+  const altChannel = await prisma.channel.upsert({
+    where: { workspaceId_type_name: { workspaceId: workspace.id, type: "instagram", name: E2E_ALT_CHANNEL_NAME } },
+    update: { enabled: true, configJson: { source: "e2e-smoke-alt" } },
+    create: {
+      workspaceId: workspace.id,
+      type: "instagram",
+      name: E2E_ALT_CHANNEL_NAME,
+      enabled: true,
+      configJson: { source: "e2e-smoke-alt" },
     },
   });
 
@@ -190,6 +202,98 @@ async function main() {
         consentStatus: contact.consentStatus,
         lastInboundAt: new Date(),
         metadataJson: { source: "e2e-smoke" },
+      },
+    });
+  }
+
+  const primaryContact = await prisma.contact.findUniqueOrThrow({
+    where: { channelId_externalId: { channelId: channel.id, externalId: "e2e-contact-1" } },
+  });
+  const unreadContact = await prisma.contact.findUniqueOrThrow({
+    where: { channelId_externalId: { channelId: channel.id, externalId: "e2e-contact-2" } },
+  });
+  const altContact = await prisma.contact.upsert({
+    where: { channelId_externalId: { channelId: altChannel.id, externalId: "e2e-inbox-alt-contact" } },
+    update: {
+      displayName: "E2E 第二 IG 帳號聯絡人",
+      username: "e2e_alt_ig",
+      consentStatus: "opted_in",
+      lastInboundAt: new Date(),
+      metadataJson: { source: "e2e-inbox-alt" },
+    },
+    create: {
+      channelId: altChannel.id,
+      externalId: "e2e-inbox-alt-contact",
+      displayName: "E2E 第二 IG 帳號聯絡人",
+      username: "e2e_alt_ig",
+      consentStatus: "opted_in",
+      lastInboundAt: new Date(),
+      metadataJson: { source: "e2e-inbox-alt" },
+    },
+  });
+
+  const now = new Date();
+  const inboxFixtures = [
+    {
+      id: "e2e-inbox-primary-conversation",
+      contactId: primaryContact.id,
+      channelId: channel.id,
+      text: "E2E Inbox 主要對話，可搜尋與選取",
+      unreadCount: 0,
+    },
+    {
+      id: "e2e-inbox-unread-conversation",
+      contactId: unreadContact.id,
+      channelId: channel.id,
+      text: "E2E Inbox 未讀篩選對話",
+      unreadCount: 2,
+    },
+    {
+      id: "e2e-inbox-alt-conversation",
+      contactId: altContact.id,
+      channelId: altChannel.id,
+      text: "E2E Inbox 第二 IG channel scope 對話",
+      unreadCount: 1,
+    },
+  ];
+
+  await prisma.message.deleteMany({
+    where: { conversationId: { in: inboxFixtures.map((fixture) => fixture.id) } },
+  });
+
+  for (const fixture of inboxFixtures) {
+    await prisma.conversation.upsert({
+      where: { id: fixture.id },
+      update: {
+        contactId: fixture.contactId,
+        channelId: fixture.channelId,
+        status: "open",
+        assignedToId: null,
+        reminderAt: null,
+        isFavorite: false,
+        unreadCount: fixture.unreadCount,
+        lastMessageAt: now,
+        lastReadAt: fixture.unreadCount > 0 ? null : now,
+      },
+      create: {
+        id: fixture.id,
+        contactId: fixture.contactId,
+        channelId: fixture.channelId,
+        status: "open",
+        unreadCount: fixture.unreadCount,
+        lastMessageAt: now,
+        lastReadAt: fixture.unreadCount > 0 ? null : now,
+      },
+    });
+    await prisma.message.create({
+      data: {
+        conversationId: fixture.id,
+        contactId: fixture.contactId,
+        channelId: fixture.channelId,
+        direction: "inbound",
+        messageType: "text",
+        text: fixture.text,
+        payloadJson: { source: "e2e-inbox-smoke" },
       },
     });
   }

@@ -96,6 +96,7 @@ jobs:
       - run: npm run e2e:admin:ensure
       - run: npm run test:e2e:auth
       - run: npm run test:e2e:contacts
+      - run: npm run test:e2e:inbox
 
   simple-release-smoke:
     runs-on: ubuntu-latest

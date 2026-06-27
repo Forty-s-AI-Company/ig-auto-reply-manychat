@@ -1,5 +1,33 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox functionality repair round 1
+
+Current Inbox audit:
+
+- `[x]` Completed: Inbox page loads authenticated conversations, renders messages, assignment select, reminder, favorite, mark-read, reply/note composer, contact tags, custom fields, and category counters.
+- `[x]` Completed: Search keyword filtering exists through the header search event.
+- `[x]` Completed: Status, unread, sort, category, favorite, reminder, and tag classification filters are wired.
+- `[x]` Fixed: Sidebar IG account switch now immediately refreshes Inbox conversations by selected Instagram channel through `/api/conversations?channelId=...`.
+- `[x]` Fixed: Visible no-op controls now provide real action or explicit in-page feedback, including label `+`, select-all, composer media/AI icons, video/more icons, contact history, automation pause, and sequence subscribe entry.
+- `[x]` Fixed: Send/reply failures now show a clear in-page status instead of only `alert()`.
+- `[x]` Fixed: `POST /api/conversations/[id]/notes` now uses same-origin protection.
+- `[x]` Added: desktop authenticated Inbox Playwright smoke for load, IG scope switching, conversation selection, search/filter, internal note, and Instagram reply success/failure feedback.
+- `[ ]` Remaining P2: mobile Inbox header search is hidden in the current mobile layout; handle in a dedicated RWD pass.
+- `[ ]` Remaining P2: true media attachment, voice message, AI reply suggestion, automation pause, and sequence subscription still require product-level design/API work.
+
+Validation:
+
+- `[x]` `npm run lint` passed.
+- `[x]` `npm run build` passed.
+- `[x]` `npm run test:e2e:inbox` passed against a local Docker PostgreSQL `TEST_DATABASE_URL`.
+- `[!]` `npm test` hit the known Windows Vitest batch exit `3221225477`; diagnostic reruns showed every file in the crashed batch passed individually.
+
+Next:
+
+- Merge the Inbox repair PR after CI confirms Linux test stability.
+- Schedule a separate mobile Inbox RWD pass for search/filter discoverability.
+- Continue product completeness audits for Contacts, Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-27 Daily AI model refresh automation
 
 Current refresh result:

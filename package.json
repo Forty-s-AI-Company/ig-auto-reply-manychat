@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "test:e2e:auth": "playwright test tests/e2e/public-and-auth.spec.ts",
     "test:e2e:contacts": "playwright test tests/e2e/contacts-auth.spec.ts",
+    "test:e2e:inbox": "playwright test tests/e2e/inbox-auth.spec.ts --project=chromium",
     "test:e2e:simple": "playwright test tests/e2e/simple-release.spec.ts",
     "test:coverage": "vitest run tests/unit tests/integration --coverage",
     "test:coverage:db": "node scripts/run-tests.mjs --coverage",

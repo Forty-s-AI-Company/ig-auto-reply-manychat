@@ -20,6 +20,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
@@ -60,10 +61,16 @@ type Conversation = {
 
 type InboxCategory = "all" | "unassigned" | "assigned" | "reminders" | "favorites" | "hot" | "partners";
 type StatusFilter = "open" | "all";
+type InboxNotice = { tone: "success" | "danger" | "info"; message: string };
 
 const NOT_SET = "未設定";
 const HOT_TAG = "熱門名單";
 const PARTNER_TAG = "合作夥伴";
+const NOTICE_STYLES: Record<InboxNotice["tone"], string> = {
+  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  danger: "border-red-200 bg-red-50 text-red-800",
+  info: "border-blue-200 bg-blue-50 text-blue-800",
+};
 
 function latestMessage(conversation: Conversation) {
   return conversation.messages[conversation.messages.length - 1]?.text || "尚無訊息";
@@ -122,6 +129,8 @@ export function InboxClient({
   const [sortNewest, setSortNewest] = useState(true);
   const [channelFilter, setChannelFilter] = useState<"all" | "instagram">("all");
   const [showFilterHint, setShowFilterHint] = useState(false);
+  const [selectedConversationIds, setSelectedConversationIds] = useState<Set<string>>(() => new Set());
+  const [notice, setNotice] = useState<InboxNotice | null>(null);
 
   const hotTag = tags.find((tag) => tag.name === HOT_TAG);
   const partnerTag = tags.find((tag) => tag.name === PARTNER_TAG);
@@ -132,6 +141,33 @@ export function InboxClient({
     }
     window.addEventListener("inbox-search", handleSearch);
     return () => window.removeEventListener("inbox-search", handleSearch);
+  }, []);
+
+  useEffect(() => {
+    async function handleChannelScopeChange(event: Event) {
+      const channelId = String((event as CustomEvent).detail || "");
+      if (!channelId) return;
+      const response = await fetch(`/api/conversations?channelId=${encodeURIComponent(channelId)}&limit=25`, {
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        showNotice("danger", await readError(response, "切換 IG 帳號後重新載入收件匣失敗。"));
+        return;
+      }
+      const nextConversations = ((await response.json()) as Conversation[]).map((conversation) => ({
+        ...conversation,
+        messages: [...conversation.messages].reverse(),
+      }));
+      setConversations(nextConversations);
+      setSelectedId(nextConversations[0]?.id || "");
+      setSelectedConversationIds(new Set());
+      setQuery("");
+      setCategory("all");
+      showNotice("info", "已切換 Instagram 帳號範圍。");
+    }
+
+    window.addEventListener("inbox-channel-scope-change", handleChannelScopeChange);
+    return () => window.removeEventListener("inbox-channel-scope-change", handleChannelScopeChange);
   }, []);
 
   const counts = useMemo(() => {
@@ -181,6 +217,49 @@ export function InboxClient({
       conversations[0],
     [filteredConversations, conversations, selectedId],
   );
+  const selectedVisibleIds = useMemo(
+    () => filteredConversations.map((conversation) => conversation.id),
+    [filteredConversations],
+  );
+  const visibleSelectedConversationIds = useMemo(
+    () => new Set([...selectedConversationIds].filter((id) => selectedVisibleIds.includes(id))),
+    [selectedConversationIds, selectedVisibleIds],
+  );
+  const selectedCount = visibleSelectedConversationIds.size;
+  const allVisibleSelected =
+    selectedVisibleIds.length > 0 && selectedVisibleIds.every((id) => visibleSelectedConversationIds.has(id));
+
+  function showNotice(tone: InboxNotice["tone"], message: string) {
+    setNotice({ tone, message });
+  }
+
+  function showComingSoon(feature: string) {
+    showNotice("info", `${feature} 目前尚未開放；文字回覆、內部備註、指派、標籤與提醒已可使用。`);
+  }
+
+  async function readError(response: Response, fallback: string) {
+    const data = await response.json().catch(() => ({}));
+    return typeof data.error === "string" && data.error.trim() ? data.error : fallback;
+  }
+
+  function toggleConversationSelection(conversationId: string) {
+    setSelectedConversationIds((current) => {
+      const next = new Set(current);
+      if (next.has(conversationId)) {
+        next.delete(conversationId);
+      } else {
+        next.add(conversationId);
+      }
+      return next;
+    });
+  }
+
+  function toggleSelectAllVisible() {
+    setSelectedConversationIds((current) => {
+      if (allVisibleSelected) return new Set();
+      return new Set([...current, ...selectedVisibleIds]);
+    });
+  }
 
   function replaceConversation(updated: Conversation) {
     setConversations((current) =>
@@ -191,7 +270,10 @@ export function InboxClient({
   async function refresh(id = selected?.id) {
     if (!id) return;
     const response = await fetch(`/api/conversations/${id}`);
-    if (!response.ok) return;
+    if (!response.ok) {
+      showNotice("danger", await readError(response, "重新載入對話失敗，請稍後再試。"));
+      return;
+    }
     replaceConversation(await response.json());
   }
 
@@ -203,11 +285,11 @@ export function InboxClient({
       body: JSON.stringify(payload),
     });
     if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      alert(data.error || "對話更新失敗。");
+      showNotice("danger", await readError(response, "對話更新失敗。"));
       return;
     }
     replaceConversation(await response.json());
+    showNotice("success", "對話狀態已更新。");
   }
 
   async function sendMessage() {
@@ -222,12 +304,13 @@ export function InboxClient({
       body: JSON.stringify({ text }),
     });
     if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      alert(data.error || "訊息傳送失敗，請確認 Instagram 連線狀態。");
+      const message = await readError(response, "訊息傳送失敗，請確認 Instagram 連線狀態或重新連接 IG 帳號。");
+      showNotice("danger", activeTab === "note" ? `內部備註儲存失敗：${message}` : `Instagram 回覆未送出：${message}`);
       return;
     }
     setText("");
     await refresh(selected.id);
+    showNotice("success", activeTab === "note" ? "內部備註已儲存。" : "訊息已送出到 Instagram。");
   }
 
   async function markRead() {
@@ -235,20 +318,50 @@ export function InboxClient({
     await updateConversation({ lastReadAt: new Date().toISOString() });
   }
 
+  async function markSelectedRead() {
+    const ids = [...visibleSelectedConversationIds];
+    if (!ids.length) return;
+    const now = new Date().toISOString();
+    for (const id of ids) {
+      const response = await fetch(`/api/conversations/${id}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ lastReadAt: now }),
+      });
+      if (!response.ok) {
+        showNotice("danger", await readError(response, "批次標記已讀失敗。"));
+        return;
+      }
+      replaceConversation(await response.json());
+    }
+    setSelectedConversationIds(new Set());
+    showNotice("success", `已將 ${ids.length} 則對話標記為已讀。`);
+  }
+
   async function addTag(tagId: string) {
     if (!selected || !tagId) return;
-    await fetch(`/api/contacts/${selected.contact.id}/tags`, {
+    const response = await fetch(`/api/contacts/${selected.contact.id}/tags`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ tagId }),
     });
+    if (!response.ok) {
+      showNotice("danger", await readError(response, "新增標籤失敗。"));
+      return;
+    }
     await refresh(selected.id);
+    showNotice("success", "標籤已加入聯絡人。");
   }
 
   async function removeTag(tagId: string) {
     if (!selected) return;
-    await fetch(`/api/contacts/${selected.contact.id}/tags?tagId=${tagId}`, { method: "DELETE" });
+    const response = await fetch(`/api/contacts/${selected.contact.id}/tags?tagId=${tagId}`, { method: "DELETE" });
+    if (!response.ok) {
+      showNotice("danger", await readError(response, "移除標籤失敗。"));
+      return;
+    }
     await refresh(selected.id);
+    showNotice("success", "標籤已從聯絡人移除。");
   }
 
   async function toggleSystemTag(tag: Tag | undefined) {
@@ -262,7 +375,6 @@ export function InboxClient({
 
   function addReminder(minutes: number) {
     // 由使用者點擊提醒選單時才計算時間，並立即寫回後端保存。
-    // eslint-disable-next-line react-hooks/purity
     const reminderAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
     updateConversation({ reminderAt });
     setReminderOpen(false);
@@ -270,7 +382,11 @@ export function InboxClient({
   }
 
   return (
-    <div className="flex h-[calc(100vh-100px)] min-h-0 flex-col overflow-hidden rounded-lg border border-[#d7dbe0] bg-white text-[#111827]">
+    <div
+      className="flex h-[calc(100vh-100px)] min-h-0 flex-col overflow-hidden rounded-lg border border-[#d7dbe0] bg-white text-[#111827]"
+      data-testid="inbox-client"
+      data-ready="true"
+    >
       <div className="grid min-h-0 flex-1 grid-cols-[224px_minmax(0,1fr)]">
         <aside className="border-r border-[#d7dbe0] bg-[#f7f7f7]">
           <div className="space-y-1 p-3 text-sm">
@@ -283,7 +399,14 @@ export function InboxClient({
           <div className="border-t border-[#e4e7ec] px-3 py-4">
             <div className="mb-2 flex items-center justify-between text-xs font-medium text-[#667085]">
               <span>標籤</span>
-              <span className="text-base leading-none">+</span>
+              <Link
+                href="/contacts"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#d7dbe0] text-base leading-none text-[#006fe6] hover:bg-white"
+                aria-label="前往聯絡人管理標籤"
+                title="前往聯絡人管理標籤"
+              >
+                +
+              </Link>
             </div>
             <div className="space-y-1 text-sm">
               <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => setCategory("favorites")} />
@@ -313,7 +436,18 @@ export function InboxClient({
 
         <div className="flex min-h-0 min-w-0 flex-col">
           <header className="relative flex h-14 shrink-0 items-center gap-2 border-b border-[#d7dbe0] bg-white px-5">
-            <input type="checkbox" className="mr-3 h-4 w-4 rounded border-[#d7dbe0]" aria-label="選取全部對話" />
+            <input
+              type="checkbox"
+              className="mr-1 h-4 w-4 rounded border-[#d7dbe0]"
+              aria-label="選取全部對話"
+              checked={allVisibleSelected}
+              disabled={selectedVisibleIds.length === 0}
+              onChange={toggleSelectAllVisible}
+              data-testid="inbox-select-all"
+            />
+            {selectedCount > 0 ? (
+              <ToolbarButton onClick={markSelectedRead}>標記已讀 {selectedCount}</ToolbarButton>
+            ) : null}
             <ToolbarButton active={statusFilter === "open"} icon={<MessageCircle className="h-4 w-4" />} onClick={() => setStatusFilter((current) => (current === "open" ? "all" : "open"))}>
               {statusFilter === "open" ? "開啟對話" : "全部狀態"}
             </ToolbarButton>
@@ -330,29 +464,103 @@ export function InboxClient({
               篩選
             </ToolbarButton>
             {showFilterHint ? (
-              <div className="absolute left-[468px] top-11 z-20 rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-xs text-[#667085] shadow-lg">
-                目前支援狀態、未讀、排序、渠道、指派、提醒與標籤篩選。
+              <div className="absolute left-[468px] top-11 z-20 w-72 rounded-md border border-[#d7dbe0] bg-white p-3 text-xs text-[#667085] shadow-lg" data-testid="inbox-filter-panel">
+                <p className="mb-3 font-semibold text-[#111827]">收件匣篩選</p>
+                <label className="mb-2 block">
+                  <span className="mb-1 block">狀態</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    data-testid="inbox-filter-status"
+                  >
+                    <option value="open">只看開啟對話</option>
+                    <option value="all">全部狀態</option>
+                  </select>
+                </label>
+                <label className="mb-2 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={unreadOnly}
+                    onChange={(event) => setUnreadOnly(event.target.checked)}
+                    data-testid="inbox-filter-unread"
+                  />
+                  只看未讀
+                </label>
+                <label className="mb-3 block">
+                  <span className="mb-1 block">排序</span>
+                  <select
+                    value={sortNewest ? "newest" : "oldest"}
+                    onChange={(event) => setSortNewest(event.target.value === "newest")}
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    data-testid="inbox-filter-sort"
+                  >
+                    <option value="newest">最新優先</option>
+                    <option value="oldest">最舊優先</option>
+                  </select>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCategory("all");
+                    setStatusFilter("open");
+                    setUnreadOnly(false);
+                    setSortNewest(true);
+                    setChannelFilter("all");
+                    showNotice("info", "已重設 Inbox 篩選條件。");
+                  }}
+                  className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc]"
+                >
+                  重設篩選
+                </button>
               </div>
             ) : null}
           </header>
+          {notice ? (
+            <div
+              role="status"
+              data-testid="inbox-notice"
+              className={`mx-5 mt-3 rounded-md border px-3 py-2 text-sm ${NOTICE_STYLES[notice.tone]}`}
+            >
+              {notice.message}
+            </div>
+          ) : null}
 
           <div className="grid min-h-0 flex-1 grid-cols-[320px_minmax(420px,1fr)_300px]">
             <aside className="min-h-0 overflow-auto border-r border-[#d7dbe0] bg-white">
               <div className="divide-y divide-[#eef0f2]">
                 {filteredConversations.map((conversation) => (
-                  <button
+                  <div
                     key={conversation.id}
-                    type="button"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedId(conversation.id)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter" && event.key !== " ") return;
+                      event.preventDefault();
+                      setSelectedId(conversation.id);
+                    }}
+                    data-testid="inbox-conversation-row"
+                    data-conversation-id={conversation.id}
                     className={`flex w-full gap-3 px-4 py-4 text-left hover:bg-[#f6f8fb] ${
                       selected?.id === conversation.id ? "bg-[#f2f4f7]" : ""
                     }`}
                   >
+                    <input
+                      type="checkbox"
+                      checked={selectedConversationIds.has(conversation.id)}
+                      onClick={(event) => event.stopPropagation()}
+                      onChange={() => toggleConversationSelection(conversation.id)}
+                      aria-label={`選取 ${conversation.contact.displayName}`}
+                      className="mt-3 h-4 w-4 shrink-0 rounded border-[#d7dbe0]"
+                    />
                     <Avatar name={conversation.contact.displayName} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
                         <p className="truncate text-sm font-semibold text-[#111827]">{conversation.contact.displayName}</p>
-                        <span className="text-xs text-[#667085]">{latestAt(conversation)}</span>
+                        <span className="text-xs text-[#667085]" suppressHydrationWarning>
+                          {latestAt(conversation)}
+                        </span>
                       </div>
                       <p className="mt-1 truncate text-sm text-[#667085]">{latestMessage(conversation)}</p>
                       <div className="mt-1 flex items-center gap-2 text-xs text-[#006fe6]">
@@ -361,7 +569,7 @@ export function InboxClient({
                         {conversation.reminderAt ? <Clock className="h-3.5 w-3.5 text-[#667085]" /> : null}
                       </div>
                     </div>
-                  </button>
+                  </div>
                 ))}
                 {filteredConversations.length === 0 ? (
                   <p className="px-4 py-8 text-sm text-[#667085]">目前沒有符合條件的對話。</p>
@@ -392,7 +600,9 @@ export function InboxClient({
                     </div>
 
                     <div className="relative flex items-center gap-3 text-[#667085]">
-                      <Video className="h-5 w-5" />
+                      <button type="button" onClick={() => showComingSoon("視訊通話")} className="p-1" title="視訊通話">
+                        <Video className="h-5 w-5" />
+                      </button>
                       <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
                         <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} />
                       </button>
@@ -407,7 +617,9 @@ export function InboxClient({
                       <button type="button" onClick={markRead} className="p-1" title="標記已讀">
                         <CheckCheck className="h-5 w-5" />
                       </button>
-                      <MoreVertical className="h-5 w-5" />
+                      <button type="button" onClick={() => showComingSoon("更多對話操作")} className="p-1" title="更多操作">
+                        <MoreVertical className="h-5 w-5" />
+                      </button>
 
                       {reminderOpen ? (
                         <div className="absolute right-6 top-9 z-20 w-48 rounded-md border border-[#d7dbe0] bg-white py-2 text-sm shadow-xl">
@@ -472,7 +684,9 @@ export function InboxClient({
                               <p className="mb-1 text-xs font-semibold text-amber-700">內部備註</p>
                             ) : null}
                             <p className="whitespace-pre-wrap">{message.text || "空白訊息"}</p>
-                            <p className="mt-1 text-right text-[11px] text-[#98a2b3]">{dateLabel(message.createdAt)}</p>
+                            <p className="mt-1 text-right text-[11px] text-[#98a2b3]" suppressHydrationWarning>
+                              {dateLabel(message.createdAt)}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -502,19 +716,21 @@ export function InboxClient({
                         onChange={(event) => setText(event.target.value)}
                         className="h-20 w-full resize-none border-0 bg-white text-sm outline-none"
                         placeholder={activeTab === "reply" ? "在這裡回覆" : "輸入內部備註"}
+                        data-testid="inbox-composer-textarea"
                       />
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 text-[#667085]">
-                          <Smile className="h-5 w-5" />
-                          <ImageIcon className="h-5 w-5" />
-                          <Mic className="h-5 w-5" />
-                          <Bot className="h-5 w-5" />
+                          <ComposerIconButton label="表情符號" onClick={() => showComingSoon("表情符號")} icon={<Smile className="h-5 w-5" />} />
+                          <ComposerIconButton label="圖片上傳" onClick={() => showComingSoon("圖片上傳")} icon={<ImageIcon className="h-5 w-5" />} />
+                          <ComposerIconButton label="語音訊息" onClick={() => showComingSoon("語音訊息")} icon={<Mic className="h-5 w-5" />} />
+                          <ComposerIconButton label="AI 回覆建議" onClick={() => showComingSoon("AI 回覆建議")} icon={<Bot className="h-5 w-5" />} />
                         </div>
                         <button
                           type="button"
                           onClick={sendMessage}
                           disabled={!text.trim()}
                           className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:bg-[#cfe2ff] disabled:text-white"
+                          data-testid="inbox-send-message"
                         >
                           {activeTab === "note" ? "儲存內部備註" : "傳送到 Instagram"}
                           <Send className="h-4 w-4" />
@@ -542,6 +758,7 @@ export function InboxClient({
                   toggleSystemTag={toggleSystemTag}
                   onFieldDefinitionsChange={setFieldDefinitions}
                   onRefresh={() => refresh(selected.id)}
+                  onNotice={showNotice}
                 />
               ) : null}
             </aside>
@@ -610,6 +827,14 @@ function ToolbarButton({
   );
 }
 
+function ComposerIconButton({ label, icon, onClick }: { label: string; icon: ReactNode; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className="rounded-md p-1 hover:bg-[#f2f4f7]" aria-label={label} title={label}>
+      {icon}
+    </button>
+  );
+}
+
 function Avatar({ name, small = false }: { name: string; small?: boolean }) {
   return (
     <div
@@ -633,6 +858,7 @@ function ContactPanel({
   toggleSystemTag,
   onFieldDefinitionsChange,
   onRefresh,
+  onNotice,
 }: {
   selected: Conversation;
   tags: Tag[];
@@ -644,6 +870,7 @@ function ContactPanel({
   toggleSystemTag: (tag: Tag | undefined) => void;
   onFieldDefinitionsChange: (fields: ContactFieldDefinition[]) => void;
   onRefresh: () => void;
+  onNotice: (tone: InboxNotice["tone"], message: string) => void;
 }) {
   const selectedTagIds = new Set(selected.contact.tags.map(({ tag }) => tag.id));
   const [newFieldLabel, setNewFieldLabel] = useState("");
@@ -667,11 +894,12 @@ function ContactPanel({
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      alert(data.error || "新增自訂欄位失敗。");
+      onNotice("danger", typeof data.error === "string" ? data.error : "新增自訂欄位失敗。");
       return;
     }
     onFieldDefinitionsChange([...fieldDefinitions, data]);
     setNewFieldLabel("");
+    onNotice("success", "自訂欄位已新增。");
   }
 
   async function saveField(definitionId: string) {
@@ -682,16 +910,24 @@ function ContactPanel({
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      alert(data.error || "儲存自訂欄位失敗。");
+      onNotice("danger", typeof data.error === "string" ? data.error : "儲存自訂欄位失敗。");
       return;
     }
     onRefresh();
+    onNotice("success", "自訂欄位已儲存。");
   }
 
   return (
     <div className="h-full overflow-auto">
       <div className="border-b border-[#d7dbe0] p-4 text-right">
-        <MoreVertical className="ml-auto h-5 w-5 text-[#667085]" />
+        <button
+          type="button"
+          onClick={() => onNotice("info", "更多聯絡人操作尚未開放；目前可使用標籤、自訂欄位與詳情頁管理。")}
+          className="ml-auto flex rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7]"
+          aria-label="更多聯絡人操作"
+        >
+          <MoreVertical className="h-5 w-5" />
+        </button>
       </div>
 
       <div className="border-b border-[#d7dbe0] px-4 py-6 text-center">
@@ -705,13 +941,17 @@ function ContactPanel({
         <p className="mt-1 text-sm font-medium text-[#006fe6]">
           {selected.contact.username ? `@${selected.contact.username}` : selected.contact.displayName}
         </p>
-        <button type="button" className="mt-4 rounded-md border border-[#d7dbe0] px-3 py-2 text-xs text-[#006fe6]">
+        <Link href={`/contacts/${selected.contact.id}`} className="mt-4 inline-flex rounded-md border border-[#d7dbe0] px-3 py-2 text-xs text-[#006fe6] hover:bg-[#f8fafc]">
           所有渠道紀錄
-        </button>
+        </Link>
       </div>
 
       <PanelSection title="自動化">
-        <button type="button" className="h-9 w-full rounded-md border border-[#d7dbe0] text-sm">
+        <button
+          type="button"
+          onClick={() => onNotice("info", "自動化暫停會在流程級控制完成後開放；目前請到自動化頁管理流程。")}
+          className="h-9 w-full rounded-md border border-[#d7dbe0] text-sm hover:bg-[#f8fafc]"
+        >
           暫停
         </button>
       </PanelSection>
@@ -757,7 +997,14 @@ function ContactPanel({
         </div>
       </PanelSection>
 
-      <PanelSection title="訂閱到序列" action={<button className="text-xs text-[#006fe6]">訂閱</button>}>
+      <PanelSection
+        title="訂閱到序列"
+        action={
+          <Link href="/sequences" className="text-xs text-[#006fe6] hover:underline">
+            訂閱
+          </Link>
+        }
+      >
         <p className="text-sm text-[#98a2b3]">尚未訂閱序列</p>
       </PanelSection>
 

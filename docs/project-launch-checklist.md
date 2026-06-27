@@ -1,5 +1,17 @@
 # Project Launch Checklist
 
+## 2026-06-28 - Inbox functionality repair round 1
+
+- `[x]` Audited Inbox completed / half-built / fake-button / missing-test areas.
+- `[x]` Fixed selected Instagram channel scope refresh for Inbox.
+- `[x]` Converted visible Inbox no-op controls into real actions or explicit in-page notices.
+- `[x]` Added same-origin protection to internal note creation.
+- `[x]` Added non-production E2E seed data for two Instagram channels and Inbox conversations.
+- `[x]` Added desktop authenticated Inbox Playwright smoke and CI full-release auth smoke coverage.
+- `[x]` Verified `npm run lint`, `npm run build`, and `npm run test:e2e:inbox` against local non-production `TEST_DATABASE_URL`.
+- `[ ]` Fix mobile Inbox search/filter layout in a separate RWD pass.
+- `[ ]` Continue product functionality audits for Contacts, Channels, Automations, and Analytics.
+
 ## 2026-06-26 - Autopilot report cleanup closeout
 
 - `[x]` Autopilot runner exited cleanly.

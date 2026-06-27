@@ -1,5 +1,20 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox functionality repair round 1
+
+Status: improved for private beta desktop operator use; still needs mobile Inbox RWD follow-up.
+
+- Inbox desktop now has authenticated smoke coverage for page load, Instagram channel scoping, conversation selection, search/filter controls, internal notes, and manual reply success/failure feedback.
+- Sidebar Instagram account switching now refreshes Inbox data immediately by selected channel instead of leaving the conversation list in the previous/all-channel scope.
+- Inbox no-op controls have been converted to either real actions or explicit user-facing notices, reducing the "button looks clickable but nothing happens" problem.
+- Internal note writes now use same-origin protection.
+- The E2E seed now creates two safe non-production Instagram channels and Inbox conversations so CI can verify account-scope regressions without production DB access.
+
+Readiness implication:
+
+- Desktop Inbox is more credible for beta usage after this PR is merged and deployed through the normal controlled release process.
+- Public paid launch still remains Hold until mobile Inbox RWD, remaining core module audits, Meta App Review, and PayUNI production go-live are completed.
+
 ## 2026-06-26 - Autopilot report cleanup closeout
 
 Status: report handling blocker cleared; preview QA still needs authenticated smoke.
