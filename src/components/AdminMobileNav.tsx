@@ -161,6 +161,7 @@ export function AdminMobileNav({
                     key={item.href}
                     href={item.href}
                     onClick={() => setOpen(false)}
+                    data-testid={`admin-mobile-nav-link-${item.href.replace(/^\//, "").replace(/\//g, "-") || "dashboard"}`}
                     className={`flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium ${
                       active ? "bg-white/10 text-white" : "text-[#b8dadd] hover:bg-white/8 hover:text-white"
                     }`}

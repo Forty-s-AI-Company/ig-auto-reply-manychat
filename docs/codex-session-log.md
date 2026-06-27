@@ -4559,3 +4559,23 @@ Launch impact:
 
 - Improves mobile Inbox beta usability and CI signal quality.
 - No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
+
+## 2026-06-28 - Mobile menu smoke stability follow-up
+
+Task:
+
+- Clean up the remaining scheduled CI red after PR #22 merge without changing product behavior.
+
+Changes:
+
+- Updated the mobile admin menu smoke assertion to use the `收件匣` link, which is present in both simple and full release channels.
+- This replaces the previous `廣播活動` assertion, which can be absent in simple-release navigation and caused a scheduled smoke false negative.
+
+Validation:
+
+- Focused local validation was run against the authenticated route smoke.
+
+Launch impact:
+
+- Test stability only.
+- No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.

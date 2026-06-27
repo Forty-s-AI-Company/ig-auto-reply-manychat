@@ -134,9 +134,11 @@ test.describe("authenticated route smoke", () => {
 
   test("opens and closes the mobile admin menu", async ({ page }) => {
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
+    const inboxMenuLink = page.getByTestId("admin-mobile-nav-link-inbox");
+
     await page.getByRole("button", { name: "開啟選單" }).click();
-    await expect(page.getByRole("link", { name: "廣播活動" })).toBeVisible();
+    await expect(inboxMenuLink).toBeVisible();
     await page.getByRole("button", { name: "關閉選單", exact: true }).click();
-    await expect(page.getByRole("link", { name: "廣播活動" })).toBeHidden();
+    await expect(inboxMenuLink).toBeHidden();
   });
 });
