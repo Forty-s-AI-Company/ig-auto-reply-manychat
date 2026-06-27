@@ -4489,3 +4489,42 @@ Launch impact:
 
 - Improves unattended test-gate diagnostics only.
 - Does not change product runtime behavior, production DB, Production deployment, Meta App Review, PayUNI production behavior, or application data model.
+
+## 2026-06-28 - Inbox functionality repair round 1
+
+Task:
+
+- Stop deployment/env/migration work and audit + repair Inbox product completeness for visible but non-functional controls.
+- Scope: `src/app/inbox`, conversations APIs, message composer, reply/note/status/assignment/search/filter, and IG channel selector impact on Inbox scope.
+
+Audit:
+
+- Completed: Inbox loads authenticated conversations, displays message history, assignment select, reminders, favorite, mark read, contact tags, custom fields, category counters, and reply/note composer.
+- Completed: keyword search, category filters, status filter, unread filter, sort toggle, system tag classification, reminders, assignment, and mark-read already had working paths.
+- Half-built: channel filter was only type-level; selected IG account switching did not immediately refresh Inbox data.
+- Half-built: send/reply failure used browser `alert()` instead of an in-page state.
+- Fake/no-op controls found: label `+`, select-all checkbox, video icon, more icon, composer media/AI icons, contact history button, automation pause button, and sequence subscribe action.
+- Missing test: no authenticated Inbox Playwright smoke covered conversation selection, IG channel scope, search/filter, note/reply feedback, or selected-channel regression.
+
+Changes:
+
+- Added immediate Inbox reload on sidebar Instagram account switch using `/api/conversations?channelId=...`.
+- Expanded conversation API list shape so client-side channel refresh has contact field values, assignment info, and recent messages.
+- Converted visible Inbox no-op controls into real links, batch mark-read, or explicit status notices.
+- Added in-page status feedback for update/send/tag/custom-field success and failure.
+- Added same-origin protection to internal note creation.
+- Added E2E seed fixtures for two Instagram channels plus scoped Inbox conversations.
+- Added `tests/e2e/inbox-auth.spec.ts` and `npm run test:e2e:inbox`, wired into full-release auth smoke.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e:inbox`: passed against local Docker PostgreSQL `TEST_DATABASE_URL`.
+- `npm test`: did not complete because the known Windows Vitest batch crash `3221225477` occurred; diagnostic reruns showed every file in the crashed batch passed individually.
+
+Launch impact:
+
+- Desktop Inbox product completeness and selected IG account scoping are improved.
+- No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
+- Remaining Inbox P2: mobile header search/filter discoverability should be handled in a separate RWD pass.

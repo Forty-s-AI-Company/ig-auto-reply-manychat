@@ -83,6 +83,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
       body: JSON.stringify({ channelId }),
     });
     if (!response.ok) return;
+    window.dispatchEvent(new CustomEvent("inbox-channel-scope-change", { detail: channelId }));
     setOpen(false);
     startTransition(() => router.refresh());
   }
