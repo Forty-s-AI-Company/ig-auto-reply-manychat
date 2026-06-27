@@ -277,8 +277,16 @@ export function InboxClient({
     setNotice({ tone, message });
   }
 
-  function showComingSoon(feature: string) {
-    showNotice("info", `${feature} 目前尚未開放；文字回覆、內部備註、指派、標籤與提醒已可使用。`);
+  function showUnavailableHeaderFeatureNotice(feature: "視訊通話" | "更多對話操作") {
+    const detail =
+      feature === "視訊通話"
+        ? "即時通話服務、權限控管與客服排班流程尚未完成。"
+        : "批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。";
+
+    showNotice(
+      "info",
+      `${feature} 目前已暫時停用，${detail}請先使用文字回覆、內部備註、指派、標籤與提醒。`,
+    );
   }
 
   function applyReplySuggestion() {
@@ -610,7 +618,7 @@ export function InboxClient({
                 <button
                   type="button"
                   onClick={() => setShowFilterHint(false)}
-                  className="mt-2 h-8 w-full rounded-md bg-[#006fe6] text-white sm:hidden"
+                  className="mt-2 h-8 w-full rounded-md bg-[#006fe6] text-white hover:bg-[#005bbf]"
                   data-testid="inbox-close-filter-panel"
                 >
                   完成
@@ -702,7 +710,14 @@ export function InboxClient({
                     </div>
 
                     <div className="relative flex items-center gap-3 text-[#667085]">
-                      <button type="button" onClick={() => showComingSoon("視訊通話")} className="p-1" title="視訊通話">
+                      <button
+                        type="button"
+                        onClick={() => showUnavailableHeaderFeatureNotice("視訊通話")}
+                        className="inline-flex items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3] transition hover:border-[#cfd4dc] hover:bg-[#f2f4f7] hover:text-[#667085]"
+                        title="視訊通話目前暫時停用，點擊可查看原因"
+                        aria-label="視訊通話目前暫時停用，點擊可查看原因"
+                        data-testid="inbox-video-call-button"
+                      >
                         <Video className="h-5 w-5" />
                       </button>
                       <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
@@ -719,7 +734,14 @@ export function InboxClient({
                       <button type="button" onClick={markRead} className="p-1" title="標記已讀">
                         <CheckCheck className="h-5 w-5" />
                       </button>
-                      <button type="button" onClick={() => showComingSoon("更多對話操作")} className="p-1" title="更多操作">
+                      <button
+                        type="button"
+                        onClick={() => showUnavailableHeaderFeatureNotice("更多對話操作")}
+                        className="inline-flex items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3] transition hover:border-[#cfd4dc] hover:bg-[#f2f4f7] hover:text-[#667085]"
+                        title="更多對話操作目前暫時停用，點擊可查看原因"
+                        aria-label="更多對話操作目前暫時停用，點擊可查看原因"
+                        data-testid="inbox-more-actions-button"
+                      >
                         <MoreVertical className="h-5 w-5" />
                       </button>
 

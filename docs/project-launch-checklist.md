@@ -1,5 +1,13 @@
 # Project Launch Checklist
 
+## 2026-06-28 - Inbox header disabled UX pass
+
+- `[x]` Converted Inbox conversation header `視訊通話` and `更多操作` from fake coming-soon buttons into clearly disabled-looking controls with in-page guidance.
+- `[x]` The controls now explain that the feature is temporarily unavailable because the related product flow is not finished yet.
+- `[x]` Kept the Inbox filter panel close action visible on desktop and mobile, so the panel does not block conversation header actions.
+- `[x]` Added authenticated Inbox Playwright smoke coverage for both controls and confirmed the notice no longer uses `尚未開放`.
+- `[ ]` Real video calling and richer conversation actions still require product/API design before launch.
+
 ## 2026-06-28 - Inbox media composer disabled UX pass
 
 - `[x]` Converted Inbox composer `圖片上傳` and `語音訊息` from generic coming-soon actions into explicit temporarily-disabled controls.
