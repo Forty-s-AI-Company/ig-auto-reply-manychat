@@ -1,5 +1,43 @@
 # Codex Session Log
 
+## 2026-06-28 - Mobile admin menu smoke scope fix
+
+Task goal:
+
+- Restore master CI after PR #28 merge.
+- Fix an existing authenticated smoke failure where the mobile admin menu test also ran in the desktop Chromium project.
+
+Files changed:
+
+- `tests/e2e/public-and-auth.spec.ts`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Scoped `opens and closes the mobile admin menu` to mobile Playwright projects only.
+- The test still runs on mobile Chrome and continues to validate the mobile menu open/close behavior.
+
+Validation:
+
+- `git diff --check`: passed.
+- `npm run lint`: passed.
+- `npm run test:e2e:auth`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` with 11 passed / 1 skipped; the skipped case is the intentionally desktop-skipped mobile admin menu test.
+
+Launch impact:
+
+- Restores CI signal accuracy without product behavior changes.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- Low. The change removes an invalid desktop assertion for a mobile-only menu.
+
+Next suggested Codex Prompt:
+
+```text
+請繼續 InboxPilot 產品完整性修復，下一輪優先 audit Channels 的「渠道/設定」命名與連接流程：列出看得到但不能用的互動，先修最小可用或清楚 disabled UX，補 smoke，不碰 production DB、不部署 Production。
+```
+
 ## 2026-06-28 - Inbox contact panel actions UX pass
 
 Task goal:

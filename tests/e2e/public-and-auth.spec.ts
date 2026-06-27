@@ -132,7 +132,9 @@ test.describe("authenticated route smoke", () => {
     }
   });
 
-  test("opens and closes the mobile admin menu", async ({ page }) => {
+  test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {
+    test.skip(!testInfo.project.name.includes("mobile"), "Mobile admin menu smoke only applies to mobile viewport projects.");
+
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     const inboxMenuLink = page.getByTestId("admin-mobile-nav-link-inbox");
 
