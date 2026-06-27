@@ -21,6 +21,7 @@ import { InstagramChannelActions } from "@/components/InstagramChannelActions";
 import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProfileButton";
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
+import { getSafeInstagramProfileRefreshError } from "@/lib/channels/instagram-profile-errors";
 import { getDb } from "@/lib/db";
 import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
@@ -130,7 +131,9 @@ function sanitizeConfig(configJson: unknown) {
     instagramOauthUserId: config.instagramOauthUserId,
     instagramUsername: config.instagramUsername,
     instagramName: config.instagramName,
-    profileReadWarning: config.profileReadWarning,
+    profileReadWarning: config.profileReadWarning
+      ? getSafeInstagramProfileRefreshError(config.profileReadWarning)
+      : undefined,
     tokenSource: hasStoredToken ? "channel" : config.tokenEnv || undefined,
     connectedAt: config.connectedAt,
     userTokenExpiresAt: config.userTokenExpiresAt,
