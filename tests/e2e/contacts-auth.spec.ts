@@ -77,12 +77,14 @@ test.describe("contacts authenticated smoke", () => {
     await expect(page.locator("body")).toContainText(/已從 \d+ 位聯絡人移除標籤/);
   });
 
-  test("creates a segment from the current contacts filter", async ({ page }) => {
+  test("creates a segment from the current contacts filter", async ({ page }, testInfo) => {
     await page.goto("/contacts?status=opted_in", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
 
     await page.getByTestId("contacts-create-segment-button").click();
-    await page.getByTestId("contacts-segment-name").fill(`E2E 篩選分眾 ${Date.now()}`);
+    await page
+      .getByTestId("contacts-segment-name")
+      .fill(`E2E 篩選分眾 ${testInfo.project.name}-${testInfo.workerIndex}-${Date.now()}`);
     await page.getByTestId("contacts-segment-description").fill("Playwright 從 Contacts 篩選建立");
     await page.getByTestId("contacts-confirm-create-segment").click();
     await expect(page.locator("body")).toContainText("已建立分眾");
