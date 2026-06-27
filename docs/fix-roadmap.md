@@ -1,5 +1,19 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox emoji composer product pass
+
+Current status:
+
+- `[x]` Fixed Inbox composer `表情符號` so it no longer behaves like a visible coming-soon button.
+- `[x]` Clicking the emoji button now inserts a safe default emoji into the current composer text and shows a success notice.
+- `[x]` Added authenticated Inbox Playwright smoke coverage for the emoji button, verifying composer text changes and the UI no longer reports `尚未開放`.
+
+Remaining:
+
+- `[ ]` A full emoji picker can be added later if operators need more choices.
+- `[ ]` Media attachment and voice message buttons still need either scoped implementation or clearer disabled UX.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox AI reply suggestion product pass
 
 Current status:
