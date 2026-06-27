@@ -86,6 +86,16 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-notice")).toContainText("已加入表情符號");
     await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
 
+    await page.getByRole("button", { name: /圖片上傳/ }).click();
+    await expect(page.getByTestId("inbox-notice")).toContainText("圖片上傳 目前已暫時停用");
+    await expect(page.getByTestId("inbox-notice")).toContainText("媒體儲存、掃毒與 Instagram 附件送出流程");
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
+    await page.getByRole("button", { name: /語音訊息/ }).click();
+    await expect(page.getByTestId("inbox-notice")).toContainText("語音訊息 目前已暫時停用");
+    await expect(page.getByTestId("inbox-notice")).toContainText("音訊上傳、格式轉換與 Instagram 附件送出流程");
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
     await page.getByRole("button", { name: "備註", exact: true }).click();
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);
     await page.getByTestId("inbox-send-message").click();

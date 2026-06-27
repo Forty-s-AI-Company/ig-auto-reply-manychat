@@ -1,5 +1,54 @@
 # Codex Session Log
 
+## 2026-06-28 - Inbox media composer disabled UX pass
+
+Task goal:
+
+- Continue the Codex CLI + Antigravity CLI QA loop autopilot.
+- Prioritize visible Inbox controls that still looked clickable but were not actually implemented.
+- Convert image upload and voice message controls from generic coming-soon behavior into clear disabled UX.
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added an explicit unavailable composer state for `圖片上傳` and `語音訊息`.
+- The controls now use disabled-looking styling, `aria-disabled`, and an explanatory title.
+- Clicking them shows a clear in-page message explaining the missing media storage / scanning / attachment delivery or audio upload / conversion / delivery work.
+- This keeps beta operators from mistaking the controls for broken features while avoiding premature storage/API work.
+
+Validation:
+
+- `git diff --check`: passed.
+- `npm run lint`: passed.
+- `npm run build`: initially failed because ignored `.next/dev/types/validator.ts` contained stale generated text; after clearing ignored `.next`, the build passed.
+- `npm run test:e2e:inbox`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` for desktop Chromium and mobile Chrome.
+- `npm test`: local Windows / Node 24 runner hit the known Vitest batch exit `3221225477`; diagnostic single-file reruns passed for the affected batch. This is recorded as local runner instability outside the scoped media disabled-UX diff, with GitHub CI left as the full-suite merge gate.
+- `agy --print`: exited with code 0 but produced no stdout and did not create `reports/qa-report.md`; Codex fallback QA report was generated locally under ignored `reports/`.
+
+Launch impact:
+
+- Improves beta Inbox trust by reducing misleading fake controls.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- Low. This is UI-only guidance and does not enable file upload or message sending behavior.
+- Real media and voice support remain separate product/API gates.
+
+Next suggested Codex Prompt:
+
+```text
+請繼續 Inbox 產品完整性修復，優先檢查對話標頭的「視訊通話」與「更多操作」是否仍是 showComingSoon 假按鈕；若暫時不支援，請改成明確 disabled UX 與說明，並補 authenticated Playwright smoke。不要碰 production DB、不要部署 Production。
+```
+
 ## 2026-06-28 - Inbox emoji composer product pass
 
 Task goal:

@@ -1,5 +1,19 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox media composer disabled UX pass
+
+Current status:
+
+- `[x]` Replaced Inbox composer `圖片上傳` and `語音訊息` coming-soon behavior with explicit temporarily-disabled UX.
+- `[x]` The controls now use disabled visual styling, accessible labels, and an in-page explanation that they are intentionally unavailable until media storage / scanning / attachment delivery and audio processing are implemented.
+- `[x]` Added authenticated Inbox Playwright smoke coverage so image and voice controls no longer report `尚未開放` or feel like broken buttons.
+
+Remaining:
+
+- `[ ]` Implement real media attachment support after storage, virus scanning, size limits, channel delivery, and audit/error handling are designed.
+- `[ ]` Implement real voice message support after upload, transcoding, retention, channel delivery, and App Review implications are designed.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox emoji composer product pass
 
 Current status:
@@ -11,7 +25,7 @@ Current status:
 Remaining:
 
 - `[ ]` A full emoji picker can be added later if operators need more choices.
-- `[ ]` Media attachment and voice message buttons still need either scoped implementation or clearer disabled UX.
+- `[x]` Media attachment and voice message buttons now have clearer disabled UX.
 - `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
 
 ## Latest - 2026-06-28 Inbox AI reply suggestion product pass
