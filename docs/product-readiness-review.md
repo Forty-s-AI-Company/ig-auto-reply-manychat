@@ -1,5 +1,18 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox emoji composer product pass
+
+Status: improved for beta operator usability; advanced media composer work remains a later gate.
+
+- Inbox composer `表情符號` now inserts a default emoji into the message draft instead of only showing a coming-soon notice.
+- The interaction stays local to the client composer and does not call external providers or mutate production data by itself.
+- Authenticated Inbox Playwright smoke now verifies the emoji button changes the composer value and no longer displays a `尚未開放` notice.
+
+Readiness implication:
+
+- One more visible Inbox fake-button gap is closed.
+- Public paid launch still remains Hold until media/voice composer decisions, Channels/Automations/Analytics audits, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox AI reply suggestion product pass
 
 Status: improved for beta operator usability; provider-backed AI remains a later gate.

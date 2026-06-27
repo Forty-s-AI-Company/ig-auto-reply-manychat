@@ -80,6 +80,12 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-notice")).toContainText(/已依最新訊息產生.+回覆草稿/);
     await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
 
+    await page.getByTestId("inbox-composer-textarea").fill("");
+    await page.getByRole("button", { name: "表情符號" }).click();
+    await expect(page.getByTestId("inbox-composer-textarea")).toHaveValue("😊");
+    await expect(page.getByTestId("inbox-notice")).toContainText("已加入表情符號");
+    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+
     await page.getByRole("button", { name: "備註", exact: true }).click();
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);
     await page.getByTestId("inbox-send-message").click();

@@ -293,6 +293,11 @@ export function InboxClient({
     showNotice("info", suggestion.reason);
   }
 
+  function appendEmoji() {
+    setText((current) => `${current}${current.endsWith(" ") || current.length === 0 ? "" : " "}😊`);
+    showNotice("success", "已加入表情符號。");
+  }
+
   async function readError(response: Response, fallback: string) {
     const data = await response.json().catch(() => ({}));
     return typeof data.error === "string" && data.error.trim() ? data.error : fallback;
@@ -809,7 +814,7 @@ export function InboxClient({
                       />
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 text-[#667085]">
-                          <ComposerIconButton label="表情符號" onClick={() => showComingSoon("表情符號")} icon={<Smile className="h-5 w-5" />} />
+                          <ComposerIconButton label="表情符號" onClick={appendEmoji} icon={<Smile className="h-5 w-5" />} />
                           <ComposerIconButton label="圖片上傳" onClick={() => showComingSoon("圖片上傳")} icon={<ImageIcon className="h-5 w-5" />} />
                           <ComposerIconButton label="語音訊息" onClick={() => showComingSoon("語音訊息")} icon={<Mic className="h-5 w-5" />} />
                           <ComposerIconButton label="AI 回覆建議" onClick={applyReplySuggestion} icon={<Bot className="h-5 w-5" />} />

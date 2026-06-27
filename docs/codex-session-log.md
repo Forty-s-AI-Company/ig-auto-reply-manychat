@@ -1,5 +1,51 @@
 # Codex Session Log
 
+## 2026-06-28 - Inbox emoji composer product pass
+
+Task goal:
+
+- Continue the Codex CLI + Antigravity CLI QA loop autopilot after PR #24.
+- Prioritize product functionality gaps that are visible but not useful.
+- Fix a small Inbox fake-button issue without touching production DB or deploying Production.
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `docs/fix-roadmap.md`
+- `docs/product-readiness-review.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Replaced the Inbox composer `表情符號` coming-soon action with a real local composer action.
+- Clicking the emoji button now appends a default emoji to the current composer text and shows a success notice.
+- The change is client-side only and does not send messages, call external providers, or write production data.
+
+Validation:
+
+- `git diff --check`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm run test:e2e:inbox`: passed against local Docker PostgreSQL `TEST_DATABASE_URL` for desktop Chromium and mobile Chrome.
+- `npm test`: local Windows / Node 24 runner hit Vitest batch crashes; diagnostic single-file reruns passed for the affected files. This is recorded as local runner instability outside the scoped emoji product diff, with GitHub CI left as the full-suite merge gate.
+- `agy --print`: exited with code 0 but produced no stdout and did not create `reports/qa-report.md`; Codex fallback QA report was generated locally under ignored `reports/`.
+
+Launch impact:
+
+- Improves beta operator usability by closing one more visible Inbox fake-button gap.
+- No production deployment, DB/schema change, Meta App Review action, PayUNI production action, or secret output was performed.
+
+New risks:
+
+- Low. The current implementation inserts one default emoji; a full picker remains future UI work.
+
+Next suggested Codex Prompt:
+
+```text
+請繼續 Inbox 產品完整性修復，優先處理圖片上傳 / 語音訊息按鈕的可用性決策：若暫時不支援，請改成清楚 disabled UX；若要支援，請先提出最小 API 與 storage 設計，不碰 production DB、不部署 Production。
+```
+
 ## 2026-06-27 - Daily AI model refresh automation
 
 Task goal:
