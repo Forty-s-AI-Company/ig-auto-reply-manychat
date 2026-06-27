@@ -1503,3 +1503,18 @@ Remaining:
 
 - `[ ]` After merge and controlled Production deployment, verify the sidebar shows both ID-only and username-backed channels.
 - `[ ]` Decide later whether Automations needs a channel-scoped data model and migration.
+
+## Latest - 2026-06-28 Antigravity CLI command resolution
+
+Current status:
+
+- `[x]` Confirmed `agy` is available on PATH in the current PowerShell session.
+- `[x]` Updated `antigravity_cli` command resolution to prefer explicit env overrides, then `agy`, then legacy `gemini` / `antigravity` command names.
+- `[x]` Added focused unit coverage for CLI command candidate ordering.
+- `[x]` Stabilized the authenticated route overflow smoke helper to avoid CI timeouts from long-lived dashboard network activity.
+- `[x]` Documented the local CLI default in README.
+- `[x]` `npm run lint`, `npx vitest run tests/unit/gemini-cli.test.ts --reporter=dot`, `npm run test:e2e:auth`, and `npm run build` passed.
+
+Remaining:
+
+- `[ ]` If another machine or session needs Antigravity support, ensure `agy` is on PATH or set `ANTIGRAVITY_CLI_COMMAND` explicitly.

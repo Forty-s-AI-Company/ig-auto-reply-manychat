@@ -34,7 +34,7 @@ function routeUrlPattern(path: string) {
 }
 
 async function expectNoHorizontalOverflow(page: Page) {
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await page.waitForTimeout(150);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(2);
 }

@@ -4433,3 +4433,30 @@ Launch impact:
 
 - Improves multi-IG account operator clarity after the next controlled Production deployment.
 - Does not change production data, payment behavior, Meta review state, or database schema.
+
+## 2026-06-28 - Antigravity CLI command resolution
+
+Task:
+
+- Confirm the local Antigravity command path and make InboxPilot use the installed `agy` CLI without requiring a separate `antigravity` wrapper.
+
+Changes:
+
+- `antigravity_cli` command resolution now prefers explicit env overrides, then `agy`, then legacy `gemini` / `antigravity` command names.
+- Added focused unit coverage for CLI command candidate ordering.
+- Stabilized the authenticated route overflow smoke helper so CI does not wait on long-lived dashboard network activity before measuring layout overflow.
+- Documented the local CLI default in README.
+
+Validation:
+
+- `where.exe agy`: found `C:\Users\eden\AppData\Local\agy\bin\agy.EXE`.
+- `agy --help`: passed.
+- `npm run lint`: passed.
+- `npx vitest run tests/unit/gemini-cli.test.ts --reporter=dot`: passed.
+- `npm run test:e2e:auth`: passed.
+- `npm run build`: passed.
+
+Launch impact:
+
+- Improves local / self-hosted Antigravity CLI bridge reliability.
+- Does not change production DB, deployment, Meta App Review, PayUNI production behavior, or application data model.

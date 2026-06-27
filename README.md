@@ -142,3 +142,4 @@ docs           Product, ops, security and API docs
 - `codex_cli` and `antigravity_cli` are local CLI providers.
 - They are opt-in only and are not part of the default shared SaaS / cron refresh flow.
 - Leave `AI_ENABLE_LOCAL_CLI` unset in shared environments unless the machine actually has the CLI installed and authenticated.
+- `antigravity_cli` currently resolves through the local `agy.exe` binary when no explicit command override is set.
