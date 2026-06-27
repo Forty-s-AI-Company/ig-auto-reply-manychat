@@ -1025,6 +1025,7 @@ function ContactPanel({
   onNotice: (tone: InboxNotice["tone"], message: string) => void;
 }) {
   const selectedTagIds = new Set(selected.contact.tags.map(({ tag }) => tag.id));
+  const [contactActionsOpen, setContactActionsOpen] = useState(false);
   const [newFieldLabel, setNewFieldLabel] = useState("");
   const [fieldValues, setFieldValues] = useState<Record<string, string>>(() =>
     Object.fromEntries((selected.contact.fieldValues || []).map((item) => [item.definition.id, item.value])),
@@ -1071,15 +1072,54 @@ function ContactPanel({
 
   return (
     <div className="h-full overflow-auto">
-      <div className="border-b border-[#d7dbe0] p-4 text-right">
+      <div className="relative border-b border-[#d7dbe0] p-4 text-right">
         <button
           type="button"
-          onClick={() => onNotice("info", "更多聯絡人操作尚未開放；目前可使用標籤、自訂欄位與詳情頁管理。")}
-          className="ml-auto flex rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7]"
+          onClick={() => setContactActionsOpen((current) => !current)}
+          className="ml-auto flex rounded-md border border-transparent p-1 text-[#667085] hover:border-[#d7dbe0] hover:bg-[#f2f4f7]"
+          aria-expanded={contactActionsOpen}
           aria-label="更多聯絡人操作"
+          data-testid="inbox-contact-actions-button"
         >
           <MoreVertical className="h-5 w-5" />
         </button>
+        {contactActionsOpen ? (
+          <div
+            className="absolute right-4 top-11 z-20 w-56 rounded-md border border-[#d7dbe0] bg-white p-2 text-left text-sm shadow-xl"
+            data-testid="inbox-contact-actions-menu"
+          >
+            <Link
+              href={`/contacts/${selected.contact.id}`}
+              className="block rounded-md px-3 py-2 text-[#006fe6] hover:bg-[#f8fafc]"
+            >
+              開啟聯絡人詳情
+            </Link>
+            <button
+              type="button"
+              onClick={() =>
+                onNotice(
+                  "info",
+                  "匯出聯絡人資料目前已暫時停用，需完成匯出權限、資料遮罩與稽核紀錄後再開放。",
+                )
+              }
+              className="mt-1 block w-full rounded-md px-3 py-2 text-left text-[#667085] hover:bg-[#f8fafc]"
+            >
+              匯出聯絡人資料
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                onNotice(
+                  "info",
+                  "封鎖或解除訂閱操作目前已暫時停用，需確認 Instagram 同步規則與客服審核流程後再開放。",
+                )
+              }
+              className="block w-full rounded-md px-3 py-2 text-left text-[#667085] hover:bg-[#f8fafc]"
+            >
+              封鎖 / 解除訂閱
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div className="border-b border-[#d7dbe0] px-4 py-6 text-center">

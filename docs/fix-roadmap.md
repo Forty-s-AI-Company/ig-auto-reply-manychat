@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-28 Inbox contact panel actions UX pass
+
+Current status:
+
+- `[x]` Replaced the Inbox contact panel `更多聯絡人操作` fake notice with a small action menu.
+- `[x]` Added a real `開啟聯絡人詳情` link for the selected contact.
+- `[x]` Converted higher-risk export and block/unsubscribe actions into explicit temporarily-disabled guidance.
+- `[x]` Extended authenticated Inbox Playwright smoke coverage for the desktop contact actions menu.
+
+Remaining:
+
+- `[ ]` Implement contact export only after permission, masking, and audit requirements are designed.
+- `[ ]` Implement block/unsubscribe only after Instagram sync and support-review rules are designed.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 ## Latest - 2026-06-28 Inbox header disabled UX pass
 
 Current status:
