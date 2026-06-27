@@ -857,3 +857,14 @@ App Review implication:
 
 - This improves operator and user diagnosis while App Review is still pending.
 - It does not complete App Review, Advanced Access, Business Verification, reviewer asset recording, or final submission.
+
+## 2026-06-27 - Instagram profile metadata refresh hardening
+
+- Instagram profile refresh no longer exposes raw Meta Graph errors or `fbtrace_id` values to operators.
+- Instagram Login channels now prefer Instagram Graph profile reads before Facebook Graph object reads.
+- ID-only Instagram channels remain visible with partial metadata fallback, so App Review/test operators can still identify and switch accounts before Meta returns username/avatar metadata.
+
+App Review implication:
+
+- This improves reviewer/operator diagnostics only.
+- It does not submit Meta App Review, grant Advanced Access, change requested permissions, or bypass Meta platform requirements.

@@ -1241,3 +1241,21 @@ Result: passed. 18 passed, 4 expected simple-release skips.
 Residual risk:
 
 - If Segment filters later add custom fields or advanced boolean logic, add explicit per-field workspace validation before saving the filter JSON.
+
+## 2026-06-27 - Instagram profile refresh error safety
+
+Scope:
+
+- Hardened Instagram profile refresh failure responses.
+- Added sidebar metadata fallback for partially populated Instagram channels.
+
+Security properties:
+
+- Raw Meta Graph error details and `fbtrace_id` are not returned to the browser-facing JSON response.
+- The refresh route still requires API auth and current workspace ownership before reading or updating a channel.
+- The change does not write tokens to logs, URLs, docs, or frontend code.
+- No production DB access, migration, `db push`, or Production deployment was performed for this PR.
+
+Residual risk:
+
+- If Meta later changes Instagram profile field availability, refresh may still fail gracefully and require reconnecting the IG account.

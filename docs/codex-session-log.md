@@ -4405,3 +4405,31 @@ Next suggested Codex Prompt:
 ```text
 請幫我把 Contacts 批次移除標籤與建立分眾這批變更整理成乾淨 PR，排除 unrelated dirty files；推 PR 後只監控 CI full-release-auth-smoke / simple-release-smoke，不部署 Production、不碰 production DB。
 ```
+
+## 2026-06-27 - Instagram metadata fallback and profile refresh PR
+
+Task:
+
+- Prepare a clean PR for Instagram profile refresh raw Meta error handling and IG metadata fallback.
+- Exclude unrelated dirty files.
+- Do not deploy Production, touch production DB, run migrations, or submit Meta App Review.
+
+Changes:
+
+- Sidebar account dropdown now keeps ID-only Instagram channels visible instead of filtering them out.
+- ID-only channels show a clearer fallback name, explanatory subtitle, and partial-metadata marker.
+- Instagram profile refresh tries the Instagram Graph profile endpoint first for Instagram Login channels.
+- Raw Meta errors such as `Unsupported request` and `fbtrace_id` are converted to safe Chinese user-facing messages.
+- Automations page now documents that current automation scope remains workspace-wide until a channel-scope data model and migration exist.
+
+Validation:
+
+- `npx vitest run tests/instagram-profile-refresh-route.test.ts tests/account-channel-list.test.ts tests/automation-scope-policy.test.ts`: passed, 3 files and 4 tests.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed against a temporary local Docker PostgreSQL `TEST_DATABASE_URL`; no production DB was used. Existing Meta webhook audit mock stderr appeared, but the command exited 0.
+
+Launch impact:
+
+- Improves multi-IG account operator clarity after the next controlled Production deployment.
+- Does not change production data, payment behavior, Meta review state, or database schema.

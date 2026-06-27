@@ -24,7 +24,24 @@ type InstagramProfileResponse = {
   };
 };
 
-async function readInstagramProfile(accessToken: string, instagramUserId?: string) {
+function getProfileRefreshErrorMessage(error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : "";
+  if (rawMessage.includes("Unsupported request") || rawMessage.includes("method type: get")) {
+    return "Meta 目前沒有允許用這個授權方式讀取帳號名稱與頭像。請先確認此 IG 帳號仍授權 InboxPilot，或重新登入 Instagram 後再試一次。";
+  }
+
+  if (rawMessage.includes("permission") || rawMessage.includes("access token")) {
+    return "Instagram 授權不足或 token 已失效，請重新登入 Instagram 後再試一次。";
+  }
+
+  return "Instagram 目前沒有回傳帳號名稱與頭像。請稍後再試，或重新登入 Instagram 後再讀取一次。";
+}
+
+async function readInstagramProfile(
+  accessToken: string,
+  instagramUserId?: string,
+  loginProvider?: "instagram" | "facebook",
+) {
   const version = process.env.META_GRAPH_API_VERSION || "v25.0";
   const graphAttempts = instagramUserId
     ? [
@@ -45,9 +62,9 @@ async function readInstagramProfile(accessToken: string, instagramUserId?: strin
   ];
 
   let lastError = "Instagram profile request failed.";
-  for (const attempt of graphAttempts) {
-    const url = new URL(attempt.base);
-    url.searchParams.set("fields", attempt.fields);
+  for (const fields of fieldAttempts) {
+    const url = new URL(`https://graph.instagram.com/${version}/me`);
+    url.searchParams.set("fields", fields);
     url.searchParams.set("access_token", accessToken);
 
     const response = await fetch(url);
@@ -58,9 +75,13 @@ async function readInstagramProfile(accessToken: string, instagramUserId?: strin
     lastError = `${data.error?.message || lastError}${trace}`;
   }
 
-  for (const fields of fieldAttempts) {
-    const url = new URL(`https://graph.instagram.com/${version}/me`);
-    url.searchParams.set("fields", fields);
+  if (loginProvider === "instagram") {
+    throw new Error(lastError);
+  }
+
+  for (const attempt of graphAttempts) {
+    const url = new URL(attempt.base);
+    url.searchParams.set("fields", attempt.fields);
     url.searchParams.set("access_token", accessToken);
 
     const response = await fetch(url);
@@ -96,7 +117,7 @@ export async function POST(_request: Request, { params }: Params) {
 
   try {
     const existingInstagramId = config.instagramBusinessAccountId || config.instagramOauthUserId;
-    const profile = await readInstagramProfile(accessToken, existingInstagramId);
+    const profile = await readInstagramProfile(accessToken, existingInstagramId, config.loginProvider);
     const instagramId = String(profile.user_id || profile.id || config.instagramBusinessAccountId || "");
     if (!instagramId) {
       return NextResponse.json({ error: "Instagram 未回傳帳號 ID，請重新登入 Instagram。" }, { status: 400 });
@@ -144,10 +165,7 @@ export async function POST(_request: Request, { params }: Params) {
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Meta 目前仍未允許讀取帳號名稱。請確認已接受 Instagram 測試員邀請後再試一次。",
+        error: getProfileRefreshErrorMessage(error),
       },
       { status: 400 },
     );

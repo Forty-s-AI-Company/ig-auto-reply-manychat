@@ -7,8 +7,8 @@ import { InboxPilotAccountDropdown } from "@/components/InboxPilotAccountDropdow
 import { InboxPilotLogo } from "@/components/InboxPilotLogo";
 import { InboxPilotProfileMenu } from "@/components/InboxPilotProfileMenu";
 import { ALL_IG_ACCOUNTS, IG_ACCOUNT_SCOPE_COOKIE } from "@/lib/account-scope";
+import { buildAccountDropdownChannels } from "@/lib/account-channel-list";
 import { getCurrentUser } from "@/lib/auth";
-import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
 import { getCurrentReleaseChannel } from "@/lib/release-mode";
 import { getServerCache } from "@/lib/server-cache";
@@ -62,20 +62,7 @@ export async function AdminShell({
   const workspaces = user
     ? await getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
     : [workspace];
-  const accountChannels = instagramChannels
-    .map((channel) => {
-      const config = getMetaChannelConfig(channel.configJson);
-      const username = config.instagramUsername || "";
-      return {
-        id: channel.id,
-        name: channel.name,
-        displayName: config.instagramName || (username ? `@${username}` : channel.name.replace(/^Instagram\s*@?/i, "")),
-        username,
-        avatarUrl: config.instagramProfilePictureUrl || "",
-      };
-    })
-    .filter((channel) => Boolean(channel.username || channel.avatarUrl || channel.displayName.startsWith("Carry") || channel.name.startsWith("Instagram @")))
-    .sort((a, b) => Number(Boolean(b.username)) - Number(Boolean(a.username)) || a.displayName.localeCompare(b.displayName, "zh-TW"));
+  const accountChannels = buildAccountDropdownChannels(instagramChannels);
   const serializedWorkspaces = JSON.parse(JSON.stringify(workspaces));
   const serializedAccountChannels = JSON.parse(JSON.stringify(accountChannels));
   const selectedChannelCookie = cookieStore.get(IG_ACCOUNT_SCOPE_COOKIE)?.value;

@@ -567,3 +567,16 @@ Readiness implication:
 - Contacts is now closer to a usable private-beta CRM surface for daily operator workflows.
 - Public paid launch status does not change; Meta App Review and PayUNI production gates remain external/manual blockers.
 - Remaining Contacts UX improvements are lower-risk: clearer filtered empty states and optional segment preview counts.
+
+## 2026-06-27 - Instagram multi-account metadata fallback
+
+Status:
+
+- Production operators can keep using ID-only Instagram channels after the fix is deployed; the sidebar no longer hides them.
+- Partial metadata is shown honestly with a fallback name and reminder to retry profile refresh from Channels.
+- Automations now communicates that flows are workspace-wide, avoiding a false expectation that sidebar channel switching scopes automation flows.
+
+Readiness implication:
+
+- This reduces confusion for multi-account IG beta testing.
+- Public paid launch status does not change; Meta App Review and PayUNI production go-live remain manual external gates.
