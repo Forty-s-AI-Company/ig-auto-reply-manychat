@@ -1,5 +1,19 @@
 # InboxPilot Product Readiness Review
 
+## 2026-06-28 - Inbox media composer disabled UX pass
+
+Status: improved for beta operator trust; real media/voice sending remains a future product/API gate.
+
+- Inbox composer `圖片上傳` and `語音訊息` no longer behave like generic coming-soon fake buttons.
+- The controls now look intentionally unavailable, use accessible labels, and explain why media/voice sending is not enabled yet.
+- The user-facing message points operators back to text replies or internal notes instead of making the feature feel broken.
+- Authenticated Inbox Playwright smoke verifies the image and voice controls show clear guidance and no longer display `尚未開放`.
+
+Readiness implication:
+
+- Inbox has fewer misleading visible controls for beta usage.
+- Public paid launch still remains Hold until real media/voice delivery design, Channels/Automations/Analytics audits, Meta App Review, and PayUNI production gates are complete.
+
 ## 2026-06-28 - Inbox emoji composer product pass
 
 Status: improved for beta operator usability; advanced media composer work remains a later gate.

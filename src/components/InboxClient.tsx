@@ -298,6 +298,14 @@ export function InboxClient({
     showNotice("success", "已加入表情符號。");
   }
 
+  function explainUnavailableComposerFeature(feature: "圖片上傳" | "語音訊息") {
+    const detail =
+      feature === "圖片上傳"
+        ? "圖片回覆需要先完成媒體儲存、掃毒與 Instagram 附件送出流程。"
+        : "語音回覆需要先完成音訊上傳、格式轉換與 Instagram 附件送出流程。";
+    showNotice("info", `${feature} 目前已暫時停用，不是按鈕故障。${detail}請先使用文字回覆或內部備註處理。`);
+  }
+
   async function readError(response: Response, fallback: string) {
     const data = await response.json().catch(() => ({}));
     return typeof data.error === "string" && data.error.trim() ? data.error : fallback;
@@ -815,8 +823,18 @@ export function InboxClient({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 text-[#667085]">
                           <ComposerIconButton label="表情符號" onClick={appendEmoji} icon={<Smile className="h-5 w-5" />} />
-                          <ComposerIconButton label="圖片上傳" onClick={() => showComingSoon("圖片上傳")} icon={<ImageIcon className="h-5 w-5" />} />
-                          <ComposerIconButton label="語音訊息" onClick={() => showComingSoon("語音訊息")} icon={<Mic className="h-5 w-5" />} />
+                          <ComposerIconButton
+                            label="圖片上傳"
+                            onClick={() => explainUnavailableComposerFeature("圖片上傳")}
+                            icon={<ImageIcon className="h-5 w-5" />}
+                            unavailable
+                          />
+                          <ComposerIconButton
+                            label="語音訊息"
+                            onClick={() => explainUnavailableComposerFeature("語音訊息")}
+                            icon={<Mic className="h-5 w-5" />}
+                            unavailable
+                          />
                           <ComposerIconButton label="AI 回覆建議" onClick={applyReplySuggestion} icon={<Bot className="h-5 w-5" />} />
                         </div>
                         <button
@@ -921,9 +939,27 @@ function ToolbarButton({
   );
 }
 
-function ComposerIconButton({ label, icon, onClick }: { label: string; icon: ReactNode; onClick: () => void }) {
+function ComposerIconButton({
+  label,
+  icon,
+  onClick,
+  unavailable = false,
+}: {
+  label: string;
+  icon: ReactNode;
+  onClick: () => void;
+  unavailable?: boolean;
+}) {
   return (
-    <button type="button" onClick={onClick} className="rounded-md p-1 hover:bg-[#f2f4f7]" aria-label={label} title={label}>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-md p-1 hover:bg-[#f2f4f7] ${
+        unavailable ? "cursor-not-allowed border border-dashed border-[#d7dbe0] bg-[#f8fafc] text-[#98a2b3]" : ""
+      }`}
+      aria-label={unavailable ? `${label}，暫時停用` : label}
+      title={unavailable ? `${label} 暫時停用，點擊可查看原因` : label}
+    >
       {icon}
     </button>
   );

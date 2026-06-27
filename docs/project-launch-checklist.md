@@ -1,5 +1,12 @@
 # Project Launch Checklist
 
+## 2026-06-28 - Inbox media composer disabled UX pass
+
+- `[x]` Converted Inbox composer `圖片上傳` and `語音訊息` from generic coming-soon actions into explicit temporarily-disabled controls.
+- `[x]` Added in-page explanations for required media storage / scanning / attachment delivery and audio upload / conversion / delivery work.
+- `[x]` Added authenticated Inbox Playwright smoke coverage for both controls.
+- `[ ]` Real media and voice delivery remain future product/API gates before public paid launch.
+
 ## 2026-06-28 - Inbox functionality repair round 1
 
 - `[x]` Audited Inbox completed / half-built / fake-button / missing-test areas.
