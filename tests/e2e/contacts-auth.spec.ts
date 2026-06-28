@@ -18,13 +18,27 @@ test.describe("contacts authenticated smoke", () => {
 
   test.beforeEach(async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    const response = await page.request.post("/api/auth/login", {
-      data: { email: adminEmail, password: adminPassword },
-      headers: {
-        origin: "http://127.0.0.1:3041",
-        "x-forwarded-for": `contacts-e2e-${loginRunId}-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}`,
-      },
-    });
+    let response: Awaited<ReturnType<typeof page.request.post>> | undefined;
+    let loginError: unknown;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        response = await page.request.post("/api/auth/login", {
+          data: { email: adminEmail, password: adminPassword },
+          headers: {
+            origin: "http://127.0.0.1:3041",
+            "x-forwarded-for": `contacts-e2e-${loginRunId}-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}-${attempt}`,
+          },
+        });
+        if (response.ok()) break;
+      } catch (error) {
+        loginError = error;
+      }
+
+      await page.waitForTimeout(500 * attempt);
+    }
+
+    if (!response) throw loginError instanceof Error ? loginError : new Error("login request failed before receiving a response");
     expect(response.ok(), `login failed with ${response.status()}: ${await response.text()}`).toBeTruthy();
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/dashboard/);
