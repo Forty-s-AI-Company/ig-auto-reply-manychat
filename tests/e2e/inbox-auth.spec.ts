@@ -11,6 +11,7 @@ test.describe("inbox authenticated smoke", () => {
   test.setTimeout(60_000);
   const adminEmail = process.env.ADMIN_EMAIL?.trim();
   const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminName = process.env.ADMIN_NAME?.trim() || "Admin";
   const guard = getAuthenticatedRouteSmokeGuard();
 
   test.skip(!adminEmail || !adminPassword, "ADMIN_EMAIL and ADMIN_PASSWORD are required for authenticated smoke tests.");
@@ -74,7 +75,38 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.locator("body")).toContainText(/標記已讀 \d+/);
 
     await page.getByText("E2E Inbox 主要對話").click();
-    await expect(page.getByText("E2E 測試聯絡人 A").first()).toBeVisible();
+    if (isMobileProject) {
+      await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
+      await page.getByTestId("inbox-pane-contact").click();
+      await expect(page.locator('section:has-text("聯絡人標籤")')).toBeVisible();
+    } else {
+      await expect(page.getByText("E2E 測試聯絡人 A").first()).toBeVisible();
+    }
+    await page.locator('section:has-text("聯絡人標籤") select').selectOption({ label: "e2e-vip" });
+
+    if (isMobileProject) {
+      await page.getByTestId("inbox-mobile-filter-button").click();
+    } else {
+      await page.getByRole("button", { name: "篩選", exact: true }).click();
+    }
+    await page.getByTestId("inbox-filter-tag").selectOption({ label: "e2e-vip" });
+    await expect(page.locator("body")).not.toContainText("E2E Inbox 未讀篩選對話");
+    await page.getByTestId("inbox-filter-team").selectOption({ label: adminName });
+    await expect(page.getByTestId("inbox-filter-team")).toBeVisible();
+    await page.getByTestId("inbox-filter-tag").selectOption("all");
+    await page.getByTestId("inbox-filter-team").selectOption("all");
+    await page.getByTestId("inbox-close-filter-panel").click();
+
+    if (isMobileProject) {
+      await page.getByTestId("inbox-pane-contact").click();
+      await expect(page.getByRole("heading", { name: "自動化" })).toBeVisible();
+      await page.getByTestId("inbox-pane-detail").click();
+      await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
+      await page.getByTestId("inbox-back-to-list").click();
+      const mainConversationRow = page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E Inbox 主要對話" }).first();
+      await expect(mainConversationRow).toBeVisible();
+      await mainConversationRow.click();
+    }
 
     if (!isMobileProject) {
       await page.getByTestId("inbox-contact-actions-button").click();

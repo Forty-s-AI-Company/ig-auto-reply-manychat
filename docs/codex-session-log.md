@@ -1,5 +1,73 @@
 # Codex Session Log
 
+## 2026-06-28 - Inbox mobile scope and filter pass
+
+Task goal:
+
+- Continue the Inbox product completeness repair from a clean `origin/master` worktree.
+- Fix the remaining visible-but-confusing Inbox behavior around mobile usability, tag/team filtering, and gated sequence actions.
+- Keep the scope limited to Inbox UI, its conversation write routes, and authenticated smoke coverage.
+
+Files changed:
+
+- `src/app/inbox/page.tsx`
+- `src/components/InboxClient.tsx`
+- `src/app/api/conversations/[id]/route.ts`
+- `src/app/api/conversations/[id]/notes/route.ts`
+- `tests/conversation-routes.test.ts`
+- `tests/e2e/inbox-auth.spec.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/security-review.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+
+Implementation notes:
+
+- Added mobile Inbox pane switching so list, message detail, and contact panel are usable on small screens instead of forcing a desktop-like 3-column layout.
+- Restored real custom tag and team-member filtering in the Inbox sidebar and mobile chips.
+- Expanded the filter panel to include tag and assignee scope, and added a clearer empty-state reset action.
+- Replaced the fake `已訂閱 (取消訂閱)` summary copy with a real read-only consent status display.
+- In simple release, the Inbox sequence CTA now explains that Sequences belongs to the full release instead of quietly sending users into a gated route.
+- Added same-origin and rate-limit protection to conversation updates, and rate-limit protection to internal note writes.
+- Extended authenticated Inbox smoke to cover tag/team filters and mobile pane switching.
+
+Validation:
+
+```text
+npx eslint src/app/inbox/page.tsx src/components/InboxClient.tsx src/app/api/conversations/[id]/route.ts src/app/api/conversations/[id]/notes/route.ts tests/e2e/inbox-auth.spec.ts tests/conversation-routes.test.ts
+Result: passed.
+
+npx prisma generate
+Result: passed.
+
+npx vitest run tests/conversation-routes.test.ts
+Result: passed. 1 file, 3 tests.
+
+npm run build
+Result: passed.
+
+npx playwright test tests/e2e/inbox-auth.spec.ts --project=chromium
+Result: skipped because this clean worktree does not currently load ADMIN_EMAIL / ADMIN_PASSWORD / TEST_DATABASE_URL.
+```
+
+Launch impact:
+
+- Inbox is closer to a trustworthy operator surface for private beta and simple-release production.
+- No production deployment, production DB mutation, Prisma migration, Meta App Review action, or PayUNI production action was performed.
+
+New risks:
+
+- Low. The main remaining risk is missing authenticated local smoke inputs in this clean worktree, so the full DB-backed Inbox smoke still needs a non-production `TEST_DATABASE_URL` and admin credentials to run end to end.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot 專案，從 origin/master 開新的乾淨 worktree / branch，直接做 Channels / Social connect 的第二輪產品完整性修復：列出仍然看得到但不能用或容易誤導的控制項，先補成最小可用或清楚 disabled UX，補 focused tests 與 smoke，不碰 production DB、不部署 Production。
+```
+
 # 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
 
 Task goal:

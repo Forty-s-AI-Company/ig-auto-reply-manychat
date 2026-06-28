@@ -5,12 +5,14 @@ import { InboxClient } from "@/components/InboxClient";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { ensureInboxDefaultTags, getConversationList, getInboxReferenceData } from "@/lib/inbox-data";
+import { getCurrentReleaseChannel } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export default async function InboxPage() {
   const user = await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
+  const releaseChannel = await getCurrentReleaseChannel();
 
   await ensureInboxDefaultTags(workspaceId);
 
@@ -31,6 +33,7 @@ export default async function InboxPage() {
         teamMembers={JSON.parse(JSON.stringify(teamMembers.map((member) => member.user)))}
         contactFields={JSON.parse(JSON.stringify(contactFields))}
         currentUserId={user.id}
+        allowSequenceSubscription={releaseChannel === "full"}
       />
     </AdminShell>
   );

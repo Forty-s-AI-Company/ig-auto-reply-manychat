@@ -2,8 +2,8 @@
 
 ## Priority 1
 
-- Channels / IG metadata refresh 與多帳號顯示
-- Inbox 真實互動完整性 audit
+- Channels / Social connect visible-but-unusable controls 第二輪 audit
+- Inbox richer bulk actions / export governance / unsubscribe-block workflow design
 - Contacts bulk actions 與篩選體驗
 
 ## Priority 2

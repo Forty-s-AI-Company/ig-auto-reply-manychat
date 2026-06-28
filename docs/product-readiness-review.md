@@ -1,3 +1,19 @@
+# 2026-06-28 - Inbox mobile scope and filter pass
+
+Status: improved for beta operator usability; authenticated DB-backed smoke still needs local non-production test env in this clean worktree.
+
+- Inbox mobile now supports explicit pane switching between conversation list, message detail, and contact summary instead of forcing a desktop-style layout.
+- Inbox sidebar and mobile quick filters now support real custom tag and team-member scoping again.
+- Inbox filter panel now controls status, unread, sort, tag, and assignee scope from one place.
+- The contact summary no longer shows fake `取消訂閱` copy; it now displays the real read-only consent state.
+- In simple release, the sequence CTA now explains that Sequences belongs to the full release instead of silently sending operators into a gated route.
+- Conversation updates and internal note writes now have stronger request guards.
+
+Readiness implication:
+
+- Inbox is closer to a usable operator surface instead of a half-desktop, half-placeholder screen.
+- Public paid launch status remains Hold because Meta App Review, PayUNI production go-live, and broader Channels / Automations / Analytics completeness work are still outstanding.
+
 # 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
 
 Status: documentation re-org only; product readiness unchanged.

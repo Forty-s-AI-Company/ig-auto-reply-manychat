@@ -3,6 +3,7 @@ import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/acco
 import { requireApiUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
+import { assertRateLimit, assertSameOriginRequest } from "@/lib/security";
 import { conversationUpdateSchema } from "@/lib/validation";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -36,8 +37,17 @@ export async function GET(_request: Request, { params }: Params) {
 }
 
 export async function PATCH(request: Request, { params }: Params) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
+  const rateLimitFailure = await assertRateLimit({
+    key: `conversation-update:${auth.user.id}`,
+    limit: 180,
+    windowMs: 60 * 1000,
+  });
+  if (rateLimitFailure) return rateLimitFailure;
   const { id } = await params;
   const parsed = conversationUpdateSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
