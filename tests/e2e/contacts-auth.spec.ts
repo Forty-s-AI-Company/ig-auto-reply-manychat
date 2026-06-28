@@ -18,13 +18,27 @@ test.describe("contacts authenticated smoke", () => {
 
   test.beforeEach(async ({ page }, testInfo) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    const response = await page.request.post("/api/auth/login", {
-      data: { email: adminEmail, password: adminPassword },
-      headers: {
-        origin: "http://127.0.0.1:3041",
-        "x-forwarded-for": `contacts-e2e-${loginRunId}-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}`,
-      },
-    });
+    let response: Awaited<ReturnType<typeof page.request.post>> | undefined;
+    let loginError: unknown;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        response = await page.request.post("/api/auth/login", {
+          data: { email: adminEmail, password: adminPassword },
+          headers: {
+            origin: "http://127.0.0.1:3041",
+            "x-forwarded-for": `contacts-e2e-${loginRunId}-${testInfo.project.name}-${testInfo.workerIndex}-${testInfo.retry}-${testInfo.testId}-${attempt}`,
+          },
+        });
+        if (response.ok()) break;
+      } catch (error) {
+        loginError = error;
+      }
+
+      await page.waitForTimeout(500 * attempt);
+    }
+
+    if (!response) throw loginError instanceof Error ? loginError : new Error("login request failed before receiving a response");
     expect(response.ok(), `login failed with ${response.status()}: ${await response.text()}`).toBeTruthy();
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/dashboard/);
@@ -77,12 +91,27 @@ test.describe("contacts authenticated smoke", () => {
     await expect(page.locator("body")).toContainText(/已從 \d+ 位聯絡人移除標籤/);
   });
 
-  test("creates a segment from the current contacts filter", async ({ page }) => {
+  test("creates a segment from the current contacts filter", async ({ page }, testInfo) => {
     await page.goto("/contacts?status=opted_in", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
 
-    await page.getByTestId("contacts-create-segment-button").click();
-    await page.getByTestId("contacts-segment-name").fill(`E2E 篩選分眾 ${Date.now()}`);
+    const createSegmentButton = page.getByTestId("contacts-create-segment-button");
+    await createSegmentButton.scrollIntoViewIfNeeded();
+    await expect(createSegmentButton).toBeVisible();
+    await createSegmentButton.click();
+
+    const segmentNameInput = page.getByTestId("contacts-segment-name");
+    await expect(segmentNameInput).toBeVisible();
+    const segmentName = [
+      "E2E 篩選分眾",
+      testInfo.project.name,
+      testInfo.workerIndex,
+      testInfo.retry,
+      Date.now(),
+      Math.random().toString(36).slice(2, 8),
+    ].join(" ");
+    await segmentNameInput.fill(segmentName);
     await page.getByTestId("contacts-segment-description").fill("Playwright 從 Contacts 篩選建立");
     await page.getByTestId("contacts-confirm-create-segment").click();
     await expect(page.locator("body")).toContainText("已建立分眾");
