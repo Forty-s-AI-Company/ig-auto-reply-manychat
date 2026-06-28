@@ -124,6 +124,7 @@ function sanitizeConfig(configJson: unknown) {
   const config = getMetaChannelConfig(configJson);
   const hasStoredToken = Boolean(config.pageAccessToken || config.userAccessToken);
   return {
+    hasStoredToken,
     loginProvider: config.loginProvider || "facebook",
     pageId: config.pageId,
     pageName: config.pageName,
@@ -227,7 +228,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
               目前共有 {teamCount} 位成員。Inbox 已支援將對話指派給團隊成員。
             </SettingPanel>
-            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="設定入口">
+            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
               設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
@@ -252,7 +253,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       登入並連線
                     </Link>
                   ) : (
-                    <StatusBadge>未啟用</StatusBadge>
+                    <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
                   )}
                 </div>
               ))}
@@ -280,7 +281,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={channel.enabled ? "text-sm text-green-700" : "text-sm text-[#667085]"}>{statusLabel(channel.enabled)}</span>
-                        <RefreshInstagramProfileButton channelId={channel.id} />
+                        <RefreshInstagramProfileButton channelId={channel.id} hasStoredToken={config.hasStoredToken} />
                         <DisconnectChannelButton channelId={channel.id} channelName={channel.name} />
                       </div>
                     </div>
@@ -295,7 +296,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
                         {config.profileReadWarning}
                       </Notice>
                     ) : null}
-                    <InstagramChannelActions channelId={channel.id} />
+                    <InstagramChannelActions
+                      channelId={channel.id}
+                      hasStoredToken={config.hasStoredToken}
+                      loginProvider={config.loginProvider}
+                    />
                   </article>
                 );
               })}
@@ -321,7 +326,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
               <SettingPanel icon={<Bot className="h-5 w-5" />} title="基礎規則">
                 預設回覆、關鍵字、留言觸發、延遲、公開回覆與按讚設定已接在自動化流程中。
               </SettingPanel>
-              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="設定入口">
+              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
                 序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
               </SettingPanel>
             </div>
@@ -334,7 +339,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<Tags className="h-5 w-5" />} title="標籤">
               目前有 {tagCount} 個標籤，可用於分眾、條件判斷與 Inbox 快速分類。
             </SettingPanel>
-            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="設定入口">
+            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
               Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
             </SettingPanel>
           </section>
@@ -348,19 +353,23 @@ export default async function ChannelsPage({ searchParams }: Props) {
                 </Link>
               </div>
             </SettingPanel>
-            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="設定入口">
-              API、應用程式、第三方整合、付款整合、已安裝模板、追蹤像素先集中保留入口。
+            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="規劃中">
+              API、應用程式、第三方整合、付款整合、已安裝模板、追蹤像素先集中整理需求，正式開放前不提供可點擊入口。
+              <div className="mt-3">
+                <DisabledFeatureButton>此區功能整理中</DisabledFeatureButton>
+              </div>
             </SettingPanel>
           </section>
 
           <section id="extensions" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold text-[#111827]">擴充整合</h2>
-              <StatusBadge>設定入口</StatusBadge>
+              <StatusBadge>規劃中</StatusBadge>
             </div>
             <p className="mt-1 text-sm leading-6 text-[#667085]">
               API、應用程式、第三方整合、付款整合、模板與追蹤像素統一放在同一組，避免低頻工具擠在左側主選單。
             </p>
+            <DisabledFeatureButton>此區功能整理中</DisabledFeatureButton>
           </section>
         </div>
       </div>
@@ -448,4 +457,17 @@ function Notice({
 
 function EmptyState({ children }: { children: ReactNode }) {
   return <div className="rounded-lg border border-dashed border-[#d7dbe0] bg-white p-6 text-sm text-[#667085]">{children}</div>;
+}
+
+function DisabledFeatureButton({ children }: { children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      disabled
+      aria-disabled="true"
+      className="mt-4 inline-flex cursor-not-allowed items-center rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+    >
+      {children}
+    </button>
+  );
 }

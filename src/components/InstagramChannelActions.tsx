@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { getChannelActionDisabledReason, getSafeChannelActionMessage } from "@/lib/channels/channel-action-feedback";
 
 type ActionState = {
   loading: boolean;
@@ -12,6 +13,8 @@ type ActionState = {
 
 type InstagramChannelActionsProps = {
   channelId: string;
+  hasStoredToken?: boolean;
+  loginProvider?: "instagram" | "facebook";
 };
 
 const idleState: ActionState = {
@@ -20,10 +23,25 @@ const idleState: ActionState = {
   tone: "neutral",
 };
 
-export function InstagramChannelActions({ channelId }: InstagramChannelActionsProps) {
+export function InstagramChannelActions({
+  channelId,
+  hasStoredToken = true,
+  loginProvider = "instagram",
+}: InstagramChannelActionsProps) {
   const [state, setState] = useState<ActionState>(idleState);
+  const disabledReasons = {
+    media: getChannelActionDisabledReason("media", { hasStoredToken, loginProvider }),
+    comments: getChannelActionDisabledReason("comments", { hasStoredToken, loginProvider }),
+    token: getChannelActionDisabledReason("token", { hasStoredToken, loginProvider }),
+  };
 
   async function runAction(action: "media" | "token" | "comments") {
+    const disabledReason = disabledReasons[action];
+    if (disabledReason) {
+      setState({ loading: false, message: disabledReason, tone: "neutral" });
+      return;
+    }
+
     setState({ loading: true, message: "處理中，請稍候...", tone: "neutral" });
     try {
       const response =
@@ -61,7 +79,7 @@ export function InstagramChannelActions({ channelId }: InstagramChannelActionsPr
     } catch (error) {
       setState({
         loading: false,
-        message: error instanceof Error ? error.message : "Instagram 操作失敗。",
+        message: getSafeChannelActionMessage(action, error),
         tone: "error",
       });
     }
@@ -96,7 +114,8 @@ export function InstagramChannelActions({ channelId }: InstagramChannelActionsPr
         <button
           type="button"
           onClick={() => runAction("media")}
-          disabled={state.loading}
+          disabled={state.loading || Boolean(disabledReasons.media)}
+          title={disabledReasons.media || "抓取貼文"}
           className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           抓取貼文
@@ -104,7 +123,8 @@ export function InstagramChannelActions({ channelId }: InstagramChannelActionsPr
         <button
           type="button"
           onClick={() => runAction("comments")}
-          disabled={state.loading}
+          disabled={state.loading || Boolean(disabledReasons.comments)}
+          title={disabledReasons.comments || "同步留言觸發"}
           className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           同步留言觸發
@@ -112,7 +132,8 @@ export function InstagramChannelActions({ channelId }: InstagramChannelActionsPr
         <button
           type="button"
           onClick={() => runAction("token")}
-          disabled={state.loading}
+          disabled={state.loading || Boolean(disabledReasons.token)}
+          title={disabledReasons.token || "更新長效權杖"}
           className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           更新長效權杖
