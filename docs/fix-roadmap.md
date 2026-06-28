@@ -1,5 +1,19 @@
 # InboxPilot Fix Roadmap
 
+# Latest - 2026-06-28 AI_TEAM docs baseline and autopilot retirement
+
+Current status:
+
+- `[x]` Created the new `AI_TEAM/` document skeleton from the attached control document.
+- `[x]` Removed the root `npm run autopilot` entry and the old runner entrypoints.
+- `[x]` Updated `README.md` to point to `AI_TEAM/README.md`.
+- `[x]` Kept product AI bridge code untouched.
+
+Remaining:
+
+- `[ ]` Start the first product audit using the new AI_TEAM workflow.
+- `[ ]` Continue the next product completeness audit after bootstrap.
+
 ## Latest - 2026-06-28 Inbox contact panel actions UX pass
 
 Current status:

@@ -1,5 +1,57 @@
 # Codex Session Log
 
+# 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
+
+Task goal:
+
+- Replace the old root autopilot entrypoints with the new `AI_TEAM/` document system.
+- Keep product code untouched.
+- Make `README.md` point to `AI_TEAM/README.md` instead of the retired runner files.
+
+Files changed:
+
+- `AI_TEAM/README.md`
+- `AI_TEAM/PROJECT_STATE.md`
+- `AI_TEAM/LAUNCH_CRITERIA.md`
+- `AI_TEAM/MODEL_ASSIGNMENT.md`
+- `AI_TEAM/roles/*`
+- `AI_TEAM/skills/*`
+- `AI_TEAM/tasks/*`
+- `AI_TEAM/reports/*`
+- `AI_TEAM/scripts/*`
+- `README.md`
+- `package.json`
+- Removed old root autopilot entrypoints and policy docs
+
+Implementation notes:
+
+- Built a docs-first AI_TEAM skeleton from the attached control document.
+- Removed the root `npm run autopilot` script so the old unattended runner is no longer the default entrypoint.
+- Deleted the old root autopilot launcher files and policy docs.
+- Kept product AI bridge code such as `src/lib/ai/gemini-cli.ts` untouched.
+
+Validation:
+
+- `npm ci`: passed in the clean worktree.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: blocked because the clean worktree does not currently have `DATABASE_URL` or `TEST_DATABASE_URL` loaded.
+
+Launch impact:
+
+- No product behavior changed.
+- The repository now has a clearer AI_TEAM handoff path instead of the old autopilot runner flow.
+
+New risks:
+
+- Low. The main risk is only that any existing notes still pointing at the retired runner need to be updated to AI_TEAM over time.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 AI_TEAM 流程，先讀 AI_TEAM/PROJECT_STATE.md、AI_TEAM/LAUNCH_CRITERIA.md、AI_TEAM/tasks/current-task.md 與 AI_TEAM/tasks/backlog.md，然後開始第一個產品 audit 任務；不要碰 production DB、不要部署 Production。
+```
+
 ## 2026-06-28 - Mobile admin menu smoke scope fix
 
 Task goal:

@@ -1,3 +1,11 @@
+# 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
+
+Status: documentation re-org only; product readiness unchanged.
+
+- The old root autopilot entrypoints are retired.
+- `AI_TEAM/` is now the source of truth for unattended workflows.
+- No product code, production DB, Meta submission, or PayUNI production action was changed.
+
 # InboxPilot Product Readiness Review
 
 ## 2026-06-28 - Inbox contact panel actions UX pass

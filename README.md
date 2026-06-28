@@ -66,30 +66,23 @@ npm run test:unit
 npm run test:e2e
 ```
 
-## Autopilot
+## AI_TEAM
 
-本專案提供無人值守自動化入口，用來在睡覺或離開電腦時自動推進 preview / staging readiness：
+舊的 root autopilot 入口已退場。現在請以 [AI_TEAM/README.md](./AI_TEAM/README.md) 作為無人值守開發與 QA 的總控文件。
 
-```bash
-npm run autopilot
-```
+AI_TEAM 的重點是：
 
-Windows 也可以直接執行：
+- 文件先行，不把流程藏在單一 runner 裡
+- 角色分工清楚
+- 每輪都會留下報告與下一輪 prompt
+- 高風險動作先停下來做人工作業確認
 
-```powershell
-.\run-autopilot.ps1
-```
+如果你只是想開始下一輪工作，先讀：
 
-Autopilot 會跑 Codex 修復迴圈、lint / test / build、PayUNI sandbox smoke、Vercel Preview readiness、Supabase readiness、route smoke、QA / safety report。缺少登入、secret、OTP、外部 dashboard 權限時會寫到 `reports/human-required.md`，不會把 secret 輸出到報告。
-
-安全邊界：
-
-- PayUNI 維持 sandbox，不會切 production。
-- 不登入 Meta、不送 App Review。
-- 不碰 production DB/schema。
-- Production deploy 預設禁用。
-
-詳細規則見 [AUTOPILOT.md](./AUTOPILOT.md) 與 [docs/autopilot-code-review.md](./docs/autopilot-code-review.md)。
+- [AI_TEAM/PROJECT_STATE.md](./AI_TEAM/PROJECT_STATE.md)
+- [AI_TEAM/LAUNCH_CRITERIA.md](./AI_TEAM/LAUNCH_CRITERIA.md)
+- [AI_TEAM/tasks/current-task.md](./AI_TEAM/tasks/current-task.md)
+- [AI_TEAM/tasks/backlog.md](./AI_TEAM/tasks/backlog.md)
 
 ## 環境變數
 
