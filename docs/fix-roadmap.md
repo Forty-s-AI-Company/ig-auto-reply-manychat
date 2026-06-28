@@ -1,5 +1,23 @@
 # InboxPilot Fix Roadmap
 
+# Latest - 2026-06-28 Inbox mobile scope and filter pass
+
+Current status:
+
+- `[x]` Added real mobile Inbox pane switching for conversation list, message detail, and contact panel.
+- `[x]` Restored real custom-tag and team-member filtering in Inbox instead of partial sidebar stubs.
+- `[x]` Expanded the Inbox filter panel to control tag and assignee scope.
+- `[x]` Replaced the fake `已訂閱 (取消訂閱)` contact summary copy with an honest read-only consent status summary.
+- `[x]` In simple release, Inbox sequence subscription now explains that sequences are full-release-only instead of silently linking users into a gated route.
+- `[x]` Added same-origin + rate-limit guards for conversation updates and internal note writes.
+- `[x]` Added focused route regression coverage and extended authenticated Inbox smoke.
+
+Remaining:
+
+- `[ ]` Authenticated Inbox Playwright smoke still needs a non-production `TEST_DATABASE_URL` plus admin credentials in this clean worktree to run fully instead of skipping.
+- `[ ]` Continue the Inbox audit for richer bulk actions, export governance, and unsubscribe/block workflow design.
+- `[ ]` Continue product completeness audits for Channels, Automations, and Analytics.
+
 # Latest - 2026-06-28 AI_TEAM docs baseline and autopilot retirement
 
 Current status:

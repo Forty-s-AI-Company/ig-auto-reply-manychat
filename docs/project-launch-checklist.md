@@ -7,6 +7,18 @@
 
 # Project Launch Checklist
 
+## 2026-06-28 - Inbox mobile scope and filter pass
+
+- `[x]` Inbox mobile supports explicit pane switching for list / detail / contact.
+- `[x]` Inbox custom tag and team-member filters work again in the sidebar, mobile chips, and filter panel.
+- `[x]` Inbox filter panel now controls status, unread, sort, tag, and assignee scope.
+- `[x]` Inbox contact summary no longer shows fake `取消訂閱` copy.
+- `[x]` Simple-release Inbox sequence CTA now explains that Sequences is a full-release-only surface.
+- `[x]` `PATCH /api/conversations/[id]` now has same-origin and rate-limit protection.
+- `[x]` `POST /api/conversations/[id]/notes` now has rate-limit protection.
+- `[x]` Focused lint, focused Vitest, and `npm run build` passed in the clean worktree.
+- `[ ]` Authenticated Inbox Playwright smoke still needs local `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `TEST_DATABASE_URL` in this clean worktree to run fully instead of skipping.
+
 ## 2026-06-28 - Inbox contact panel actions UX pass
 
 - `[x]` Replaced Inbox contact panel `更多聯絡人操作` fake notice with a small action menu.

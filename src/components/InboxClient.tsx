@@ -63,6 +63,7 @@ type Conversation = {
 type InboxCategory = "all" | "unassigned" | "assigned" | "reminders" | "favorites" | "hot" | "partners";
 type StatusFilter = "open" | "all";
 type InboxNotice = { tone: "success" | "danger" | "info"; message: string };
+type MobilePane = "list" | "detail" | "contact";
 
 const NOT_SET = "未設定";
 const HOT_TAG = "熱門名單";
@@ -153,12 +154,14 @@ export function InboxClient({
   teamMembers,
   contactFields,
   currentUserId,
+  allowSequenceSubscription,
 }: {
   initialConversations: Conversation[];
   tags: Tag[];
   teamMembers: TeamMember[];
   contactFields: ContactFieldDefinition[];
   currentUserId: string;
+  allowSequenceSubscription: boolean;
 }) {
   const [conversations, setConversations] = useState(initialConversations);
   const [fieldDefinitions, setFieldDefinitions] = useState(contactFields);
@@ -172,12 +175,33 @@ export function InboxClient({
   const [unreadOnly, setUnreadOnly] = useState(false);
   const [sortNewest, setSortNewest] = useState(true);
   const [channelFilter, setChannelFilter] = useState<"all" | "instagram">("all");
+  const [selectedTagId, setSelectedTagId] = useState<string>("all");
+  const [selectedTeamMemberId, setSelectedTeamMemberId] = useState<string>("all");
   const [showFilterHint, setShowFilterHint] = useState(false);
   const [selectedConversationIds, setSelectedConversationIds] = useState<Set<string>>(() => new Set());
   const [notice, setNotice] = useState<InboxNotice | null>(null);
+  const [mobilePane, setMobilePane] = useState<MobilePane>("list");
 
   const hotTag = tags.find((tag) => tag.name === HOT_TAG);
   const partnerTag = tags.find((tag) => tag.name === PARTNER_TAG);
+
+  function selectCategory(nextCategory: InboxCategory) {
+    setCategory(nextCategory);
+    setSelectedTagId("all");
+    setSelectedTeamMemberId("all");
+  }
+
+  function selectTag(tagId: string) {
+    setCategory("all");
+    setSelectedTagId(tagId);
+    setSelectedTeamMemberId("all");
+  }
+
+  function selectTeamMember(memberId: string) {
+    setSelectedTagId("all");
+    setSelectedTeamMemberId(memberId);
+    setCategory(memberId === currentUserId ? "assigned" : "all");
+  }
 
   useEffect(() => {
     function handleSearch(event: Event) {
@@ -207,6 +231,9 @@ export function InboxClient({
       setSelectedConversationIds(new Set());
       setQuery("");
       setCategory("all");
+      setSelectedTagId("all");
+      setSelectedTeamMemberId("all");
+      setMobilePane("list");
       showNotice("info", "已切換 Instagram 帳號範圍。");
     }
 
@@ -223,9 +250,15 @@ export function InboxClient({
       favorites: conversations.filter((conversation) => conversation.isFavorite).length,
       hot: conversations.filter((conversation) => hasTag(conversation, HOT_TAG)).length,
       partners: conversations.filter((conversation) => hasTag(conversation, PARTNER_TAG)).length,
+      tags: tags.reduce((accumulator, tag) => {
+        accumulator[tag.id] = conversations.filter((conversation) =>
+          conversation.contact.tags.some((item) => item.tag.id === tag.id),
+        ).length;
+        return accumulator;
+      }, {} as Record<string, number>),
       unread: conversations.filter(hasInboundUnread).length,
     };
-  }, [conversations, currentUserId]);
+  }, [conversations, currentUserId, tags]);
 
   const filteredConversations = useMemo(() => {
     const keyword = query.trim().toLowerCase();
@@ -240,9 +273,12 @@ export function InboxClient({
         if (statusFilter === "open" && conversation.status !== "open") return false;
         if (unreadOnly && !hasInboundUnread(conversation)) return false;
         if (channelFilter === "instagram" && conversation.channel.type.toLowerCase() !== "instagram") return false;
+        if (selectedTagId !== "all" && !conversation.contact.tags.some((item) => item.tag.id === selectedTagId)) return false;
+        if (selectedTeamMemberId !== "all" && conversation.assignedToId !== selectedTeamMemberId) return false;
         if (!keyword) return true;
         return (
           conversation.contact.displayName.toLowerCase().includes(keyword) ||
+          (conversation.contact.username || "").toLowerCase().includes(keyword) ||
           conversation.contact.externalId.toLowerCase().includes(keyword) ||
           latestMessage(conversation).toLowerCase().includes(keyword)
         );
@@ -252,7 +288,7 @@ export function InboxClient({
         const bTime = new Date(b.messages.at(-1)?.createdAt || 0).getTime();
         return sortNewest ? bTime - aTime : aTime - bTime;
       });
-  }, [category, channelFilter, conversations, currentUserId, query, sortNewest, statusFilter, unreadOnly]);
+  }, [category, channelFilter, conversations, currentUserId, query, selectedTagId, selectedTeamMemberId, sortNewest, statusFilter, unreadOnly]);
 
   const selected = useMemo(
     () =>
@@ -486,13 +522,77 @@ export function InboxClient({
           篩選
         </button>
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-[224px_minmax(0,1fr)]">
-        <aside className="border-r border-[#d7dbe0] bg-[#f7f7f7]">
+      <div className="border-b border-[#d7dbe0] bg-[#f8fafc] px-3 py-3 lg:hidden">
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <MobileChip active={category === "all" && selectedTagId === "all" && selectedTeamMemberId === "all"} onClick={() => selectCategory("all")}>
+            全部
+          </MobileChip>
+          <MobileChip active={category === "unassigned"} onClick={() => selectCategory("unassigned")}>
+            未指派
+          </MobileChip>
+          <MobileChip active={category === "assigned"} onClick={() => selectCategory("assigned")}>
+            指派給我
+          </MobileChip>
+          <MobileChip active={category === "reminders"} onClick={() => selectCategory("reminders")}>
+            提醒
+          </MobileChip>
+          <MobileChip active={category === "favorites"} onClick={() => selectCategory("favorites")}>
+            收藏
+          </MobileChip>
+          <MobileChip active={category === "hot"} onClick={() => selectCategory("hot")}>
+            熱門
+          </MobileChip>
+          <MobileChip active={category === "partners"} onClick={() => selectCategory("partners")}>
+            夥伴
+          </MobileChip>
+        </div>
+        {tags.length > 0 ? (
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+            <MobileChip active={selectedTagId === "all"} onClick={() => selectTag("all")}>
+              全部標籤
+            </MobileChip>
+            {tags.map((tag) => (
+              <MobileChip key={tag.id} active={selectedTagId === tag.id} onClick={() => selectTag(tag.id)}>
+                {tag.name}
+              </MobileChip>
+            ))}
+          </div>
+        ) : null}
+        {teamMembers.length > 0 ? (
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+            <MobileChip active={selectedTeamMemberId === "all"} onClick={() => selectTeamMember("all")}>
+              所有人
+            </MobileChip>
+            {teamMembers.map((member) => (
+              <MobileChip key={member.id} active={selectedTeamMemberId === member.id} onClick={() => selectTeamMember(member.id)}>
+                {member.name || member.email}
+              </MobileChip>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="border-b border-[#d7dbe0] bg-white px-3 py-2 lg:hidden">
+        <div className="grid grid-cols-3 gap-2">
+          <MobilePaneButton active={mobilePane === "list"} onClick={() => setMobilePane("list")} testId="inbox-pane-list">
+            對話清單
+          </MobilePaneButton>
+          <MobilePaneButton active={mobilePane === "detail"} onClick={() => setMobilePane("detail")} disabled={!selected} testId="inbox-pane-detail">
+            訊息內容
+          </MobilePaneButton>
+          <MobilePaneButton active={mobilePane === "contact"} onClick={() => setMobilePane("contact")} disabled={!selected} testId="inbox-pane-contact">
+            聯絡人
+          </MobilePaneButton>
+        </div>
+      </div>
+
+      <div className="grid min-h-0 flex-1 lg:grid-cols-[224px_minmax(0,1fr)]">
+        <aside className="hidden border-r border-[#d7dbe0] bg-[#f7f7f7] lg:block">
           <div className="space-y-1 p-3 text-sm">
-            <InboxNavItem active={category === "all"} icon={<Inbox className="h-4 w-4" />} label="全部對話" count={counts.all} onClick={() => setCategory("all")} />
-            <InboxNavItem active={category === "unassigned"} icon={<Bell className="h-4 w-4" />} label="未指派" count={counts.unassigned} dot onClick={() => setCategory("unassigned")} />
-            <InboxNavItem active={category === "assigned"} icon={<User className="h-4 w-4" />} label="指派給我" count={counts.assigned} onClick={() => setCategory("assigned")} />
-            <InboxNavItem active={category === "reminders"} icon={<Clock className="h-4 w-4" />} label="提醒" count={counts.reminders} onClick={() => setCategory("reminders")} />
+            <InboxNavItem active={category === "all"} icon={<Inbox className="h-4 w-4" />} label="全部對話" count={counts.all} onClick={() => selectCategory("all")} />
+            <InboxNavItem active={category === "unassigned"} icon={<Bell className="h-4 w-4" />} label="未指派" count={counts.unassigned} dot onClick={() => selectCategory("unassigned")} />
+            <InboxNavItem active={category === "assigned"} icon={<User className="h-4 w-4" />} label="指派給我" count={counts.assigned} onClick={() => selectCategory("assigned")} />
+            <InboxNavItem active={category === "reminders"} icon={<Clock className="h-4 w-4" />} label="提醒" count={counts.reminders} onClick={() => selectCategory("reminders")} />
           </div>
 
           <div className="border-t border-[#e4e7ec] px-3 py-4">
@@ -508,25 +608,52 @@ export function InboxClient({
               </Link>
             </div>
             <div className="space-y-1 text-sm">
-              <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => setCategory("favorites")} />
-              <InboxNavItem active={category === "hot"} icon={<span className="text-base">🔥</span>} label="熱門名單" count={counts.hot} onClick={() => setCategory("hot")} />
-              <InboxNavItem active={category === "partners"} icon={<span className="text-base">🤝</span>} label="合作夥伴" count={counts.partners} onClick={() => setCategory("partners")} />
+              <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => selectCategory("favorites")} />
+              <InboxNavItem active={category === "hot"} icon={<span className="text-base">🔥</span>} label="熱門名單" count={counts.hot} onClick={() => selectCategory("hot")} />
+              <InboxNavItem active={category === "partners"} icon={<span className="text-base">🤝</span>} label="合作夥伴" count={counts.partners} onClick={() => selectCategory("partners")} />
+              {tags.length > 0 ? (
+                <>
+                  <div className="my-2 border-t border-[#dfe3e8]" />
+                  <InboxNavItem
+                    active={selectedTagId === "all"}
+                    icon={<Filter className="h-4 w-4" />}
+                    label="全部標籤"
+                    count={tags.length}
+                    onClick={() => selectTag("all")}
+                  />
+                  {tags.map((tag) => (
+                    <InboxNavItem
+                      key={tag.id}
+                      active={selectedTagId === tag.id}
+                      icon={<span className="inline-block h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: tag.color }} />}
+                      label={tag.name}
+                      count={counts.tags[tag.id] || 0}
+                      onClick={() => selectTag(tag.id)}
+                    />
+                  ))}
+                </>
+              ) : null}
             </div>
           </div>
 
           <div className="border-t border-[#e4e7ec] px-3 py-4">
             <p className="mb-2 text-xs font-medium text-[#667085]">團隊</p>
             <div className="space-y-1 text-sm">
-              <InboxNavItem icon={<Users className="h-4 w-4" />} label="所有人" count={teamMembers.length} onClick={() => setCategory("all")} />
+              <InboxNavItem
+                active={selectedTeamMemberId === "all"}
+                icon={<Users className="h-4 w-4" />}
+                label="所有人"
+                count={teamMembers.length}
+                onClick={() => selectTeamMember("all")}
+              />
               {teamMembers.map((member) => (
                 <InboxNavItem
                   key={member.id}
+                  active={selectedTeamMemberId === member.id || (category === "assigned" && member.id === currentUserId)}
                   icon={<User className="h-4 w-4" />}
                   label={member.name || member.email}
                   count={conversations.filter((conversation) => conversation.assignedToId === member.id).length}
-                  onClick={() => {
-                    if (member.id === currentUserId) setCategory("assigned");
-                  }}
+                  onClick={() => selectTeamMember(member.id)}
                 />
               ))}
             </div>
@@ -534,7 +661,7 @@ export function InboxClient({
         </aside>
 
         <div className="flex min-h-0 min-w-0 flex-col">
-          <header className="relative flex h-14 shrink-0 items-center gap-2 border-b border-[#d7dbe0] bg-white px-5">
+          <header className="relative flex shrink-0 flex-wrap items-center gap-2 border-b border-[#d7dbe0] bg-white px-3 py-3 lg:h-14 lg:flex-nowrap lg:px-5 lg:py-0">
             <input
               type="checkbox"
               className="mr-1 h-4 w-4 rounded border-[#d7dbe0]"
@@ -589,7 +716,7 @@ export function InboxClient({
                   />
                   只看未讀
                 </label>
-                <label className="mb-3 block">
+                <label className="mb-2 block">
                   <span className="mb-1 block">排序</span>
                   <select
                     value={sortNewest ? "newest" : "oldest"}
@@ -601,14 +728,48 @@ export function InboxClient({
                     <option value="oldest">最舊優先</option>
                   </select>
                 </label>
+                <label className="mb-2 block">
+                  <span className="mb-1 block">標籤</span>
+                  <select
+                    value={selectedTagId}
+                    onChange={(event) => selectTag(event.target.value)}
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    data-testid="inbox-filter-tag"
+                  >
+                    <option value="all">全部標籤</option>
+                    {tags.map((tag) => (
+                      <option key={tag.id} value={tag.id}>
+                        {tag.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="mb-3 block">
+                  <span className="mb-1 block">指派對象</span>
+                  <select
+                    value={selectedTeamMemberId}
+                    onChange={(event) => selectTeamMember(event.target.value)}
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    data-testid="inbox-filter-team"
+                  >
+                    <option value="all">所有人</option>
+                    {teamMembers.map((member) => (
+                      <option key={member.id} value={member.id}>
+                        {member.name || member.email}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <button
                   type="button"
                   onClick={() => {
-                    setCategory("all");
+                    selectCategory("all");
                     setStatusFilter("open");
                     setUnreadOnly(false);
                     setSortNewest(true);
                     setChannelFilter("all");
+                    setSelectedTagId("all");
+                    setSelectedTeamMemberId("all");
                     showNotice("info", "已重設 Inbox 篩選條件。");
                   }}
                   className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc]"
@@ -636,19 +797,27 @@ export function InboxClient({
             </div>
           ) : null}
 
-          <div className="grid min-h-0 flex-1 grid-cols-[320px_minmax(420px,1fr)_300px]">
-            <aside className="min-h-0 overflow-auto border-r border-[#d7dbe0] bg-white">
+          <div className="grid min-h-0 flex-1 lg:grid-cols-[320px_minmax(420px,1fr)_300px]">
+            <aside
+              className={`min-h-0 overflow-auto border-r border-[#d7dbe0] bg-white ${
+                mobilePane === "list" ? "block" : "hidden lg:block"
+              }`}
+            >
               <div className="divide-y divide-[#eef0f2]">
                 {filteredConversations.map((conversation) => (
                   <div
                     key={conversation.id}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setSelectedId(conversation.id)}
+                    onClick={() => {
+                      setSelectedId(conversation.id);
+                      setMobilePane("detail");
+                    }}
                     onKeyDown={(event) => {
                       if (event.key !== "Enter" && event.key !== " ") return;
                       event.preventDefault();
                       setSelectedId(conversation.id);
+                      setMobilePane("detail");
                     }}
                     data-testid="inbox-conversation-row"
                     data-conversation-id={conversation.id}
@@ -682,16 +851,45 @@ export function InboxClient({
                   </div>
                 ))}
                 {filteredConversations.length === 0 ? (
-                  <p className="px-4 py-8 text-sm text-[#667085]">目前沒有符合條件的對話。</p>
+                  <div className="px-4 py-8 text-sm text-[#667085]">
+                    <p>目前沒有符合條件的對話。</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        selectCategory("all");
+                        setStatusFilter("open");
+                        setUnreadOnly(false);
+                        setSortNewest(true);
+                        setChannelFilter("all");
+                        setQuery("");
+                        showNotice("info", "已清除 Inbox 篩選條件。");
+                      }}
+                      className="mt-3 rounded-md border border-[#d7dbe0] px-3 py-1.5 text-xs text-[#344054] hover:bg-[#f8fafc]"
+                    >
+                      清除篩選並重新查看
+                    </button>
+                  </div>
                 ) : null}
               </div>
             </aside>
 
-            <section className="flex min-h-0 min-w-0 flex-col bg-white">
+            <section
+              className={`min-h-0 min-w-0 flex-col bg-white ${
+                mobilePane === "detail" ? "flex" : "hidden lg:flex"
+              }`}
+            >
               {selected ? (
                 <>
                   <div className="flex h-[58px] items-center justify-between border-b border-[#d7dbe0] px-4">
                     <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setMobilePane("list")}
+                        className="rounded-md border border-[#d7dbe0] px-2 py-1 text-xs text-[#344054] lg:hidden"
+                        data-testid="inbox-back-to-list"
+                      >
+                        返回清單
+                      </button>
                       <Avatar name={selected.contact.displayName} small />
                       <select
                         value={selected.assignedToId || ""}
@@ -878,7 +1076,11 @@ export function InboxClient({
               )}
             </section>
 
-            <aside className="min-h-0 overflow-auto border-l border-[#d7dbe0] bg-white">
+            <aside
+              className={`min-h-0 overflow-auto border-l border-[#d7dbe0] bg-white ${
+                mobilePane === "contact" ? "block" : "hidden lg:block"
+              }`}
+            >
               {selected ? (
                 <ContactPanel
                   key={`${selected.id}:${(selected.contact.fieldValues || []).map((item) => `${item.definition.id}:${item.value}`).join("|")}`}
@@ -893,6 +1095,7 @@ export function InboxClient({
                   onFieldDefinitionsChange={setFieldDefinitions}
                   onRefresh={() => refresh(selected.id)}
                   onNotice={showNotice}
+                  allowSequenceSubscription={allowSequenceSubscription}
                 />
               ) : null}
             </aside>
@@ -999,6 +1202,68 @@ function Avatar({ name, small = false }: { name: string; small?: boolean }) {
   );
 }
 
+function MobileChip({
+  children,
+  active = false,
+  onClick,
+}: {
+  children: ReactNode;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs ${
+        active ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]" : "border-[#d7dbe0] bg-white text-[#344054]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function MobilePaneButton({
+  children,
+  active = false,
+  disabled = false,
+  testId,
+  onClick,
+}: {
+  children: ReactNode;
+  active?: boolean;
+  disabled?: boolean;
+  testId?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      data-testid={testId}
+      className={`rounded-md border px-3 py-2 text-xs ${
+        active
+          ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
+          : "border-[#d7dbe0] bg-white text-[#344054]"
+      } disabled:cursor-not-allowed disabled:border-[#e4e7ec] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function formatConsentStatus(consentStatus?: string) {
+  if (consentStatus === "opted_in") {
+    return { label: "已訂閱", tone: "text-emerald-700" };
+  }
+  if (consentStatus === "opted_out") {
+    return { label: "已退訂", tone: "text-red-700" };
+  }
+  return { label: "訂閱狀態未確認", tone: "text-[#667085]" };
+}
+
 function ContactPanel({
   selected,
   tags,
@@ -1011,6 +1276,7 @@ function ContactPanel({
   onFieldDefinitionsChange,
   onRefresh,
   onNotice,
+  allowSequenceSubscription,
 }: {
   selected: Conversation;
   tags: Tag[];
@@ -1023,6 +1289,7 @@ function ContactPanel({
   onFieldDefinitionsChange: (fields: ContactFieldDefinition[]) => void;
   onRefresh: () => void;
   onNotice: (tone: InboxNotice["tone"], message: string) => void;
+  allowSequenceSubscription: boolean;
 }) {
   const selectedTagIds = new Set(selected.contact.tags.map(({ tag }) => tag.id));
   const [contactActionsOpen, setContactActionsOpen] = useState(false);
@@ -1030,6 +1297,7 @@ function ContactPanel({
   const [fieldValues, setFieldValues] = useState<Record<string, string>>(() =>
     Object.fromEntries((selected.contact.fieldValues || []).map((item) => [item.definition.id, item.value])),
   );
+  const consentState = formatConsentStatus(selected.contact.consentStatus);
 
   async function createField() {
     const label = newFieldLabel.trim();
@@ -1124,9 +1392,8 @@ function ContactPanel({
 
       <div className="border-b border-[#d7dbe0] px-4 py-6 text-center">
         <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-lg bg-[#f9aa2b] text-4xl">🤖</div>
-        <p className="mt-4 text-sm text-green-700">
-          已訂閱 <span className="text-[#667085]">(取消訂閱)</span>
-        </p>
+        <p className={`mt-4 text-sm font-medium ${consentState.tone}`}>{consentState.label}</p>
+        <p className="mt-1 text-xs text-[#98a2b3]">訂閱狀態管理將在聯絡人詳情頁完成，這裡先維持唯讀摘要。</p>
         <p className="mt-2 text-sm text-[#667085]">聯絡時間：未知</p>
         <p className="mt-2 text-sm text-[#667085]">{selected.contact.externalId}</p>
         <p className="mt-2 text-sm text-[#667085]">透過 Instagram 訂閱</p>
@@ -1192,9 +1459,24 @@ function ContactPanel({
       <PanelSection
         title="訂閱到序列"
         action={
-          <Link href="/sequences" className="text-xs text-[#006fe6] hover:underline">
-            訂閱
-          </Link>
+          allowSequenceSubscription ? (
+            <Link href="/sequences" className="text-xs text-[#006fe6] hover:underline">
+              訂閱
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() =>
+                onNotice(
+                  "info",
+                  "序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。",
+                )
+              }
+              className="rounded-full border border-[#d7dbe0] px-2 py-0.5 text-[11px] text-[#667085] hover:bg-[#f8fafc]"
+            >
+              完整版功能
+            </button>
+          )
         }
       >
         <p className="text-sm text-[#98a2b3]">尚未訂閱序列</p>

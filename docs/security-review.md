@@ -1,3 +1,23 @@
+# 2026-06-28 - Inbox conversation write guards and gated UX cleanup
+
+Scope:
+
+- Added same-origin and rate-limit protection to `PATCH /api/conversations/[id]`.
+- Added rate-limit protection to `POST /api/conversations/[id]/notes`.
+- Kept all changes scoped to Inbox UI and conversation write endpoints.
+- No production DB write, migration, `db push`, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- Inbox write paths are safer against cross-site form posts and noisy repeat writes.
+- The simple-release Inbox surface is less misleading because the sequence CTA now explains that sequences are full-release-only instead of silently linking users into a gated route.
+- No secret, token, callback query, DB URL, or production credential was added to client code or logs.
+
+Residual risk:
+
+- Authenticated DB-backed Inbox smoke still needs local non-production credentials and `TEST_DATABASE_URL` in this clean worktree to run end to end.
+- Export, block, and unsubscribe operations remain intentionally unavailable until permission, sync, and audit boundaries are defined.
+
 # 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
 
 Scope:
