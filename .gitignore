@@ -38,6 +38,7 @@ yarn-error.log*
 reports/
 !AI_TEAM/reports/
 !AI_TEAM/reports/**
+AI_TEAM/reports/runner-log.md
 .next-dev.*.log
 .next-dev.log
 .next-*.log

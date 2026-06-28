@@ -30,6 +30,15 @@
     "ai-models:refresh": "tsx scripts/refresh-ai-models.ts",
     "meta:refresh-token": "node scripts/refresh-meta-token.mjs",
     "worker": "tsx scripts/worker.ts",
+    "ai-team": "node AI_TEAM/scripts/ai-team.mjs status",
+    "ai-team:status": "node AI_TEAM/scripts/ai-team.mjs status",
+    "ai-team:next": "node AI_TEAM/scripts/ai-team.mjs next",
+    "ai-team:check": "node AI_TEAM/scripts/ai-team.mjs check",
+    "ai-team:qa": "node AI_TEAM/scripts/local-qa.mjs",
+    "ai-team:qa:strict": "node AI_TEAM/scripts/local-qa.mjs --strict-tests",
+    "ai-team:loop": "node AI_TEAM/scripts/ai-team-runner.mjs",
+    "ai-team:loop:once": "node AI_TEAM/scripts/ai-team-runner.mjs --once",
+    "autopilot": "node AI_TEAM/scripts/ai-team.mjs autopilot",
     "reset-db": "prisma migrate reset --force"
   },
   "dependencies": {
