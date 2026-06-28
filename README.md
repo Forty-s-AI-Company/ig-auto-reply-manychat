@@ -84,6 +84,16 @@ AI_TEAM 的重點是：
 - [AI_TEAM/tasks/current-task.md](./AI_TEAM/tasks/current-task.md)
 - [AI_TEAM/tasks/backlog.md](./AI_TEAM/tasks/backlog.md)
 
+常用指令：
+
+```bash
+npm run ai-team
+npm run ai-team:next
+npm run ai-team:check
+npm run ai-team:qa
+npm run ai-team:loop:once
+```
+
 ## 環境變數
 
 最少需要：

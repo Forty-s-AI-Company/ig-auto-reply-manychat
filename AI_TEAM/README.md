@@ -25,6 +25,30 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
 - `reports/`: 每輪報告與交接
 - `scripts/`: 安全的本機檢查與 QA 提示詞
 
+## 常用指令
+
+- `npm run ai-team`: 顯示目前 AI_TEAM 狀態
+- `npm run ai-team:next`: 產生下一輪 Codex prompt
+- `npm run ai-team:check`: 檢查 AI_TEAM 骨架是否完整
+- `npm run ai-team:qa`: 執行本機 QA，缺測試 DB 時記為 WARN
+- `npm run ai-team:qa:strict`: 測試 DB 不可用時直接失敗
+- `npm run ai-team:loop`: 持續監看 AI_TEAM 狀態
+- `npm run ai-team:loop:once`: 只跑一輪 runner
+
+## 長跑 runner
+
+- runner 會輸出 branch、dirty file 數、worktree 數與最近 QA 狀態。
+- runner 會同步更新 `AI_TEAM/reports/next-codex-prompt.md`。
+- runner 的本機長跑紀錄寫到 `AI_TEAM/reports/runner-log.md`，不應提交。
+- 完整設計見 `AI_TEAM/RUNNER_DESIGN.md`。
+
+## Worktree 原則
+
+- branch 是主體，worktree 只是短期隔離工具。
+- 一個主題只保留一個 worktree。
+- 合併後就清理，不把 worktree 當成長期資料夾。
+- 完整規則見 `AI_TEAM/WORKTREE_POLICY.md`。
+
 ## 目前狀態
 
 - 專案階段：`PRE_LAUNCH`
