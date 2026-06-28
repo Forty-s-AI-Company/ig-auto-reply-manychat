@@ -39,6 +39,9 @@ reports/
 !AI_TEAM/reports/
 !AI_TEAM/reports/**
 AI_TEAM/reports/runner-log.md
+backups/
+__pycache__/
+**/__pycache__/
 .next-dev.*.log
 .next-dev.log
 .next-*.log
