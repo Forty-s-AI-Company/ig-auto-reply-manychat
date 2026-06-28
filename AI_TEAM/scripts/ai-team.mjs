@@ -84,6 +84,7 @@ function buildStatus() {
     section("LATEST_QA 摘要", extractTopItems(qaReport, 6).length ? extractTopItems(qaReport, 6).map((item) => `- ${item}`).join("\n") : qaReport),
     "",
     "建議下一步：`npm run ai-team:next`",
+    "長跑模式：`npm run ai-team:loop:general` 或 `npm run ai-team:loop:sleep`",
   ];
 
   return parts.join("\n");
@@ -173,7 +174,8 @@ if (command === "status") {
     "- `npm run ai-team:next`",
     "- `npm run ai-team:check`",
     "- `npm run ai-team:qa`",
-    "- `npm run ai-team:loop`",
+    "- `npm run ai-team:loop:general`",
+    "- `npm run ai-team:loop:sleep`",
     "",
     "原因：AI_TEAM 流程已取代舊 autopilot 設計，並改把執行期輸出寫到 `AI_TEAM/runtime/`。",
   ].join("\n"));

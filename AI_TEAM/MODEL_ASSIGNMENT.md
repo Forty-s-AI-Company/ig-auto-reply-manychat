@@ -1,5 +1,12 @@
 # AI Team Model Assignment
 
+本專案把 AI_TEAM 的本地模型編排拆成兩種模式：
+
+- `一般模式`：平常工作時使用，優先速度與可接受品質
+- `睡覺模式`：長時間無人值守時使用，優先品質、深度與長上下文
+
+`Codex CLI` 跟 `Antigravity CLI` 不因模式切換而改變，只有本地 Ollama 模型會切換。
+
 本專案使用 Codex Desktop / Codex CLI 作為總指揮。
 Codex 負責高風險、架構、最終審查。
 本地 Ollama 模型負責低風險、重複性、報告與 QA 支援。
@@ -190,6 +197,51 @@ Codex 只做核心決策與高風險審查。
 - admin 權限
 - 自動發送私訊邏輯
 
+## 一般模式
+
+用途：
+
+- 白天開發
+- 需要快一點的報告與整理
+- 需要頻繁反覆執行 runner
+
+本地模型預設分工：
+
+| 職位 | 模型 | 工作 |
+|---|---|---|
+| Error Summarizer | qwen2.5-coder:1.5b | log 摘要、錯誤分類、TODO |
+| Bug Fixer | qwen2.5-coder:7b | TypeScript、import、lint、build error、小型修補建議 |
+| Code Reviewer | deepseek-coder-v2:lite | code review、bug 分析、安全輔助 |
+| Prompt Engineer | qwen2.5-coder:7b | 下一輪 Codex prompt、需求拆解 |
+| Final Report Writer | qwen2.5-coder:1.5b | final report 初稿 |
+
+## 睡覺模式
+
+用途：
+
+- 長時間 unattended loop
+- 睡前掛著跑
+- 需要比較深的 review 與比較完整的建議
+
+本地模型預設分工：
+
+| 職位 | 模型 | 工作 |
+|---|---|---|
+| Error Summarizer | qwen2.5-coder:7b | 較完整的 QA / build / 測試摘要 |
+| Bug Fixer | qwen2.5-coder:14b | 進階修補建議、較長上下文的程式審查 |
+| Code Reviewer | qwen3-coder:30b | Deep architecture / stability / risk review |
+| Prompt Engineer | qwen3:8b | 下一輪 Codex prompt、優先順序整理 |
+| Final Report Writer | qwen2.5-coder:7b | 比較完整的 final report |
+
+## Codex CLI / Antigravity CLI
+
+這兩個不分模式，固定角色如下：
+
+| 角色 | 工具 | 工作 |
+|---|---|---|
+| Project Lead / Architect / High-risk Reviewer | Codex CLI | 任務規劃、實作、架構、高風險複查 |
+| Browser QA | Antigravity CLI | Browser QA、RWD、流程、OAuth 視窗、E2E 體感驗證 |
+
 ## 平常使用 AI 團隊
 
 | 職位 | 模型 / 工具 | 工作 |
@@ -210,11 +262,11 @@ Codex 只做核心決策與高風險審查。
 | 順序 | 職位 | 模型 / 工具 | 產出 |
 |---:|---|---|---|
 | 1 | Test Runner | PowerShell / Node | `AI_TEAM/runtime/qa-report.md` |
-| 2 | Error Summarizer | qwen2.5-coder:1.5b | `AI_TEAM/runtime/error-summary.md` |
-| 3 | Bug Fixer | qwen2.5-coder:7b | `AI_TEAM/runtime/static-qa.md` |
-| 4 | Code Reviewer | deepseek-coder-v2:lite | `AI_TEAM/runtime/code-review.md` |
-| 5 | Prompt Engineer | qwen3:8b | `AI_TEAM/runtime/next-codex-prompt.md` |
-| 6 | Final Report Writer | qwen2.5-coder:1.5b | `AI_TEAM/runtime/final-report.md` |
+ | 2 | Error Summarizer | qwen2.5-coder:7b | `AI_TEAM/runtime/error-summary.md` |
+ | 3 | Bug Fixer | qwen2.5-coder:14b | `AI_TEAM/runtime/static-qa.md` |
+ | 4 | Code Reviewer | qwen3-coder:30b | `AI_TEAM/runtime/code-review.md` |
+ | 5 | Prompt Engineer | qwen3:8b | `AI_TEAM/runtime/next-codex-prompt.md` |
+ | 6 | Final Report Writer | qwen2.5-coder:7b | `AI_TEAM/runtime/final-report.md` |
 | 7 | Browser QA | Antigravity CLI | `AI_TEAM/runtime/browser-qa.md` |
 
 ## 目前 AI_TEAM 最小可用實作
@@ -225,10 +277,14 @@ Codex 只做核心決策與高風險審查。
   - 在非 production `TEST_DATABASE_URL` 可用時跑 `npm test`
   - 跑 `npm run build`
   - 呼叫 `agy` 產出 Browser QA 報告
-- `npm run ai-team:models`
-  - 呼叫本地 `ollama` 模型產出 error summary / static QA / code review / final report / next prompt
-- `npm run ai-team:loop`
-  - 依序執行 `ai-team:qa` 與 `ai-team:models`
+- `npm run ai-team:models:general`
+  - 用一般模式的快模型產出 error summary / static QA / code review / final report / next prompt
+- `npm run ai-team:models:sleep`
+  - 用睡覺模式的深度模型產出 error summary / static QA / code review / final report / next prompt
+- `npm run ai-team:loop:general`
+  - 依序執行 `ai-team:qa` 與一般模式本地模型
+- `npm run ai-team:loop:sleep`
+  - 依序執行 `ai-team:qa` 與睡覺模式本地模型
   - 把 health summary 與 runner log 寫到 `AI_TEAM/runtime/`
 
 ## 注意

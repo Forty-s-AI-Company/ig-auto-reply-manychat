@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseInstalledModelNames } from "../../AI_TEAM/scripts/local-models.mjs";
+import { parseInstalledModelNames, resolveModelAssignment } from "../../AI_TEAM/scripts/local-models.mjs";
 
 describe("AI_TEAM local model parsing", () => {
   it("parses ollama list output into model ids", () => {
@@ -19,5 +19,27 @@ describe("AI_TEAM local model parsing", () => {
 
   it("ignores empty lines and header-only output", () => {
     expect(parseInstalledModelNames("NAME  ID  SIZE  MODIFIED\n")).toEqual([]);
+  });
+
+  it("uses faster defaults in general mode", () => {
+    expect(resolveModelAssignment("general")).toMatchObject({
+      mode: "general",
+      errorSummary: "qwen2.5-coder:1.5b",
+      bugFixer: "qwen2.5-coder:7b",
+      codeReview: "deepseek-coder-v2:lite",
+      prompt: "qwen2.5-coder:7b",
+      finalReport: "qwen2.5-coder:1.5b",
+    });
+  });
+
+  it("uses deeper defaults in sleep mode", () => {
+    expect(resolveModelAssignment("sleep")).toMatchObject({
+      mode: "sleep",
+      errorSummary: "qwen2.5-coder:7b",
+      bugFixer: "qwen2.5-coder:14b",
+      codeReview: "qwen3-coder:30b",
+      prompt: "qwen3:8b",
+      finalReport: "qwen2.5-coder:7b",
+    });
   });
 });

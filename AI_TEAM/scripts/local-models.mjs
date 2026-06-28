@@ -18,15 +18,51 @@ const STRICT = process.argv.includes("--strict");
 const thisFilePath = fileURLToPath(import.meta.url);
 const onlyArg = process.argv.find((arg) => arg.startsWith("--only="))?.split("=")[1];
 const onlyKeys = new Set((onlyArg || "").split(",").map((value) => value.trim()).filter(Boolean));
+const requestedMode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1]?.trim().toLowerCase() || "";
+const MODE = requestedMode === "sleep" ? "sleep" : "general";
+
+const MODEL_MODE_DEFAULTS = {
+  general: {
+    errorSummary: "qwen2.5-coder:1.5b",
+    bugFixer: "qwen2.5-coder:7b",
+    codeReview: "deepseek-coder-v2:lite",
+    prompt: "qwen2.5-coder:7b",
+    finalReport: "qwen2.5-coder:1.5b",
+  },
+  sleep: {
+    errorSummary: "qwen2.5-coder:7b",
+    bugFixer: "qwen2.5-coder:14b",
+    codeReview: "qwen3-coder:30b",
+    prompt: "qwen3:8b",
+    finalReport: "qwen2.5-coder:7b",
+  },
+};
+
+export function resolveModelAssignment(mode = MODE) {
+  const normalizedMode = mode === "sleep" ? "sleep" : "general";
+  const defaults = MODEL_MODE_DEFAULTS[normalizedMode];
+
+  return {
+    mode: normalizedMode,
+    errorSummary: process.env.AI_TEAM_ERROR_SUMMARY_MODEL?.trim() || defaults.errorSummary,
+    bugFixer: process.env.AI_TEAM_BUG_FIXER_MODEL?.trim() || defaults.bugFixer,
+    codeReview: process.env.AI_TEAM_CODE_REVIEW_MODEL?.trim() || defaults.codeReview,
+    prompt: process.env.AI_TEAM_PROMPT_MODEL?.trim() || defaults.prompt,
+    finalReport: process.env.AI_TEAM_FINAL_REPORT_MODEL?.trim() || defaults.finalReport,
+  };
+}
+
+const modelAssignment = resolveModelAssignment(MODE);
 
 const MODEL_PLAN = [
   {
     key: "error-summary",
     role: "Error Summarizer",
-    model: process.env.AI_TEAM_ERROR_SUMMARY_MODEL?.trim() || "qwen2.5-coder:1.5b",
+    model: modelAssignment.errorSummary,
     output: runtimeFiles.errorSummary,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Error Summarizer。",
+      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
       "請根據以下 QA / build / test 狀態，整理成精簡繁體中文 Markdown。",
       "只輸出這三段：",
       "1. 現況摘要",
@@ -39,10 +75,11 @@ const MODEL_PLAN = [
   {
     key: "static-qa",
     role: "Bug Fixer",
-    model: process.env.AI_TEAM_BUG_FIXER_MODEL?.trim() || "qwen2.5-coder:7b",
+    model: modelAssignment.bugFixer,
     output: runtimeFiles.staticQa,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Bug Fixer。",
+      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
       "請針對目前狀態提出最小可安全修補建議。",
       "限制：不要建議 production DB、migration、Production deploy。",
       "只輸出這四段：",
@@ -57,10 +94,11 @@ const MODEL_PLAN = [
   {
     key: "code-review",
     role: "Code Reviewer",
-    model: process.env.AI_TEAM_CODE_REVIEW_MODEL?.trim() || "deepseek-coder-v2:lite",
+    model: modelAssignment.codeReview,
     output: runtimeFiles.codeReview,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Code Reviewer / Security Assistant。",
+      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
       "請從安全性、穩定性、可維護性三個面向，對目前狀態做簡短 review。",
       "只輸出這四段：",
       "1. 目前風險",
@@ -74,10 +112,11 @@ const MODEL_PLAN = [
   {
     key: "next-prompt",
     role: "Prompt Engineer",
-    model: process.env.AI_TEAM_PROMPT_MODEL?.trim() || "qwen3:8b",
+    model: modelAssignment.prompt,
     output: runtimeFiles.nextPrompt,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Prompt Engineer。",
+      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
       "請產出下一輪給 Codex 的可直接執行提示詞。",
       "用繁體中文，必須包含：目標、範圍、安全限制、驗證、完成後回報格式。",
       "請直接輸出 prompt 內容，不要加前言。",
@@ -88,10 +127,11 @@ const MODEL_PLAN = [
   {
     key: "final-report",
     role: "Final Report Writer",
-    model: process.env.AI_TEAM_FINAL_REPORT_MODEL?.trim() || "qwen2.5-coder:1.5b",
+    model: modelAssignment.finalReport,
     output: runtimeFiles.finalReport,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Final Report Writer。",
+      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
       "請把目前狀態整理成精簡繁體中文 Markdown。",
       "只輸出這四段：",
       "1. 本輪完成",
@@ -171,6 +211,9 @@ function collectContext() {
 
   return [
     "# CONTEXT",
+    "",
+    "## MODE",
+    modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式",
     "",
     "## PROJECT_STATE",
     projectState || "（空）",

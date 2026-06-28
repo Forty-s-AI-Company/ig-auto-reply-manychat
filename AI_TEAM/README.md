@@ -32,11 +32,21 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
 - `npm run ai-team:check`: 檢查 AI_TEAM 骨架是否完整
 - `npm run ai-team:qa`: 執行本機 QA，包含 lint / test / build 與 `agy` Browser QA
 - `npm run ai-team:qa:strict`: 測試 DB 不可用時直接失敗
-- `npm run ai-team:models`: 呼叫本地 Ollama 模型產出報告與 next prompt
-- `npm run ai-team:loop`: 持續執行 QA + 本地模型編排
-- `npm run ai-team:loop:once`: 只跑一輪 runner
+- `npm run ai-team:models`: 用一般模式呼叫本地 Ollama 模型產出報告與 next prompt
+- `npm run ai-team:models:general`: 一般模式，快一點的本地模型
+- `npm run ai-team:models:sleep`: 睡覺模式，慢一點但品質比較高的本地模型
+- `npm run ai-team:loop`: 用一般模式持續執行 QA + 本地模型編排
+- `npm run ai-team:loop:general`: 一般模式 loop
+- `npm run ai-team:loop:sleep`: 睡覺模式 loop
+- `npm run ai-team:loop:once`: 一般模式只跑一輪 runner
+- `npm run ai-team:loop:once:sleep`: 睡覺模式只跑一輪 runner
 
 ## 長跑 runner
+
+- AI_TEAM 現在分成兩種本地模型模式：
+  - `general`：平常一般模式，優先快、夠用、能快速出報告
+  - `sleep`：睡覺模式，優先品質與深度，允許較慢
+- `codex cli` 與 `agy` / Antigravity CLI 不因模式切換而改變，只有本地模型選型會切換
 
 - runner 每輪會依序做：
   1. `ai-team:check`
@@ -76,6 +86,8 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
   - `qwen3:8b`
   - `deepseek-coder-v2:lite`
   - `qwen2.5-coder:1.5b`
+  - `qwen2.5-coder:14b`
+  - `qwen3-coder:30b`
 - Browser QA 預設使用 `agy`
 
 若要先確認環境：

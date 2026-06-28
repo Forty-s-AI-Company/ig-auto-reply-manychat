@@ -15,6 +15,8 @@ const intervalInput = Number.parseInt(process.argv.find((arg) => arg.startsWith(
 const intervalMinutes = Number.isFinite(intervalInput) && intervalInput > 0 ? intervalInput : 15;
 const once = process.argv.includes("--once");
 const alwaysRun = process.argv.includes("--always-run");
+const requestedMode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1]?.trim().toLowerCase() || "";
+const runnerMode = requestedMode === "sleep" ? "sleep" : "general";
 const maxCyclesArg = process.argv.find((arg) => arg.startsWith("--cycles="))?.split("=")[1];
 const parsedMaxCycles = maxCyclesArg ? Number.parseInt(maxCyclesArg, 10) : Number.POSITIVE_INFINITY;
 const maxCycles = Number.isFinite(parsedMaxCycles) && parsedMaxCycles > 0 ? parsedMaxCycles : Number.POSITIVE_INFINITY;
@@ -94,6 +96,7 @@ function buildHealthSummary() {
     `- dirty files: ${git.dirtyCount}`,
     `- worktrees: ${git.worktreeCount}`,
     `- latest QA: ${qaHealth}`,
+    `- local model mode: ${runnerMode}`,
     `- mode: ${once ? "once" : "loop"}`,
     `- interval minutes: ${intervalMinutes}`,
     "",
@@ -152,6 +155,9 @@ async function runPipeline() {
     .split(/\s+/)
     .map((value) => value.trim())
     .filter(Boolean);
+  const modelArgsWithMode = modelArgs.some((arg) => arg.startsWith("--mode="))
+    ? modelArgs
+    : [...modelArgs, `--mode=${runnerMode}`];
 
   const steps = [
     {
@@ -162,7 +168,7 @@ async function runPipeline() {
     {
       name: "local-models",
       script: "AI_TEAM/scripts/local-models.mjs",
-      args: modelArgs,
+      args: modelArgsWithMode,
     },
   ];
 
