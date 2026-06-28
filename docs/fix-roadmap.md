@@ -1,5 +1,22 @@
 # InboxPilot Fix Roadmap
 
+# Latest - 2026-06-29 AI_TEAM orchestration MVP
+
+Current status:
+
+- `[x]` Expanded `AI_TEAM/MODEL_ASSIGNMENT.md` to match the local-model / Codex / Antigravity role split from the control document.
+- `[x]` `npm run ai-team:qa` now runs `ai-team:check`, local lint/test/build gates, and attempts real `agy` Browser QA.
+- `[x]` Added `npm run ai-team:models` to orchestrate local Ollama models for error summary, static QA, code review, final report, and next prompt.
+- `[x]` `npm run ai-team:loop` now runs a real pipeline instead of only printing health summary.
+- `[x]` Runtime outputs now go to ignored `AI_TEAM/runtime/` instead of dirtying tracked report files.
+- `[x]` Added focused unit coverage for local model list parsing.
+
+Remaining:
+
+- `[ ]` Improve `agy` Browser QA reliability; current print-mode runs may still end with no output and produce a WARN report.
+- `[ ]` Decide later whether local-model patch generation should stop at suggestions or produce gated patch artifacts for Codex review.
+- `[ ]` Resume product completeness work for Channels / Social connect after this tooling round.
+
 # Latest - 2026-06-28 Inbox mobile scope and filter pass
 
 Current status:

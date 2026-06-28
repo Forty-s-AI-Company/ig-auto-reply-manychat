@@ -1,7 +1,23 @@
-param()
+param(
+  [switch]$Once,
+  [int]$Interval = 15,
+  [switch]$AlwaysRun
+)
 
 Set-Location (Join-Path $PSScriptRoot "..\..")
 
-Write-Host "AI_TEAM local orchestrator stub"
-Write-Host "Read AI_TEAM/README.md, AI_TEAM/PROJECT_STATE.md, AI_TEAM/tasks/current-task.md, and AI_TEAM/tasks/backlog.md."
-Write-Host "This system is docs-first. Do not treat it as the old autonomous autopilot runner."
+$loopArgs = @("run", "ai-team:loop", "--", "--interval=$Interval")
+
+if ($Once) {
+  $loopArgs += "--once"
+}
+
+if ($AlwaysRun) {
+  $loopArgs += "--always-run"
+}
+
+Write-Host "[AI_TEAM] 啟動本機長跑控制台..."
+Write-Host "[AI_TEAM] 工作目錄: $(Get-Location)"
+Write-Host "[AI_TEAM] 指令: npm $($loopArgs -join ' ')"
+
+npm @loopArgs

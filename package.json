@@ -36,6 +36,7 @@
     "ai-team:check": "node AI_TEAM/scripts/ai-team.mjs check",
     "ai-team:qa": "node AI_TEAM/scripts/local-qa.mjs",
     "ai-team:qa:strict": "node AI_TEAM/scripts/local-qa.mjs --strict-tests",
+    "ai-team:models": "node AI_TEAM/scripts/local-models.mjs",
     "ai-team:loop": "node AI_TEAM/scripts/ai-team-runner.mjs",
     "ai-team:loop:once": "node AI_TEAM/scripts/ai-team-runner.mjs --once",
     "autopilot": "node AI_TEAM/scripts/ai-team.mjs autopilot",

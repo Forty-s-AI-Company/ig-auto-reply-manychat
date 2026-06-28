@@ -8,7 +8,7 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
 2. 再讀 `LAUNCH_CRITERIA.md`，知道什麼叫做真的可以上線。
 3. 讀 `tasks/current-task.md` 與 `tasks/backlog.md`，決定這一輪要做什麼。
 4. 依工作類型選對 `roles/` 與 `skills/` 文件。
-5. 每一輪都寫 `reports/`，不要把報告當成臨時垃圾桶。
+5. 每一輪都把執行期輸出寫到 `runtime/`，不要把報告當成臨時垃圾桶，也不要把 runtime 輸出提交到 git。
 
 ## 當前原則
 
@@ -30,16 +30,29 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
 - `npm run ai-team`: 顯示目前 AI_TEAM 狀態
 - `npm run ai-team:next`: 產生下一輪 Codex prompt
 - `npm run ai-team:check`: 檢查 AI_TEAM 骨架是否完整
-- `npm run ai-team:qa`: 執行本機 QA，缺測試 DB 時記為 WARN
+- `npm run ai-team:qa`: 執行本機 QA，包含 lint / test / build 與 `agy` Browser QA
 - `npm run ai-team:qa:strict`: 測試 DB 不可用時直接失敗
-- `npm run ai-team:loop`: 持續監看 AI_TEAM 狀態
+- `npm run ai-team:models`: 呼叫本地 Ollama 模型產出報告與 next prompt
+- `npm run ai-team:loop`: 持續執行 QA + 本地模型編排
 - `npm run ai-team:loop:once`: 只跑一輪 runner
 
 ## 長跑 runner
 
+- runner 每輪會依序做：
+  1. `ai-team:check`
+  2. `lint / test / build`
+  3. `agy` Browser QA
+  4. 本地 Ollama 模型產出 error summary / static QA / code review / final report / next prompt
 - runner 會輸出 branch、dirty file 數、worktree 數與最近 QA 狀態。
-- runner 會同步更新 `AI_TEAM/reports/next-codex-prompt.md`。
-- runner 的本機長跑紀錄寫到 `AI_TEAM/reports/runner-log.md`，不應提交。
+- runner 的執行期輸出都寫到 `AI_TEAM/runtime/`，例如：
+  - `AI_TEAM/runtime/qa-report.md`
+  - `AI_TEAM/runtime/browser-qa.md`
+  - `AI_TEAM/runtime/error-summary.md`
+  - `AI_TEAM/runtime/static-qa.md`
+  - `AI_TEAM/runtime/code-review.md`
+  - `AI_TEAM/runtime/final-report.md`
+  - `AI_TEAM/runtime/next-codex-prompt.md`
+  - `AI_TEAM/runtime/runner-log.md`
 - 完整設計見 `AI_TEAM/RUNNER_DESIGN.md`。
 
 ## Worktree 原則
@@ -54,3 +67,21 @@ AI_TEAM 是 InboxPilot 的新無人值守開發總控系統。它的設計重點
 - 專案階段：`PRE_LAUNCH`
 - 主要目標：先把看得到但不能用的功能修好，再收斂 launch gate
 - 舊 root autopilot 入口：已退場，後續以 `AI_TEAM/` 為主
+
+## 本地模型前提
+
+- 預設使用 `ollama`
+- 目前最小可用支援：
+  - `qwen2.5-coder:7b`
+  - `qwen3:8b`
+  - `deepseek-coder-v2:lite`
+  - `qwen2.5-coder:1.5b`
+- Browser QA 預設使用 `agy`
+
+若要先確認環境：
+
+```bash
+npm run ai-team:check
+where.exe agy
+ollama list
+```

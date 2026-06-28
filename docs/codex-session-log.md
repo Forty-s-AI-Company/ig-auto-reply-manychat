@@ -1,5 +1,92 @@
 # Codex Session Log
 
+## 2026-06-29 - AI_TEAM orchestration MVP
+
+Task goal:
+
+- Rebuild AI_TEAM from the attached control document into a real local orchestration path.
+- Keep the scope on AI_TEAM scripts and docs only.
+- Do not touch production DB, migrations, Production deployment, Meta App Review, or PayUNI production.
+
+Files changed:
+
+- `.gitignore`
+- `package.json`
+- `README.md`
+- `AI_TEAM/README.md`
+- `AI_TEAM/MODEL_ASSIGNMENT.md`
+- `AI_TEAM/RUNNER_DESIGN.md`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/scripts/ai-team.mjs`
+- `AI_TEAM/scripts/ai-team-runner.mjs`
+- `AI_TEAM/scripts/local-qa.mjs`
+- `AI_TEAM/scripts/local-ai-team.ps1`
+- `AI_TEAM/scripts/local-models.mjs`
+- `AI_TEAM/scripts/lib/ai-team-paths.mjs`
+- `AI_TEAM/scripts/browser-qa-prompt.md`
+- `AI_TEAM/runtime/.gitkeep`
+- `tests/unit/ai-team-local-models.test.ts`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Reworked AI_TEAM so runtime outputs now write to ignored `AI_TEAM/runtime/` instead of tracked `AI_TEAM/reports/*.md`, reducing noisy dirty files during long unattended loops.
+- Expanded `AI_TEAM/MODEL_ASSIGNMENT.md` to reflect the intended Codex / Ollama / Antigravity split from the control document.
+- Added `npm run ai-team:models` and the underlying local Ollama orchestrator for:
+  - `qwen2.5-coder:1.5b`
+  - `qwen2.5-coder:7b`
+  - `qwen3:8b`
+  - `deepseek-coder-v2:lite`
+- Updated `npm run ai-team:qa` so it now runs `ai-team:check`, local lint/test/build gates, and attempts a real `agy` Browser QA call.
+- Updated `npm run ai-team:loop` so it now runs a real pipeline (`qa -> local models -> health summary`) instead of only generating a prompt/summary.
+- Added a PowerShell 7 friendly launcher wrapper: `AI_TEAM/scripts/local-ai-team.ps1`.
+- Added focused Vitest coverage for parsing local Ollama model lists.
+
+Validation:
+
+```text
+npm run ai-team:check
+Result: passed.
+
+npx vitest run tests/unit/ai-team-local-models.test.ts tests/unit/gemini-cli.test.ts --reporter=dot
+Result: passed. 2 files, 4 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Prisma generate reused existing locked client safely, then Next build passed.
+
+AI_TEAM_BROWSER_QA_TIMEOUT_MS=15000
+AI_TEAM_LOCAL_MODEL_TIMEOUT_MS=5000
+AI_TEAM_RUNNER_QA_ARGS='--skip-tests --skip-build'
+AI_TEAM_RUNNER_MODEL_ARGS='--only=error-summary,next-prompt'
+npm run ai-team:loop:once
+Result: passed. Runner executed a real pipeline and wrote runtime outputs under `AI_TEAM/runtime/`.
+
+npm run ai-team:qa -- --skip-tests --skip-build
+Result: passed with WARN. `agy` was called, but this run ended with no printed Browser QA output, so the runtime report recorded a WARN instead of pretending success.
+```
+
+Launch impact:
+
+- No product runtime behavior changed.
+- No production DB write, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+- This improves unattended local workflow readiness only.
+
+New risks:
+
+- Low. The main remaining risk is `agy --print` reliability for Browser QA; the path is wired, but some runs still return no output and therefore fall back to WARN.
+- Local model orchestration currently produces reports and next prompts, not auto-applied patches. That is intentional for safety.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot 專案，使用現在的 AI_TEAM 流程，把重點切回 Channels / Social connect 第二輪產品完整性修復：先列出看得到但不能用或容易誤導的控制項，補成最小可用或清楚 disabled UX，並補 focused tests；不要碰 production DB、不要部署 Production。
+```
+
 ## 2026-06-28 - Inbox mobile scope and filter pass
 
 Task goal:
