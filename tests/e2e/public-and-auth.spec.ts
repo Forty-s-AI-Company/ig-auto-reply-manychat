@@ -16,6 +16,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   { path: "/dashboard", heading: /首頁|儀表板/, bodyText: /營運總覽|查看收件匣|快速建立自動化/ },
   { path: "/inbox", heading: /收件匣/, bodyText: /收件匣|對話|訊息/ },
   { path: "/contacts", heading: /聯絡人/, bodyText: /全部聯絡人|目前沒有符合條件的聯絡人|搜尋姓名/ },
+  { path: "/channels", heading: /帳號、渠道與自動化設定|設定/, bodyText: /新增平台帳號|Instagram|帳號、渠道與自動化設定/ },
   {
     path: "/channels/connect/instagram",
     finalUrl: /\/channels\/connect\/social(?:[?#].*)?$/,

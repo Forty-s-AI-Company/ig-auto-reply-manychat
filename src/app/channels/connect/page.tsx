@@ -55,12 +55,19 @@ export default async function ChannelConnectionPage() {
       <div className="space-y-6">
         {visibleChannels.map((channel) =>
           channel.disabled ? (
-            <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 opacity-70 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
+            <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
               <ChannelIcon type={channel.icon} />
               <div>
                 <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
                 <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">尚未開放</p>
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+                >
+                  正式開放後可連線
+                </button>
               </div>
             </div>
           ) : (
