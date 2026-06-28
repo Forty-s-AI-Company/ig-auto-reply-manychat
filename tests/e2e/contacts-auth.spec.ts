@@ -77,7 +77,7 @@ test.describe("contacts authenticated smoke", () => {
     await expect(page.locator("body")).toContainText(/已從 \d+ 位聯絡人移除標籤/);
   });
 
-  test("creates a segment from the current contacts filter", async ({ page }) => {
+  test("creates a segment from the current contacts filter", async ({ page }, testInfo) => {
     await page.goto("/contacts?status=opted_in", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
@@ -89,7 +89,15 @@ test.describe("contacts authenticated smoke", () => {
 
     const segmentNameInput = page.getByTestId("contacts-segment-name");
     await expect(segmentNameInput).toBeVisible();
-    await segmentNameInput.fill(`E2E 篩選分眾 ${Date.now()}`);
+    const segmentName = [
+      "E2E 篩選分眾",
+      testInfo.project.name,
+      testInfo.workerIndex,
+      testInfo.retry,
+      Date.now(),
+      Math.random().toString(36).slice(2, 8),
+    ].join(" ");
+    await segmentNameInput.fill(segmentName);
     await page.getByTestId("contacts-segment-description").fill("Playwright 從 Contacts 篩選建立");
     await page.getByTestId("contacts-confirm-create-segment").click();
     await expect(page.locator("body")).toContainText("已建立分眾");
