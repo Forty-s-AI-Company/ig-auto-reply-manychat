@@ -1,3 +1,10 @@
+# 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
+
+- `[x]` Built the new `AI_TEAM/` document system from the attached control document.
+- `[x]` Removed the root `npm run autopilot` entry and the old runner files.
+- `[x]` Updated `README.md` to point at `AI_TEAM/README.md`.
+- `[x]` Kept the product AI bridge files untouched.
+
 # Project Launch Checklist
 
 ## 2026-06-28 - Inbox contact panel actions UX pass

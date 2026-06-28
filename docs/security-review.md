@@ -1,3 +1,16 @@
+# 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
+
+Scope:
+
+- Replaced the old root autopilot runner entrypoints with the new `AI_TEAM/` docs-first system.
+- Kept `src/lib/ai/gemini-cli.ts`, `src/lib/ai/codex-cli.ts`, and the other product bridge files untouched.
+- No secrets, DB URLs, tokens, production deployment commands, Meta dashboard actions, or PayUNI production actions were introduced.
+
+Security decision:
+
+- This is a safe documentation / entrypoint retirement change.
+- The main risk is stale references elsewhere in docs, which should be cleaned up over time.
+
 # InboxPilot Security Review
 
 ## 2026-06-26 - Autopilot report cleanup closeout
