@@ -1,5 +1,23 @@
 # Final Report
 
+## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
+
+Status:
+
+- `Completed` for the scoped Channels / Connect visible-but-unusable sweep.
+
+Completed this round:
+
+- Channels / Connect 現在把入口拆成可連線 / 規劃中 / 暫停中，未開放平台不再像同一種即將可用的主入口。
+- `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明，降低只靠 title 才知道被停用的情況。
+- `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Channels / Connect visibility smoke。
+- `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Residual risk:
+
+- 這輪只處理 Channels / Connect 的 visible-but-unusable 收斂，之後若再出現新的假按鈕或模糊狀態，可以接下一輪再補。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 ## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
 
 Status:

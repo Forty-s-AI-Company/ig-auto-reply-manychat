@@ -41,6 +41,17 @@ test.describe("simple release smoke", () => {
     await expect(page.locator("body")).toContainText("Instagram OAuth");
     await expect(page.locator("body")).not.toContainText("Facebook / Meta Login");
     await expect(page.locator("body")).not.toContainText("meta-facebook");
+    await expect(page.locator("body")).not.toContainText("Mock OAuth Provider");
+  });
+
+  test("keeps Channels connect focused on Instagram only", async ({ page }) => {
+    await page.goto("/channels/connect", { waitUntil: "domcontentloaded" });
+
+    await expect(page.locator("body")).toContainText("Instagram");
+    await expect(page.locator("body")).not.toContainText("Telegram Bot");
+    await expect(page.locator("body")).not.toContainText("Mock OAuth Provider");
+    await expect(page.locator("body")).not.toContainText("TikTok");
+    await expect(page.locator("body")).not.toContainText("WhatsApp");
   });
 
   test("gates billing with dashboard feature notice", async ({ page }) => {

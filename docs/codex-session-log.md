@@ -1,5 +1,49 @@
 # Codex Session Log
 
+## 2026-06-30 - Channels / Connect visible-but-unusable sweep
+
+Task:
+
+- 把 Channels / Connect 裡那些看起來像同一種可連線入口、其實還在規劃中的卡片分流清楚。
+- 讓 Instagram 動作區在授權不足時，直接顯示 inline disabled 說明，不要只靠 tooltip 或按下去才知道。
+- 補 simple-release smoke，確認 Channels connect 只保留 Instagram 可見，其他入口不會假裝可用。
+
+Result:
+
+- `src/app/channels/connect/page.tsx` 已把可連線平台與規劃中 / 暫停中平台分成兩個區塊，並加上狀態 badge。
+- `src/app/channels/page.tsx` 的連線卡片也補了狀態 badge，讓設定頁更容易看出哪些入口真的能授權。
+- `src/components/InstagramChannelActions.tsx` 在授權不足時會直接顯示 inline disabled 說明。
+- `src/lib/channels/channel-connect-visibility.ts` 新增 `statusLabel`，統一可連線 / 本機 QA / 尚未開放 / 已停用的表達。
+- `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 都補上了 Channels / Connect visibility smoke。
+- `.gitignore` 與 `test-results/.gitkeep` 一起把 lint 對乾淨工作樹的目錄依賴補穩，避免 `test-results` 不存在時直接掃失敗。
+
+Validation:
+
+```text
+npx eslint src/lib/channels/channel-connect-visibility.ts src/app/channels/page.tsx src/app/channels/connect/page.tsx src/components/InstagramChannelActions.tsx tests/channels-connect-visibility.test.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple
+Result: passed for Chromium and mobile Chrome.
+```
+
+Launch impact:
+
+- Channels / Connect 的可讀性與 beta operator trust 有小幅改善。
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## 2026-06-30 - Inbox visible-but-unusable follow-up
 
 Task:

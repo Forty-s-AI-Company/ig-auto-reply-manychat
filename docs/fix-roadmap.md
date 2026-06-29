@@ -1,5 +1,19 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
+
+Current status:
+
+- `[x]` Channels / Connect 入口已改成可連線 / 規劃中 / 暫停中的分流。
+- `[x]` `InstagramChannelActions` 在授權不足時會顯示 inline disabled 說明，不再只靠 title。
+- `[x]` `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 都已補 smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Remaining:
+
+- `[ ]` 如果後續還有其他 Channels / Connect visible-but-unusable 控制項，再接下一輪安全收斂。
+- `[ ]` 保持 Production deploy、production DB 寫入、Meta App Review、PayUNI production 都在人工 gate 外。
+
 ## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
 
 Current status:

@@ -13,7 +13,8 @@
 # testing
 /coverage
 /playwright-report
-/test-results
+/test-results/*
+!/test-results/.gitkeep
 prisma/dev.db
 prisma/dev.db-journal
 prisma/test.db

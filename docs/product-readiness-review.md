@@ -51,6 +51,19 @@ Status: documentation re-org only; product readiness unchanged.
 
 # InboxPilot Product Readiness Review
 
+## 2026-06-30 - Channels / Connect visible-but-unusable sweep
+
+Status: improved for beta operator trust; public paid launch status remains Hold.
+
+- Channels / Connect 現在把入口拆成可連線 / 規劃中 / 暫停中，未開放平台不再像同一種即將可用的主入口。
+- `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明，減少需要猜測 title 的情況。
+- `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Readiness implication:
+
+- Channels / Connect 又少了一批看得到但不能直接用的控制項。
+- Public paid launch 仍維持 Hold；這輪只做 UI / smoke 收斂，沒有碰 production DB、Meta、或 PayUNI production。
+
 ## 2026-06-30 - Inbox visible-but-unusable follow-up
 
 Status: improved for beta operator trust; public paid launch status remains Hold.

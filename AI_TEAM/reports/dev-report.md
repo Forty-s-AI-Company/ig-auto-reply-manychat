@@ -1,5 +1,62 @@
 # Dev Report
 
+## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
+
+Current status:
+
+- `[x]` Channels / Connect 入口已改成可連線 / 規劃中 / 暫停中的分流，較少把未開放平台包裝成可直接授權的主入口。
+- `[x]` `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明，不再只靠 title 提示。
+- `[x]` `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Channels / Connect 的 visibility smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:simple` 都已通過。
+
+What changed:
+
+- `src/app/channels/connect/page.tsx`
+  - 把可連線平台與規劃中 / 暫停中平台分成兩個區塊，避免卡片看起來像同一種即將可用的入口。
+  - 為 connectable / disabled cards 補上狀態 badge，讓使用者一眼看懂哪些是可直接進授權流程，哪些只是保留入口。
+- `src/app/channels/page.tsx`
+  - 在 Channels 設定頁的連線卡片上補上狀態 badge，並讓 disabled card 的按鈕文案更貼近真實狀態。
+- `src/components/InstagramChannelActions.tsx`
+  - 當 Instagram 動作會被授權限制時，頂部訊息與底部說明會直接顯示 inline disabled 文案。
+  - 避免使用者只看到一排 disabled 按鈕，卻不知道問題是授權狀態或平台限制。
+- `src/lib/channels/channel-connect-visibility.ts`
+  - 補上 `statusLabel` 以統一表達可連線 / 本機 QA / 尚未開放 / 已停用。
+- `tests/channels-connect-visibility.test.ts`
+  - 針對 TikTok / WhatsApp / Mock 狀態補齊 statusLabel 斷言。
+- `tests/e2e/simple-release.spec.ts`
+  - 驗證 simple release 的 Channels connect 只保留 Instagram 可見，並持續隱藏未開放入口。
+- `.gitignore`
+  - 讓 `test-results/` 保持可用但不提交測試輸出，避免 clean tree lint 時掃不到目錄。
+- `test-results/.gitkeep`
+  - 保留空目錄，讓 `npm run lint` 在乾淨工作樹不會因目錄不存在而失敗。
+
+Validation:
+
+```text
+npx eslint src/lib/channels/channel-connect-visibility.ts src/app/channels/page.tsx src/app/channels/connect/page.tsx src/components/InstagramChannelActions.tsx tests/channels-connect-visibility.test.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot
+Result: passed. 1 file, 4 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple
+Result: passed for Chromium and mobile Chrome.
+```
+
+Launch impact:
+
+- 提升 Channels / Connect 的可讀性與 beta operator trust。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
 
 Current status:
