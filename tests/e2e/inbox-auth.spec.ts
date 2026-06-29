@@ -81,7 +81,13 @@ test.describe("inbox authenticated smoke", () => {
       await page.getByTestId("inbox-pane-detail").click();
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
     }
-    await page.getByTestId("inbox-assignee-select").selectOption({ label: adminName });
+    const assigneeSelect = page.getByTestId("inbox-assignee-select");
+    const currentAssignee = await assigneeSelect.inputValue();
+    if (currentAssignee.trim()) {
+      await assigneeSelect.selectOption("");
+      await expect(page.getByTestId("inbox-notice")).toContainText("已清除對話指派");
+    }
+    await assigneeSelect.selectOption({ label: adminName });
     await expect(page.getByTestId("inbox-notice")).toContainText("已更新對話指派對象");
 
     await page.getByTestId("inbox-reminder-toggle").click();
