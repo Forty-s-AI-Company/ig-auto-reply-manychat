@@ -1,72 +1,251 @@
 # AI_TEAM Runner Design
 
-AI_TEAM runner 是本機長跑控制台，不是會自動操作 production 的背景機器人。
+AI_TEAM runner 現在不是單純的 QA 報告機。
+它是本機可視長跑用的開發閉環控制器。
 
-## 目前能力
+## 核心目標
 
-- 讀取 AI_TEAM source of truth。
-- 支援兩種本地模型模式：
-  - `general`：平常一般模式，優先快
-  - `sleep`：睡覺模式，優先品質與深度
-- 先跑本機 QA：
-  - `ai-team:check`
-  - `npm run lint`
-  - `npm test`（只有非 production `TEST_DATABASE_URL` 可用時）
-  - `npm run build`
-  - `agy` Browser QA
-- 再跑本地模型編排：
-  - Error Summarizer
-  - Static QA / Bug Fixer
-  - Code Reviewer
-  - Final Report Writer
-  - Prompt Engineer
-- 輸出 health summary。
-- 顯示基本健康狀態：
-  - current branch
-  - dirty file count
-  - worktree count
-  - latest QA status
+在不碰 production DB、不部署 Production 的前提下，持續做這幾件事：
 
-## 執行期輸出
+1. 讀目前任務與狀態
+2. 呼叫 Codex CLI 做本輪實作
+3. 跑適合這一輪的 QA
+4. 用本地模型整理結果
+5. 直接進下一輪，而不是停在「下一步建議」
 
-runner 不再改動 tracked 的 `AI_TEAM/reports/*.md`，而是把每輪輸出都寫到 `AI_TEAM/runtime/`：
+## 目前閉環順序
 
-- `AI_TEAM/runtime/qa-report.md`
-- `AI_TEAM/runtime/browser-qa.md`
-- `AI_TEAM/runtime/error-summary.md`
-- `AI_TEAM/runtime/static-qa.md`
-- `AI_TEAM/runtime/code-review.md`
-- `AI_TEAM/runtime/final-report.md`
-- `AI_TEAM/runtime/next-codex-prompt.md`
-- `AI_TEAM/runtime/health-summary.md`
-- `AI_TEAM/runtime/runner-log.md`
+每一輪 runner 從 `AI_TEAM/tasks/queue.json` 取第一個可執行 task，接著依序做：
 
-這樣長跑過程不會一直把 git 工作區弄髒。
+1. `planner`
+   - 讀 `queue.json`
+   - 選定 pending / running task
+   - 寫入 `loop-state.json`
+2. `codex-dev`
+   - 呼叫 `codex exec`
+   - 依 `current-task` / `backlog` / runtime QA 報告，直接做本輪實作
+3. `local-model-review`
+   - 用本地模型做錯誤摘要、靜態 QA、code review
+4. `qa`
+   - 一般模式預設 `lite`
+   - 睡覺模式預設 `full`
+5. `browser-qa`
+   - 一般模式預設略過，睡覺模式或 full QA 才跑
+6. `reporter`
+   - 產出 final report、next prompt
+7. `git-delivery`
+   - 預設 skipped
+   - 啟用 `AI_TEAM_ENABLE_GIT_DELIVERY=1` 後才會進入交付 gate
+   - branch safety：`master` / `main` / `staging` / `production` / `prod` / `release` 一律 blocked
+   - 只有 QA PASS、沒有 failed/blocked worker、沒有 reports/runtime/env/cache 混入，才會進入 ready
+   - 預設只交付目前 queue task 的 scope，不會把整個 dirty tree 一起送出
+   - 真的 commit / push / PR 還需要：
+     - `AI_TEAM_GIT_COMMIT=1`
+     - `AI_TEAM_GIT_PUSH=1`
+     - `AI_TEAM_GIT_PR=1`
+   - PR 預設：
+     - base branch = `master`
+     - draft = `true`
+     - title = `AI_TEAM: <task title>`
+8. `merge-delivery`
+   - 預設 skipped
+   - 啟用 `AI_TEAM_GIT_MERGE=1` 後才會進入 merge gate
+   - 需要：
+     - 已有 PR
+     - PR 非 draft
+     - merge state 可用
+     - checks 全綠，或明確開 `AI_TEAM_GIT_ALLOW_MERGE_WITHOUT_CHECKS=1`
+9. `deploy`
+   - 預設 skipped
+   - 啟用 `AI_TEAM_DEPLOY=1` 後才會進入 deploy gate
+   - 預設 target = `preview`
+   - merge 沒完成就不允許 deploy
+   - Production deploy 仍需 `AI_TEAM_ENABLE_PRODUCTION_DEPLOY=1`
+
+每個 worker 都會寫入 `AI_TEAM/runtime/worker-result.json`，runner 依照 `status` / `next` 決定下一步，而不是只靠 process 是否 timeout。
+
+queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
+
+- `pending`
+- `running`
+- `completed`
+- `blocked`
+- `failed`
+
+## Worker Result Schema
+
+```json
+{
+  "status": "done",
+  "worker": "qa",
+  "summary": "QA worker 完成。",
+  "changedFiles": [],
+  "validation": ["exit=0"],
+  "next": "browser-qa"
+}
+```
+
+`status` 可用值：
+
+- `done`
+- `failed`
+- `blocked`
+- `skipped`
+
+## Timeout 的定位
+
+timeout 仍保留，但只當作異常保護。
+
+正常流程應該由 worker result 推進：
+
+1. worker 開始時寫入 `current-worker.json` / `heartbeat.json`
+2. worker 完成時寫入 `worker-result.json`
+3. runner 讀 result 決定下一個 worker
+
+如果 Codex CLI、Ollama、Playwright 這類外部 process 卡死，timeout 才會把 worker 標記為 `failed`，再交回 planner 決定下一步。
+
+## Delivery Replay
+
+delivery 後段如果需要單獨重跑，不需要整輪從頭開始：
+
+```powershell
+node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery
+node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery
+node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=deploy
+```
+
+這條路徑會優先讀目前 queue task，若 queue 不可用，才 fallback 到 `loop-state.json`。
+
+## QA 分級
+
+### lite QA
+
+給一般模式用。
+
+用途：
+
+- 小功能
+- 連續修補
+- 先解 blocker
+- 不想每一輪都跑完整 build / browser / db tests
+
+預設內容：
+
+- `ai-team:check`
+- `npm run lint`
+- 其他完整 gate 以 `SKIP` 記錄，不當成失敗
+
+### full QA
+
+給睡覺模式或整批功能收尾時用。
+
+預設內容：
+
+- `ai-team:check`
+- `npm run lint`
+- `npm test`（只有非 production `TEST_DATABASE_URL` 可用時）
+- `npm run build`
+- Playwright browser QA
+- 必要時 fallback 到 `agy`
+
+## 為什麼要分級
+
+如果每修一個小按鈕都跑完整 QA，整個 loop 只會卡在驗證。
+
+所以現在規則是：
+
+- 小修先 lite QA
+- 一組功能完成再 full QA
+- 睡覺模式偏向 full QA
+
+這比較符合真實開發節奏。
+
+## 並行鎖
+
+runner 現在有三層 lock：
+
+- `runner.lock.json`
+- `qa.lock.json`
+- `codex.lock.json`
+
+作用：
+
+- 避免同時開兩個 AI_TEAM loop 互撞
+- 避免背景 runner 跟手動 `ai-team:qa` 同時跑
+- 避免 Codex CLI 被同類流程重複呼叫
+
+若遇到 lock，不直接當成失敗，而是寫明確 `SKIP` / `LOCKED` 原因。
+
+## 失敗報告
+
+`local-qa` 現在不只寫 PASS / FAIL。
+失敗時會把這些資訊寫進 runtime 報告：
+
+- exit code
+- stdout tail
+- stderr tail
+- Supabase / Docker 診斷
+
+這樣下一輪 Codex CLI 跟本地模型才有東西可讀，不會只看到一句「失敗」。
+
+## runtime 輸出
+
+所有執行期資料都寫到 `AI_TEAM/runtime/`：
+
+- `qa-report.md`
+- `browser-qa.md`
+- `error-summary.md`
+- `static-qa.md`
+- `code-review.md`
+- `final-report.md`
+- `next-codex-prompt.md`
+- `codex-exec-prompt.md`
+- `codex-last-message.md`
+- `health-summary.md`
+- `runner-log.md`
+- `loop-state.json`
+- `current-worker.json`
+- `worker-result.json`
+- `heartbeat.json`
+- `delivery-state.json`
+
+這些檔案是 loop 的工作記憶，不提交 git。
+
+## 一般模式 vs 睡覺模式
+
+### 一般模式
+
+- Codex CLI 主開發
+- lite QA
+- 快模型整理摘要
+- 適合白天快速連跑
+
+### 睡覺模式
+
+- Codex CLI 主開發
+- full QA
+- 深模型做較完整 review
+- 適合長時間 unattended 跑到下一個穩定點
 
 ## 明確不做
 
-- 不修改 production DB。
-- 不部署 Production。
-- 不送 Meta App Review。
-- 不切 PayUNI production。
-- 不讀取或輸出 secret。
-- 不自動 commit / push / merge。
-- 不讓本地模型直接主導高風險產品程式碼修改。
+- 不修改 production DB
+- 不跑 production migration
+- 不送 Meta App Review
+- 不切 PayUNI production
+- 不輸出 secret
 
-## 使用情境
+## 目前的自動交付邊界
 
-- 平常使用 `npm run ai-team:loop:general`，讓它用快一點的本地模型持續跑 QA + 報告。
-- 睡前使用 `npm run ai-team:loop:sleep`，讓它用比較慢但品質較高的本地模型長跑。
-- 若只想跑一輪，用 `npm run ai-team:loop:once` 或 `npm run ai-team:loop:once:sleep`。
-- Codex 接手時，優先讀：
-  - `AI_TEAM/runtime/qa-report.md`
-  - `AI_TEAM/runtime/browser-qa.md`
-  - `AI_TEAM/runtime/final-report.md`
-  - `AI_TEAM/runtime/next-codex-prompt.md`
-- 若 runtime 還沒有輸出，再退回讀 `AI_TEAM/reports/*.md` 基線文件。
+AI_TEAM 現在是「完整開發閉環 runner」，在沒有人工阻塞時，可以一路做完：
 
-## 後續可擴充
+- 持續改碼
+- 持續驗證
+- 持續 QA
+- 持續更新 runtime 報告
+- commit / push / PR / merge
+- deployment
 
-- 接 git safety checker，產生「可提交 / 不可提交」檔案分類。
-- 接 PR status reader，但仍不自動 production deploy。
-- 讓本地模型針對低風險文件 / UI 文案產出 patch 建議，但仍由 Codex 決定是否套用。
+如果你要暫停，直接關掉 PowerShell 7 或手動停 runner 就可以。
+
+需要第三方後台登入的人工作業還是要保留人工 gate，其他能安全自動完成的就往前推，不要停在半套。

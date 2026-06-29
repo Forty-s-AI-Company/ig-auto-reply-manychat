@@ -1926,3 +1926,19 @@ Remaining:
 - `[ ]` Run one disposable-branch non-smoke delivery to validate real add / commit / push / draft PR / merge gate behavior.
 - `[ ]` Decide whether preview deploy should ever be auto-enabled in general mode, or remain sleep-mode/manual only.
 - `[ ]` Reconnect the now-complete delivery runner back to product work instead of staying on infrastructure-only tasks.
+
+## Latest - 2026-06-30 AI_TEAM disposable branch real delivery validation
+
+Current status:
+
+- `[x]` disposable branch `codex/ai-team-disposable-delivery-002` 已真實建立。
+- `[x]` 真實 `git add` / `git commit` / `git push` / draft PR 已完成。
+- `[x]` PR metadata 已建立，PR URL：`https://github.com/Forty-s-AI-Company/ig-auto-reply-manychat/pull/38`
+- `[x]` `merge-delivery` 已真實驗證 draft PR gate，且確實 blocked。
+- `[x]` `git-delivery` 已改成只交付 queue task scope，避免整個髒工作樹一起送上去。
+- `[x]` queue / current-task / backlog / reports / docs 已同步完成這個主題的驗證結果。
+
+Remaining:
+
+- `[ ]` 將這套 delivery validation 接回下一個產品主題，而不是再跑流程本身。
+- `[ ]` 評估 `merge-delivery` 在一般模式是否要維持 draft gate 鎖定。

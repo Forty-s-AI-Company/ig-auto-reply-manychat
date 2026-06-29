@@ -51,7 +51,7 @@
     {
       "id": "ai-team-disposable-delivery-002",
       "title": "AI_TEAM disposable branch real delivery validation",
-      "status": "running",
+      "status": "completed",
       "priority": 2,
       "lane": "ai-team",
       "scope": [
@@ -80,7 +80,14 @@
       ],
       "startedAt": "2026-06-29T19:03:59.301Z",
       "lastPickedAt": "2026-06-29T19:03:59.301Z",
-      "attempts": 1
+      "attempts": 1,
+      "completedAt": "2026-06-30T03:06:51.000Z",
+      "summary": "真實 disposable branch delivery 已完成 commit / push / draft PR，並驗證 merge gate 會阻擋 draft PR。",
+      "validation": [
+        "npx eslint AI_TEAM/scripts/ai-team-runner.mjs",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery"
+      ]
     }
   ]
 }

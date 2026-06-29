@@ -14,6 +14,7 @@ export const trackedFiles = {
   acceptance: path.join(aiTeamRoot, "tasks", "acceptance.md"),
   currentTask: path.join(aiTeamRoot, "tasks", "current-task.md"),
   backlog: path.join(aiTeamRoot, "tasks", "backlog.md"),
+  queue: path.join(aiTeamRoot, "tasks", "queue.json"),
   readme: path.join(aiTeamRoot, "README.md"),
   modelAssignment: path.join(aiTeamRoot, "MODEL_ASSIGNMENT.md"),
   runnerDesign: path.join(aiTeamRoot, "RUNNER_DESIGN.md"),
@@ -36,6 +37,16 @@ export const runtimeFiles = {
   nextPrompt: path.join(runtimeDir, "next-codex-prompt.md"),
   runnerLog: path.join(runtimeDir, "runner-log.md"),
   pipelineState: path.join(runtimeDir, "pipeline-state.json"),
+  loopState: path.join(runtimeDir, "loop-state.json"),
+  deliveryState: path.join(runtimeDir, "delivery-state.json"),
+  currentWorker: path.join(runtimeDir, "current-worker.json"),
+  workerResult: path.join(runtimeDir, "worker-result.json"),
+  heartbeat: path.join(runtimeDir, "heartbeat.json"),
+  runnerLock: path.join(runtimeDir, "runner.lock.json"),
+  qaLock: path.join(runtimeDir, "qa.lock.json"),
+  codexLock: path.join(runtimeDir, "codex.lock.json"),
+  codexPrompt: path.join(runtimeDir, "codex-exec-prompt.md"),
+  codexLastMessage: path.join(runtimeDir, "codex-last-message.md"),
 };
 
 export function ensureRuntimeDir() {

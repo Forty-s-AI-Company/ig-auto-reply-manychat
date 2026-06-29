@@ -33,6 +33,15 @@
 - QA runner 已補 lock 與失敗細節輸出，之後若 `npm test` 或 `build` 掛掉，報告裡會直接帶 exit code 與 stdout / stderr tail。
 - `npm run ai-team:check`、`npm run ai-team:loop:smoke`、`--only-worker=merge-delivery` smoke replay 都已驗證通過。
 
+## Disposable Branch Delivery Validation
+
+- 已建立 disposable branch：`codex/ai-team-disposable-delivery-002`
+- 已真實完成 `git add` / `git commit` / `git push`
+- 已建立 draft PR：[`#38`](https://github.com/Forty-s-AI-Company/ig-auto-reply-manychat/pull/38)
+- `merge-delivery` 已真實驗證 draft PR gate，且確實 blocked
+- `git-delivery` 已改成只交付 queue task scope，避免整個髒工作樹被一起送出
+- 這一輪沒有執行 Production deploy，也沒有碰 production DB
+
 ## 這輪影響
 
 - AI_TEAM 現在已經具備主題級 runner / state / docs / smoke / delivery 閉環。
@@ -40,7 +49,6 @@
 
 ## 剩餘 P0 / P1
 
-- P0：做一次 disposable branch 的真實 add / commit / push / draft PR / merge gate 驗證，確認非 smoke 路徑成立。
 - P0：把這套 delivery autonomy 實際接回產品主線任務，例如 Inbox / Channels visible-but-unusable 修復。
 - P1：進一步收斂本地模型輸出品質，避免 `code-review.md` 混入 ANSI spinner 或 timeout 雜訊。
 - P1：決定是否讓 browser QA 在睡覺模式成為 merge 前硬性 gate。

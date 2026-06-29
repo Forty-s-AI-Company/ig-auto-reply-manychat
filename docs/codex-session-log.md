@@ -5405,6 +5405,39 @@ Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-06-30 - AI_TEAM disposable branch real delivery validation
+
+Task:
+
+- 在 disposable branch 上做一次真實 `add / commit / push / draft PR`，並驗證 `merge-delivery` 對 draft PR 的 gate 行為。
+
+Changes:
+
+- `AI_TEAM/scripts/ai-team-runner.mjs`
+  - `git-delivery` 改成以 queue task scope 交付，避免把整個髒工作樹一起帶走。
+  - 對 scope 內明確包含的 `AI_TEAM/reports/*` 檔案，放行為可提交檔案。
+  - `merge-delivery` 保持 draft PR 阻擋，作為真實 gate 驗證。
+- `AI_TEAM/tasks/queue.json`
+  - `ai-team-disposable-delivery-002` 已被標記為完成，並留下驗證紀錄。
+- `AI_TEAM/tasks/current-task.md`
+  - 收斂為 Completed，下一個主題切到 runner hygiene。
+- `AI_TEAM/tasks/backlog.md`
+  - 標記 AI_TEAM delivery validation 已完成，保留下一個主題的排序。
+- `AI_TEAM/reports/dev-report.md`
+  - 追加這輪 disposable branch real delivery validation 的摘要。
+- `AI_TEAM/reports/final-report.md`
+  - 追加這輪真實交付結果與 residual risk。
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery`: passed，commit / push / draft PR success。
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery`: passed，draft PR gate blocked as expected。
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-06-30 - AI_TEAM delivery autonomy closeout
 
 Task:

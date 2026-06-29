@@ -70,6 +70,26 @@
   - `docs/codex-session-log.md`
   - `docs/fix-roadmap.md`
 
+## Latest - 2026-06-30 AI_TEAM disposable branch real delivery validation
+
+Current status:
+
+- `[x]` 已在 disposable branch `codex/ai-team-disposable-delivery-002` 真實完成 `git add` / `git commit` / `git push` / draft PR。
+- `[x]` PR metadata 已生成，PR URL：`https://github.com/Forty-s-AI-Company/ig-auto-reply-manychat/pull/38`
+- `[x]` `merge-delivery` 已真實驗證 draft PR gate，並且正確被 blocked。
+- `[x]` `git-delivery` 已改成只交付 queue task scope，不會把整個髒工作樹一起帶上去。
+- `[x]` queue / current-task / backlog / reports / docs 已同步完成這個主題的驗證結果。
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery`: passed, commit / push / draft PR success.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery`: passed, draft PR gate blocked as expected.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## Previous Round
 
 - What changed:
