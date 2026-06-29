@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-30T00:00:00.000Z",
+  "tasks": [
+    {
+      "id": "ai-team-delivery-disposable-001",
+      "title": "AI_TEAM git delivery disposable verification",
+      "status": "pending",
+      "priority": 1,
+      "lane": "runner-delivery",
+      "scope": [
+        "AI_TEAM",
+        "package.json",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review"
+      ],
+      "acceptance": [
+        "用 disposable worktree / branch 驗證 AI_TEAM git-delivery 的真實 add / commit / push / draft PR 路徑",
+        "驗證 auto-branch 與 dry-run 關閉後的實際行為",
+        "確認 PR metadata 預設值正確",
+        "維持 Production deploy 關閉"
+      ]
+    }
+  ]
+}
