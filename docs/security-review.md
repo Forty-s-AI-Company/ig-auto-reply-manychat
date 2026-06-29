@@ -18,6 +18,24 @@ Residual risk:
 - Authenticated DB-backed Inbox smoke still needs local non-production credentials and `TEST_DATABASE_URL` in this clean worktree to run end to end.
 - Export, block, and unsubscribe operations remain intentionally unavailable until permission, sync, and audit boundaries are defined.
 
+## 2026-06-30 - Contacts custom field same-origin hardening
+
+Scope:
+
+- Added `assertSameOriginRequest` to `PUT /api/contacts/[id]/fields`.
+- Kept the change scoped to the Contacts custom field write path.
+- No production DB write, migration, `db push`, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- Contacts custom field writes now use the same origin guard as the other sensitive write routes, which reduces CSRF-style abuse risk.
+- The change does not touch tenant data model, schema, or production secrets.
+
+Residual risk:
+
+- Authenticated Contacts smoke still depends on local non-production test data.
+- More Contacts write paths may still need the same-origin / rate-limit audit if future tasks expand the surface.
+
 # 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
 
 Scope:

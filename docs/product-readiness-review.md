@@ -51,6 +51,33 @@ Status: documentation re-org only; product readiness unchanged.
 
 # InboxPilot Product Readiness Review
 
+## 2026-06-30 - Contacts product completeness sweep
+
+Status: improved for operator trust; public paid launch status remains Hold.
+
+- Contacts segment 建立前現在會先顯示這組條件會套用到多少聯絡人，少一個盲建分群的風險。
+- Batch tag 區塊在沒有可用標籤時，會直接提示先建立標籤，不再像半開發完成的操作面板。
+- `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts 寫入路徑比前一版更完整。
+- `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+
+Readiness implication:
+
+- Contacts 的操作理解度與安全邊界都小幅改善。
+- Public paid launch 仍維持 Hold；這輪沒有碰 production DB、Meta review、或 PayUNI production。
+
+## 2026-06-30 - Channels / Connect visible-but-unusable sweep
+
+Status: improved for beta operator trust; public paid launch status remains Hold.
+
+- Channels / Connect 現在把入口拆成可連線 / 規劃中 / 暫停中，未開放平台不再像同一種即將可用的主入口。
+- `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明，減少需要猜測 title 的情況。
+- `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Readiness implication:
+
+- Channels / Connect 又少了一批看得到但不能直接用的控制項。
+- Public paid launch 仍維持 Hold；這輪只做 UI / smoke 收斂，沒有碰 production DB、Meta、或 PayUNI production。
+
 ## 2026-06-30 - Inbox visible-but-unusable follow-up
 
 Status: improved for beta operator trust; public paid launch status remains Hold.

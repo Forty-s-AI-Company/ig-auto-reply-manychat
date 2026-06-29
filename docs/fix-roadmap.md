@@ -1,5 +1,34 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-30 Contacts product completeness sweep
+
+Current status:
+
+- `[x]` Contacts segment 建立前現在會顯示目前條件會套用到多少聯絡人，避免使用者盲建分群。
+- `[x]` Batch tag 操作在沒有標籤時會直接提示先建立標籤，不再留下半套操作區。
+- `[x]` `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts custom field 寫入路徑不再少一層既有防線。
+- `[x]` `tests/e2e/contacts-auth.spec.ts` 與 `tests/tenant-isolation-routes.test.ts` 都已補對應 smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+
+Remaining:
+
+- `[ ]` 若後續還有 Contacts 其他看得到但不夠清楚的控制項，再接下一輪安全收斂。
+- `[ ]` 保持 production DB、migration、Meta App Review、PayUNI production 都在人工 gate 外。
+
+## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
+
+Current status:
+
+- `[x]` Channels / Connect 入口已改成可連線 / 規劃中 / 暫停中的分流。
+- `[x]` `InstagramChannelActions` 在授權不足時會顯示 inline disabled 說明，不再只靠 title。
+- `[x]` `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 都已補 smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Remaining:
+
+- `[ ]` 如果後續還有其他 Channels / Connect visible-but-unusable 控制項，再接下一輪安全收斂。
+- `[ ]` 保持 Production deploy、production DB 寫入、Meta App Review、PayUNI production 都在人工 gate 外。
+
 ## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
 
 Current status:

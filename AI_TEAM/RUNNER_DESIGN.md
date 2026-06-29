@@ -20,6 +20,7 @@ AI_TEAM runner 現在不是單純的 QA 報告機。
 1. `planner`
    - 讀 `queue.json`
    - 選定 pending / running task
+   - 若 queue 沒有 pending / running task，會依產品優先序自動補入下一個安全產品任務
    - 寫入 `loop-state.json`
 2. `codex-dev`
    - 呼叫 `codex exec`
@@ -71,6 +72,30 @@ queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
 - `completed`
 - `blocked`
 - `failed`
+
+## 產品任務自動補題
+
+完全自動閉環模式下，`planner` 不會因為 `queue.json` 暫時沒有 pending task 就直接停住。
+
+當 queue 空掉時，runner 會依固定產品主線自動補入下一個尚未完成的安全任務：
+
+1. Inbox visible-but-unusable product sweep
+2. Channels / Connect visible-but-unusable product sweep
+3. Contacts product completeness sweep
+4. Automations scope clarity and disabled UX sweep
+5. Analytics readability and data-state sweep
+6. Billing / PayUNI Sandbox product readiness sweep
+7. Launch readiness product sweep
+
+這些任務仍遵守 hard stop：
+
+- 不碰 production DB
+- 不跑 migration / db push
+- 不部署 Production
+- 不送 Meta App Review
+- 不切 PayUNI production
+
+若這些產品主線任務都已完成，planner 才會回報 `autofill exhausted`，表示目前自動化範圍內沒有下一個安全任務。
 
 ## Worker Result Schema
 

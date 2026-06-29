@@ -23,12 +23,27 @@
 
 # Project Launch Checklist
 
+## 2026-06-30 - Channels / Connect visible-but-unusable sweep
+
+- `[x]` Channels / Connect 現在把可連線 / 規劃中 / 暫停中的入口分流得更清楚，降低把未開放平台誤認成可直接授權的機率。
+- `[x]` `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+- `[ ]` 若後續還有新的 Channels / Connect visible-but-unusable 控制項，再依同樣標準收斂。
+
 ## 2026-06-30 - Inbox visible-but-unusable follow-up
 
 - `[x]` Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX，不再看起來像可直接使用的功能。
 - `[x]` simple-release Inbox 的序列訂閱入口已改成真正 disabled UX，避免把 full-release 才有的功能誤導成可操作。
 - `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
 - `[ ]` 若後續還有其他 visible-but-unusable 控制項，再依同樣標準收斂。
+
+## 2026-06-30 - Contacts product completeness sweep
+
+- `[x]` Contacts 現在會先顯示 segment 條件會套用到多少聯絡人，建立分群前不再完全靠猜。
+- `[x]` Batch tag 操作在沒有標籤時會直接提示先建立標籤，避免留下看起來可操作、其實還不完整的區塊。
+- `[x]` `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts write path 的安全邊界比較完整。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+- `[ ]` 如果後續要繼續做 Contacts 深度收斂，可以再補更完整的匯入 / 空狀態引導。
 
 # 2026-06-30 - Contacts filtered empty-state guidance
 

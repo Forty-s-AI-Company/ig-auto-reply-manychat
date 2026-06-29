@@ -84,6 +84,7 @@ export default async function ContactsPage({
         totalContacts={totalContacts}
         subscribedCount={subscribedCount}
         unknownCount={unknownCount}
+        filteredContactCount={contacts.length}
         q={q}
         status={status}
         tagId={tagId}

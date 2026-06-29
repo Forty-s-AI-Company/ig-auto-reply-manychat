@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T06:34:00.000Z",
+  "updatedAt": "2026-06-30T04:05:00.000Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -207,7 +207,7 @@
         "不能安全支援的改成清楚 disabled UX",
         "補 focused tests 或 authenticated Playwright smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -221,16 +221,128 @@
       "startedAt": "2026-06-29T22:24:04.110Z",
       "lastPickedAt": "2026-06-30T06:34:00.000Z",
       "attempts": 3,
-      "completedAt": "2026-06-30T06:34:00.000Z",
-      "lastSummary": "Inbox contact actions 匯出 / 封鎖項目與 simple-release 序列訂閱入口已改成真正 disabled UX，並補上 focused smoke。",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
+      "lastValidation": [
+        "沒有可提交檔案。",
+        "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/inbox-visible-but-unusable-autofill",
+        "scope=13",
+        "ignored-out-of-scope=6"
+      ],
+      "blockedAt": "2026-06-29T22:55:42.094Z"
+    },
+    {
+      "id": "channels-connect-visible-but-unusable-autofill",
+      "title": "Channels / Connect visible-but-unusable product sweep",
+      "priority": 2,
+      "lane": "product",
+      "scope": [
+        "src/app/channels/page.tsx",
+        "src/app/channels/connect/page.tsx",
+        "src/app/channels/connect/social/page.tsx",
+        "src/components/InstagramChannelActions.tsx",
+        "src/components/RefreshInstagramProfileButton.tsx",
+        "src/components/InboxPilotAccountDropdown.tsx",
+        "tests/channels-connect-visibility.test.ts",
+        "tests/instagram-profile-refresh-route.test.ts",
+        "tests/account-channel-list.test.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Channels / Connect / Social connect 入口不再有假按鈕或模糊狀態",
+        "IG metadata refresh / token / permission 類錯誤必須是使用者可讀訊息",
+        "simple release 與 full release 入口分流清楚",
+        "補 focused tests 或 browser smoke"
+      ],
+      "status": "blocked",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-29T22:55:42.356Z",
+      "summary": "Channels / Connect 入口現在以可連線 / 規劃中 / 暫停中分流，並補上 inline disabled 說明與 simple-release visibility smoke。",
+      "startedAt": "2026-06-29T22:55:42.357Z",
+      "lastPickedAt": "2026-06-29T22:55:42.357Z",
+      "attempts": 1,
+      "validation": [
+        "npx eslint src/lib/channels/channel-connect-visibility.ts src/app/channels/page.tsx src/app/channels/connect/page.tsx src/components/InstagramChannelActions.tsx tests/channels-connect-visibility.test.ts tests/e2e/simple-release.spec.ts",
+        "npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot",
+        "npm run lint",
+        "npm run build",
+        "npm test",
+        "npm run test:e2e:simple"
+      ],
+      "blockedAt": "2026-06-29T23:17:38.248Z",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
+      "lastValidation": [
+        "沒有可提交檔案。",
+        "branch codex/channels-connect-visible-but-unusable-sweep-20260630 可進入交付 gate。",
+        "scope=18",
+        "ignored-out-of-scope=6"
+      ]
+    },
+    {
+      "id": "contacts-product-completeness-autofill",
+      "title": "Contacts product completeness sweep",
+      "priority": 3,
+      "lane": "product",
+      "scope": [
+        "src/app/contacts",
+        "src/components/ContactsListClient.tsx",
+        "src/app/api/contacts",
+        "tests/e2e/contacts-auth.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Contacts 篩選、批次操作、空狀態與錯誤回饋都不再像半成品",
+        "安全可支援的操作補最小可用",
+        "暫時不支援的操作改為清楚 disabled UX",
+        "補 focused tests 或 authenticated Playwright smoke"
+      ],
+      "status": "completed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-29T23:17:38.352Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-29T23:17:38.354Z",
+      "lastPickedAt": "2026-06-29T23:17:38.354Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T04:05:00.000Z",
+      "lastSummary": "Contacts product completeness sweep 已完成，segment preview、batch tag hint、same-origin guard 與 deterministic smoke 都已收斂。",
       "lastWorker": "reporter",
       "lastValidation": [
-        "npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts tests/e2e/simple-release.spec.ts",
-        "npm run test:e2e:inbox",
-        "npm run test:e2e:simple",
-        "npm run lint",
-        "npm test",
-        "npm run build"
+        "npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts",
+        "npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot",
+        "npm run build",
+        "npm run test:e2e:contacts",
+        "npm test"
       ]
     }
   ]

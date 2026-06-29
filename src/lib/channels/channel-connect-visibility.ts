@@ -13,6 +13,13 @@ type VisibilityContext = {
   deploymentEnv: InboxPilotDeploymentEnv;
 };
 
+export type ChannelConnectUiState = {
+  visible: boolean;
+  enabled: boolean;
+  disabledReason: string;
+  statusLabel: string;
+};
+
 function isMockUiAllowed(deploymentEnv: InboxPilotDeploymentEnv) {
   return deploymentEnv === "development" || deploymentEnv === "test" || deploymentEnv === "unknown";
 }
@@ -23,6 +30,7 @@ export function getChannelConnectOptionState(optionId: ChannelConnectOptionId, c
       visible: false,
       enabled: false,
       disabledReason: "",
+      statusLabel: "",
     };
   }
 
@@ -32,6 +40,7 @@ export function getChannelConnectOptionState(optionId: ChannelConnectOptionId, c
       visible: true,
       enabled,
       disabledReason: enabled ? "" : "Mock OAuth 只保留給本機與 QA 測試環境，已部署站台不提供這個入口。",
+      statusLabel: enabled ? "本機 / QA 可用" : "已停用",
     };
   }
 
@@ -40,6 +49,7 @@ export function getChannelConnectOptionState(optionId: ChannelConnectOptionId, c
       visible: true,
       enabled: false,
       disabledReason: "這個平台尚未進入正式可用範圍，先保留清楚的 disabled 入口。",
+      statusLabel: "尚未開放",
     };
   }
 
@@ -47,6 +57,7 @@ export function getChannelConnectOptionState(optionId: ChannelConnectOptionId, c
     visible: true,
     enabled: true,
     disabledReason: "",
+    statusLabel: "可連線",
   };
 }
 
@@ -56,6 +67,7 @@ export function getOAuthProviderUiState(providerId: OAuthProviderId, context: Vi
       visible: false,
       enabled: false,
       disabledReason: "",
+      statusLabel: "",
     };
   }
 
@@ -65,6 +77,7 @@ export function getOAuthProviderUiState(providerId: OAuthProviderId, context: Vi
       visible: true,
       enabled,
       disabledReason: enabled ? "" : "Mock OAuth 只提供本機與 QA 驗證 popup 流程，已部署站台不開放。",
+      statusLabel: enabled ? "本機 / QA 可用" : "已停用",
     };
   }
 
@@ -72,5 +85,6 @@ export function getOAuthProviderUiState(providerId: OAuthProviderId, context: Vi
     visible: true,
     enabled: true,
     disabledReason: "",
+    statusLabel: "可連線",
   };
 }

@@ -28,12 +28,18 @@ export function InstagramChannelActions({
   hasStoredToken = true,
   loginProvider = "instagram",
 }: InstagramChannelActionsProps) {
-  const [state, setState] = useState<ActionState>(idleState);
   const disabledReasons = {
     media: getChannelActionDisabledReason("media", { hasStoredToken, loginProvider }),
     comments: getChannelActionDisabledReason("comments", { hasStoredToken, loginProvider }),
     token: getChannelActionDisabledReason("token", { hasStoredToken, loginProvider }),
   };
+  const disabledReasonList = Object.values(disabledReasons).filter((reason): reason is string => Boolean(reason));
+  const idleMessage =
+    disabledReasonList.length > 0
+      ? "部分 Instagram 動作目前先停用，請先查看下方說明。"
+      : "可直接測試貼文讀取、留言同步與長效權杖更新。";
+
+  const [state, setState] = useState<ActionState>(idleState);
 
   async function runAction(action: "media" | "token" | "comments") {
     const disabledReason = disabledReasons[action];
@@ -87,13 +93,19 @@ export function InstagramChannelActions({
 
   const messageClass =
     state.tone === "success" ? "text-green-300" : state.tone === "error" ? "text-red-300" : "text-zinc-400";
+  const displayedMessage =
+    state.tone === "neutral"
+      ? state.message === idleState.message || !disabledReasonList.includes(state.message)
+        ? idleMessage
+        : state.message
+      : state.message;
 
   return (
     <div className="mt-4 rounded-md border border-cyan-900/70 bg-cyan-950/20 p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-sm font-medium text-cyan-100">Instagram 功能已開始實作</p>
-          <p className={`mt-1 text-xs ${messageClass}`}>{state.message}</p>
+          <p className={`mt-1 text-xs ${messageClass}`}>{displayedMessage}</p>
         </div>
         {state.loading ? <RefreshCw className="h-4 w-4 animate-spin text-cyan-200" aria-hidden="true" /> : null}
       </div>
@@ -139,6 +151,11 @@ export function InstagramChannelActions({
           更新長效權杖
         </button>
       </div>
+      {disabledReasonList.length > 0 ? (
+        <p className="mt-3 text-xs leading-6 text-cyan-100/80">
+          目前至少有一個 Instagram 動作先維持 disabled：{disabledReasonList.join("；")}。
+        </p>
+      ) : null}
     </div>
   );
 }

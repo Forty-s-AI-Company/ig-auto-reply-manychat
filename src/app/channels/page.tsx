@@ -298,7 +298,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <h3 className="font-medium text-[#111827]">{entry.name}</h3>
                       <p className="mt-1 text-sm leading-6 text-[#667085]">{entry.description}</p>
                     </div>
-                    <Plug className="h-5 w-5 text-[#98a2b3]" />
+                    <div className="flex flex-col items-end gap-2">
+                      <ConnectionStateBadge tone={entry.kind === "static" ? "neutral" : entry.uiState.enabled ? "success" : "warning"}>
+                        {entry.kind === "static" ? "規劃中" : entry.uiState.statusLabel || "暫停中"}
+                      </ConnectionStateBadge>
+                      <Plug className="h-5 w-5 text-[#98a2b3]" />
+                    </div>
                   </div>
                   {entry.kind === "static" ? (
                     <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
@@ -314,7 +319,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-[#b54708]">
                         {entry.uiState.disabledReason}
                       </div>
-                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : "正式開放後可連線"}</DisabledFeatureButton>
+                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : entry.uiState.statusLabel || "尚未開放"}</DisabledFeatureButton>
                     </>
                   )}
                 </div>
@@ -496,6 +501,27 @@ function SettingPanel({
 function StatusBadge({ children }: { children: ReactNode }) {
   return (
     <span className="inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+      {children}
+    </span>
+  );
+}
+
+function ConnectionStateBadge({
+  tone,
+  children,
+}: {
+  tone: "success" | "warning" | "neutral";
+  children: ReactNode;
+}) {
+  const toneClasses =
+    tone === "success"
+      ? "border-green-200 bg-green-50 text-green-700"
+      : tone === "warning"
+        ? "border-amber-200 bg-amber-50 text-amber-700"
+        : "border-slate-200 bg-slate-50 text-slate-600";
+
+  return (
+    <span className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${toneClasses}`}>
       {children}
     </span>
   );

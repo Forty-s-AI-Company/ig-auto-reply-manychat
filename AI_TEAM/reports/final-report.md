@@ -1,5 +1,43 @@
 # Final Report
 
+## Latest - 2026-06-30 Contacts product completeness sweep
+
+Status:
+
+- `Completed` for the scoped Contacts product completeness sweep.
+
+Completed this round:
+
+- Contacts segment 建立前現在會先顯示條件會套用到多少聯絡人，避免盲建分群。
+- Batch tag 區塊在沒有標籤時會直接提示先建立標籤，少掉一個半成品感很重的操作面板。
+- `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts custom field write path 的安全邊界更完整。
+- `tests/e2e/contacts-auth.spec.ts` 已改成先重置 detail contact，再驗證 cancel / save，smoke 不再吃歷史資料殘留。
+- `tests/tenant-isolation-routes.test.ts` 已補 custom field same-origin guard 測試。
+- `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+
+Residual risk:
+
+- 這輪只收斂 Contacts 的可見完整性與一條敏感 write path，還有其他 Contacts surface 可以再分批補。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
+
+Status:
+
+- `Completed` for the scoped Channels / Connect visible-but-unusable sweep.
+
+Completed this round:
+
+- Channels / Connect 現在把入口拆成可連線 / 規劃中 / 暫停中，未開放平台不再像同一種即將可用的主入口。
+- `InstagramChannelActions` 在授權不足時會直接顯示 inline disabled 說明，降低只靠 title 才知道被停用的情況。
+- `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Channels / Connect visibility smoke。
+- `npm run lint`、`npm run build`、`npm test`、`INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple` 都已通過。
+
+Residual risk:
+
+- 這輪只處理 Channels / Connect 的 visible-but-unusable 收斂，之後若再出現新的假按鈕或模糊狀態，可以接下一輪再補。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 ## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
 
 Status:

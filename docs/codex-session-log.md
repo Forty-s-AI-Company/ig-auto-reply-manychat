@@ -1,5 +1,88 @@
 # Codex Session Log
 
+## 2026-06-30 - Contacts product completeness sweep
+
+Task:
+
+- 把 Contacts 再收斂一輪，補上 segment 建立前的可見預覽、batch 標籤操作的空資料提示，並確認 custom field 寫入路徑不會少掉同源防護。
+- 讓 Contacts detail smoke 在既有測試資料可能已被前一輪修改時，仍可先重置狀態再驗證，避免結果不穩定。
+
+Result:
+
+- `src/app/contacts/page.tsx` 現在會把目前 filtered contact count 傳進列表 client，供 segment 預覽使用。
+- `src/components/ContactsListClient.tsx` 的建立 segment 對話框現在會先顯示這組條件會套用到多少聯絡人，batch 標籤操作也會在沒有標籤時直接提示先建立標籤。
+- `src/app/api/contacts/[id]/fields/route.ts` 已補上 same-origin 驗證，避免 contact custom field 寫入路徑少掉既有的 CSRF 防線。
+- `tests/e2e/contacts-auth.spec.ts` 已把 detail smoke 改成先用 API 重置測試聯絡人狀態，再驗證 cancel / save 流程。
+- `tests/tenant-isolation-routes.test.ts` 已補上 custom field same-origin 防護測試。
+
+Validation:
+
+```text
+npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts
+Result: passed.
+
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Contacts 的產品完整性與 operator trust 小幅提升。
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+## 2026-06-30 - Channels / Connect visible-but-unusable sweep
+
+Task:
+
+- 把 Channels / Connect 裡那些看起來像同一種可連線入口、其實還在規劃中的卡片分流清楚。
+- 讓 Instagram 動作區在授權不足時，直接顯示 inline disabled 說明，不要只靠 tooltip 或按下去才知道。
+- 補 simple-release smoke，確認 Channels connect 只保留 Instagram 可見，其他入口不會假裝可用。
+
+Result:
+
+- `src/app/channels/connect/page.tsx` 已把可連線平台與規劃中 / 暫停中平台分成兩個區塊，並加上狀態 badge。
+- `src/app/channels/page.tsx` 的連線卡片也補了狀態 badge，讓設定頁更容易看出哪些入口真的能授權。
+- `src/components/InstagramChannelActions.tsx` 在授權不足時會直接顯示 inline disabled 說明。
+- `src/lib/channels/channel-connect-visibility.ts` 新增 `statusLabel`，統一可連線 / 本機 QA / 尚未開放 / 已停用的表達。
+- `tests/channels-connect-visibility.test.ts` 與 `tests/e2e/simple-release.spec.ts` 都補上了 Channels / Connect visibility smoke。
+- `.gitignore` 與 `test-results/.gitkeep` 一起把 lint 對乾淨工作樹的目錄依賴補穩，避免 `test-results` 不存在時直接掃失敗。
+
+Validation:
+
+```text
+npx eslint src/lib/channels/channel-connect-visibility.ts src/app/channels/page.tsx src/app/channels/connect/page.tsx src/components/InstagramChannelActions.tsx tests/channels-connect-visibility.test.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+INBOXPILOT_RELEASE_CHANNEL=simple npm run test:e2e:simple
+Result: passed for Chromium and mobile Chrome.
+```
+
+Launch impact:
+
+- Channels / Connect 的可讀性與 beta operator trust 有小幅改善。
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## 2026-06-30 - Inbox visible-but-unusable follow-up
 
 Task:

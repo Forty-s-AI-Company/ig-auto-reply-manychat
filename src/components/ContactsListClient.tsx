@@ -31,6 +31,7 @@ type ContactsListClientProps = {
   totalContacts: number;
   subscribedCount: number;
   unknownCount: number;
+  filteredContactCount: number;
   q: string;
   status: string;
   tagId: string;
@@ -58,6 +59,7 @@ export function ContactsListClient({
   totalContacts,
   subscribedCount,
   unknownCount,
+  filteredContactCount,
   q,
   status,
   tagId,
@@ -82,6 +84,16 @@ export function ContactsListClient({
   const visibleIds = contacts.map((contact) => contact.id);
   const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedSet.has(id));
   const activeTag = tags.find((tag) => tag.id === tagId);
+  const activeStatusLabel = statusOptions.find((option) => option.value === status)?.label || status;
+  const activeFilterLabels = useMemo(() => {
+    const labels: string[] = [];
+    if (q.trim()) labels.push(`搜尋「${q.trim()}」`);
+    if (status) labels.push(`狀態：${activeStatusLabel}`);
+    if (activeTag) labels.push(`標籤：${activeTag.name}`);
+    return labels;
+  }, [q, status, activeStatusLabel, activeTag]);
+  const hasActiveFilters = activeFilterLabels.length > 0;
+  const resetFiltersHref = buildContactHref(pathname, {});
 
   useEffect(() => {
     queueMicrotask(() => setIsHydrated(true));
@@ -371,9 +383,10 @@ export function ContactsListClient({
           </div>
         </header>
 
-        {status || tagId || message || error ? (
+        {q || status || tagId || message || error ? (
           <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-[#eef0f2] bg-[#f8fafc] px-5 py-2 text-sm">
-            {status ? <ActiveChip label={statusOptions.find((option) => option.value === status)?.label || status} href={buildContactHref(pathname, { q, tag: tagId })} /> : null}
+            {q ? <ActiveChip label={`搜尋：${q}`} href={buildContactHref(pathname, { status, tag: tagId })} /> : null}
+            {status ? <ActiveChip label={activeStatusLabel} href={buildContactHref(pathname, { q, tag: tagId })} /> : null}
             {activeTag ? <ActiveChip label={`標籤：${activeTag.name}`} href={buildContactHref(pathname, { q, status })} /> : null}
             {message ? <span className="rounded-md bg-green-50 px-3 py-1 text-green-700">{message}</span> : null}
             {error ? <span className="rounded-md bg-red-50 px-3 py-1 text-red-700">{error}</span> : null}
@@ -417,6 +430,7 @@ export function ContactsListClient({
             <button type="button" onClick={() => setSelectedIds([])} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
               取消選取
             </button>
+            {tags.length === 0 ? <span className="w-full text-xs text-[#b54708]">先建立標籤，才能批次加入或移除標籤。</span> : null}
           </div>
         ) : null}
 
@@ -473,7 +487,46 @@ export function ContactsListClient({
               {contacts.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center text-[#667085]">
-                    目前沒有符合條件的聯絡人。
+                    <div className="mx-auto flex max-w-2xl flex-col rounded-2xl border border-dashed border-[#d7dbe0] bg-[#f8fafc] px-6 py-8 text-left">
+                      <div className="flex items-start gap-4">
+                        <div className="mt-0.5 rounded-full bg-white p-2 text-[#006fe6] ring-1 ring-[#e4e7ec]">
+                          <Search className="h-5 w-5" aria-hidden="true" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-base font-semibold text-[#111827]">
+                            {hasActiveFilters ? "目前沒有符合這些篩選條件的聯絡人。" : "目前還沒有聯絡人。"}
+                          </h3>
+                          <p className="mt-2 max-w-xl text-sm leading-6 text-[#667085]">
+                            {hasActiveFilters
+                              ? `你現在套用了 ${activeFilterLabels.length} 個條件：${activeFilterLabels.join("、")}。先清除篩選回到完整聯絡人清單，再繼續找人。`
+                              : "目前沒有任何聯絡人資料。你可以先從 Instagram 對話累積名單，或稍後再回來查看。"}
+                          </p>
+                          {hasActiveFilters ? (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              {activeFilterLabels.map((label) => (
+                                <span key={label} className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-medium text-[#344054] ring-1 ring-inset ring-[#d7dbe0]">
+                                  {label}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                          <div className="mt-5 flex flex-wrap gap-2">
+                            {hasActiveFilters ? (
+                              <Link
+                                href={resetFiltersHref}
+                                data-testid="contacts-empty-clear-filters"
+                                className="inline-flex h-9 items-center justify-center rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8]"
+                              >
+                                清除篩選並重新查看
+                              </Link>
+                            ) : null}
+                            <Link href="/tags" className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
+                              前往標籤管理
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ) : null}
@@ -515,9 +568,14 @@ export function ContactsListClient({
                 className="mt-1 w-full rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
               />
             </label>
-            <div className="mt-4 rounded-md bg-[#f8fafc] px-3 py-2 text-xs text-[#667085]">
-              條件：{q ? `搜尋「${q}」` : "不限搜尋"} / {statusOptions.find((option) => option.value === status)?.label || "全部狀態"} /{" "}
-              {activeTag ? `標籤「${activeTag.name}」` : "不限標籤"}
+            <div className="mt-4 space-y-2">
+              <div className="rounded-md bg-[#f8fafc] px-3 py-2 text-xs text-[#667085]">
+                條件：{q ? `搜尋「${q}」` : "不限搜尋"} / {statusOptions.find((option) => option.value === status)?.label || "全部狀態"} /{" "}
+                {activeTag ? `標籤「${activeTag.name}」` : "不限標籤"}
+              </div>
+              <div className="rounded-md bg-[#eef6ff] px-3 py-2 text-xs text-[#0057b8]">
+                這組條件目前會套用到 {filteredContactCount} 位聯絡人。
+              </div>
             </div>
             <div className="mt-5 flex justify-end gap-2">
               <button type="button" onClick={() => setIsSegmentDialogOpen(false)} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
@@ -569,7 +627,7 @@ function ContactNavLink({
 function ActiveChip({ label, href }: { label: string; href: string }) {
   return (
     <Link href={href} className="inline-flex items-center gap-1 rounded-full border border-[#d7dbe0] bg-white px-3 py-1 text-[#344054] hover:bg-[#f2f4f7]">
-      {label}
+      <span className="max-w-[18rem] truncate">{label}</span>
       <X className="h-3.5 w-3.5" />
     </Link>
   );
