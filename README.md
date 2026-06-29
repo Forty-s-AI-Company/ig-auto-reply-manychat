@@ -91,8 +91,11 @@ npm run ai-team
 npm run ai-team:next
 npm run ai-team:check
 npm run ai-team:qa
+npm run ai-team:models
 npm run ai-team:loop:once
 ```
+
+執行期輸出現在會寫到 `AI_TEAM/runtime/`，避免長跑 runner 一直把 tracked 報告檔弄髒。
 
 ## 環境變數
 

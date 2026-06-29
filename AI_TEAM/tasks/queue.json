@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-29T20:55:00.000Z",
+  "tasks": [
+    {
+      "id": "ai-team-delivery-autonomy-001",
+      "title": "AI_TEAM delivery autonomy closeout",
+      "status": "completed",
+      "priority": 1,
+      "lane": "ai-team",
+      "scope": [
+        "AI_TEAM/scripts/ai-team-runner.mjs",
+        "AI_TEAM/scripts/ai-team.mjs",
+        "AI_TEAM/scripts/local-ai-team.ps1",
+        "AI_TEAM/scripts/lib/ai-team-paths.mjs",
+        "AI_TEAM/README.md",
+        "AI_TEAM/RUNNER_DESIGN.md",
+        "AI_TEAM/MODEL_ASSIGNMENT.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "queue 會真實更新 task lifecycle",
+        "runner 支援 only-worker replay",
+        "pipeline 補到 merge-delivery 與 deploy gate",
+        "一般模式 / 睡覺模式啟動器支援 unattended delivery flags",
+        "smoke 覆蓋 git-delivery / merge-delivery / deploy",
+        "README / RUNNER_DESIGN / docs 狀態同步"
+      ],
+      "completedAt": "2026-06-30T02:55:00.000Z",
+      "summary": "AI_TEAM 已補齊 queue lifecycle、worker replay、merge-delivery、deploy、launcher flags 與 smoke/docs 同步。",
+      "validation": [
+        "npm run ai-team:check",
+        "npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/ai-team.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs AI_TEAM/scripts/playwright-browser-qa.mjs",
+        "npm run ai-team:loop:smoke",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --smoke --only-worker=merge-delivery"
+      ]
+    },
+    {
+      "id": "ai-team-disposable-delivery-002",
+      "title": "AI_TEAM disposable branch real delivery validation",
+      "status": "completed",
+      "priority": 2,
+      "lane": "ai-team",
+      "scope": [
+        "AI_TEAM/scripts/ai-team-runner.mjs",
+        "AI_TEAM/scripts/local-ai-team.ps1",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "在 disposable branch 完成真實 add / commit / push / draft PR",
+        "驗證 merge gate 對 draft / checks / branch safety 的實際行為",
+        "不在 master/main/staging 直接 commit",
+        "docs 與 reports 同步真實 delivery 驗證結果"
+      ],
+      "startedAt": "2026-06-29T19:03:59.301Z",
+      "lastPickedAt": "2026-06-29T19:03:59.301Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T03:06:51.000Z",
+      "summary": "真實 disposable branch delivery 已完成 commit / push / draft PR，並驗證 merge gate 會阻擋 draft PR。",
+      "validation": [
+        "npx eslint AI_TEAM/scripts/ai-team-runner.mjs",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery"
+      ]
+    },
+    {
+      "id": "inbox-channels-visible-but-unusable-003",
+      "title": "Inbox / Channels visible-but-unusable closeout",
+      "status": "completed",
+      "priority": 2,
+      "lane": "product",
+      "scope": [
+        "src/components/InboxClient.tsx",
+        "src/components/InboxPilotAccountDropdown.tsx",
+        "src/lib/account-channel-list.ts",
+        "src/app/channels/page.tsx",
+        "src/app/channels/connect/page.tsx",
+        "src/app/channels/connect/social/page.tsx",
+        "tests/account-channel-list.test.ts",
+        "tests/e2e/inbox-auth.spec.ts",
+        "tests/e2e/simple-release.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "看得到但容易誤導的 Inbox / Channels 控制項都要變成最小可用或清楚 disabled UX",
+        "ID-only IG account dropdown 狀態要能明確看出資料尚未完整",
+        "focused tests / smoke 需要覆蓋新的 disabled UX",
+        "不碰 production DB，不部署 Production，不跑 migration / db push"
+      ],
+      "completedAt": "2026-06-29T20:55:00.000Z",
+      "summary": "Inbox / Channels visible-but-unusable closeout 已完成，header / contact / reminder / connect visibility 都收斂成較清楚的 disabled UX 或最小可用狀態。",
+      "validation": [
+        "npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts",
+        "npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot",
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ]
+    },
+    {
+      "id": "contacts-filtered-empty-state-guidance-004",
+      "title": "Contacts filtered empty-state guidance",
+      "status": "pending",
+      "priority": 2,
+      "lane": "product",
+      "scope": [
+        "src/components/ContactsListClient.tsx",
+        "tests/e2e/contacts-auth.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "filtered Contacts 空狀態要清楚說明目前套用哪些條件",
+        "要有明確的清除篩選或返回列表入口",
+        "focused tests / smoke 要覆蓋新的空狀態引導",
+        "不碰 production DB，不部署 Production，不跑 migration / db push"
+      ],
+      "summary": "下一個安全產品任務：讓 Contacts 在套用篩選時的空狀態更好理解，減少使用者以為資料消失的誤解。"
+    }
+  ]
+}

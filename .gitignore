@@ -39,6 +39,8 @@ reports/
 !AI_TEAM/reports/
 !AI_TEAM/reports/**
 AI_TEAM/reports/runner-log.md
+AI_TEAM/runtime/*
+!AI_TEAM/runtime/.gitkeep
 backups/
 __pycache__/
 **/__pycache__/

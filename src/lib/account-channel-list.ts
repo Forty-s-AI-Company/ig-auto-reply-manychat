@@ -15,6 +15,7 @@ export type AccountDropdownChannel = {
   avatarUrl: string;
   avatarFallback: string;
   metadataStatus: "complete" | "partial";
+  metadataHint: string;
 };
 
 export function buildAccountDropdownChannels(channels: InstagramChannelInput[]): AccountDropdownChannel[] {
@@ -43,6 +44,7 @@ export function buildAccountDropdownChannels(channels: InstagramChannelInput[]):
         avatarUrl: config.instagramProfilePictureUrl || "",
         avatarFallback: username ? username.slice(0, 2).toUpperCase() : "IG",
         metadataStatus,
+        metadataHint: metadataStatus === "partial" ? "資料未完整" : "",
       };
     })
     .sort(

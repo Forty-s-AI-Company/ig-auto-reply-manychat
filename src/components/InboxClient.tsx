@@ -64,6 +64,7 @@ type InboxCategory = "all" | "unassigned" | "assigned" | "reminders" | "favorite
 type StatusFilter = "open" | "all";
 type InboxNotice = { tone: "success" | "danger" | "info"; message: string };
 type MobilePane = "list" | "detail" | "contact";
+type ReminderPreset = { label: string; minutes: number };
 
 const NOT_SET = "未設定";
 const HOT_TAG = "熱門名單";
@@ -73,6 +74,12 @@ const NOTICE_STYLES: Record<InboxNotice["tone"], string> = {
   danger: "border-red-200 bg-red-50 text-red-800",
   info: "border-blue-200 bg-blue-50 text-blue-800",
 };
+const REMINDER_PRESETS: ReminderPreset[] = [
+  { label: "20 分鐘", minutes: 20 },
+  { label: "1 小時", minutes: 60 },
+  { label: "6 小時", minutes: 360 },
+  { label: "12 小時", minutes: 720 },
+];
 
 function latestMessage(conversation: Conversation) {
   return conversation.messages[conversation.messages.length - 1]?.text || "尚無訊息";
@@ -313,16 +320,16 @@ export function InboxClient({
     setNotice({ tone, message });
   }
 
-  function showUnavailableHeaderFeatureNotice(feature: "視訊通話" | "更多對話操作") {
-    const detail =
-      feature === "視訊通話"
-        ? "即時通話服務、權限控管與客服排班流程尚未完成。"
-        : "批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。";
-
-    showNotice(
-      "info",
-      `${feature} 目前已暫時停用，${detail}請先使用文字回覆、內部備註、指派、標籤與提醒。`,
-    );
+  function resetFilters(noticeMessage = "已重設 Inbox 篩選條件。") {
+    selectCategory("all");
+    setStatusFilter("open");
+    setUnreadOnly(false);
+    setSortNewest(true);
+    setChannelFilter("all");
+    setSelectedTagId("all");
+    setSelectedTeamMemberId("all");
+    setQuery("");
+    showNotice("info", noticeMessage);
   }
 
   function applyReplySuggestion() {
@@ -390,7 +397,10 @@ export function InboxClient({
     replaceConversation(await response.json());
   }
 
-  async function updateConversation(payload: Partial<Pick<Conversation, "status" | "assignedToId" | "reminderAt" | "isFavorite" | "lastReadAt">>) {
+  async function updateConversation(
+    payload: Partial<Pick<Conversation, "status" | "assignedToId" | "reminderAt" | "isFavorite" | "lastReadAt">>,
+    successMessage = "對話狀態已更新。",
+  ) {
     if (!selected) return;
     const response = await fetch(`/api/conversations/${selected.id}`, {
       method: "PATCH",
@@ -402,7 +412,7 @@ export function InboxClient({
       return;
     }
     replaceConversation(await response.json());
-    showNotice("success", "對話狀態已更新。");
+    showNotice("success", successMessage);
   }
 
   async function sendMessage() {
@@ -428,7 +438,7 @@ export function InboxClient({
 
   async function markRead() {
     if (!selected) return;
-    await updateConversation({ lastReadAt: new Date().toISOString() });
+    await updateConversation({ lastReadAt: new Date().toISOString() }, "已標記這則對話為已讀。");
   }
 
   async function markSelectedRead() {
@@ -489,9 +499,23 @@ export function InboxClient({
   function addReminder(minutes: number) {
     // 由使用者點擊提醒選單時才計算時間，並立即寫回後端保存。
     const reminderAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
-    updateConversation({ reminderAt });
+    const preset = REMINDER_PRESETS.find((item) => item.minutes === minutes);
+    updateConversation({ reminderAt }, preset ? `已設定 ${preset.label} 提醒。` : "已設定提醒。");
     setReminderOpen(false);
     setCategory("reminders");
+  }
+
+  function clearReminder() {
+    setReminderOpen(false);
+    updateConversation({ reminderAt: null }, "已清除提醒。");
+  }
+
+  function explainUnavailableCustomReminder() {
+    setReminderOpen(false);
+    showNotice(
+      "info",
+      "自訂日期與時間提醒目前尚未完成，先支援固定提醒時段。若需要精準排程，請先使用 20 分鐘、1 小時、6 小時或 12 小時提醒。",
+    );
   }
 
   return (
@@ -763,16 +787,10 @@ export function InboxClient({
                 <button
                   type="button"
                   onClick={() => {
-                    selectCategory("all");
-                    setStatusFilter("open");
-                    setUnreadOnly(false);
-                    setSortNewest(true);
-                    setChannelFilter("all");
-                    setSelectedTagId("all");
-                    setSelectedTeamMemberId("all");
-                    showNotice("info", "已重設 Inbox 篩選條件。");
+                    resetFilters();
                   }}
                   className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc]"
+                  data-testid="inbox-reset-filters"
                 >
                   重設篩選
                 </button>
@@ -856,15 +874,10 @@ export function InboxClient({
                     <button
                       type="button"
                       onClick={() => {
-                        selectCategory("all");
-                        setStatusFilter("open");
-                        setUnreadOnly(false);
-                        setSortNewest(true);
-                        setChannelFilter("all");
-                        setQuery("");
-                        showNotice("info", "已清除 Inbox 篩選條件。");
+                        resetFilters("已清除 Inbox 篩選條件，重新顯示全部對話。");
                       }}
                       className="mt-3 rounded-md border border-[#d7dbe0] px-3 py-1.5 text-xs text-[#344054] hover:bg-[#f8fafc]"
+                      data-testid="inbox-empty-reset-filters"
                     >
                       清除篩選並重新查看
                     </button>
@@ -893,9 +906,15 @@ export function InboxClient({
                       <Avatar name={selected.contact.displayName} small />
                       <select
                         value={selected.assignedToId || ""}
-                        onChange={(event) => updateConversation({ assignedToId: event.target.value || null })}
+                        onChange={(event) =>
+                          updateConversation(
+                            { assignedToId: event.target.value || null },
+                            event.target.value ? "已更新對話指派對象。" : "已清除對話指派。",
+                          )
+                        }
                         className="rounded-md border-0 bg-transparent px-1 py-1 text-sm text-[#667085] outline-none"
                         aria-label="指派對象"
+                        data-testid="inbox-assignee-select"
                       >
                         <option value="">未指派</option>
                         {teamMembers.map((member) => (
@@ -907,61 +926,83 @@ export function InboxClient({
                       <ChevronDown className="h-4 w-4 text-[#98a2b3]" />
                     </div>
 
-                    <div className="relative flex items-center gap-3 text-[#667085]">
-                      <button
-                        type="button"
-                        onClick={() => showUnavailableHeaderFeatureNotice("視訊通話")}
-                        className="inline-flex items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3] transition hover:border-[#cfd4dc] hover:bg-[#f2f4f7] hover:text-[#667085]"
-                        title="視訊通話目前暫時停用，點擊可查看原因"
-                        aria-label="視訊通話目前暫時停用，點擊可查看原因"
-                        data-testid="inbox-video-call-button"
+                    <div className="flex flex-col items-end gap-1 text-[#667085]">
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          disabled
+                          aria-disabled="true"
+                          className="inline-flex cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3]"
+                          title="視訊通話目前暫時停用，因為即時通話服務、權限控管與客服排班流程尚未完成。"
+                          aria-label="視訊通話目前暫時停用，因為即時通話服務、權限控管與客服排班流程尚未完成。"
+                          data-testid="inbox-video-call-button"
+                        >
+                          <Video className="h-5 w-5" />
+                        </button>
+                        <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
+                          <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReminderOpen((current) => !current)}
+                          className={reminderOpen ? "rounded border border-red-500 p-1 text-[#111827]" : "p-1"}
+                          title="提醒"
+                          data-testid="inbox-reminder-toggle"
+                        >
+                          <CalendarClock className="h-5 w-5" />
+                        </button>
+                        <button type="button" onClick={markRead} className="p-1" title="標記已讀">
+                          <CheckCheck className="h-5 w-5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled
+                          aria-disabled="true"
+                          className="inline-flex cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3]"
+                          title="更多對話操作目前暫時停用，因為批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。"
+                          aria-label="更多對話操作目前暫時停用，因為批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。"
+                          data-testid="inbox-more-actions-button"
+                        >
+                          <MoreVertical className="h-5 w-5" />
+                        </button>
+                      </div>
+                      <p
+                        className="max-w-[280px] text-right text-[11px] leading-5 text-[#98a2b3]"
+                        data-testid="inbox-header-disabled-hint"
                       >
-                        <Video className="h-5 w-5" />
-                      </button>
-                      <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
-                        <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setReminderOpen((current) => !current)}
-                        className={reminderOpen ? "rounded border border-red-500 p-1 text-[#111827]" : "p-1"}
-                        title="提醒"
-                      >
-                        <CalendarClock className="h-5 w-5" />
-                      </button>
-                      <button type="button" onClick={markRead} className="p-1" title="標記已讀">
-                        <CheckCheck className="h-5 w-5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => showUnavailableHeaderFeatureNotice("更多對話操作")}
-                        className="inline-flex items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3] transition hover:border-[#cfd4dc] hover:bg-[#f2f4f7] hover:text-[#667085]"
-                        title="更多對話操作目前暫時停用，點擊可查看原因"
-                        aria-label="更多對話操作目前暫時停用，點擊可查看原因"
-                        data-testid="inbox-more-actions-button"
-                      >
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
+                        視訊通話與更多對話操作目前先停用，請先使用文字回覆、內部備註、指派、標籤與提醒。
+                      </p>
 
                       {reminderOpen ? (
-                        <div className="absolute right-6 top-9 z-20 w-48 rounded-md border border-[#d7dbe0] bg-white py-2 text-sm shadow-xl">
+                        <div className="absolute right-6 top-9 z-20 w-56 rounded-md border border-[#d7dbe0] bg-white py-2 text-sm shadow-xl" data-testid="inbox-reminder-menu">
                           <p className="px-3 py-2 text-[#667085]">提醒我</p>
-                          {[
-                            { label: "20 分鐘", minutes: 20 },
-                            { label: "1 小時", minutes: 60 },
-                            { label: "6 小時", minutes: 360 },
-                            { label: "12 小時", minutes: 720 },
-                          ].map((item) => (
-                            <button key={item.label} type="button" className="block w-full px-3 py-2 text-left hover:bg-[#f2f4f7]" onClick={() => addReminder(item.minutes)}>
+                          {REMINDER_PRESETS.map((item) => (
+                            <button
+                              key={item.label}
+                              type="button"
+                              className="block w-full px-3 py-2 text-left hover:bg-[#f2f4f7]"
+                              onClick={() => addReminder(item.minutes)}
+                              data-testid={`inbox-reminder-option-${item.minutes}`}
+                            >
                               {item.label}
                             </button>
                           ))}
-                          <button type="button" className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-[#f2f4f7]" onClick={() => addReminder(1440)}>
+                          <button
+                            type="button"
+                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[#98a2b3] hover:bg-[#f8fafc]"
+                            onClick={explainUnavailableCustomReminder}
+                            data-testid="inbox-reminder-custom-disabled"
+                          >
                             <CalendarClock className="h-4 w-4" />
-                            選擇日期與時間
+                            自訂日期與時間（準備中）
                           </button>
                           {selected.reminderAt ? (
-                            <button type="button" className="block w-full px-3 py-2 text-left text-red-600 hover:bg-[#fff1f2]" onClick={() => updateConversation({ reminderAt: null })}>
+                            <button
+                              type="button"
+                              className="block w-full px-3 py-2 text-left text-red-600 hover:bg-[#fff1f2]"
+                              onClick={clearReminder}
+                              data-testid="inbox-reminder-clear"
+                            >
                               清除提醒
                             </button>
                           ) : null}
@@ -1408,11 +1449,17 @@ function ContactPanel({
       <PanelSection title="自動化">
         <button
           type="button"
-          onClick={() => onNotice("info", "自動化暫停會在流程級控制完成後開放；目前請到自動化頁管理流程。")}
-          className="h-9 w-full rounded-md border border-[#d7dbe0] text-sm hover:bg-[#f8fafc]"
+          disabled
+          aria-disabled="true"
+          title="自動化暫停目前尚未開放"
+          data-testid="inbox-automation-pause-disabled"
+          className="h-9 w-full cursor-not-allowed rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] text-sm text-[#98a2b3]"
         >
           暫停
         </button>
+        <p className="mt-2 text-xs leading-6 text-[#98a2b3]">
+          自動化暫停需要先完成流程級控制與稽核設計；目前請直接到自動化頁調整流程。
+        </p>
       </PanelSection>
 
       <PanelSection title="快速分類">

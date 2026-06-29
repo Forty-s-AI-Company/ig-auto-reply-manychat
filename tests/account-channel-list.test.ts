@@ -33,6 +33,7 @@ describe("buildAccountDropdownChannels", () => {
           username: "",
           avatarFallback: "IG",
           metadataStatus: "partial",
+          metadataHint: "資料未完整",
         }),
         expect.objectContaining({
           id: "channel-with-username",
@@ -41,6 +42,7 @@ describe("buildAccountDropdownChannels", () => {
           username: "carry.digital.nomad",
           avatarFallback: "CA",
           metadataStatus: "complete",
+          metadataHint: "",
         }),
       ]),
     );

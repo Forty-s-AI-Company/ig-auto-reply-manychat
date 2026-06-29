@@ -1,19 +1,12 @@
 # Backlog
 
-## Priority 1
+## Runner Rules
 
-- Channels / Social connect visible-but-unusable controls 第二輪 audit
-- Inbox richer bulk actions / export governance / unsubscribe-block workflow design
-- Contacts bulk actions 與篩選體驗
+backlog 第一個可執行項目，代表下一輪預設要接的任務。若第一項被外部條件阻塞，runner 應跳到下一個 `UNBLOCKED` 項目，並把阻塞原因寫進 `AI_TEAM/reports/final-report.md`。
 
-## Priority 2
+## Queue Snapshot
 
-- Automations scope 清楚化
-- Analytics 讀取與資料一致性
-- Billing / PayUNI Sandbox SOP
-
-## Priority 3
-
-- Meta App Review 文件整理
-- launch readiness delta
-- 健康檢查與 smoke 穩定化
+- [COMPLETED][P1][ai-team] AI_TEAM delivery autonomy closeout
+- [COMPLETED][P2][ai-team] AI_TEAM disposable branch real delivery validation
+- [COMPLETED][P2][product] Inbox / Channels visible-but-unusable closeout
+- [PENDING][P2][product] Contacts filtered empty-state guidance
