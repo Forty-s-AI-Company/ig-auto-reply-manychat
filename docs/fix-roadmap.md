@@ -1,5 +1,61 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
+
+Current status:
+
+- `[x]` Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX。
+- `[x]` simple-release Inbox 的序列訂閱入口已改成真正 disabled UX。
+- `[x]` `tests/e2e/inbox-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 都已補 smoke。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
+
+Remaining:
+
+- `[ ]` 如果還有其他 Inbox visible-but-unusable 控制項，再接下一輪安全收斂。
+- `[ ]` 保持 Production deploy、production DB 寫入、Meta App Review、PayUNI production 都在人工 gate 外。
+
+# Latest - 2026-06-30 AI_TEAM product autofill loop
+
+Current status:
+
+- `[x]` AI_TEAM planner now auto-fills the next safe product task when `queue.json` has no pending / running task.
+- `[x]` The first auto-filled task is `Inbox visible-but-unusable product sweep`.
+- `[x]` `AI_TEAM/reports/next-codex-prompt.md` now describes the complete product closed-loop mode.
+- `[x]` `npm run ai-team:loop:smoke` passed after the runner change.
+
+Remaining:
+
+- `[ ]` Let the visible PowerShell 7 general-mode runner continue the new Inbox task.
+- `[ ]` Keep Production deploy, production DB writes, Meta App Review, and PayUNI production outside unattended automation unless explicitly approved.
+
+# Latest - 2026-06-30 Daily AI model cache refresh
+
+Current status:
+
+- `[x]` Ran `npm run ai-models:refresh`.
+- `[x]` Refresh completed for `default-workspace`.
+- `[x]` Current provider counts are `chatgpt=10`, `gemini=7`, `deepseek=2`, and `xai=2`.
+- `[x]` No provider failure was reported.
+- `[x]` `codex_cli` and `antigravity_cli` stayed outside the shared refresh payload, matching the documented local CLI opt-in behavior.
+
+Remaining:
+
+- `[ ]` Keep `AI_ENABLE_LOCAL_CLI` disabled in shared SaaS / cron environments unless the machine has authenticated local CLI tools.
+
+# Latest - 2026-06-30 Contacts filtered empty-state guidance
+
+Current status:
+
+- `[x]` Contacts filtered empty-state 已改成完整 guidance panel，會清楚列出搜尋 / 狀態 / 標籤條件。
+- `[x]` `清除篩選並重新查看` 現在是可直接點擊的返回完整列表入口。
+- `[x]` `tests/e2e/contacts-auth.spec.ts` 已補上 filtered empty-state guidance smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm run test:e2e:contacts`、`npm test` 都已通過。
+
+Remaining:
+
+- `[ ]` 如果之後還想再打磨 Contacts，可補 no-filter empty state 的建立 / 匯入引導。
+- `[ ]` 下一輪回到 backlog 再挑其他安全的產品完整性任務。
+
 # Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
 
 Current status:

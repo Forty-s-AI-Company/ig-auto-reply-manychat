@@ -7,6 +7,7 @@ backlog 第一個可執行項目，代表下一輪預設要接的任務。若第
 ## Queue Snapshot
 
 - [COMPLETED][P1][ai-team] AI_TEAM delivery autonomy closeout
+- [COMPLETED][P1][product] Inbox visible-but-unusable product sweep
 - [COMPLETED][P2][ai-team] AI_TEAM disposable branch real delivery validation
 - [COMPLETED][P2][product] Inbox / Channels visible-but-unusable closeout
-- [PENDING][P2][product] Contacts filtered empty-state guidance
+- [COMPLETED][P2][product] Contacts filtered empty-state guidance

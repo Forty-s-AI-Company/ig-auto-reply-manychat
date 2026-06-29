@@ -1,5 +1,155 @@
 # Codex Session Log
 
+## 2026-06-30 - Inbox visible-but-unusable follow-up
+
+Task:
+
+- 把 Inbox 裡還像可操作入口、其實只是提示的控制項再收斂一輪。
+- 讓 contact actions menu 的匯出 / 封鎖選項和 simple-release 的序列訂閱入口，都改成真正 disabled UX。
+- 補上對應的 focused smoke，確認 full release / simple release 的差異都符合預期。
+
+Result:
+
+- `src/components/InboxClient.tsx` 已將 contact actions menu 的匯出 / 封鎖項目改成真正 disabled UX，並補上更直接的說明。
+- simple-release 下的序列訂閱入口已改成真正 disabled UX，不再像可直接點的假入口。
+- `tests/e2e/inbox-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 都補上了對應 smoke。
+
+Validation:
+
+```text
+npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+
+npm run test:e2e:simple
+Result: passed for Chromium and mobile Chrome with INBOXPILOT_RELEASE_CHANNEL=simple.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+```
+
+Launch impact:
+
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+# 2026-06-30 - AI_TEAM product autofill loop
+
+Task:
+
+- 讓 AI_TEAM 完全自動閉環模式在 queue 空掉時不再停住。
+- 自動補入下一個安全產品任務，讓 runner 可以接續產品功能完整性修復。
+
+Result:
+
+- `AI_TEAM/scripts/ai-team-runner.mjs` 已新增產品 autofill task seeds。
+- Planner 會在 `AI_TEAM/tasks/queue.json` 沒有 pending / running task 時，自動補入下一個產品任務。
+- 已驗證自動補入 `Inbox visible-but-unusable product sweep`。
+- `AI_TEAM/reports/next-codex-prompt.md` 已改成完整產品閉環模式提示。
+
+Validation:
+
+```text
+npx eslint AI_TEAM/scripts/ai-team-runner.mjs
+Result: passed.
+
+node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner
+Result: passed; queue auto-filled Inbox visible-but-unusable product sweep.
+
+npm run ai-team:loop:smoke
+Result: passed.
+```
+
+Launch impact:
+
+- AI_TEAM automation behavior only.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+# 2026-06-30 - Daily AI model cache refresh
+
+Task:
+
+- Run the scheduled `npm run ai-models:refresh` automation and report provider model counts or failures.
+
+Result:
+
+- Refresh completed successfully for `default-workspace`.
+- Provider counts: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failure was reported.
+- `codex_cli` and `antigravity_cli` were not present in the refresh payload, consistent with the local CLI opt-in gating when `AI_ENABLE_LOCAL_CLI` is not enabled.
+
+Validation:
+
+```text
+npm run ai-models:refresh
+Result: passed.
+```
+
+Launch impact:
+
+- AI model cache refresh only.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+# 2026-06-30 - Contacts filtered empty-state guidance
+
+Task goal:
+
+- 讓 Contacts 在套用篩選後空白時，不再像資料壞掉。
+- 清楚列出目前套用的搜尋 / 狀態 / 標籤條件。
+- 提供真正可點的清除篩選入口，直接回到完整聯絡人列表。
+
+Files changed:
+
+- `src/components/ContactsListClient.tsx`
+- `tests/e2e/contacts-auth.spec.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/tasks/queue.json`
+- `AI_TEAM/reports/dev-report.md`
+- `AI_TEAM/reports/final-report.md`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+
+Implementation notes:
+
+- Contacts filtered empty-state 改成完整 guidance panel，會顯示目前套用的搜尋、訂閱狀態與標籤條件。
+- 新增 `清除篩選並重新查看` 入口，直接回到乾淨 Contacts 列表。
+- 頂部 active chip 補上搜尋條件，讓空集合時更容易看懂目前狀態。
+- Authenticated Contacts smoke 新增 filtered empty-state guidance 覆蓋，直接驗證 summary 與清除篩選入口。
+
+Validation:
+
+```text
+npx eslint src/components/ContactsListClient.tsx tests/e2e/contacts-auth.spec.ts
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed for Chromium and mobile Chrome.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+```
+
+Launch impact:
+
+- Contacts filtered empty-state 的誤導感下降。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # 2026-06-30 - Inbox / Channels visible-but-unusable closeout
 
 Task goal:

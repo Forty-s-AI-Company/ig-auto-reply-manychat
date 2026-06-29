@@ -51,6 +51,33 @@ Status: documentation re-org only; product readiness unchanged.
 
 # InboxPilot Product Readiness Review
 
+## 2026-06-30 - Inbox visible-but-unusable follow-up
+
+Status: improved for beta operator trust; public paid launch status remains Hold.
+
+- Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX，不再像壞掉的操作入口。
+- simple-release Inbox 的序列訂閱入口也改成真正 disabled UX，避免 full-release-only 功能在簡版表面上看起來可用。
+- focused lint、`npm run test:e2e:inbox`、`npm run test:e2e:simple`、`npm test`、`npm run build` 都已通過。
+
+Readiness implication:
+
+- Inbox 又少了一批看得到但不能用的控制項。
+- Public paid launch 仍維持 Hold；這輪只做 UI / smoke 收斂，沒有碰 production DB、Meta、或 PayUNI production。
+
+## 2026-06-30 - Contacts filtered empty-state guidance
+
+Status: improved for operator trust; public paid launch status remains Hold.
+
+- Contacts filtered empty-state now explains the active search / status / tag conditions instead of only saying the list is empty.
+- `清除篩選並重新查看` now takes operators back to the full Contacts list.
+- Authenticated Contacts smoke now covers the empty-state guidance path on Chromium and mobile Chrome.
+- Focused lint, build, `npm test`, and `npm run test:e2e:contacts` passed.
+
+Readiness implication:
+
+- Contacts is a little less ambiguous when filters hide all rows.
+- Public paid launch still remains Hold; this change does not affect database, billing, Meta review, or production deployment gates.
+
 ## 2026-06-30 - Inbox / Channels visible-but-unusable closeout
 
 Status: improved for beta operator trust; full Windows `npm test` still has an existing batch-level instability unrelated to this UX pass.

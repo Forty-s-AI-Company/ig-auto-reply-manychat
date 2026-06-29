@@ -1,5 +1,60 @@
 # Final Report
 
+## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
+
+Status:
+
+- `Completed` for the scoped Inbox visible-but-unusable follow-up.
+
+Completed this round:
+
+- Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX，並補上更直接的原因說明。
+- simple-release Inbox 的序列訂閱入口已改成真正 disabled UX，不再像可直接訂閱的入口。
+- `tests/e2e/inbox-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 都補上了對應 smoke。
+- `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
+
+Residual risk:
+
+- 目前只把這輪可安全處理的假入口再收斂一批，之後若還有新的 visible-but-unusable 控制項，再接著補。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+## Latest - 2026-06-30 AI_TEAM product autofill loop
+
+Status:
+
+- `Ready` for product-mode unattended continuation.
+
+Completed this round:
+
+- Planner now auto-fills the next safe product task when `queue.json` has no pending / running task.
+- The first auto-filled task is `Inbox visible-but-unusable product sweep`.
+- `AI_TEAM/reports/next-codex-prompt.md` now points to the full product closed-loop mode.
+- Smoke validation confirms the worker pipeline still completes.
+
+Residual risk:
+
+- Auto-filled tasks are bounded to predefined product themes. If all themes are complete, planner will stop with `autofill exhausted`.
+- Git delivery / merge / deploy still depends on explicit delivery flags and existing safety gates.
+- Production DB, migration, Production deploy, Meta App Review, and PayUNI production remain hard stops.
+
+## Latest - 2026-06-30 Contacts filtered empty-state guidance
+
+Status:
+
+- `Completed` for the scoped Contacts filtered empty-state guidance task.
+
+Completed this round:
+
+- Contacts filtered empty-state 現在會列出目前套用的搜尋 / 狀態 / 標籤條件。
+- 空狀態提供 `清除篩選並重新查看`，可直接回到完整 Contacts 列表。
+- `tests/e2e/contacts-auth.spec.ts` 已補上 filtered empty-state guidance smoke，Chromium / mobile Chrome 通過。
+- `npm run lint`、`npm run test:e2e:contacts`、`npm test`、`npm run build` 都已通過。
+
+Residual risk:
+
+- 這輪只處理 filtered empty-state guidance，不變更 Contacts 資料模型或後端篩選規則。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 ## Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
 
 Status:

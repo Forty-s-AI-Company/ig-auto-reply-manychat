@@ -58,4 +58,15 @@ test.describe("simple release smoke", () => {
     await expect(page.locator("body")).toContainText("金流");
     await expect(page.locator("body")).toContainText("https://staging.carry-digital-nomad.in.net");
   });
+
+  test("shows a disabled sequence subscribe control in Inbox", async ({ page }) => {
+    await page.goto("/inbox", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("inbox-client")).toHaveAttribute("data-ready", "true");
+    await expect(page.getByTestId("inbox-sequence-subscribe-disabled")).toBeDisabled();
+    await expect(page.getByTestId("inbox-sequence-subscribe-disabled")).toHaveAttribute(
+      "title",
+      "序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。",
+    );
+    await expect(page.locator("body")).toContainText("序列只在完整版本開放，這裡先保留清楚說明，不再假裝可直接訂閱。");
+  });
 });
