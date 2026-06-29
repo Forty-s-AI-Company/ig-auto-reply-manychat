@@ -42,6 +42,196 @@ const WORKER_ORDER = [
 ];
 const onlyWorker = WORKER_ORDER.includes(requestedOnlyWorker) ? requestedOnlyWorker : "";
 
+const PRODUCT_AUTOFILL_TASKS = [
+  {
+    id: "inbox-visible-but-unusable-autofill",
+    title: "Inbox visible-but-unusable product sweep",
+    priority: 1,
+    lane: "product",
+    scope: [
+      "src/app/inbox/page.tsx",
+      "src/components/InboxClient.tsx",
+      "src/app/api/conversations",
+      "tests/e2e/inbox-auth.spec.ts",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "盤點 Inbox 還有哪些看得到但不能用或容易誤導的控制項",
+      "能安全支援的補成最小可用版本",
+      "不能安全支援的改成清楚 disabled UX",
+      "補 focused tests 或 authenticated Playwright smoke",
+    ],
+  },
+  {
+    id: "channels-connect-visible-but-unusable-autofill",
+    title: "Channels / Connect visible-but-unusable product sweep",
+    priority: 2,
+    lane: "product",
+    scope: [
+      "src/app/channels/page.tsx",
+      "src/app/channels/connect/page.tsx",
+      "src/app/channels/connect/social/page.tsx",
+      "src/components/InstagramChannelActions.tsx",
+      "src/components/RefreshInstagramProfileButton.tsx",
+      "src/components/InboxPilotAccountDropdown.tsx",
+      "tests/channels-connect-visibility.test.ts",
+      "tests/instagram-profile-refresh-route.test.ts",
+      "tests/account-channel-list.test.ts",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "Channels / Connect / Social connect 入口不再有假按鈕或模糊狀態",
+      "IG metadata refresh / token / permission 類錯誤必須是使用者可讀訊息",
+      "simple release 與 full release 入口分流清楚",
+      "補 focused tests 或 browser smoke",
+    ],
+  },
+  {
+    id: "contacts-product-completeness-autofill",
+    title: "Contacts product completeness sweep",
+    priority: 3,
+    lane: "product",
+    scope: [
+      "src/app/contacts",
+      "src/components/ContactsListClient.tsx",
+      "src/app/api/contacts",
+      "tests/e2e/contacts-auth.spec.ts",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "Contacts 篩選、批次操作、空狀態與錯誤回饋都不再像半成品",
+      "安全可支援的操作補最小可用",
+      "暫時不支援的操作改為清楚 disabled UX",
+      "補 focused tests 或 authenticated Playwright smoke",
+    ],
+  },
+  {
+    id: "automations-scope-clarity-autofill",
+    title: "Automations scope clarity and disabled UX sweep",
+    priority: 4,
+    lane: "product",
+    scope: [
+      "src/app/automations",
+      "src/app/api/automations",
+      "tests",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "Automations 頁面清楚說明目前 workspace / channel scope 行為",
+      "看得到但尚未支援的操作改成 disabled UX",
+      "不要讓使用者誤以為 sidebar IG channel 已完整隔離 automation data model",
+      "補 focused tests 或 smoke",
+    ],
+  },
+  {
+    id: "analytics-readiness-autofill",
+    title: "Analytics readability and data-state sweep",
+    priority: 5,
+    lane: "product",
+    scope: [
+      "src/app/analytics",
+      "src/app/api/analytics",
+      "tests",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "Analytics 空資料、載入失敗、權限不足與篩選狀態都要有清楚說明",
+      "不能讓圖表或數字看起來像壞掉",
+      "補 focused tests 或 smoke",
+    ],
+  },
+  {
+    id: "billing-payuni-sandbox-autofill",
+    title: "Billing / PayUNI Sandbox product readiness sweep",
+    priority: 6,
+    lane: "product",
+    scope: [
+      "src/app/billing",
+      "src/app/api/billing",
+      "src/lib/payuni.ts",
+      "tests",
+      "docs/billing-affiliate-readiness.md",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "PayUNI 維持 Sandbox，不切 production",
+      "Billing 頁面清楚說明 Sandbox / production gate",
+      "能安全測的 checkout / return / notify path 補 smoke 或文件化",
+      "不執行正式交易",
+    ],
+  },
+  {
+    id: "launch-readiness-product-sweep-autofill",
+    title: "Launch readiness product sweep",
+    priority: 7,
+    lane: "product",
+    scope: [
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "docs/fix-roadmap.md",
+      "docs/codex-session-log.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "整理產品是否已達 beta / paid launch 的差距",
+      "只把安全可自動處理的產品缺口補回 queue",
+      "外部 gate 必須標成 human required，不猜 secret、不碰 production",
+    ],
+  },
+];
+
 const workerTimeoutMs = {
   planner: 30 * 1000,
   "codex-dev": runnerMode === "sleep" ? 2 * 60 * 60 * 1000 : 30 * 60 * 1000,
@@ -885,6 +1075,47 @@ function saveQueue(queue) {
   );
 }
 
+function buildAutofillTask(seed) {
+  return {
+    ...seed,
+    status: "pending",
+    safety: [
+      "no-production-db",
+      "no-migration",
+      "no-production-deploy",
+      "no-meta-review",
+      "no-payuni-production",
+      ...(seed.safety || []),
+    ],
+    createdBy: "ai-team-autofill",
+    createdAt: nowIso(),
+    summary: "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+  };
+}
+
+function ensureNextProductTask(queue) {
+  const tasks = Array.isArray(queue.tasks) ? queue.tasks : [];
+  const activeTask = tasks.find((task) => ["pending", "running"].includes(task.status));
+  if (activeTask || smoke) {
+    return { queue, task: activeTask || null, created: false };
+  }
+
+  const existingIds = new Set(tasks.map((task) => task.id));
+  const nextSeed = PRODUCT_AUTOFILL_TASKS.find((seed) => !existingIds.has(seed.id));
+  if (!nextSeed) {
+    return { queue, task: null, created: false };
+  }
+
+  const task = buildAutofillTask(nextSeed);
+  const nextQueue = {
+    ...queue,
+    tasks: [...tasks, task],
+  };
+  saveQueue(nextQueue);
+
+  return { queue: nextQueue, task, created: true };
+}
+
 function updateQueueTask(taskId, updater) {
   if (smoke || !taskId) return;
   const queue = loadQueue();
@@ -979,15 +1210,25 @@ function selectTask(queue) {
 }
 
 async function plannerWorker() {
-  const queue = loadQueue();
-  syncBacklogFromQueue(queue);
-  const task = selectTask(queue);
+  let queue = loadQueue();
+  let task = selectTask(queue);
+
+  if (!task) {
+    const ensured = ensureNextProductTask(queue);
+    queue = ensured.queue;
+    task = ensured.task;
+    if (ensured.created) {
+      syncBacklogFromQueue(queue);
+    }
+  } else {
+    syncBacklogFromQueue(queue);
+  }
 
   if (!task) {
     return writeWorkerResult(baseWorkerResult("planner", {
       status: "blocked",
-      summary: "queue.json 沒有 pending / running task。",
-      validation: ["queue checked"],
+      summary: "queue.json 沒有 pending / running task，且產品自動補題清單已全部完成。",
+      validation: ["queue checked", "autofill exhausted"],
       next: null,
     }));
   }
@@ -1729,7 +1970,7 @@ async function runPipeline() {
 
     if (worker === "planner") {
       if (result.status !== "done") break;
-      task = selectTask(queue);
+      task = selectTask(loadQueue());
     }
 
     if (["failed", "blocked"].includes(result.status)) {

@@ -37,6 +37,10 @@ const mocks = vi.hoisted(() => ({
       createMany: vi.fn(),
       deleteMany: vi.fn(),
     },
+    contactFieldValue: {
+      findMany: vi.fn(),
+      upsert: vi.fn(),
+    },
     segment: {
       create: vi.fn(),
     },
@@ -96,6 +100,7 @@ import { POST as automationRunPost } from "@/app/api/automations/[id]/run/route"
 import { PUT as automationPut } from "@/app/api/automations/[id]/route";
 import { POST as billingCheckoutPost } from "@/app/api/billing/payuni/checkout/route";
 import { PATCH as channelPatch } from "@/app/api/channels/[id]/route";
+import { PUT as contactFieldsPut } from "@/app/api/contacts/[id]/fields/route";
 import { DELETE as contactBatchTagsDelete, POST as contactBatchTagsPost } from "@/app/api/contacts/batch-tags/route";
 import { POST as contactSegmentPost } from "@/app/api/contacts/segments/route";
 import { GET as contactGet } from "@/app/api/contacts/[id]/route";
@@ -210,6 +215,23 @@ describe("tenant isolation route regressions", () => {
       select: { id: true },
     });
     expect(mocks.db.contact.update).not.toHaveBeenCalled();
+  });
+
+  it("blocks contact custom field writes without a same-origin request", async () => {
+    const blockedResponse = new Response("same-origin required", { status: 403 });
+    mocks.assertSameOriginRequest.mockReturnValue(blockedResponse);
+
+    const response = await contactFieldsPut(
+      jsonRequest("http://local.test/api/contacts/contact-b/fields", {
+        definitionId: "field-a",
+        value: "updated value",
+      }),
+      { params: Promise.resolve({ id: "contact-b" }) },
+    );
+
+    expect(response).toBe(blockedResponse);
+    expect(mocks.requireApiUser).not.toHaveBeenCalled();
+    expect(mocks.db.contactFieldValue?.upsert).not.toHaveBeenCalled();
   });
 
   it("does not attach a tag unless the tag belongs to the current workspace", async () => {

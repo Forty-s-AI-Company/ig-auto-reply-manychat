@@ -1,5 +1,44 @@
 # Codex Session Log
 
+## 2026-06-30 - Contacts product completeness sweep
+
+Task:
+
+- 把 Contacts 再收斂一輪，補上 segment 建立前的可見預覽、batch 標籤操作的空資料提示，並確認 custom field 寫入路徑不會少掉同源防護。
+- 讓 Contacts detail smoke 在既有測試資料可能已被前一輪修改時，仍可先重置狀態再驗證，避免結果不穩定。
+
+Result:
+
+- `src/app/contacts/page.tsx` 現在會把目前 filtered contact count 傳進列表 client，供 segment 預覽使用。
+- `src/components/ContactsListClient.tsx` 的建立 segment 對話框現在會先顯示這組條件會套用到多少聯絡人，batch 標籤操作也會在沒有標籤時直接提示先建立標籤。
+- `src/app/api/contacts/[id]/fields/route.ts` 已補上 same-origin 驗證，避免 contact custom field 寫入路徑少掉既有的 CSRF 防線。
+- `tests/e2e/contacts-auth.spec.ts` 已把 detail smoke 改成先用 API 重置測試聯絡人狀態，再驗證 cancel / save 流程。
+- `tests/tenant-isolation-routes.test.ts` 已補上 custom field same-origin 防護測試。
+
+Validation:
+
+```text
+npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts
+Result: passed.
+
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Contacts 的產品完整性與 operator trust 小幅提升。
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## 2026-06-30 - Channels / Connect visible-but-unusable sweep
 
 Task:

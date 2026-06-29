@@ -1,5 +1,25 @@
 # Final Report
 
+## Latest - 2026-06-30 Contacts product completeness sweep
+
+Status:
+
+- `Completed` for the scoped Contacts product completeness sweep.
+
+Completed this round:
+
+- Contacts segment 建立前現在會先顯示條件會套用到多少聯絡人，避免盲建分群。
+- Batch tag 區塊在沒有標籤時會直接提示先建立標籤，少掉一個半成品感很重的操作面板。
+- `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts custom field write path 的安全邊界更完整。
+- `tests/e2e/contacts-auth.spec.ts` 已改成先重置 detail contact，再驗證 cancel / save，smoke 不再吃歷史資料殘留。
+- `tests/tenant-isolation-routes.test.ts` 已補 custom field same-origin guard 測試。
+- `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+
+Residual risk:
+
+- 這輪只收斂 Contacts 的可見完整性與一條敏感 write path，還有其他 Contacts surface 可以再分批補。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 ## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
 
 Status:

@@ -1,5 +1,52 @@
 # Dev Report
 
+## Latest - 2026-06-30 Contacts product completeness sweep
+
+Current status:
+
+- `[x]` Contacts segment 建立前現在會先顯示條件預覽，讓使用者知道這組條件會套用到多少聯絡人。
+- `[x]` batch tag 操作在沒有標籤時會直接提示先建立標籤，不再留下看起來可操作但其實不完整的區塊。
+- `[x]` `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts custom field 寫入路徑更完整。
+- `[x]` `tests/e2e/contacts-auth.spec.ts` 已改成先重置 detail contact 狀態再驗證，smoke 不再吃歷史資料殘留。
+
+What changed:
+
+- `src/app/contacts/page.tsx`
+  - 把目前 Contacts filtered count 傳進列表 client，供建立 segment 前的預覽使用。
+- `src/components/ContactsListClient.tsx`
+  - 建立 segment 的對話框現在會先告訴使用者這組條件會套用到多少聯絡人。
+  - batch tag 區塊在沒有標籤時會顯示明確提示，避免使用者誤以為還能直接批次加減標籤。
+- `src/app/api/contacts/[id]/fields/route.ts`
+  - 加上 same-origin 驗證，讓 contact custom field 寫入路徑跟其他敏感 write route 保持一致。
+- `tests/e2e/contacts-auth.spec.ts`
+  - 在 detail smoke 前先重置測試聯絡人狀態，避免歷史測試資料造成不穩定。
+- `tests/tenant-isolation-routes.test.ts`
+  - 補上 custom field same-origin guard 的 route test。
+
+Validation:
+
+```text
+npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts
+Result: passed.
+
+npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Contacts 的可理解性與安全邊界都有小幅提升。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## Latest - 2026-06-30 Channels / Connect visible-but-unusable sweep
 
 Current status:

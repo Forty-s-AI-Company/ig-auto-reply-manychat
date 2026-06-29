@@ -91,6 +91,21 @@ test.describe("contacts authenticated smoke", () => {
     await expect(page.locator("body")).toContainText(/已從 \d+ 位聯絡人移除標籤/);
   });
 
+  test("shows filtered empty-state guidance and clears filters back to the full list", async ({ page }) => {
+    await page.goto("/contacts?q=__contacts_empty_state__&status=unknown", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
+    await expect(page.locator("body")).toContainText("目前沒有符合這些篩選條件的聯絡人");
+    await expect(page.locator("body")).toContainText("搜尋「__contacts_empty_state__」");
+    await expect(page.locator("body")).toContainText("狀態：未知狀態");
+
+    const clearFiltersButton = page.getByTestId("contacts-empty-clear-filters");
+    await expect(clearFiltersButton).toBeVisible();
+    await clearFiltersButton.click();
+
+    await expect(page).toHaveURL(/\/contacts$/);
+    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
+  });
+
   test("creates a segment from the current contacts filter", async ({ page }, testInfo) => {
     await page.goto("/contacts?status=opted_in", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
@@ -100,6 +115,7 @@ test.describe("contacts authenticated smoke", () => {
     await createSegmentButton.scrollIntoViewIfNeeded();
     await expect(createSegmentButton).toBeVisible();
     await createSegmentButton.click();
+    await expect(page.locator("body")).toContainText("這組條件目前會套用到");
 
     const segmentNameInput = page.getByTestId("contacts-segment-name");
     await expect(segmentNameInput).toBeVisible();
@@ -121,6 +137,18 @@ test.describe("contacts authenticated smoke", () => {
     const isMobileProject = testInfo.project.name.includes("mobile");
     const detailContactId = isMobileProject ? "e2e-contact-detail-mobile" : "e2e-contact-detail-chromium";
     const detailContactName = isMobileProject ? "E2E 詳情頁聯絡人 Mobile" : "E2E 詳情頁聯絡人 Desktop";
+
+    await page.request.patch(`/api/contacts/${detailContactId}`, {
+      data: {
+        username: "detail_before",
+        email: "detail-before@example.com",
+        phone: "0900000000",
+      },
+      headers: {
+        origin: "http://127.0.0.1:3041",
+        "content-type": "application/json",
+      },
+    });
 
     await page.goto(`/contacts/${detailContactId}`, { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: detailContactName })).toBeVisible();

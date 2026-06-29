@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T07:05:00.000Z",
+  "updatedAt": "2026-06-30T04:05:00.000Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -262,7 +262,7 @@
         "simple release 與 full release 入口分流清楚",
         "補 focused tests 或 browser smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -276,7 +276,6 @@
       "startedAt": "2026-06-29T22:55:42.357Z",
       "lastPickedAt": "2026-06-29T22:55:42.357Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T07:05:00.000Z",
       "validation": [
         "npx eslint src/lib/channels/channel-connect-visibility.ts src/app/channels/page.tsx src/app/channels/connect/page.tsx src/components/InstagramChannelActions.tsx tests/channels-connect-visibility.test.ts tests/e2e/simple-release.spec.ts",
         "npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot",
@@ -284,6 +283,66 @@
         "npm run build",
         "npm test",
         "npm run test:e2e:simple"
+      ],
+      "blockedAt": "2026-06-29T23:17:38.248Z",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
+      "lastValidation": [
+        "沒有可提交檔案。",
+        "branch codex/channels-connect-visible-but-unusable-sweep-20260630 可進入交付 gate。",
+        "scope=18",
+        "ignored-out-of-scope=6"
+      ]
+    },
+    {
+      "id": "contacts-product-completeness-autofill",
+      "title": "Contacts product completeness sweep",
+      "priority": 3,
+      "lane": "product",
+      "scope": [
+        "src/app/contacts",
+        "src/components/ContactsListClient.tsx",
+        "src/app/api/contacts",
+        "tests/e2e/contacts-auth.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Contacts 篩選、批次操作、空狀態與錯誤回饋都不再像半成品",
+        "安全可支援的操作補最小可用",
+        "暫時不支援的操作改為清楚 disabled UX",
+        "補 focused tests 或 authenticated Playwright smoke"
+      ],
+      "status": "completed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-29T23:17:38.352Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-29T23:17:38.354Z",
+      "lastPickedAt": "2026-06-29T23:17:38.354Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T04:05:00.000Z",
+      "lastSummary": "Contacts product completeness sweep 已完成，segment preview、batch tag hint、same-origin guard 與 deterministic smoke 都已收斂。",
+      "lastWorker": "reporter",
+      "lastValidation": [
+        "npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts",
+        "npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot",
+        "npm run build",
+        "npm run test:e2e:contacts",
+        "npm test"
       ]
     }
   ]

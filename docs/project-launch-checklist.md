@@ -37,6 +37,14 @@
 - `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
 - `[ ]` 若後續還有其他 visible-but-unusable 控制項，再依同樣標準收斂。
 
+## 2026-06-30 - Contacts product completeness sweep
+
+- `[x]` Contacts 現在會先顯示 segment 條件會套用到多少聯絡人，建立分群前不再完全靠猜。
+- `[x]` Batch tag 操作在沒有標籤時會直接提示先建立標籤，避免留下看起來可操作、其實還不完整的區塊。
+- `[x]` `PUT /api/contacts/[id]/fields` 已補 same-origin 驗證，Contacts write path 的安全邊界比較完整。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:contacts` 都已通過。
+- `[ ]` 如果後續要繼續做 Contacts 深度收斂，可以再補更完整的匯入 / 空狀態引導。
+
 # 2026-06-30 - Contacts filtered empty-state guidance
 
 - `[x]` Contacts filtered empty-state 現在會列出目前套用的搜尋 / 狀態 / 標籤條件。

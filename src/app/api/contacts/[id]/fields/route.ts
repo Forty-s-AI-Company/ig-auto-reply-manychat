@@ -3,6 +3,7 @@ import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/acco
 import { requireApiUser } from "@/lib/auth";
 import { upsertContactFieldValue } from "@/lib/contact-fields";
 import { getDb } from "@/lib/db";
+import { assertSameOriginRequest } from "@/lib/security";
 import { contactFieldValueSchema } from "@/lib/validation";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -30,6 +31,9 @@ export async function GET(_request: Request, { params }: Params) {
 }
 
 export async function PUT(request: Request, { params }: Params) {
+  const originFailure = assertSameOriginRequest(request);
+  if (originFailure) return originFailure;
+
   const auth = await requireApiUser();
   if (auth.response) return auth.response;
 
