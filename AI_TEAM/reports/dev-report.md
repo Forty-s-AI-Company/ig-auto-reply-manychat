@@ -3,5 +3,102 @@
 ## Summary
 
 - What changed:
+  - `AI_TEAM/tasks/queue.json`
+    - 正式作為 AI_TEAM 任務來源，runner 會同步寫回 task lifecycle，不再只是靜態待辦清單。
+  - `AI_TEAM/tasks/current-task.md`
+    - 改寫成這輪 AI_TEAM delivery autonomy 主題的完整缺口、DoD、驗證與 hard stop。
+  - `AI_TEAM/tasks/backlog.md`
+    - 重新整理成 AI_TEAM delivery autonomy 優先、產品功能次之的主題級 backlog。
+  - `AI_TEAM/scripts/ai-team-runner.mjs`
+    - 補上 queue lifecycle 寫回、`--only-worker` 單工 replay、`merge-delivery`、`deploy`、`delivery-state.json` 與 finalize task 流程。
+    - `git-delivery` 現在會把 commit / PR 結果寫進 delivery state，後段 worker 直接接續判斷。
+  - `AI_TEAM/scripts/lib/ai-team-paths.mjs`
+    - 補 `delivery-state.json` runtime path。
+  - `AI_TEAM/scripts/local-ai-team.ps1`
+    - 補 delivery / merge / deploy 相關旗標，讓可視 PowerShell 7 啟動器能直接帶 unattended delivery 設定。
+  - `AI_TEAM/README.md`
+    - 補 queue lifecycle、完整 worker 順序、delivery flags、單工 replay 與可視啟動範例。
+  - `AI_TEAM/RUNNER_DESIGN.md`
+    - 補 delivery 後半段設計、queue lifecycle 與 replay 說明。
+  - `docs/codex-session-log.md`
+    - 追加這輪 delivery autonomy 主題的實作與驗證紀錄。
+  - `docs/fix-roadmap.md`
+    - 追加 AI_TEAM delivery autonomy closeout 的 current status / remaining。
+  - `AI_TEAM/scripts/codex-dev.mjs`
+    - 補成真正的 Codex CLI 開發入口，會依目前 task / backlog / runtime 報告組 prompt，讓 Codex 直接做本輪實作，而不是只吐建議。
+  - `AI_TEAM/scripts/ai-team-runner.mjs`
+    - runner 主流程改成 `codex-dev -> local-qa -> local-models`。
+    - 新增 runner lock，避免多個 loop 互撞。
+    - 一般模式預設使用 `lite QA`，睡覺模式預設使用 `full QA`。
+  - `AI_TEAM/scripts/local-qa.mjs`
+    - 新增 `--level=lite|full`。
+    - 新增 QA lock，避免背景 loop 跟手動 QA 打架。
+    - lint / test / build 失敗時，現在會把 exit code 與 stdout / stderr tail 寫進 QA 報告，不再只剩一句 `失敗`。
+  - `AI_TEAM/README.md`
+    - 改寫成 AI_TEAM 開發閉環使用說明。
+  - `AI_TEAM/MODEL_ASSIGNMENT.md`
+    - 明確把 Codex CLI 定義成主開發引擎，本地模型改成輔助層。
+  - `AI_TEAM/RUNNER_DESIGN.md`
+    - 明確定義一般模式 / 睡覺模式、QA 分級、lock 與 runtime 設計。
+  - `package.json`
+    - 補 `ai-team:dev`、`ai-team:qa:lite`、`ai-team:qa:full`。
 - Why it changed:
+  - 之前的 AI_TEAM 雖然已經有 worker pipeline，但交付段還停在半套：
+    - queue 不會真正完成 lifecycle
+    - 沒有安全 replay delivery worker 的入口
+    - merge / deploy 還沒有實作成 worker
+    - launcher 也不能直接帶交付旗標
+  - 這輪先把同一主題的 runner / state / docs / smoke / delivery 一次補齊，避免又回到單點補洞。
+  - 之前的 AI_TEAM 比較像 QA + 報告鏈，還不是會持續往下做的閉環。
+  - 這輪把責任重新切清楚：Codex CLI 做主實作，本地模型做摘要，QA 做 gate，runner 負責接力。
+  - 也順手修掉同時跑多個 loop / QA 時容易互撞的問題。
 - Files:
+  - `AI_TEAM/tasks/queue.json`
+  - `AI_TEAM/tasks/current-task.md`
+  - `AI_TEAM/tasks/backlog.md`
+  - `AI_TEAM/scripts/codex-dev.mjs`
+  - `AI_TEAM/scripts/ai-team-runner.mjs`
+  - `AI_TEAM/scripts/local-qa.mjs`
+  - `AI_TEAM/scripts/ai-team.mjs`
+  - `AI_TEAM/scripts/lib/ai-team-paths.mjs`
+  - `AI_TEAM/scripts/lib/process-lock.mjs`
+  - `AI_TEAM/scripts/local-ai-team.ps1`
+  - `AI_TEAM/README.md`
+  - `AI_TEAM/MODEL_ASSIGNMENT.md`
+  - `AI_TEAM/RUNNER_DESIGN.md`
+  - `package.json`
+  - `docs/codex-session-log.md`
+  - `docs/fix-roadmap.md`
+
+## Previous Round
+
+- What changed:
+  - `src/components/InboxClient.tsx`
+    - 新增 `resetFilters()`，讓 Inbox 空狀態與篩選面板的重設邏輯一致。
+    - 修正空狀態 `清除篩選並重新查看`，現在會真正清掉搜尋、標籤、指派、分類、未讀條件。
+    - 對話更新改成支援更精準的成功訊息，指派、提醒、已讀不再共用模糊提示。
+    - 提醒選單把 `選擇日期與時間` 改成明確 disabled UX，避免假入口。
+    - 新增 assignment / reminder 相關 `data-testid`，方便 smoke 穩定驗證。
+  - `tests/e2e/inbox-auth.spec.ts`
+    - 補上 assignment 更新驗證。
+    - 補上固定提醒、disabled 自訂提醒、清除提醒驗證。
+    - 補上空狀態 reset filter 驗證。
+    - 補強 mobile 版 pane 切換，避免在 contact pane 直接操作 detail 控制項。
+    - 把 channel-scope 與主對話斷言改成依穩定聯絡人名稱判斷，避免受最新訊息內容漂移影響。
+- Why it changed:
+  - 這輪目標是把 Inbox 第三輪還像半成品的互動收斂掉，而不是再做部署或測試基礎設施。
+  - 原本最明顯的兩個問題是：
+    - 使用者以為自己已經清除篩選，但其實 tag / assignee 還殘留。
+    - 提醒選單把未完成功能包裝成可用入口，體感像壞掉。
+  - 另外，既有 Inbox smoke 沒有真的守住 assignment / reminder / empty-state reset，補上之後比較不會回歸。
+- Files:
+  - `src/components/InboxClient.tsx`
+  - `tests/e2e/inbox-auth.spec.ts`
+  - `AI_TEAM/tasks/current-task.md`
+  - `AI_TEAM/tasks/backlog.md`
+  - `AI_TEAM/reports/dev-report.md`
+  - `AI_TEAM/reports/final-report.md`
+  - `docs/project-launch-checklist.md`
+  - `docs/product-readiness-review.md`
+  - `docs/fix-roadmap.md`
+  - `docs/codex-session-log.md`

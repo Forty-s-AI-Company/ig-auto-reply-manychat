@@ -1,5 +1,40 @@
 # InboxPilot Fix Roadmap
 
+# Latest - 2026-06-29 Inbox audit round 3 follow-up
+
+Current status:
+
+- `[x]` Inbox 空狀態的 `清除篩選並重新查看` 現在會真正清掉搜尋、標籤、指派、分類與未讀條件。
+- `[x]` Inbox 提醒選單的 `選擇日期與時間` 已改成清楚 disabled UX，不再假裝是可用功能。
+- `[x]` Inbox 指派、提醒、已讀等對話更新，現在會顯示更精準的成功訊息。
+- `[x]` `tests/e2e/inbox-auth.spec.ts` 已擴充 assignment / reminder / empty-state reset 覆蓋。
+- `[x]` `npm run test:e2e:inbox` 已通過 Chromium 與 mobile Chrome。
+
+Remaining:
+
+- `[ ]` 繼續 Inbox 第四輪 visible-but-unusable audit，優先檢查 contact panel 的 `自動化暫停`、序列 CTA、更多聯絡人操作與剩餘 bulk action。
+- `[ ]` 把同等標準擴到 Channels 次要控制項 audit。
+
+# Latest - 2026-06-29 Local test infra stabilization
+
+Current status:
+
+- `[x]` 確認本專案 local Supabase 對應 `supabase_db_ig-auto-reply-manychat`，測試資料庫使用 `127.0.0.1:55322`。
+- `[x]` 確認另一套 `54322` Supabase stack 是別的專案，與本專案分離。
+- `[x]` `npm test` 已可在 Windows 本機完整跑完 9 個 batch，這輪未再出現 `3221225477`。
+- `[x]` `tests/email-channel.test.ts` 在目前 runner 下通過，未再造成測試環境清理問題。
+- `[x]` `AI_TEAM/scripts/playwright-browser-qa.mjs` 已改成直接呼叫既有 Playwright smoke spec。
+- `[x]` Browser QA 會先確認 `/login` HTTP readiness，不再只用 port listen 當成功條件。
+- `[x]` Browser QA 會清掉自己拉起的 Windows `next dev` 子程序樹，避免殘留假活著的 `3041`。
+- `[x]` `tests/e2e/ai-team-browser-smoke.spec.ts` 已修正 full release / simple release 斷言分支。
+- `[x]` `npm run ai-team:qa` 現在可完整 PASS。
+- `[x]` `AI_TEAM/scripts/local-ai-team.ps1` 已改成先強制 UTF-8、關閉 ANSI 色碼，再以 UTF-8 寫 log，避免可視 PowerShell 視窗中文亂碼。
+
+Remaining:
+
+- `[ ]` 用已穩定的本機測試基礎設施，回到 Inbox / Channels 的產品功能完整性修補。
+- `[ ]` 擴大 authenticated smoke 覆蓋更多真實可點擊控制項。
+
 # Latest - 2026-06-29 AI_TEAM orchestration MVP
 
 Current status:
@@ -15,7 +50,40 @@ Remaining:
 
 - `[ ]` Improve `agy` Browser QA reliability; current print-mode runs may still end with no output and produce a WARN report.
 - `[ ]` Decide later whether local-model patch generation should stop at suggestions or produce gated patch artifacts for Codex review.
-- `[ ]` Resume product completeness work for Channels / Social connect after this tooling round.
+- `[x]` Resume product completeness work for Channels / Social connect after this tooling round.
+- `[ ]` Add authenticated Channels smoke once a non-production `TEST_DATABASE_URL` and test login path are available in the active worktree.
+- `[ ]` Continue Channels audit for lower-priority comments/media/token-related controls.
+
+# Latest - 2026-06-29 Channels / Social connect round 2
+
+Current status:
+
+- `[x]` Added a shared visibility helper for Channels connect cards and OAuth providers.
+- `[x]` Mock OAuth is no longer presented like a normal live connect option on deployed environments.
+- `[x]` `/channels`, `/channels/connect`, and `/channels/connect/social` now use consistent visible / enabled / disabled rules.
+- `[x]` Improved the connected-account-without-synced-channel state with a clearer next-step notice and direct link back to `Channels`.
+- `[x]` Added focused unit coverage for simple-release filtering and deployed-env Mock visibility behavior.
+
+Remaining:
+
+- `[ ]` Add authenticated Channels smoke once a non-production `TEST_DATABASE_URL` and test login path are available in the active worktree.
+- `[ ]` Audit comments/media/token-related controls and decide which should become minimal viable actions vs. explicit disabled UX.
+- `[ ]` Continue product completeness audits for Inbox, Automations, and Analytics after this Channels pass.
+
+# Latest - 2026-06-29 AI_TEAM general/sleep mode split
+
+Current status:
+
+- `[x]` Split AI_TEAM local-model orchestration into `general` and `sleep` modes.
+- `[x]` Kept Codex CLI and Antigravity CLI roles unchanged across both modes.
+- `[x]` Added mode-aware `ai-team:models*` and `ai-team:loop*` npm entrypoints.
+- `[x]` Updated runner health summary to show the active local-model mode.
+- `[x]` Added unit coverage for mode-specific default model assignment.
+
+Remaining:
+
+- `[ ]` Re-run unattended loop with the new mode split and tune timeout values separately for `general` vs `sleep`.
+- `[ ]` Decide whether `sleep` mode should also use a longer default local-model timeout than `general`.
 
 # Latest - 2026-06-28 Inbox mobile scope and filter pass
 
@@ -1700,3 +1768,161 @@ Remaining:
 
 - `[ ]` Re-run full `npm test` in the affected Windows environment and use the new diagnostic output if `3221225477` appears again.
 - `[ ]` Keep production DB, Production deploy, Meta App Review, and PayUNI production outside this diagnostic path.
+
+## Latest - 2026-06-29 Daily AI model cache refresh
+
+Current status:
+
+- `[x]` Ran `npm run ai-models:refresh`.
+- `[x]` Refresh completed for `default-workspace`.
+- `[x]` Current provider counts are `chatgpt=10`, `gemini=7`, `deepseek=2`, and `xai=2`.
+- `[x]` No provider failure was reported.
+- `[x]` `codex_cli` and `antigravity_cli` stayed outside the shared refresh payload, matching the documented local CLI opt-in behavior.
+
+Remaining:
+
+- `[ ]` Keep `AI_ENABLE_LOCAL_CLI` disabled in shared SaaS / cron environments unless the machine has authenticated local CLI tools.
+
+## Latest - 2026-06-29 AI_TEAM queue restructure
+
+Current status:
+
+- `[x]` Reworked `AI_TEAM/tasks/current-task.md` into a runner-friendly state-machine format with `PRIMARY_TARGET`, done criteria, and hard stops.
+- `[x]` Reworked `AI_TEAM/tasks/backlog.md` into `UNBLOCKED` / `BLOCKED_*` queue items so the next loop can skip blocked work instead of re-reading stale summaries.
+- `[x]` Documented the queue reading order and maintenance rules in `AI_TEAM/README.md`.
+- `[x]` Recorded `HUMAN_REQUIRED` items for DB-backed authenticated smoke rather than pretending those flows are ready.
+- `[x]` Added AI_TEAM continuous runner mode so each loop can continue immediately without the old wait interval.
+
+Remaining:
+
+- `[ ]` Use the new queue order to continue Inbox P0/P1 product-completeness work before returning to lower-priority process cleanup.
+- `[ ]` After a safe non-production `TEST_DATABASE_URL` is available, convert Channels / Inbox authenticated smoke from `WARN` to real execution.
+
+## Latest - 2026-06-29 Local Supabase test DB bootstrap
+
+Current status:
+
+- `[x]` Added repo-local `supabase/config.toml` and `supabase/seed.sql`.
+- `[x]` Moved the repo's local Supabase ports away from the already occupied `54321-54327` range.
+- `[x]` `supabase start` now succeeds for this repo instead of colliding with another project's local stack.
+- `[x]` Repo-local Postgres is now available on port `55322` for `TEST_DATABASE_URL`.
+
+Remaining:
+
+- `[ ]` Add `TEST_DATABASE_URL` and `TEST_DIRECT_URL` to local env before rerunning authenticated DB-backed smoke.
+- `[ ]` Optionally replace deprecated `[inbucket]` config with the new `[local_smtp]` section later; it is only a warning, not a blocker.
+
+## Latest - 2026-06-29 AI_TEAM closed-loop refactor
+
+Current status:
+
+- `[x]` Added a real Codex CLI execution stage (`ai-team:dev`) so AI_TEAM can directly implement code changes instead of stopping at next-prompt generation.
+- `[x]` Rewired the runner pipeline to `codex-dev -> local-qa -> local-models`.
+- `[x]` Added runner / QA / Codex lock files to prevent overlapping unattended loops.
+- `[x]` Added `lite` vs `full` QA levels so small fixes stop paying the cost of full build + browser QA every round.
+- `[x]` Upgraded QA failure reporting to include exit code plus stdout / stderr tail, making the next loop actionable.
+- `[x]` Rewrote AI_TEAM docs so Codex CLI is clearly the primary implementer and local models are supporting roles only.
+
+Remaining:
+
+- `[ ]` Run the new general-mode loop against live product backlog items instead of process-only work.
+- `[ ]` Clean up ANSI / spinner noise in local model reports so `code-review.md` and related runtime artifacts stay readable.
+- `[ ]` Decide the next safe boundary for commit / push / PR automation, without skipping human gates for Production.
+
+## Latest - 2026-06-30 AI_TEAM Codex CLI long-run reliability
+
+Current status:
+
+- `[x]` Confirmed Codex CLI itself is available on this machine as `codex-cli 0.134.0`.
+- `[x]` Kept the Windows shell launch path for `codex-dev`, avoiding the earlier `spawn codex ENOENT` failure.
+- `[x]` Set default `AI_TEAM_CODEX_TIMEOUT_MS` by mode: general = 30 minutes, sleep = 2 hours.
+- `[x]` Added timeout / failure summaries for `AI_TEAM/runtime/codex-last-message.md`, including bounded stdout / stderr excerpts.
+- `[x]` Confirmed `AI_TEAM_CODEX_SMOKE=1 npm run ai-team:loop:once` completes `codex-dev -> qa -> local-models` with all PASS.
+- `[x]` Confirmed a visible PowerShell 7 launch creates the expected `pwsh -> npm -> cmd -> node ai-team-runner` process chain.
+
+Remaining:
+
+- `[ ]` Run non-smoke general mode against the product backlog after the user explicitly starts unattended mode.
+- `[ ]` Continue improving local model progress / timeout reporting so long Ollama calls do not look frozen.
+- `[ ]` Keep production DB, migration, Production deploy, Meta App Review, and PayUNI production outside runner automation unless separately approved.
+
+## Latest - 2026-06-30 AI_TEAM worker pipeline / task queue
+
+Current status:
+
+- `[x]` Added `AI_TEAM/tasks/queue.json` as the structured task queue.
+- `[x]` Rebuilt `AI_TEAM/scripts/ai-team-runner.mjs` around workers: planner, codex-dev, local-model-review, qa, browser-qa, reporter, git-delivery.
+- `[x]` Added runtime JSON outputs for `loop-state.json`, `current-worker.json`, `worker-result.json`, and `heartbeat.json`.
+- `[x]` Runner now advances from worker result status instead of treating timeout as the main control flow.
+- `[x]` Timeout remains in each external CLI worker as a safety fuse only.
+- `[x]` Added `npm run ai-team:loop:smoke` and confirmed a fake task can walk the full worker pipeline.
+
+Remaining:
+
+- `[ ]` Wire `git-delivery` to a real repository policy gate before enabling automatic commit / push / PR / merge.
+- `[ ]` Run non-smoke `ai-team:loop:general` only when ready to let Codex CLI modify product files again.
+- `[ ]` Continue improving local model progress reporting for long Ollama calls.
+
+## Latest - 2026-06-30 AI_TEAM git-delivery policy gate
+
+Current status:
+
+- `[x]` `git-delivery` now reads `worker-result.json`, `loop-state.json`, and `git status --porcelain`.
+- `[x]` Commits are blocked when QA is not PASS, when any worker is `failed` / `blocked`, or when dirty files include runtime / reports / env / cache / log artifacts.
+- `[x]` Dirty files are now classified into committable files vs excluded files.
+- `[x]` Added staged delivery switches: `AI_TEAM_ENABLE_GIT_DELIVERY`, `AI_TEAM_GIT_COMMIT`, `AI_TEAM_GIT_PUSH`, `AI_TEAM_GIT_PR`.
+- `[x]` `npm run ai-team:loop:smoke` now covers `git-delivery` skipped / blocked / ready states.
+
+Remaining:
+
+- `[ ]` Add real PR metadata / branch policy defaults before turning on unattended commit + push + PR in normal loops.
+- `[ ]` Decide whether browser QA should become a hard gate for git delivery in sleep mode.
+- `[ ]` Keep Production deploy disabled by default even after git delivery is enabled.
+
+## Latest - 2026-06-30 AI_TEAM branch safety / PR policy
+
+Current status:
+
+- `[x]` Added branch safety rules so `master` / `main` / `staging` / `production` / `prod` / `release` are blocked for unattended git delivery.
+- `[x]` Added default PR metadata: base=`master`, draft=`true`, title=`AI_TEAM: <task title>`, templated body with validation details.
+- `[x]` Added a hard block for `AI_TEAM_ENABLE_PRODUCTION_DEPLOY=1`; Production deploy remains disabled in `git-delivery`.
+- `[x]` Added a guard that blocks PR creation when push is not enabled.
+- `[x]` Extended smoke coverage for `branch unsafe`, `ready but commit disabled`, `commit enabled but push disabled`, and `push enabled but gh missing`.
+
+Remaining:
+
+- `[ ]` Decide whether `master` should remain the default PR base or follow repository default branch detection.
+- `[ ]` Add richer branch naming policy if AI_TEAM starts auto-creating topic branches.
+- `[ ]` Keep git delivery behind explicit env flags until the branch / PR policy has been exercised in real non-smoke loops.
+
+## Latest - 2026-06-30 AI_TEAM auto-branch / dry-run delivery
+
+Current status:
+
+- `[x]` Added a safe branch plan that maps unsafe branches to `codex/<task-id>`.
+- `[x]` Added `AI_TEAM_GIT_DRY_RUN` and made delivery planning explicit before real git mutation.
+- `[x]` Added `AI_TEAM_GIT_AUTO_BRANCH` support so safe branch creation/switch can be automated outside dry-run.
+- `[x]` Kept Production deploy blocked even when git delivery is otherwise ready.
+
+Remaining:
+
+- `[ ]` Run a real non-smoke delivery on a disposable topic branch before enabling unattended push / PR in long-running loops.
+- `[ ]` Decide whether `AI_TEAM_GIT_DRY_RUN` should stay default-on permanently or only for general mode.
+
+## Latest - 2026-06-30 AI_TEAM delivery autonomy closeout
+
+Current status:
+
+- `[x]` Runner now writes real queue lifecycle back into `AI_TEAM/tasks/queue.json` (`pending` / `running` / `completed` / `blocked` / `failed`).
+- `[x]` Added `--only-worker=<name>` and `AI_TEAM_ONLY_WORKER` so delivery workers can be replayed safely without rerunning the whole loop.
+- `[x]` Extended the worker pipeline to include `merge-delivery` and `deploy`.
+- `[x]` Added `AI_TEAM/runtime/delivery-state.json` so `git-delivery` / `merge-delivery` / `deploy` share one tracked state object.
+- `[x]` Extended the visible PowerShell 7 launcher with `-EnableGitDelivery` / `-EnableMerge` / `-EnableDeploy` / `-DisableDryRun` / `-DisableAutoBranch`.
+- `[x]` `npm run ai-team:loop:smoke` now covers `git-delivery`, `merge-delivery`, and `deploy`.
+- `[x]` README / runner design / reports now match the actual runner behavior instead of stopping at the pre-delivery half.
+
+Remaining:
+
+- `[ ]` Run one disposable-branch non-smoke delivery to validate real add / commit / push / draft PR / merge gate behavior.
+- `[ ]` Decide whether preview deploy should ever be auto-enabled in general mode, or remain sleep-mode/manual only.
+- `[ ]` Reconnect the now-complete delivery runner back to product work instead of staying on infrastructure-only tasks.

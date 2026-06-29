@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-29T19:03:59.301Z",
+  "tasks": [
+    {
+      "id": "ai-team-delivery-autonomy-001",
+      "title": "AI_TEAM delivery autonomy closeout",
+      "status": "completed",
+      "priority": 1,
+      "lane": "ai-team",
+      "scope": [
+        "AI_TEAM/scripts/ai-team-runner.mjs",
+        "AI_TEAM/scripts/ai-team.mjs",
+        "AI_TEAM/scripts/local-ai-team.ps1",
+        "AI_TEAM/scripts/lib/ai-team-paths.mjs",
+        "AI_TEAM/README.md",
+        "AI_TEAM/RUNNER_DESIGN.md",
+        "AI_TEAM/MODEL_ASSIGNMENT.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "queue 會真實更新 task lifecycle",
+        "runner 支援 only-worker replay",
+        "pipeline 補到 merge-delivery 與 deploy gate",
+        "一般模式 / 睡覺模式啟動器支援 unattended delivery flags",
+        "smoke 覆蓋 git-delivery / merge-delivery / deploy",
+        "README / RUNNER_DESIGN / docs 狀態同步"
+      ],
+      "completedAt": "2026-06-30T02:55:00.000Z",
+      "summary": "AI_TEAM 已補齊 queue lifecycle、worker replay、merge-delivery、deploy、launcher flags 與 smoke/docs 同步。",
+      "validation": [
+        "npm run ai-team:check",
+        "npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/ai-team.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs AI_TEAM/scripts/playwright-browser-qa.mjs",
+        "npm run ai-team:loop:smoke",
+        "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --smoke --only-worker=merge-delivery"
+      ]
+    },
+    {
+      "id": "ai-team-disposable-delivery-002",
+      "title": "AI_TEAM disposable branch real delivery validation",
+      "status": "running",
+      "priority": 2,
+      "lane": "ai-team",
+      "scope": [
+        "AI_TEAM/scripts/ai-team-runner.mjs",
+        "AI_TEAM/scripts/local-ai-team.ps1",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "在 disposable branch 完成真實 add / commit / push / draft PR",
+        "驗證 merge gate 對 draft / checks / branch safety 的實際行為",
+        "不在 master/main/staging 直接 commit",
+        "docs 與 reports 同步真實 delivery 驗證結果"
+      ],
+      "startedAt": "2026-06-29T19:03:59.301Z",
+      "lastPickedAt": "2026-06-29T19:03:59.301Z",
+      "attempts": 1
+    }
+  ]
+}

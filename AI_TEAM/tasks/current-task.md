@@ -1,6 +1,23 @@
 # Current Task
 
-- 任務：AI_TEAM 長跑 orchestration 最小可用版已補齊，下一輪回到產品功能 audit。
-- 狀態：已完成本輪 AI_TEAM 重構
-- 本輪重點：用 `agy` + 本地 Ollama 模型接上 `ai-team:qa`、`ai-team:models`、`ai-team:loop`，並把執行期輸出移到 `AI_TEAM/runtime/`。
-- 下一步：切到 Channels / Social connect 第二輪 audit，繼續清 visible-but-unusable controls。
+## Active Lane
+
+- `LANE`: ai-team
+- `STATUS`: Running
+- `OWNER`: AI_TEAM runner
+- `PRIMARY_TARGET`: AI_TEAM disposable branch real delivery validation
+- `SECONDARY_TARGET`: AI_TEAM/scripts/ai-team-runner.mjs, AI_TEAM/scripts/local-ai-team.ps1, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md, docs/codex-session-log.md, docs/fix-roadmap.md
+
+## Current Execution Goal
+
+- task id: `ai-team-disposable-delivery-002`
+- scope: AI_TEAM/scripts/ai-team-runner.mjs, AI_TEAM/scripts/local-ai-team.ps1, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md, docs/codex-session-log.md, docs/fix-roadmap.md
+- priority: 2
+
+## Hard Stops
+
+- 不碰 production DB。
+- 不跑 migration / `db push`。
+- 不部署 Production。
+- 不送 Meta App Review。
+- 不切 PayUNI production。
