@@ -81,7 +81,13 @@ test.describe("inbox authenticated smoke", () => {
       await page.getByTestId("inbox-pane-detail").click();
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
     }
-    await page.getByTestId("inbox-assignee-select").selectOption({ label: adminName });
+    const assigneeSelect = page.getByTestId("inbox-assignee-select");
+    const currentAssignee = await assigneeSelect.inputValue();
+    if (currentAssignee.trim()) {
+      await assigneeSelect.selectOption("");
+      await expect(page.getByTestId("inbox-notice")).toContainText("已清除對話指派");
+    }
+    await assigneeSelect.selectOption({ label: adminName });
     await expect(page.getByTestId("inbox-notice")).toContainText("已更新對話指派對象");
 
     await page.getByTestId("inbox-reminder-toggle").click();
@@ -139,12 +145,10 @@ test.describe("inbox authenticated smoke", () => {
       await page.getByTestId("inbox-contact-actions-button").click();
       await expect(page.getByTestId("inbox-contact-actions-menu")).toBeVisible();
       await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("開啟聯絡人詳情");
-      await page.getByRole("button", { name: "匯出聯絡人資料" }).click();
-      await expect(page.getByTestId("inbox-notice")).toContainText("匯出聯絡人資料目前已暫時停用");
-      await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
-      await page.getByRole("button", { name: "封鎖 / 解除訂閱" }).click();
-      await expect(page.getByTestId("inbox-notice")).toContainText("封鎖或解除訂閱操作目前已暫時停用");
-      await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+      await expect(page.getByTestId("inbox-contact-export-disabled")).toBeDisabled();
+      await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("匯出目前先停用");
+      await expect(page.getByTestId("inbox-contact-block-disabled")).toBeDisabled();
+      await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("封鎖 / 解除訂閱目前先停用");
     }
 
     await page.getByRole("button", { name: "AI 回覆建議" }).click();

@@ -23,6 +23,21 @@
 
 # Project Launch Checklist
 
+## 2026-06-30 - Inbox visible-but-unusable follow-up
+
+- `[x]` Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX，不再看起來像可直接使用的功能。
+- `[x]` simple-release Inbox 的序列訂閱入口已改成真正 disabled UX，避免把 full-release 才有的功能誤導成可操作。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
+- `[ ]` 若後續還有其他 visible-but-unusable 控制項，再依同樣標準收斂。
+
+# 2026-06-30 - Contacts filtered empty-state guidance
+
+- `[x]` Contacts filtered empty-state 現在會列出目前套用的搜尋 / 狀態 / 標籤條件。
+- `[x]` `清除篩選並重新查看` 已成為真正可用的返回完整列表入口。
+- `[x]` filtered empty-state 的 Playwright smoke 已補上，並在 Chromium / mobile Chrome 通過。
+- `[x]` `npm run lint`、`npm run build`、`npm run test:e2e:contacts`、`npm test` 都已通過。
+- `[ ]` 如果要進一步打磨 Contacts，可再補 no-filter empty state 的建立 / 匯入引導。
+
 ## 2026-06-30 - Inbox / Channels visible-but-unusable closeout
 
 - `[x]` Inbox header `視訊通話` 與 `更多對話操作` 已改成真正 disabled UX，並補上原因說明。

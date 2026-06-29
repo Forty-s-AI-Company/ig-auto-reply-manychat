@@ -1405,28 +1405,30 @@ function ContactPanel({
             </Link>
             <button
               type="button"
-              onClick={() =>
-                onNotice(
-                  "info",
-                  "匯出聯絡人資料目前已暫時停用，需完成匯出權限、資料遮罩與稽核紀錄後再開放。",
-                )
-              }
-              className="mt-1 block w-full rounded-md px-3 py-2 text-left text-[#667085] hover:bg-[#f8fafc]"
+              disabled
+              aria-disabled="true"
+              title="匯出聯絡人資料目前已暫時停用，需完成匯出權限、資料遮罩與稽核紀錄後再開放。"
+              data-testid="inbox-contact-export-disabled"
+              className="mt-1 block w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-[#98a2b3] disabled:hover:bg-transparent"
             >
               匯出聯絡人資料
             </button>
+            <p className="px-3 pb-2 text-[11px] leading-5 text-[#98a2b3]">
+              匯出目前先停用，等匯出權限、資料遮罩與稽核紀錄完成後再開放。
+            </p>
             <button
               type="button"
-              onClick={() =>
-                onNotice(
-                  "info",
-                  "封鎖或解除訂閱操作目前已暫時停用，需確認 Instagram 同步規則與客服審核流程後再開放。",
-                )
-              }
-              className="block w-full rounded-md px-3 py-2 text-left text-[#667085] hover:bg-[#f8fafc]"
+              disabled
+              aria-disabled="true"
+              title="封鎖或解除訂閱操作目前已暫時停用，需確認 Instagram 同步規則與客服審核流程後再開放。"
+              data-testid="inbox-contact-block-disabled"
+              className="block w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-[#98a2b3] disabled:hover:bg-transparent"
             >
               封鎖 / 解除訂閱
             </button>
+            <p className="px-3 pb-1 pt-1 text-[11px] leading-5 text-[#98a2b3]">
+              封鎖 / 解除訂閱目前先停用，等 Instagram 同步規則與客服審核流程完成後再開放。
+            </p>
           </div>
         ) : null}
       </div>
@@ -1511,18 +1513,21 @@ function ContactPanel({
               訂閱
             </Link>
           ) : (
-            <button
-              type="button"
-              onClick={() =>
-                onNotice(
-                  "info",
-                  "序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。",
-                )
-              }
-              className="rounded-full border border-[#d7dbe0] px-2 py-0.5 text-[11px] text-[#667085] hover:bg-[#f8fafc]"
-            >
-              完整版功能
-            </button>
+            <div className="text-right">
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                title="序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。"
+                data-testid="inbox-sequence-subscribe-disabled"
+                className="rounded-full border border-[#d7dbe0] px-2 py-0.5 text-[11px] text-[#98a2b3] disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:hover:bg-[#f8fafc]"
+              >
+                完整版功能
+              </button>
+              <p className="mt-2 max-w-[160px] text-[11px] leading-5 text-[#98a2b3]">
+                序列只在完整版本開放，這裡先保留清楚說明，不再假裝可直接訂閱。
+              </p>
+            </div>
           )
         }
       >

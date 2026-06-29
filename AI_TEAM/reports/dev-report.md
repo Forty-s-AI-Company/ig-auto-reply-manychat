@@ -1,5 +1,155 @@
 # Dev Report
 
+## Latest - 2026-06-30 Inbox visible-but-unusable follow-up
+
+Current status:
+
+- `[x]` Inbox contact actions menu 的匯出 / 封鎖項目已改成真正 disabled UX，並補上更直接的原因說明。
+- `[x]` simple-release Inbox 的序列訂閱入口已改成真正 disabled UX，不再像可直接訂閱的入口。
+- `[x]` `tests/e2e/inbox-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上對應 smoke。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:inbox`、`npm run test:e2e:simple` 都已通過。
+
+What changed:
+
+- `src/components/InboxClient.tsx`
+  - 將 contact actions menu 的匯出 / 封鎖項目改成真正 disabled button，並補上簡短說明，避免使用者誤以為可以操作。
+  - 將 sequence subscribe 在 full release 外的入口改成真正 disabled UX，保留明確說明但不再可點。
+- `tests/e2e/inbox-auth.spec.ts`
+  - 驗證 contact actions menu 的 disabled 狀態與說明文案。
+- `tests/e2e/simple-release.spec.ts`
+  - 驗證 simple release 的 Inbox sequence subscribe control 真的被停用。
+- `AI_TEAM/tasks/current-task.md`
+  - 將本輪 task 標記完成並補上 completion result。
+- `AI_TEAM/tasks/backlog.md`
+  - 將 Inbox visible-but-unusable product sweep 標記完成。
+- `AI_TEAM/tasks/queue.json`
+  - 將 current product task 標記 completed，並補上完成摘要 / 驗證。
+- `docs/codex-session-log.md`
+  - 追加本輪 Inbox visible-but-unusable follow-up 的實作與驗證紀錄。
+- `docs/fix-roadmap.md`
+  - 追加本輪 current status / remaining。
+- `docs/project-launch-checklist.md`
+  - 追加本輪 release surface disabled UX 收斂紀錄。
+- `docs/product-readiness-review.md`
+  - 追加本輪 beta operator trust 改善紀錄。
+
+Validation:
+
+```text
+npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+
+npm run test:e2e:simple
+Result: passed for Chromium and mobile Chrome with INBOXPILOT_RELEASE_CHANNEL=simple.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+```
+
+Launch impact:
+
+- Inbox visible-but-unusable 的殘留假入口再少一批。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+## Latest - 2026-06-30 AI_TEAM product autofill loop
+
+Current status:
+
+- `[x]` Planner 現在會在 `queue.json` 沒有 pending / running task 時，自動補入下一個安全產品任務。
+- `[x]` 已補入 `Inbox visible-but-unusable product sweep`，讓一般模式可以直接接回產品主線。
+- `[x]` `AI_TEAM/reports/next-codex-prompt.md` 已改成完全自動閉環提示詞，不再停在上一輪 Contacts 任務。
+- `[x]` `npm run ai-team:loop:smoke` 已通過，完整 worker pipeline 仍可走完。
+
+What changed:
+
+- `AI_TEAM/scripts/ai-team-runner.mjs`
+  - 新增產品主線 autofill task seeds。
+  - planner 在 queue 空掉時會自動補入下一個尚未完成的產品任務。
+  - planner 補題後會重新讀 queue，確保後續 worker 拿到正確 task。
+- `AI_TEAM/README.md`
+  - 補上 queue 空時的自動補題行為。
+- `AI_TEAM/RUNNER_DESIGN.md`
+  - 補上產品任務自動補題順序與 hard stop。
+
+Validation:
+
+```text
+npx eslint AI_TEAM/scripts/ai-team-runner.mjs
+Result: passed.
+
+node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner
+Result: passed. Queue auto-filled Inbox visible-but-unusable product sweep.
+
+npm run ai-team:loop:smoke
+Result: passed.
+```
+
+Launch impact:
+
+- 這是 AI_TEAM 自動化能力修正，不直接改產品 runtime。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+## Latest - 2026-06-30 Contacts filtered empty-state guidance
+
+Current status:
+
+- `[x]` Contacts filtered empty-state 現在會清楚列出目前套用的搜尋 / 狀態 / 標籤條件。
+- `[x]` 空狀態提供真正可點的 `清除篩選並重新查看`，會回到完整 Contacts 列表。
+- `[x]` `tests/e2e/contacts-auth.spec.ts` 已補上 filtered empty-state guidance smoke，Chromium / mobile Chrome 都通過。
+- `[x]` `npm run lint`、`npm run test:e2e:contacts`、`npm test`、`npm run build` 已通過。
+
+What changed:
+
+- `src/components/ContactsListClient.tsx`
+  - 將 filtered empty-state 由單一句提示改成完整 guidance panel，會列出目前套用的搜尋、訂閱狀態與標籤條件。
+  - 新增 `清除篩選並重新查看` 入口，直接回到乾淨 Contacts 列表。
+  - 頂部 active chip 也補上搜尋條件，讓空集合時更容易看出到底套用了什麼。
+- `tests/e2e/contacts-auth.spec.ts`
+  - 新增 filtered empty-state guidance smoke，驗證空狀態條件摘要與清除篩選入口。
+- `AI_TEAM/tasks/current-task.md`
+  - 將本輪 task 標記完成，並寫入完成摘要。
+- `AI_TEAM/tasks/backlog.md`
+  - 將 Contacts 任務標記完成。
+- `AI_TEAM/tasks/queue.json`
+  - 將 current product task 標記 completed，並補上 completedAt。
+- `docs/codex-session-log.md`
+  - 追加本輪 Contacts filtered empty-state guidance 的實作與驗證紀錄。
+- `docs/fix-roadmap.md`
+  - 追加本輪 current status / remaining。
+
+Validation:
+
+```text
+npx eslint src/components/ContactsListClient.tsx tests/e2e/contacts-auth.spec.ts
+Result: passed.
+
+npm run test:e2e:contacts
+Result: passed for Chromium and mobile Chrome.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+```
+
+Launch impact:
+
+- 降低 Contacts 在套用篩選後空白時的誤解成本。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 ## Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
 
 Current status:
