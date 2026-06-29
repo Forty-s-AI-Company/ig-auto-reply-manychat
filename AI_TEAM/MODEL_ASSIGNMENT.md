@@ -1,293 +1,134 @@
-# AI Team Model Assignment
+# AI_TEAM Model Assignment
 
-本專案把 AI_TEAM 的本地模型編排拆成兩種模式：
+AI_TEAM 現在分成兩層：
 
-- `一般模式`：平常工作時使用，優先速度與可接受品質
-- `睡覺模式`：長時間無人值守時使用，優先品質、深度與長上下文
+1. `Codex CLI` 是主開發引擎，負責真正讀碼、改碼、驗證、更新文件。
+2. 本地模型是輔助層，負責摘要、報告、下一輪提示詞、低風險小修建議。
 
-`Codex CLI` 跟 `Antigravity CLI` 不因模式切換而改變，只有本地 Ollama 模型會切換。
+這樣做的原因很直接：
 
-本專案使用 Codex Desktop / Codex CLI 作為總指揮。
-Codex 負責高風險、架構、最終審查。
-本地 Ollama 模型負責低風險、重複性、報告與 QA 支援。
-Antigravity CLI 只在需要 browser / visual / E2E QA 時使用。
+- 真正會改產品程式的主體要單一，避免多個代理同時亂改。
+- 本地模型便宜、快，適合做整理與分流，不適合主導高風險產品修改。
+- Browser QA 由 Playwright 為主，`agy` / Antigravity CLI 為 fallback，不讓 QA 流程卡死在單一工具。
 
-## Codex Desktop / Codex CLI
+## 角色總表
 
-負責：
+| 層級 | 工具 / 模型 | 主要工作 | 是否直接改產品碼 |
+|---|---|---|---|
+| 主開發 | Codex CLI | 讀碼、實作、修 bug、補測試、更新文件、收斂 commit-ready 變更 | 是 |
+| Browser QA | Playwright | UI / 互動 / 路徑 / console / network smoke | 否 |
+| Browser QA fallback | Antigravity CLI (`agy`) | 補充 prompt-driven browser QA | 否 |
+| Error Summarizer | qwen2.5-coder:1.5b / 7b | log 摘要、錯誤分類、阻塞整理 | 否 |
+| Bug Fix Advisor | qwen2.5-coder:7b / 14b | 低風險修補建議、靜態檢查摘要 | 否 |
+| Code Reviewer | deepseek-coder-v2:lite / qwen3-coder:30b | review、風險提示、穩定性觀察 | 否 |
+| Prompt Engineer | qwen3:8b | 下一輪 Codex prompt、任務拆解 | 否 |
+| Report Writer | llama3.1:8b / qwen2.5-coder:1.5b | README / 報告 / 操作說明初稿 | 否 |
 
-- Project Lead
-- System Architect
-- Backend Lead
-- Security Lead
-- Database / RLS Reviewer
-- OAuth / Meta API Reviewer
-- PayUNI / Billing Reviewer
-- Final Reviewer
+## Codex CLI
 
-不要浪費 Codex 在：
-
-- README 小修
-- log 摘要
-- 單純 report
-- lint 小錯
-- UI 文案
-
-## qwen2.5-coder:7b
-
-速度快，作為本地 coding 主力。
+Codex CLI 是 AI_TEAM 的核心。
 
 負責：
 
-- Bug Fixer
-- Static QA
-- Build QA
-- Frontend 小修
-- TypeScript 小錯
-- import / path alias 錯誤
-- test helper
+- 產品功能實作
+- API / UI / 測試修改
+- 高風險邏輯複查
+- 驗證與文件同步
+- 把每輪工作收斂到可提交狀態
 
-可自動改：
+Codex CLI 優先處理：
 
-- 非高風險前端
-- 型別小錯
-- lint error
-- 測試檔
-- 報告
+- Inbox / Contacts / Channels / Automations / Analytics 的產品功能完整性
+- visible-but-unusable 控制項
+- disabled UX 補強
+- focused tests / Playwright smoke
+- 會影響上線的真實缺口
 
-不可主導：
+Codex CLI 不應該浪費在：
 
-- OAuth
-- PayUNI
-- RLS
-- webhook security
-- production migration
+- 純 log 摘要
+- 重複型報告整理
+- 下一輪 prompt 草稿
+- 沒有上下文風險的文案潤稿
 
-## qwen2.5-coder:1.5b
+## 本地模型
 
-超高速助理。
+本地模型不是主開發者。
+它們的責任是幫 Codex CLI 節省時間，不是取代 Codex CLI。
 
-負責：
-
-- log 摘要
-- TODO 整理
-- final report 初稿
-- dev report 初稿
-- 檔案變更摘要
-- 錯誤分類
-
-不可負責：
-
-- 複雜 coding
-- 後端安全
-- 付款
-- OAuth
-
-## qwen3:8b
-
-負責：
-
-- Product Manager
-- Prompt Engineer
-- 需求拆解
-- 下一輪 Codex prompt
-- UX 流程檢查
-- 優先順序整理
-
-## llama3.1:8b
-
-負責：
-
-- README
-- SETUP
-- DEPLOYMENT
-- CHANGELOG
-- 使用者教學
-- UI 文案
-- 報告潤稿
-
-## deepseek-coder-v2:lite
-
-負責：
-
-- Code Reviewer
-- Bug Analyst
-- Security Assistant
-- Backend Reviewer
-- Refactor Advisor
-
-原則上只產報告，不直接改高風險檔案。
-
-## qwen2.5-coder:14b
-
-睡覺時使用。
-
-負責：
-
-- 後端小功能審查
-- 型別架構檢查
-- API helper
-- 本地進階 code review
-
-## qwen3-coder:30b
-
-睡覺時使用。
-
-負責：
-
-- Deep Architecture Review
-- Long Context Review
-- 大型專案摘要
-- 上線前深度檢查
-
-## Antigravity CLI
-
-只在需要 browser 時使用。
-
-負責：
-
-- Browser QA
-- Visual QA
-- RWD QA
-- Flow QA
-- OAuth browser flow check
-
-不要用 Antigravity 做：
-
-- 一般 lint
-- 一般 build error
-- README
-- 大量 code review
-- 後端安全主導
-
-## 本地模型與權限原則
-
-快模型做高頻工作。
-慢模型做低頻深度工作。
-Antigravity 只做需要瀏覽器的工作。
-Codex 只做核心決策與高風險審查。
-
-可以讓本地模型自動改或自動產報告：
-
-- README / 文件 / 報告
-- UI 文案 / Tailwind 小調整
-- TypeScript 型別錯誤
-- import / path alias 錯誤
-- lint / build error
-- 測試檔
-
-本地模型只能提建議，不能直接主導高風險區域：
-
-- Supabase RLS
-- PayUNI callback
-- Meta OAuth
-- Webhook 驗證
-- 會員權限
-- 使用者資料隔離
-- production migration
-
-必須 Codex 複查：
-
-- 付款
-- OAuth
-- token
-- RLS
-- migration
-- webhook
-- admin 權限
-- 自動發送私訊邏輯
-
-## 一般模式
+### 一般模式
 
 用途：
 
-- 白天開發
-- 需要快一點的報告與整理
-- 需要頻繁反覆執行 runner
-
-本地模型預設分工：
+- 白天工作
+- 追求速度
+- 快速迭代
+- 小功能連續修補
 
 | 職位 | 模型 | 工作 |
 |---|---|---|
-| Error Summarizer | qwen2.5-coder:1.5b | log 摘要、錯誤分類、TODO |
-| Bug Fixer | qwen2.5-coder:7b | TypeScript、import、lint、build error、小型修補建議 |
-| Code Reviewer | deepseek-coder-v2:lite | code review、bug 分析、安全輔助 |
-| Prompt Engineer | qwen2.5-coder:7b | 下一輪 Codex prompt、需求拆解 |
-| Final Report Writer | qwen2.5-coder:1.5b | final report 初稿 |
+| Error Summarizer | qwen2.5-coder:1.5b | 快速整理錯誤與 TODO |
+| Bug Fix Advisor | qwen2.5-coder:7b | lint / type / import / 小修建議 |
+| Code Reviewer | deepseek-coder-v2:lite | code review / 風險提示 |
+| Prompt Engineer | qwen3:8b | 下一輪任務拆解與 prompt |
+| Report Writer | qwen2.5-coder:1.5b | final report / dev report 初稿 |
 
-## 睡覺模式
+### 睡覺模式
 
 用途：
 
 - 長時間 unattended loop
-- 睡前掛著跑
-- 需要比較深的 review 與比較完整的建議
-
-本地模型預設分工：
+- 比較慢，但要求比較完整
+- 適合整批功能做完後的較完整 QA / 報告
 
 | 職位 | 模型 | 工作 |
 |---|---|---|
-| Error Summarizer | qwen2.5-coder:7b | 較完整的 QA / build / 測試摘要 |
-| Bug Fixer | qwen2.5-coder:14b | 進階修補建議、較長上下文的程式審查 |
-| Code Reviewer | qwen3-coder:30b | Deep architecture / stability / risk review |
-| Prompt Engineer | qwen3:8b | 下一輪 Codex prompt、優先順序整理 |
-| Final Report Writer | qwen2.5-coder:7b | 比較完整的 final report |
+| Error Summarizer | qwen2.5-coder:7b | 較完整的錯誤摘要 |
+| Bug Fix Advisor | qwen2.5-coder:14b | 較長上下文的小修建議 |
+| Code Reviewer | qwen3-coder:30b | 深度 review / launch risk |
+| Prompt Engineer | qwen3:8b | 下一輪主題、優先順序 |
+| Report Writer | qwen2.5-coder:7b | 比較完整的 final report |
 
-## Codex CLI / Antigravity CLI
+## Browser QA
 
-這兩個不分模式，固定角色如下：
+Browser QA 預設順序：
 
-| 角色 | 工具 | 工作 |
-|---|---|---|
-| Project Lead / Architect / High-risk Reviewer | Codex CLI | 任務規劃、實作、架構、高風險複查 |
-| Browser QA | Antigravity CLI | Browser QA、RWD、流程、OAuth 視窗、E2E 體感驗證 |
+1. Playwright
+2. `agy` / Antigravity CLI fallback
 
-## 平常使用 AI 團隊
+原因：
 
-| 職位 | 模型 / 工具 | 工作 |
-|---|---|---|
-| Project Lead | Codex CLI | 任務規劃、決定優先順序、控制修改範圍 |
-| System Architect | Codex CLI | 架構、資料流、高風險技術決策 |
-| Backend Lead | Codex CLI | API、Webhook、權限、付款、RLS |
-| Frontend Worker | qwen2.5-coder:7b | Dashboard、表單、Modal、Tailwind 小修 |
-| Bug Fixer | qwen2.5-coder:7b | TypeScript、import、lint、build error |
-| Error Summarizer | qwen2.5-coder:1.5b | log 摘要、錯誤分類、TODO |
-| Prompt Engineer | qwen3:8b | 下一輪 Codex prompt、需求拆解 |
-| Documentation Writer | llama3.1:8b | README、SETUP、CHANGELOG、文案 |
-| Code Reviewer | deepseek-coder-v2:lite | code review、bug 分析、安全輔助 |
-| Browser QA | Antigravity CLI | 看畫面、RWD、按鈕、流程、OAuth 視窗 |
+- Playwright 可重現、可自動化、適合長跑
+- `agy` 適合補 prompt-driven 的瀏覽器檢查
+- CLI 版 Antigravity 不該當第一層 gate，避免整個 runner 被卡住
 
-## 睡覺無人值守 AI 團隊
+## 不可讓本地模型主導的區域
 
-| 順序 | 職位 | 模型 / 工具 | 產出 |
-|---:|---|---|---|
-| 1 | Test Runner | PowerShell / Node | `AI_TEAM/runtime/qa-report.md` |
- | 2 | Error Summarizer | qwen2.5-coder:7b | `AI_TEAM/runtime/error-summary.md` |
- | 3 | Bug Fixer | qwen2.5-coder:14b | `AI_TEAM/runtime/static-qa.md` |
- | 4 | Code Reviewer | qwen3-coder:30b | `AI_TEAM/runtime/code-review.md` |
- | 5 | Prompt Engineer | qwen3:8b | `AI_TEAM/runtime/next-codex-prompt.md` |
- | 6 | Final Report Writer | qwen2.5-coder:7b | `AI_TEAM/runtime/final-report.md` |
-| 7 | Browser QA | Antigravity CLI | `AI_TEAM/runtime/browser-qa.md` |
+以下區域只能由 Codex CLI 主導，或至少由 Codex CLI 最終複查：
 
-## 目前 AI_TEAM 最小可用實作
+- Supabase RLS
+- Prisma migration
+- Production / Staging DB 連線邏輯
+- Meta OAuth / token / webhook
+- PayUNI callback / billing
+- tenant isolation
+- admin / owner 權限
+- 自動發送與訊息同步核心流程
 
-- `npm run ai-team:qa`
-  - 跑 `ai-team:check`
-  - 跑 `npm run lint`
-  - 在非 production `TEST_DATABASE_URL` 可用時跑 `npm test`
-  - 跑 `npm run build`
-  - 呼叫 `agy` 產出 Browser QA 報告
-- `npm run ai-team:models:general`
-  - 用一般模式的快模型產出 error summary / static QA / code review / final report / next prompt
-- `npm run ai-team:models:sleep`
-  - 用睡覺模式的深度模型產出 error summary / static QA / code review / final report / next prompt
-- `npm run ai-team:loop:general`
-  - 依序執行 `ai-team:qa` 與一般模式本地模型
-- `npm run ai-team:loop:sleep`
-  - 依序執行 `ai-team:qa` 與睡覺模式本地模型
-  - 把 health summary 與 runner log 寫到 `AI_TEAM/runtime/`
+## AI_TEAM 閉環原則
 
-## 注意
+AI_TEAM 現在的閉環是：
 
-- `AI_TEAM/runtime/` 是執行期輸出，**不提交 git**。
-- 真正的產品程式碼修改、commit、push、PR、merge，仍然由 Codex / 人工審查控制。
+1. Codex CLI 先實作本輪主題
+2. QA runner 跑 lite 或 full 驗證
+3. 本地模型整理錯誤 / review / 報告 / 下一輪提示詞
+4. 若結果可交付，Codex CLI 直接接 commit / push / PR / merge / deploy
+5. runner 直接進下一輪，不停在「只回報」
+
+所以：
+
+- 改碼主體是 Codex CLI
+- 本地模型是輔助層
+- QA 是獨立 gate
+- runtime 報告是給下一輪讀，不是流程終點
+- git / PR / merge / deployment 在這個版本裡是允許的交付步驟，不再當成預設阻斷點

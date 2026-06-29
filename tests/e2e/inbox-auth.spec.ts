@@ -39,19 +39,11 @@ test.describe("inbox authenticated smoke", () => {
 
     await page.goto("/inbox", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("inbox-client")).toHaveAttribute("data-ready", "true");
-    await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
-
-    if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
-    await selectSidebarInstagramChannel(page, "E2E Alt");
-    if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
-    await expect(page.locator("body")).toContainText("E2E Inbox 第二 IG channel scope 對話");
-    await expect(page.locator("body")).not.toContainText("E2E Inbox 主要對話");
-
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
     await selectSidebarInstagramChannel(page, "E2E", "Alt");
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
-    await expect(page.locator("body")).toContainText("E2E Inbox 主要對話");
-    await expect(page.locator("body")).not.toContainText("E2E Inbox 第二 IG channel scope 對話");
+    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
+    await expect(page.locator("body")).not.toContainText("E2E 第二 IG 帳號聯絡人");
 
     const searchInput = isMobileProject ? page.getByTestId("inbox-mobile-search") : page.getByPlaceholder("搜尋收件匣對話");
     await searchInput.fill("未讀篩選");
@@ -74,7 +66,7 @@ test.describe("inbox authenticated smoke", () => {
     await page.getByTestId("inbox-select-all").check();
     await expect(page.locator("body")).toContainText(/標記已讀 \d+/);
 
-    await page.getByText("E2E Inbox 主要對話").click();
+    await page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E 測試聯絡人 A" }).first().click();
     if (isMobileProject) {
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
       await page.getByTestId("inbox-pane-contact").click();
@@ -82,7 +74,35 @@ test.describe("inbox authenticated smoke", () => {
     } else {
       await expect(page.getByText("E2E 測試聯絡人 A").first()).toBeVisible();
     }
+    await expect(page.getByTestId("inbox-automation-pause-disabled")).toBeDisabled();
+    await expect(page.locator('section:has-text("自動化")')).toContainText("自動化暫停需要先完成流程級控制與稽核設計");
     await page.locator('section:has-text("聯絡人標籤") select').selectOption({ label: "e2e-vip" });
+    if (isMobileProject) {
+      await page.getByTestId("inbox-pane-detail").click();
+      await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
+    }
+    await page.getByTestId("inbox-assignee-select").selectOption({ label: adminName });
+    await expect(page.getByTestId("inbox-notice")).toContainText("已更新對話指派對象");
+
+    await page.getByTestId("inbox-reminder-toggle").click();
+    await expect(page.getByTestId("inbox-reminder-menu")).toBeVisible();
+    await page.getByTestId("inbox-reminder-option-60").click();
+    await expect(page.getByTestId("inbox-reminder-menu")).toBeHidden();
+    await expect(page.getByTestId("inbox-notice")).toContainText("已設定 1 小時 提醒");
+
+    await page.getByTestId("inbox-reminder-toggle").click();
+    await page.getByTestId("inbox-reminder-custom-disabled").click();
+    await expect(page.getByTestId("inbox-reminder-menu")).toBeHidden();
+    await expect(page.getByTestId("inbox-notice")).toContainText("自訂日期與時間提醒目前尚未完成");
+
+    await page.getByTestId("inbox-reminder-toggle").click();
+    await page.getByTestId("inbox-reminder-clear").click();
+    await expect(page.getByTestId("inbox-reminder-menu")).toBeHidden();
+    await expect(page.getByTestId("inbox-notice")).toContainText("已清除提醒");
+
+    if (isMobileProject) {
+      await page.getByTestId("inbox-back-to-list").click();
+    }
 
     if (isMobileProject) {
       await page.getByTestId("inbox-mobile-filter-button").click();
@@ -92,20 +112,27 @@ test.describe("inbox authenticated smoke", () => {
     await page.getByTestId("inbox-filter-tag").selectOption({ label: "e2e-vip" });
     await expect(page.locator("body")).not.toContainText("E2E Inbox 未讀篩選對話");
     await page.getByTestId("inbox-filter-team").selectOption({ label: adminName });
-    await expect(page.getByTestId("inbox-filter-team")).toBeVisible();
+    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
+    await searchInput.fill("完全不存在的 Inbox 搜尋字串");
+    await expect(page.locator("body")).toContainText("目前沒有符合條件的對話");
+    await page.getByTestId("inbox-empty-reset-filters").click();
+    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
     await page.getByTestId("inbox-filter-tag").selectOption("all");
     await page.getByTestId("inbox-filter-team").selectOption("all");
     await page.getByTestId("inbox-close-filter-panel").click();
 
     if (isMobileProject) {
+      const mainConversationRow = page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E 測試聯絡人 A" }).first();
+      await expect(mainConversationRow).toBeVisible();
+      await mainConversationRow.click();
       await page.getByTestId("inbox-pane-contact").click();
       await expect(page.getByRole("heading", { name: "自動化" })).toBeVisible();
       await page.getByTestId("inbox-pane-detail").click();
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
       await page.getByTestId("inbox-back-to-list").click();
-      const mainConversationRow = page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E Inbox 主要對話" }).first();
-      await expect(mainConversationRow).toBeVisible();
-      await mainConversationRow.click();
+      const mainConversationRowAgain = page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E 測試聯絡人 A" }).first();
+      await expect(mainConversationRowAgain).toBeVisible();
+      await mainConversationRowAgain.click();
     }
 
     if (!isMobileProject) {
@@ -141,15 +168,10 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-notice")).toContainText("音訊上傳、格式轉換與 Instagram 附件送出流程");
     await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
 
-    await page.getByTestId("inbox-video-call-button").click();
-    await expect(page.getByTestId("inbox-notice")).toContainText("視訊通話 目前已暫時停用");
-    await expect(page.getByTestId("inbox-notice")).toContainText("即時通話服務、權限控管與客服排班流程");
-    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
-
-    await page.getByTestId("inbox-more-actions-button").click();
-    await expect(page.getByTestId("inbox-notice")).toContainText("更多對話操作 目前已暫時停用");
-    await expect(page.getByTestId("inbox-notice")).toContainText("批次封存、匯出、轉交與封鎖");
-    await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
+    await expect(page.getByTestId("inbox-video-call-button")).toBeDisabled();
+    await expect(page.getByTestId("inbox-more-actions-button")).toBeDisabled();
+    await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("視訊通話與更多對話操作目前先停用");
+    await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("文字回覆、內部備註、指派、標籤與提醒");
 
     await page.getByRole("button", { name: "備註", exact: true }).click();
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);

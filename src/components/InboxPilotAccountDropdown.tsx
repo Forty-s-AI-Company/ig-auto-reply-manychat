@@ -18,6 +18,7 @@ type Channel = {
   avatarUrl?: string;
   avatarFallback?: string;
   metadataStatus?: "complete" | "partial";
+  metadataHint?: string;
 };
 
 type InboxPilotAccountDropdownProps = {
@@ -143,6 +144,15 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                       <span className="truncate text-sm font-medium text-[#34363a]">{channel.displayName || channel.name}</span>
+                      {channel.metadataHint ? (
+                        <span
+                          className="inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700"
+                          title={channel.metadataHint}
+                          aria-label={channel.metadataHint}
+                        >
+                          {channel.metadataHint}
+                        </span>
+                      ) : null}
                       <PlanBadge />
                     </div>
                     <p className="mt-0.5 truncate text-[11px] text-[#667085]">

@@ -19,6 +19,7 @@ const requiredPaths = [
   trackedFiles.acceptance,
   trackedFiles.currentTask,
   trackedFiles.backlog,
+  trackedFiles.queue,
   trackedFiles.readme,
   trackedFiles.modelAssignment,
   trackedFiles.runnerDesign,
@@ -47,7 +48,10 @@ const requiredPaths = [
   path.join(aiTeamRoot, "scripts", "local-ai-team.ps1"),
   path.join(aiTeamRoot, "scripts", "local-qa.ps1"),
   path.join(aiTeamRoot, "scripts", "ai-team-runner.mjs"),
+  path.join(aiTeamRoot, "scripts", "codex-dev.mjs"),
+  path.join(aiTeamRoot, "scripts", "playwright-browser-qa.mjs"),
   path.join(aiTeamRoot, "scripts", "browser-qa-prompt.md"),
+  path.join(aiTeamRoot, "scripts", "lib", "process-lock.mjs"),
 ];
 
 function getFinalReportText() {
@@ -58,8 +62,13 @@ function getQaReportText() {
   return readPreferred(runtimeFiles.qaReport, trackedFiles.qaReport);
 }
 
-function getNextPromptText() {
-  return readPreferred(runtimeFiles.nextPrompt, trackedFiles.nextPrompt);
+function extractActionableItems(markdown, maxItems = 5) {
+  return markdown
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- `[" ) || line.startsWith("- ["))
+    .slice(0, maxItems)
+    .map((line) => line.slice(2).trim());
 }
 
 function buildStatus() {
@@ -78,13 +87,15 @@ function buildStatus() {
     section("ACCEPTANCE", acceptance),
     section(
       "BACKLOG 前幾項",
-      extractTopItems(backlog).length ? extractTopItems(backlog).map((item) => `- ${item}`).join("\n") : "（沒有可讀到的待辦）",
+      extractActionableItems(backlog).length
+        ? extractActionableItems(backlog).map((item) => `- ${item}`).join("\n")
+        : "（沒有可讀到的待辦）",
     ),
     section("FINAL_REPORT 摘要", extractTopItems(finalReport, 6).length ? extractTopItems(finalReport, 6).map((item) => `- ${item}`).join("\n") : finalReport),
     section("LATEST_QA 摘要", extractTopItems(qaReport, 6).length ? extractTopItems(qaReport, 6).map((item) => `- ${item}`).join("\n") : qaReport),
     "",
-    "建議下一步：`npm run ai-team:next`",
-    "長跑模式：`npm run ai-team:loop:general` 或 `npm run ai-team:loop:sleep`",
+    "建議下一步：`npm run ai-team:next` 或 `npm run ai-team:dev`",
+    "長跑模式：`npm run ai-team:loop:continuous` 或 `npm run ai-team:loop:continuous:sleep`",
   ];
 
   return parts.join("\n");
@@ -92,9 +103,9 @@ function buildStatus() {
 
 function buildFallbackNextPrompt() {
   const currentTask = readFileSafe(trackedFiles.currentTask).trim();
-  const backlogItems = extractTopItems(readFileSafe(trackedFiles.backlog), 8);
+  const backlogItems = extractActionableItems(readFileSafe(trackedFiles.backlog), 8);
   return [
-    "請接續 InboxPilot / ReplyPilot 的 AI_TEAM 流程。",
+    "請接續 InboxPilot / ReplyPilot 的 AI_TEAM 開發閉環流程。",
     "",
     "請先讀取：",
     "- AI_TEAM/PROJECT_STATE.md",
@@ -121,6 +132,7 @@ function buildFallbackNextPrompt() {
     "- 不輸出 secret",
     "",
     "執行要求：",
+    "- Codex CLI 直接做本輪實作，不要只寫建議",
     "- 優先處理可見但不能用的產品功能，或把暫不支援功能改成清楚 disabled UX",
     "- 修改後補最小必要驗證與報告",
     "- 完成後更新 AI_TEAM/tasks/current-task.md、AI_TEAM/tasks/backlog.md、AI_TEAM/reports/dev-report.md、AI_TEAM/reports/final-report.md",
@@ -130,11 +142,6 @@ function buildFallbackNextPrompt() {
 }
 
 function buildNextPrompt() {
-  const runtimePrompt = getNextPromptText();
-  if (runtimePrompt) {
-    return runtimePrompt;
-  }
-
   const prompt = buildFallbackNextPrompt();
   writeRuntimeFile(runtimeFiles.nextPrompt, prompt);
   return prompt;
@@ -174,8 +181,9 @@ if (command === "status") {
     "- `npm run ai-team:next`",
     "- `npm run ai-team:check`",
     "- `npm run ai-team:qa`",
-    "- `npm run ai-team:loop:general`",
-    "- `npm run ai-team:loop:sleep`",
+    "- `npm run ai-team:dev`",
+    "- `npm run ai-team:loop:continuous`",
+    "- `npm run ai-team:loop:continuous:sleep`",
     "",
     "原因：AI_TEAM 流程已取代舊 autopilot 設計，並改把執行期輸出寫到 `AI_TEAM/runtime/`。",
   ].join("\n"));

@@ -4,8 +4,10 @@ import { ChannelConnectionShell, InstagramVisual } from "@/components/ChannelCon
 import { OAuthPopupConnectButton } from "@/components/oauth/OAuthPopupConnectButton";
 import { ResyncConnectedAccountButton } from "@/components/oauth/ResyncConnectedAccountButton";
 import { requireUser } from "@/lib/auth";
+import { getOAuthProviderUiState } from "@/lib/channels/channel-connect-visibility";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
 import { listOAuthProviders } from "@/lib/oauth/registry";
 import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
@@ -119,6 +121,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
   const simpleRelease = await isSimpleRelease();
+  const deploymentEnv = getInboxPilotDeploymentEnv();
   const [accounts, providers, channels] = await Promise.all([
     getDb().connectedAccount.findMany({
       where: { workspaceId },
@@ -134,7 +137,12 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
 
   const channelSummaries = buildChannelSummaries(channels);
   const visibleAccounts = simpleRelease ? accounts.filter((account) => account.provider === "meta-instagram") : accounts;
-  const visibleProviders = simpleRelease ? providers.filter((provider) => provider.id === "meta-instagram") : providers;
+  const visibleProviders = providers
+    .map((provider) => ({
+      provider,
+      uiState: getOAuthProviderUiState(provider.id, { simpleRelease, deploymentEnv }),
+    }))
+    .filter((entry) => entry.uiState.visible);
 
   return (
     <ChannelConnectionShell
@@ -296,9 +304,19 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                           ))}
                         </div>
                       ) : (
-                        <p className="mt-3 text-sm text-[#b54708]">
-                          目前還沒有找到對應的 channel。這通常代表 provider 不會同步 channel，或這筆連接尚未完成同步。
-                        </p>
+                        <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-[#b54708]">
+                          <p>目前還沒有找到對應的 channel。這通常代表這筆授權尚未完成同步，或目前 provider 不會直接建立可用 channel。</p>
+                          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                            <Link
+                              href="/channels#instagram"
+                              className="inline-flex items-center gap-1 font-medium text-[#9a3412] hover:text-[#7c2d12]"
+                            >
+                              前往 Channels 檢查綁定狀態
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </Link>
+                            <span className="text-[#b54708]">如果是 Meta / Instagram 帳號，請嘗試重新同步或重新連接一次。</span>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -309,7 +327,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         </div>
 
         <div className="grid gap-4">
-          {visibleProviders.map((provider) => {
+          {visibleProviders.map(({ provider, uiState }) => {
             const copy = providerCopy[provider.id];
             const Icon = copy.icon;
             const authorizeHref = buildAuthorizeHref(provider.id);
@@ -332,15 +350,31 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                         <p>綁錯帳號時，可到 Channels 解除綁定，再回來重新連接。</p>
                       </div>
                     ) : null}
+                    {!uiState.enabled ? (
+                      <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-[#b54708]">
+                        {uiState.disabledReason}
+                      </div>
+                    ) : null}
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <OAuthPopupConnectButton
-                        provider={provider.id}
-                        href={authorizeHref.primary}
-                        className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
-                      >
-                        連接帳號
-                      </OAuthPopupConnectButton>
-                      {authorizeHref.secondary ? (
+                      {uiState.enabled ? (
+                        <OAuthPopupConnectButton
+                          provider={provider.id}
+                          href={authorizeHref.primary}
+                          className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
+                        >
+                          連接帳號
+                        </OAuthPopupConnectButton>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-disabled="true"
+                          className="inline-flex h-11 cursor-not-allowed items-center justify-center rounded-md border border-[#d0d5dd] bg-[#f3f4f6] px-4 text-sm font-semibold text-[#98a2b3]"
+                        >
+                          {provider.id === "mock" ? "僅限本機 / QA 使用" : "目前不可連接"}
+                        </button>
+                      )}
+                      {uiState.enabled && authorizeHref.secondary ? (
                         <OAuthPopupConnectButton
                           provider={provider.id}
                           href={authorizeHref.secondary}

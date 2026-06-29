@@ -1,5 +1,19 @@
 # InboxPilot Fix Roadmap
 
+# Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
+
+Current status:
+
+- `[x]` Inbox contact panel `自動化暫停` 已改成真正 disabled UX，並附上原因說明。
+- `[x]` Inbox header `視訊通話` 與 `更多對話操作` 也已改成真正 disabled UX，避免後續操作被誤導。
+- `[x]` `清除提醒` 現在會正確關閉 reminder menu，不會再讓浮層卡住後續操作。
+- `[x]` IG dropdown 的 partial metadata badge、Channels connect visibility，以及對應的 focused tests / smoke 都已通過。
+
+Remaining:
+
+- `[ ]` 下一輪先接 `Contacts filtered empty-state guidance`，把篩選後的空狀態引導補清楚。
+- `[ ]` 若之後要把更多暫停型入口統一收斂，先共用一組 disabled UX pattern。
+
 # Latest - 2026-06-29 Inbox audit round 3 follow-up
 
 Current status:

@@ -1,5 +1,145 @@
 # Codex Session Log
 
+# 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+Task goal:
+
+- 把 Inbox / Channels 還在誤導使用者的控制項收斂完。
+- 把會讓人以為可操作、其實只是提示或半成品的入口，改成真正 disabled UX。
+- 讓 reminder menu 與 header quick actions 不再干擾後續操作。
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/tasks/queue.json`
+- `AI_TEAM/reports/dev-report.md`
+- `AI_TEAM/reports/final-report.md`
+- `AI_TEAM/reports/next-codex-prompt.md`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+
+Implementation notes:
+
+- Inbox header `視訊通話` 與 `更多對話操作` 改成真正 disabled button，並補上可讀的原因說明。
+- `清除提醒` 現在會先關閉 reminder menu，再送出 reminder 清除更新。
+- Authenticated Inbox smoke 改成驗證 disabled UX 與 reminder menu 收合後再做後續操作，避免浮層卡住。
+- AI_TEAM task / queue / reports / docs 一併更新，將本輪狀態標記完成，並把下一個安全產品任務接到 Contacts empty-state guidance。
+
+Validation:
+
+```text
+npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot
+Result: passed. 2 files, 4 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+
+npm test
+Result: failed in an existing Windows Vitest batch-level crash at batch 8/9, after rerunning individual files successfully.
+```
+
+Launch impact:
+
+- 產品上線風險沒有增加。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+# 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+Task goal:
+
+- 回到產品功能完整性修復主線，先收斂 Inbox / Channels 還在誤導使用者的控制項。
+- 把明顯不該再像可用功能的入口改成更清楚的 disabled UX。
+- 保持驗證在 local non-production test DB 與本機 smoke。
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `src/components/InboxPilotAccountDropdown.tsx`
+- `src/lib/account-channel-list.ts`
+- `tests/account-channel-list.test.ts`
+- `tests/e2e/inbox-auth.spec.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/tasks/queue.json`
+- `AI_TEAM/reports/dev-report.md`
+- `AI_TEAM/reports/final-report.md`
+- `docs/codex-session-log.md`
+- `docs/fix-roadmap.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+
+Implementation notes:
+
+- Inbox contact panel `自動化暫停` 改成真正 disabled 的按鈕，並補上原因說明，避免看起來像壞掉的可點按鈕。
+- IG account dropdown 的 partial metadata 現在會顯示 `資料未完整` badge，讓 ID-only channel 狀態更清楚。
+- `buildAccountDropdownChannels()` 多補一個 `metadataHint` 欄位，讓 partial metadata 的 UX 有一致來源。
+- `tests/account-channel-list.test.ts` 追加 `metadataHint` 斷言。
+- `tests/e2e/inbox-auth.spec.ts` 追加 automation pause disabled UX 驗證。
+
+Validation:
+
+```text
+npx eslint src/lib/account-channel-list.ts src/components/InboxPilotAccountDropdown.tsx src/components/InboxClient.tsx tests/account-channel-list.test.ts tests/e2e/inbox-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/account-channel-list.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+
+TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+TEST_DIRECT_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+ADMIN_EMAIL=e2e-admin@example.com
+ADMIN_PASSWORD=E2E-admin-pass-123
+ADMIN_NAME=E2E Admin
+npm run e2e:admin:ensure
+Result: passed.
+
+TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+TEST_DIRECT_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
+ADMIN_EMAIL=e2e-admin@example.com
+ADMIN_PASSWORD=E2E-admin-pass-123
+ADMIN_NAME=E2E Admin
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+```
+
+Launch impact:
+
+- 降低 Inbox / Channels 裡還會讓人以為壞掉的入口。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+New risks:
+
+- Low. 目前還剩下 Inbox header / composer 的其他暫停型控制項，以及 Channels 次要控制項，可以下一輪再一起收斂。
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot / ReplyPilot 專案，回到產品功能完整性修復主線，使用 AI_TEAM pipeline 繼續 Inbox / Channels visible-but-unusable 收尾第二輪：先把剩下仍像假按鈕或只會吐通知的控制項列完整，再統一改成最小可用或清楚 disabled UX，並補 focused tests / smoke；不要碰 production DB、不要部署 Production。
+```
+
 # 2026-06-29 - Inbox audit round 3 follow-up
 
 Task goal:

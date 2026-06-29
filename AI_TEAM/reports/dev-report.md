@@ -1,6 +1,51 @@
 # Dev Report
 
-## Summary
+## Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
+
+Current status:
+
+- `[x]` Inbox header `視訊通話` 與 `更多對話操作` 已收斂成真正 disabled UX，不再像只會吐通知的假入口。
+- `[x]` `清除提醒` 會正確關閉 reminder menu，避免後續操作被浮層擋住。
+- `[x]` `npm run lint`、`npm run build`、`npm run test:e2e:inbox`、focused vitest 都已通過。
+- `[x]` Channels connect visibility / IG partial metadata work 仍維持前一輪的清楚分流與 badge 提示。
+
+What changed:
+
+- `src/components/InboxClient.tsx`
+  - 將 header 的 `視訊通話` 與 `更多對話操作` 改成真正 disabled button，並補上可讀的原因說明。
+  - 為 disabled controls 加上單一清楚的 hint 文案，避免使用者把它們看成壞掉的按鈕。
+  - 新增 `clearReminder()`，讓 `清除提醒` 會關閉 reminder menu 再送出更新。
+- `tests/e2e/inbox-auth.spec.ts`
+  - 改成驗證 header disabled UX。
+  - 補上 reminder menu 收合後再做後續操作的等待，避免 smoke 被浮層擋住。
+- `AI_TEAM/tasks/current-task.md`
+  - 標記本輪 task 完成，並寫入下一個建議產品任務。
+- `AI_TEAM/tasks/backlog.md`
+  - 將 Inbox / Channels closeout 標記完成，接上下一個 Contacts 安全任務。
+- `AI_TEAM/tasks/queue.json`
+  - 將 current product task 標記 completed，並新增下一個 pending product task。
+
+Validation:
+
+```text
+npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot
+Result: passed. 2 files, 4 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+
+npm test
+Result: failed in an existing Windows Vitest batch-level crash at batch 8/9, after rerunning individual files successfully.
+```
 
 - What changed:
   - `AI_TEAM/tasks/queue.json`
@@ -69,6 +114,24 @@
   - `package.json`
   - `docs/codex-session-log.md`
   - `docs/fix-roadmap.md`
+
+## Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
+
+Current status:
+
+- `[x]` Inbox contact panel 的 `自動化暫停` 改成明確 disabled UX，不再像可直接操作的假按鈕。
+- `[x]` IG account dropdown 的 partial metadata 目前會顯示更清楚的 `資料未完整` badge。
+- `[x]` 這輪已補上對應的 focused unit test 與 authenticated Inbox smoke。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:inbox` 都已通過。
+
+Launch impact:
+
+- 產品可見入口的誤導性再少一點，但仍保留下一輪的 Inbox / Channels 收尾空間。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+Remaining risk:
+
+- Inbox 其餘 header / composer 的暫停型控制項、Channels 次要控制項，仍可再做一輪更一致的 disabled UX 收尾。
 
 ## Latest - 2026-06-30 AI_TEAM disposable branch real delivery validation
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-29T19:03:59.301Z",
+  "updatedAt": "2026-06-29T20:55:00.000Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -88,6 +88,84 @@
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery"
       ]
+    },
+    {
+      "id": "inbox-channels-visible-but-unusable-003",
+      "title": "Inbox / Channels visible-but-unusable closeout",
+      "status": "completed",
+      "priority": 2,
+      "lane": "product",
+      "scope": [
+        "src/components/InboxClient.tsx",
+        "src/components/InboxPilotAccountDropdown.tsx",
+        "src/lib/account-channel-list.ts",
+        "src/app/channels/page.tsx",
+        "src/app/channels/connect/page.tsx",
+        "src/app/channels/connect/social/page.tsx",
+        "tests/account-channel-list.test.ts",
+        "tests/e2e/inbox-auth.spec.ts",
+        "tests/e2e/simple-release.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "看得到但容易誤導的 Inbox / Channels 控制項都要變成最小可用或清楚 disabled UX",
+        "ID-only IG account dropdown 狀態要能明確看出資料尚未完整",
+        "focused tests / smoke 需要覆蓋新的 disabled UX",
+        "不碰 production DB，不部署 Production，不跑 migration / db push"
+      ],
+      "completedAt": "2026-06-29T20:55:00.000Z",
+      "summary": "Inbox / Channels visible-but-unusable closeout 已完成，header / contact / reminder / connect visibility 都收斂成較清楚的 disabled UX 或最小可用狀態。",
+      "validation": [
+        "npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts",
+        "npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot",
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ]
+    },
+    {
+      "id": "contacts-filtered-empty-state-guidance-004",
+      "title": "Contacts filtered empty-state guidance",
+      "status": "pending",
+      "priority": 2,
+      "lane": "product",
+      "scope": [
+        "src/components/ContactsListClient.tsx",
+        "tests/e2e/contacts-auth.spec.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "acceptance": [
+        "filtered Contacts 空狀態要清楚說明目前套用哪些條件",
+        "要有明確的清除篩選或返回列表入口",
+        "focused tests / smoke 要覆蓋新的空狀態引導",
+        "不碰 production DB，不部署 Production，不跑 migration / db push"
+      ],
+      "summary": "下一個安全產品任務：讓 Contacts 在套用篩選時的空狀態更好理解，減少使用者以為資料消失的誤解。"
     }
   ]
 }

@@ -1,5 +1,23 @@
 # Final Report
 
+## Latest - 2026-06-30 Inbox / Channels visible-but-unusable closeout
+
+Status:
+
+- `Completed` for the scoped Inbox / Channels closeout.
+
+Completed this round:
+
+- Inbox header `視訊通話` 與 `更多對話操作` 現在是明確 disabled UX，不再像假按鈕。
+- `清除提醒` 現在會收合 reminder menu，再做後續操作不會被浮層卡住。
+- IG dropdown partial metadata badge、Channels connect visibility、以及 simple/full 分流維持清楚。
+- `npm run lint`、`npm run build`、`npm run test:e2e:inbox` 與 focused vitest 已通過。
+
+Residual risk:
+
+- `npm test` 仍有既有 Windows Vitest batch-level crash，這次失敗點在 batch 8/9，重新跑單檔時都通過。
+- 下一個安全產品任務已切到 `Contacts filtered empty-state guidance`，方便 runner 接續。
+
 ## 本輪完成
 
 - AI_TEAM 的 delivery autonomy 主題已補成完整閉環，不再只停在 `git-delivery` 前半段。

@@ -20,9 +20,11 @@ import { DisconnectChannelButton } from "@/components/DisconnectChannelButton";
 import { InstagramChannelActions } from "@/components/InstagramChannelActions";
 import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProfileButton";
 import { requireUser } from "@/lib/auth";
+import { getChannelConnectOptionState } from "@/lib/channels/channel-connect-visibility";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getSafeInstagramProfileRefreshError } from "@/lib/channels/instagram-profile-errors";
 import { getDb } from "@/lib/db";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
 import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -94,14 +96,52 @@ const settingsGroups = [
 ];
 
 const channelCards = [
-  ["Instagram", "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。", true, "/channels/connect/social"],
-  ["Telegram Bot", "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。", true, "/channels/connect/social"],
-  ["Mock OAuth Provider", "本機測試用 provider，完整走 popup、callback、postMessage 流程。", true, "/channels/connect/social"],
-  ["TikTok", "可先規劃平台入口，正式連線開放後會顯示授權按鈕。", false, ""],
-  ["WhatsApp", "WhatsApp Business 連線入口會集中在此管理。", false, ""],
-  ["簡訊", "簡訊供應商與地區規則會集中在此管理。", false, ""],
-  ["電子郵件", "寄件網域與寄件者驗證會集中在此管理。", false, ""],
-] as const;
+  {
+    kind: "connect" as const,
+    id: "instagram" as const,
+    name: "Instagram",
+    description: "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "telegram-bot" as const,
+    name: "Telegram Bot",
+    description: "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "mock" as const,
+    name: "Mock OAuth Provider",
+    description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "tiktok" as const,
+    name: "TikTok",
+    description: "可先規劃平台入口，正式連線開放後會顯示授權按鈕。",
+    href: "",
+  },
+  {
+    kind: "connect" as const,
+    id: "whatsapp" as const,
+    name: "WhatsApp",
+    description: "WhatsApp Business 連線入口會集中在此管理。",
+    href: "",
+  },
+  {
+    kind: "static" as const,
+    name: "簡訊",
+    description: "簡訊供應商與地區規則會集中在此管理。",
+  },
+  {
+    kind: "static" as const,
+    name: "電子郵件",
+    description: "寄件網域與寄件者驗證會集中在此管理。",
+  },
+];
 
 function statusLabel(enabled: boolean) {
   return enabled ? "已啟用" : "已停用";
@@ -146,6 +186,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
   const simpleRelease = await isSimpleRelease();
+  const deploymentEnv = getInboxPilotDeploymentEnv();
   const [channels, tagCount, contactCount, automationCount, teamCount] = await Promise.all([
     getDb().channel.findMany({
       where: { workspaceId },
@@ -161,7 +202,18 @@ export default async function ChannelsPage({ searchParams }: Props) {
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
   });
-  const visibleChannelCards = simpleRelease ? channelCards.filter(([name]) => name === "Instagram") : channelCards;
+  const visibleChannelCards = channelCards
+    .map((card) => {
+      if (card.kind === "static") {
+        return card;
+      }
+
+      return {
+        ...card,
+        uiState: getChannelConnectOptionState(card.id, { simpleRelease, deploymentEnv }),
+      };
+    })
+    .filter((entry) => (entry.kind === "static" ? true : entry.uiState.visible));
 
   return (
     <AdminShell title="設定">
@@ -239,21 +291,31 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <section id="platform-connect" className="space-y-3">
             <SectionTitle title="新增平台帳號" description="依照平台授權流程整理成：先選擇平台，再登入授權，成功後回到本頁顯示已連結帳號。" />
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {visibleChannelCards.map(([name, description, ready, href]) => (
-                <div key={name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
+              {visibleChannelCards.map((entry) => (
+                <div key={entry.name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-medium text-[#111827]">{name}</h3>
-                      <p className="mt-1 text-sm leading-6 text-[#667085]">{description}</p>
+                      <h3 className="font-medium text-[#111827]">{entry.name}</h3>
+                      <p className="mt-1 text-sm leading-6 text-[#667085]">{entry.description}</p>
                     </div>
                     <Plug className="h-5 w-5 text-[#98a2b3]" />
                   </div>
-                  {ready ? (
-                    <Link href={href} className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+                  {entry.kind === "static" ? (
+                    <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
+                  ) : entry.uiState.enabled ? (
+                    <Link
+                      href={entry.href}
+                      className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]"
+                    >
                       登入並連線
                     </Link>
                   ) : (
-                    <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
+                    <>
+                      <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-[#b54708]">
+                        {entry.uiState.disabledReason}
+                      </div>
+                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : "正式開放後可連線"}</DisabledFeatureButton>
+                    </>
                   )}
                 </div>
               ))}

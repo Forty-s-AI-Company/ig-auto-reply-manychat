@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadProjectEnv } from "../../scripts/load-env.mjs";
 import { readFileSafe, runtimeFiles, trackedFiles, writeRuntimeFile } from "./lib/ai-team-paths.mjs";
+import { acquireLock, releaseLock } from "./lib/process-lock.mjs";
 
 loadProjectEnv();
 
@@ -19,6 +20,9 @@ const strictTests = args.has("--strict-tests");
 const skipBrowserQa = args.has("--skip-browser-qa");
 const browserQaOnly = args.has("--browser-qa-only");
 const strictBrowserQa = args.has("--strict-browser-qa");
+const browserQaEngine = (process.env.AI_TEAM_BROWSER_QA_ENGINE?.trim().toLowerCase() || "playwright");
+const qaLevelArg = process.argv.find((arg) => arg.startsWith("--level="))?.split("=")[1]?.trim().toLowerCase();
+const qaLevel = qaLevelArg === "lite" ? "lite" : "full";
 
 const results = [];
 const diagnostics = [];
@@ -39,22 +43,44 @@ function recordDiagnostic(title, details) {
   diagnostics.push({ title, details });
 }
 
+function tailText(value, maxChars = 1600) {
+  const normalized = (value || "").trim();
+  if (!normalized) return "（空）";
+  if (normalized.length <= maxChars) return normalized;
+  return normalized.slice(-maxChars);
+}
+
+function pushCommandDiagnostic(label, result) {
+  recordDiagnostic(
+    label,
+    [
+      `exit=${result.code}`,
+      `stdout_tail=${tailText(result.stdout, 800)}`,
+      `stderr_tail=${tailText(result.stderr, 800)}`,
+    ].join(" | "),
+  );
+}
+
+function getSpawnSpec(command, commandArgs) {
+  if (process.platform === "win32" && command === "npm") {
+    return {
+      command: "cmd.exe",
+      args: ["/d", "/s", "/c", `${command} ${commandArgs.join(" ")}`],
+    };
+  }
+
+  return { command, args: commandArgs };
+}
+
 function run(command, commandArgs, options = {}) {
   return new Promise((resolve) => {
-    const child =
-      process.platform === "win32" && command === "npm"
-        ? spawn("cmd.exe", ["/d", "/s", "/c", `${command} ${commandArgs.join(" ")}`], {
-            cwd: root,
-            stdio: "inherit",
-            env: process.env,
-            ...options,
-          })
-        : spawn(command, commandArgs, {
-            cwd: root,
-            stdio: "inherit",
-            env: process.env,
-            ...options,
-          });
+    const spec = getSpawnSpec(command, commandArgs);
+    const child = spawn(spec.command, spec.args, {
+      cwd: root,
+      stdio: "inherit",
+      env: process.env,
+      ...options,
+    });
 
     child.on("exit", (code) => {
       resolve(code ?? 1);
@@ -68,7 +94,8 @@ function run(command, commandArgs, options = {}) {
 
 function runCapture(command, commandArgs, timeoutMs = 8000, options = {}) {
   return new Promise((resolve) => {
-    const child = spawn(command, commandArgs, {
+    const spec = getSpawnSpec(command, commandArgs);
+    const child = spawn(spec.command, spec.args, {
       cwd: root,
       stdio: ["ignore", "pipe", "pipe"],
       env: process.env,
@@ -95,6 +122,62 @@ function runCapture(command, commandArgs, timeoutMs = 8000, options = {}) {
 
     child.stderr?.on("data", (chunk) => {
       stderr += chunk.toString();
+    });
+
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve({
+        code: 1,
+        stdout,
+        stderr: `${stderr}${stderr ? "\n" : ""}${error.message}`,
+      });
+    });
+
+    child.on("exit", (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve({ code: code ?? 1, stdout, stderr });
+    });
+  });
+}
+
+function runStreamingCapture(command, commandArgs, timeoutMs = 15 * 60 * 1000, options = {}) {
+  return new Promise((resolve) => {
+    const spec = getSpawnSpec(command, commandArgs);
+    const child = spawn(spec.command, spec.args, {
+      cwd: root,
+      stdio: ["ignore", "pipe", "pipe"],
+      env: process.env,
+      ...options,
+    });
+
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      child.kill();
+      resolve({
+        code: 124,
+        stdout,
+        stderr: `${stderr}${stderr ? "\n" : ""}timeout after ${timeoutMs}ms`,
+      });
+    }, timeoutMs);
+
+    child.stdout?.on("data", (chunk) => {
+      const text = chunk.toString();
+      stdout += text;
+      process.stdout.write(text);
+    });
+
+    child.stderr?.on("data", (chunk) => {
+      const text = chunk.toString();
+      stderr += text;
+      process.stderr.write(text);
     });
 
     child.on("error", (error) => {
@@ -207,6 +290,52 @@ function buildBrowserQaPrompt() {
 }
 
 async function runBrowserQa() {
+  if (browserQaEngine === "playwright") {
+    const playwrightResult = await runCapture(
+      "node",
+      ["AI_TEAM/scripts/playwright-browser-qa.mjs"],
+      Number(process.env.AI_TEAM_BROWSER_QA_TIMEOUT_MS || 180000),
+    );
+
+    if (playwrightResult.code === 0) {
+      const browserQaReport = readFileSafe(runtimeFiles.browserQaReport).trim();
+      if (!browserQaReport) {
+        writeRuntimeFile(
+          runtimeFiles.browserQaReport,
+          [
+            "# Browser QA",
+            "",
+            "- STATUS: PASS",
+            "- ENGINE: Playwright",
+            "- REASON: Playwright 檢查完成，但 runtime 報告是空的。",
+          ].join("\n"),
+        );
+      }
+      return { status: "PASS", details: "playwright" };
+    }
+
+    if (browserQaEngine !== "auto") {
+      writeRuntimeFile(
+        runtimeFiles.browserQaReport,
+        [
+          "# Browser QA",
+          "",
+          `- STATUS: ${strictBrowserQa ? "FAIL" : "WARN"}`,
+          "- ENGINE: Playwright",
+          "- REASON: Playwright Browser QA 失敗。",
+          `- EXIT_CODE: ${playwrightResult.code}`,
+          `- STDOUT: ${(playwrightResult.stdout || "").trim() || "（空）"}`,
+          `- STDERR: ${(playwrightResult.stderr || "").trim() || "（空）"}`,
+        ].join("\n"),
+      );
+
+      return {
+        status: strictBrowserQa ? "FAIL" : "WARN",
+        details: "playwright failed",
+      };
+    }
+  }
+
   const agyHelp = await runCapture("agy", ["--help"], 10000);
   if (agyHelp.code !== 0) {
     writeRuntimeFile(
@@ -277,6 +406,7 @@ function renderReport() {
     "## QA 模式",
     "",
     "- QA_MODE=AI_TEAM_LOCAL_QA",
+    `- QA_LEVEL=${qaLevel}`,
     "",
     "## 驗證範圍",
     "",
@@ -347,6 +477,33 @@ async function diagnoseLocalTestInfra() {
 }
 
 async function main() {
+  const lock = acquireLock(runtimeFiles.qaLock, { level: qaLevel }, 2 * 60 * 60 * 1000);
+  if (!lock.ok) {
+    const reason = `${lock.reason}${lock.existing?.pid ? ` pid=${lock.existing.pid}` : ""}`;
+    writeRuntimeFile(
+      runtimeFiles.qaReport,
+      [
+        "# QA Report",
+        "",
+        "## QA 模式",
+        "",
+        "- QA_MODE=AI_TEAM_LOCAL_QA",
+        `- QA_LEVEL=${qaLevel}`,
+        "",
+        "## 結果",
+        "",
+        "- `qa-lock`：SKIP，已有另一個 QA 流程執行中。",
+        "",
+        "## 阻塞",
+        "",
+        `- \`qa-lock\`：${reason}`,
+      ].join("\n"),
+    );
+    print(`[AI_TEAM] QA 略過：${reason}`);
+    process.exit(0);
+  }
+
+  try {
   print("[AI_TEAM] 檢查 AI_TEAM 文件...");
   const checkExitCode = await run("node", ["AI_TEAM/scripts/ai-team.mjs", "check"]);
   if (checkExitCode !== 0) {
@@ -358,10 +515,21 @@ async function main() {
 
   if (!browserQaOnly) {
     print("[AI_TEAM] 執行 lint...");
-    const lintExitCode = await run("npm", ["run", "lint"]);
-    pushResult("npm run lint", lintExitCode === 0 ? "PASS" : "FAIL", lintExitCode === 0 ? "通過。" : "失敗。");
+    const lintResult = await runStreamingCapture("npm", ["run", "lint"]);
+    if (lintResult.code !== 0) {
+      pushCommandDiagnostic("npm run lint", lintResult);
+    }
+    pushResult(
+      "npm run lint",
+      lintResult.code === 0 ? "PASS" : "FAIL",
+      lintResult.code === 0 ? "通過。" : `失敗（exit ${lintResult.code}）。`,
+    );
 
-    if (!skipTests) {
+    if (qaLevel === "lite") {
+      pushResult("npm test", "SKIP", "一般模式 lite QA 略過完整測試，交由大功能階段或睡覺模式執行。");
+      pushResult("npm run build", "SKIP", "一般模式 lite QA 略過完整 build，避免每個小修都跑完整 gate。");
+      pushResult("playwright browser qa", "SKIP", "一般模式 lite QA 不跑 Browser QA，等功能批次完成再跑。");
+    } else if (!skipTests) {
       const guard = getTestDatabaseGuard();
       if (guard.hardFail) {
         pushResult("test-db-guard", "FAIL", guard.reason);
@@ -376,29 +544,43 @@ async function main() {
         } else {
           pushResult("test-db-connectivity", "PASS", connectivity.reason);
           print("[AI_TEAM] 執行測試...");
-          const testExitCode = await run("npm", ["test"]);
-          pushResult("npm test", testExitCode === 0 ? "PASS" : "FAIL", testExitCode === 0 ? "通過。" : "失敗。");
+          const testResult = await runStreamingCapture("npm", ["test"], 30 * 60 * 1000);
+          if (testResult.code !== 0) {
+            pushCommandDiagnostic("npm test", testResult);
+          }
+          pushResult(
+            "npm test",
+            testResult.code === 0 ? "PASS" : "FAIL",
+            testResult.code === 0 ? "通過。" : `失敗（exit ${testResult.code}）。`,
+          );
         }
       }
     } else {
       pushResult("npm test", "SKIP", "使用 --skip-tests 略過。");
     }
 
-    if (!skipBuild) {
+    if (qaLevel !== "lite" && !skipBuild) {
       print("[AI_TEAM] 執行 build...");
-      const buildExitCode = await run("npm", ["run", "build"]);
-      pushResult("npm run build", buildExitCode === 0 ? "PASS" : "FAIL", buildExitCode === 0 ? "通過。" : "失敗。");
-    } else {
+      const buildResult = await runStreamingCapture("npm", ["run", "build"], 30 * 60 * 1000);
+      if (buildResult.code !== 0) {
+        pushCommandDiagnostic("npm run build", buildResult);
+      }
+      pushResult(
+        "npm run build",
+        buildResult.code === 0 ? "PASS" : "FAIL",
+        buildResult.code === 0 ? "通過。" : `失敗（exit ${buildResult.code}）。`,
+      );
+    } else if (qaLevel !== "lite") {
       pushResult("npm run build", "SKIP", "使用 --skip-build 略過。");
     }
   }
 
-  if (!skipBrowserQa) {
+  if (qaLevel !== "lite" && !skipBrowserQa) {
     print("[AI_TEAM] 執行 Antigravity Browser QA...");
     const browserQa = await runBrowserQa();
-    pushResult("agy browser qa", browserQa.status, browserQa.details);
-  } else {
-    pushResult("agy browser qa", "SKIP", "使用 --skip-browser-qa 略過。");
+    pushResult("playwright browser qa", browserQa.status, browserQa.details);
+  } else if (qaLevel !== "lite") {
+    pushResult("playwright browser qa", "SKIP", "使用 --skip-browser-qa 略過。");
   }
 
   renderReport();
@@ -415,6 +597,9 @@ async function main() {
   }
 
   print("[AI_TEAM] QA 完成：全部通過。");
+  } finally {
+    releaseLock(runtimeFiles.qaLock);
+  }
 }
 
 await main();

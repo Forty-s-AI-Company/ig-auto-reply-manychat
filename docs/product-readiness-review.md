@@ -1,3 +1,30 @@
+# 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+Status: improved for beta operator trust; still one more disabled UX pass can be做 if we want every visible entry to feel equally intentional.
+
+- Inbox contact panel `自動化暫停` 已改成真正 disabled UX，避免看起來像壞掉的按鈕。
+- IG dropdown partial metadata 現在會顯示 `資料未完整` badge，ID-only 帳號更清楚。
+- 本輪 focused lint / build / unit / inbox smoke 已通過。
+
+Readiness implication:
+
+- Inbox / Channels 的誤導性控制項又少了一批。
+- Public paid launch 仍維持 Hold；剩餘的 Inbox header / composer / Channels 次要控制項可以下一輪再收斂。
+
+# 2026-06-29 - Inbox assignment / reminder / empty-state repair
+
+Status: improved for private beta operator trust; Inbox still needs one more contact-panel / bulk-action pass before it can be treated as fully polished.
+
+- Inbox 空狀態的 `清除篩選並重新查看` 現在會真的把搜尋、標籤、指派與分類條件全部清掉，不再留下看不見的殘留篩選。
+- Inbox 提醒選單不再把 `選擇日期與時間` 偽裝成可用入口；目前改成 disabled UX，並明確說明先只支援固定提醒時段。
+- Inbox 指派、提醒、已讀等操作，現在會顯示更精準的成功訊息，降低使用者覺得「有按但不知道有沒有成功」的感受。
+- Authenticated Inbox Playwright smoke 現在已覆蓋 assignment、reminder、empty-state reset，且 Chromium / mobile Chrome 都通過。
+
+Readiness implication:
+
+- Inbox 的核心日常操作又少了一批看得到但像壞掉的控制項。
+- 公開付費上線仍維持 Hold；剩餘阻塞仍在 Channels / Automations / Analytics 完整性，以及 Meta / PayUNI 外部人工 gate。
+
 # 2026-06-28 - Inbox mobile scope and filter pass
 
 Status: improved for beta operator usability; authenticated DB-backed smoke still needs local non-production test env in this clean worktree.
@@ -23,6 +50,20 @@ Status: documentation re-org only; product readiness unchanged.
 - No product code, production DB, Meta submission, or PayUNI production action was changed.
 
 # InboxPilot Product Readiness Review
+
+## 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+Status: improved for beta operator trust; full Windows `npm test` still has an existing batch-level instability unrelated to this UX pass.
+
+- Inbox header `視訊通話` 與 `更多對話操作` now use clear disabled UX with readable reasons.
+- `清除提醒` now closes the reminder menu before applying the update, so the menu no longer blocks later clicks.
+- IG partial metadata and Channels connect visibility remain intentionally explicit rather than pretending unfinished states are live.
+- Focused Vitest, `npm run lint`, `npm run build`, and `npm run test:e2e:inbox` passed.
+
+Readiness implication:
+
+- Inbox / Channels now have fewer controls that look clickable but are not.
+- Public paid launch status remains Hold; the next safe product task is Contacts filtered empty-state guidance.
 
 ## 2026-06-28 - Inbox contact panel actions UX pass
 

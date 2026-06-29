@@ -1,3 +1,19 @@
+# 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+- `[x]` Inbox contact panel `自動化暫停` 已改成真正 disabled UX。
+- `[x]` IG dropdown partial metadata 現在有更清楚的 `資料未完整` badge。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:inbox` 已通過。
+- `[ ]` Inbox / Channels 其餘 header / composer / 次要控制項仍可再做一輪 disabled UX 收斂。
+
+# 2026-06-29 - Inbox assignment / reminder / empty-state pass
+
+- `[x]` Inbox 空狀態的 `清除篩選並重新查看` 會真正清掉搜尋、標籤、指派與分類條件。
+- `[x]` Inbox 提醒選單的 `選擇日期與時間` 已改成清楚 disabled UX，不再是假入口。
+- `[x]` Inbox 指派、提醒、已讀等操作，現在會顯示更精準的成功訊息。
+- `[x]` `tests/e2e/inbox-auth.spec.ts` 已擴充 assignment / reminder / empty-state reset 覆蓋。
+- `[x]` `npm run test:e2e:inbox` 已通過 Chromium 與 mobile Chrome。
+- `[ ]` 繼續 Inbox contact panel / bulk action 第四輪 audit，收斂剩餘 disabled UX 與最小可用功能邊界。
+
 # 2026-06-28 - AI_TEAM docs baseline and autopilot retirement
 
 - `[x]` Built the new `AI_TEAM/` document system from the attached control document.
@@ -6,6 +22,15 @@
 - `[x]` Kept the product AI bridge files untouched.
 
 # Project Launch Checklist
+
+## 2026-06-30 - Inbox / Channels visible-but-unusable closeout
+
+- `[x]` Inbox header `視訊通話` 與 `更多對話操作` 已改成真正 disabled UX，並補上原因說明。
+- `[x]` `清除提醒` 現在會先關閉 reminder menu，再送出清除更新，不會卡住後續點擊。
+- `[x]` IG dropdown 的 partial metadata badge 與 Channels connect visibility 維持清楚分流。
+- `[x]` focused Vitest、`npm run lint`、`npm run build`、`npm run test:e2e:inbox` 都已通過。
+- `[ ]` `npm test` 仍有既有 Windows Vitest batch-level crash，需要另一輪專門收斂測試 runner 穩定性。
+- `[ ]` 下一個安全產品任務先接 Contacts filtered empty-state guidance。
 
 ## 2026-06-28 - Inbox mobile scope and filter pass
 
