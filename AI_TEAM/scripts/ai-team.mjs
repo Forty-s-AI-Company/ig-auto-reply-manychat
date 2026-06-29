@@ -1,43 +1,33 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const scriptPath = fileURLToPath(import.meta.url);
-const root = path.resolve(path.dirname(scriptPath), "..", "..");
-const aiTeamRoot = path.join(root, "AI_TEAM");
-const reportsDir = path.join(aiTeamRoot, "reports");
-
-const files = {
-  projectState: path.join(aiTeamRoot, "PROJECT_STATE.md"),
-  launchCriteria: path.join(aiTeamRoot, "LAUNCH_CRITERIA.md"),
-  acceptance: path.join(aiTeamRoot, "tasks", "acceptance.md"),
-  currentTask: path.join(aiTeamRoot, "tasks", "current-task.md"),
-  backlog: path.join(aiTeamRoot, "tasks", "backlog.md"),
-  readme: path.join(aiTeamRoot, "README.md"),
-  modelAssignment: path.join(aiTeamRoot, "MODEL_ASSIGNMENT.md"),
-  runnerDesign: path.join(aiTeamRoot, "RUNNER_DESIGN.md"),
-  worktreePolicy: path.join(aiTeamRoot, "WORKTREE_POLICY.md"),
-  setupReport: path.join(reportsDir, "setup-report.md"),
-  finalReport: path.join(reportsDir, "final-report.md"),
-  qaReport: path.join(reportsDir, "qa-report.md"),
-  browserQaReport: path.join(reportsDir, "browser-qa-report.md"),
-  nextPrompt: path.join(reportsDir, "next-codex-prompt.md"),
-};
+import {
+  aiTeamRoot,
+  extractTopItems,
+  readFileSafe,
+  readPreferred,
+  reportsDir,
+  root,
+  runtimeFiles,
+  section,
+  trackedFiles,
+  writeRuntimeFile,
+} from "./lib/ai-team-paths.mjs";
 
 const requiredPaths = [
-  files.projectState,
-  files.launchCriteria,
-  files.acceptance,
-  files.currentTask,
-  files.backlog,
-  files.readme,
-  files.modelAssignment,
-  files.runnerDesign,
-  files.worktreePolicy,
-  files.setupReport,
-  files.finalReport,
-  files.qaReport,
-  files.browserQaReport,
+  trackedFiles.projectState,
+  trackedFiles.launchCriteria,
+  trackedFiles.acceptance,
+  trackedFiles.currentTask,
+  trackedFiles.backlog,
+  trackedFiles.queue,
+  trackedFiles.readme,
+  trackedFiles.modelAssignment,
+  trackedFiles.runnerDesign,
+  trackedFiles.worktreePolicy,
+  trackedFiles.setupReport,
+  trackedFiles.finalReport,
+  trackedFiles.qaReport,
+  trackedFiles.browserQaReport,
   path.join(aiTeamRoot, "roles", "01-project-lead.md"),
   path.join(aiTeamRoot, "roles", "02-system-architect.md"),
   path.join(aiTeamRoot, "roles", "03-backend-lead.md"),
@@ -58,36 +48,36 @@ const requiredPaths = [
   path.join(aiTeamRoot, "scripts", "local-ai-team.ps1"),
   path.join(aiTeamRoot, "scripts", "local-qa.ps1"),
   path.join(aiTeamRoot, "scripts", "ai-team-runner.mjs"),
+  path.join(aiTeamRoot, "scripts", "codex-dev.mjs"),
+  path.join(aiTeamRoot, "scripts", "playwright-browser-qa.mjs"),
   path.join(aiTeamRoot, "scripts", "browser-qa-prompt.md"),
+  path.join(aiTeamRoot, "scripts", "lib", "process-lock.mjs"),
 ];
 
-function read(filePath) {
-  return fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
+function getFinalReportText() {
+  return readPreferred(runtimeFiles.finalReport, trackedFiles.finalReport);
 }
 
-function ensureReportsDir() {
-  fs.mkdirSync(reportsDir, { recursive: true });
+function getQaReportText() {
+  return readPreferred(runtimeFiles.qaReport, trackedFiles.qaReport);
 }
 
-function section(title, content) {
-  return `\n## ${title}\n\n${content.trim() || "（空）"}\n`;
-}
-
-function extractTopItems(markdown, maxItems = 5) {
+function extractActionableItems(markdown, maxItems = 5) {
   return markdown
     .split(/\r?\n/)
     .map((line) => line.trim())
-    .filter((line) => line.startsWith("- "))
+    .filter((line) => line.startsWith("- `[" ) || line.startsWith("- ["))
     .slice(0, maxItems)
     .map((line) => line.slice(2).trim());
 }
 
 function buildStatus() {
-  const currentTask = read(files.currentTask);
-  const backlog = read(files.backlog);
-  const projectState = read(files.projectState);
-  const acceptance = read(files.acceptance);
-  const finalReport = read(files.finalReport);
+  const currentTask = readFileSafe(trackedFiles.currentTask);
+  const backlog = readFileSafe(trackedFiles.backlog);
+  const projectState = readFileSafe(trackedFiles.projectState);
+  const acceptance = readFileSafe(trackedFiles.acceptance);
+  const finalReport = getFinalReportText();
+  const qaReport = getQaReportText();
 
   const parts = [
     "# AI_TEAM 狀態",
@@ -97,21 +87,25 @@ function buildStatus() {
     section("ACCEPTANCE", acceptance),
     section(
       "BACKLOG 前幾項",
-      extractTopItems(backlog).length ? extractTopItems(backlog).map((item) => `- ${item}`).join("\n") : "（沒有可讀到的待辦）",
+      extractActionableItems(backlog).length
+        ? extractActionableItems(backlog).map((item) => `- ${item}`).join("\n")
+        : "（沒有可讀到的待辦）",
     ),
     section("FINAL_REPORT 摘要", extractTopItems(finalReport, 6).length ? extractTopItems(finalReport, 6).map((item) => `- ${item}`).join("\n") : finalReport),
+    section("LATEST_QA 摘要", extractTopItems(qaReport, 6).length ? extractTopItems(qaReport, 6).map((item) => `- ${item}`).join("\n") : qaReport),
     "",
-    "建議下一步：`npm run ai-team:next`",
+    "建議下一步：`npm run ai-team:next` 或 `npm run ai-team:dev`",
+    "長跑模式：`npm run ai-team:loop:continuous` 或 `npm run ai-team:loop:continuous:sleep`",
   ];
 
   return parts.join("\n");
 }
 
-function buildNextPrompt() {
-  const currentTask = read(files.currentTask).trim();
-  const backlogItems = extractTopItems(read(files.backlog), 8);
-  const prompt = [
-    "請接續 InboxPilot / ReplyPilot 的 AI_TEAM 流程。",
+function buildFallbackNextPrompt() {
+  const currentTask = readFileSafe(trackedFiles.currentTask).trim();
+  const backlogItems = extractActionableItems(readFileSafe(trackedFiles.backlog), 8);
+  return [
+    "請接續 InboxPilot / ReplyPilot 的 AI_TEAM 開發閉環流程。",
     "",
     "請先讀取：",
     "- AI_TEAM/PROJECT_STATE.md",
@@ -119,6 +113,8 @@ function buildNextPrompt() {
     "- AI_TEAM/tasks/acceptance.md",
     "- AI_TEAM/tasks/current-task.md",
     "- AI_TEAM/tasks/backlog.md",
+    "- AI_TEAM/runtime/final-report.md（若存在）",
+    "- AI_TEAM/runtime/qa-report.md（若存在）",
     "- AI_TEAM/reports/final-report.md",
     "- AI_TEAM/reports/qa-report.md",
     "",
@@ -136,15 +132,18 @@ function buildNextPrompt() {
     "- 不輸出 secret",
     "",
     "執行要求：",
+    "- Codex CLI 直接做本輪實作，不要只寫建議",
     "- 優先處理可見但不能用的產品功能，或把暫不支援功能改成清楚 disabled UX",
     "- 修改後補最小必要驗證與報告",
     "- 完成後更新 AI_TEAM/tasks/current-task.md、AI_TEAM/tasks/backlog.md、AI_TEAM/reports/dev-report.md、AI_TEAM/reports/final-report.md",
     "",
     "請直接從最高優先且可安全處理的任務開始，不要只停在建議。",
   ].join("\n");
+}
 
-  ensureReportsDir();
-  fs.writeFileSync(files.nextPrompt, `${prompt}\n`, "utf8");
+function buildNextPrompt() {
+  const prompt = buildFallbackNextPrompt();
+  writeRuntimeFile(runtimeFiles.nextPrompt, prompt);
   return prompt;
 }
 
@@ -160,6 +159,8 @@ function check() {
     return;
   }
 
+  fs.mkdirSync(reportsDir, { recursive: true });
+  fs.mkdirSync(path.join(aiTeamRoot, "runtime"), { recursive: true });
   console.log("AI_TEAM 長跑骨架完整。");
 }
 
@@ -179,8 +180,12 @@ if (command === "status") {
     "- `npm run ai-team`",
     "- `npm run ai-team:next`",
     "- `npm run ai-team:check`",
+    "- `npm run ai-team:qa`",
+    "- `npm run ai-team:dev`",
+    "- `npm run ai-team:loop:continuous`",
+    "- `npm run ai-team:loop:continuous:sleep`",
     "",
-    "原因：AI_TEAM 流程已取代舊 autopilot 設計。",
+    "原因：AI_TEAM 流程已取代舊 autopilot 設計，並改把執行期輸出寫到 `AI_TEAM/runtime/`。",
   ].join("\n"));
 } else {
   console.error(`未知指令：${command}`);

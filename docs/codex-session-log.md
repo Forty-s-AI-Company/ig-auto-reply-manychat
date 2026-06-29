@@ -1,5 +1,273 @@
 # Codex Session Log
 
+# 2026-06-29 - Inbox audit round 3 follow-up
+
+Task goal:
+
+- Continue the Inbox third-round product completeness pass instead of deployment/process work.
+- Fix visible-but-unusable Inbox controls in search / filter / assignment / reminder flows.
+- Keep all validation on the local non-production test database.
+
+Files changed:
+
+- `src/components/InboxClient.tsx`
+- `tests/e2e/inbox-auth.spec.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/reports/dev-report.md`
+- `AI_TEAM/reports/final-report.md`
+- `docs/project-launch-checklist.md`
+- `docs/product-readiness-review.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Added a shared `resetFilters()` path so Inbox empty-state reset and filter-panel reset use the same real state clearing logic.
+- Fixed the empty-state `清除篩選並重新查看` action so it now clears query, tag, assignee, category, unread, and sort state instead of leaving hidden residual filters behind.
+- Improved `updateConversation()` so assignment, reminder, and read-state writes can report more specific success copy.
+- Added stable test ids for assignee and reminder controls.
+- Replaced the fake `選擇日期與時間` reminder action with clear disabled UX and explanatory notice text.
+- Extended authenticated Inbox Playwright smoke to cover:
+  - assignment update
+  - fixed reminder preset
+  - disabled custom reminder UX
+  - clearing a reminder
+  - empty-state filter reset
+- Hardened the Inbox smoke so it anchors on stable contact names instead of mutable latest-message text, and so mobile switches back to the detail pane before using detail-only controls.
+
+Validation:
+
+```text
+npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts
+Result: passed.
+
+npx playwright test tests/e2e/inbox-auth.spec.ts --project=chromium
+Result: passed.
+
+npm run lint
+Result: passed.
+
+TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55322/postgres
+TEST_DIRECT_URL=postgresql://postgres:postgres@127.0.0.1:55322/postgres
+npm test
+Result: passed across all 9 batches.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:inbox
+Result: passed for Chromium and mobile Chrome.
+```
+
+Launch impact:
+
+- Inbox core operator UX is less misleading and closer to a real beta-usable surface.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+New risks:
+
+- Low. The new reminder copy currently supports only preset times; custom datetime scheduling remains intentionally unavailable and should stay explicit until a real scheduling UX exists.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot / ReplyPilot 專案，直接做 Inbox 第四輪 visible-but-unusable audit：優先檢查 contact panel 的「自動化暫停」、序列 CTA、更多聯絡人操作與剩餘 bulk action，能安全支援就補最小可用，不能安全支援就統一 disabled UX；沿用 TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55322/postgres 補 focused Playwright smoke，不碰 production DB、不部署 Production。
+```
+
+## 2026-06-29 - Local test infra stabilization
+
+Task goal:
+
+- Stop treating deployment / env / Vercel as the current blocker.
+- Confirm the repo-local Supabase test DB really matches this project.
+- Stabilize Windows `npm test` and AI_TEAM Playwright Browser QA so `npm run ai-team:qa` can pass end to end.
+
+Files changed:
+
+- `AI_TEAM/scripts/playwright-browser-qa.mjs`
+- `tests/e2e/ai-team-browser-smoke.spec.ts`
+- `tests/email-channel.test.ts`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/reports/dev-report.md`
+- `AI_TEAM/reports/final-report.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Confirmed this repo now owns a separate local Supabase stack on port `55322`, while another project continues to use `54322`.
+- Verified `TEST_DATABASE_URL` and `TEST_DIRECT_URL` for this repo point to `postgresql://postgres:postgres@127.0.0.1:55322/postgres`.
+- Reconfirmed `tests/email-channel.test.ts` cleanup order so DB teardown finishes before env stubs are reset.
+- Reworked `AI_TEAM/scripts/playwright-browser-qa.mjs` to stop using a second fragile hand-written Playwright navigation flow.
+- Browser QA now checks real HTTP readiness on `/login`, then runs the existing `tests/e2e/ai-team-browser-smoke.spec.ts` through the Playwright test runner.
+- Browser QA now tears down the Windows `next dev` process tree it started, preventing stale port `3041` listeners from poisoning the next run.
+- Fixed the Browser QA spec so full-release local runs do not incorrectly assert simple-release-only expectations for `Facebook / Meta Login` and `/billing` gating.
+
+Validation:
+
+```text
+docker ps
+Result: confirmed both local Supabase stacks are running, and this repo uses the `ig-auto-reply-manychat` stack on `55322`.
+
+supabase status
+Result: passed for this repo-local stack.
+
+npx eslint AI_TEAM/scripts/playwright-browser-qa.mjs AI_TEAM/scripts/local-qa.mjs tests/e2e/ai-team-browser-smoke.spec.ts tests/email-channel.test.ts scripts/run-tests.mjs
+Result: passed.
+
+node AI_TEAM/scripts/playwright-browser-qa.mjs
+Result: passed. Browser QA runtime report now records PASS.
+
+npm test
+Result: passed across all 9 batches on Windows with local `TEST_DATABASE_URL`; no `3221225477` crash occurred in this run.
+
+npm run ai-team:qa
+Result: passed. `ai-team:check`, lint, test-db-connectivity, `npm test`, build, and Browser QA all passed.
+```
+
+Launch impact:
+
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review action, or PayUNI production action was performed.
+- This unblocks AI_TEAM from returning to product completeness work instead of repeatedly failing on local test infrastructure.
+
+New risks:
+
+- Low. Browser QA now depends on the maintained Playwright smoke spec, so future changes to release-mode expectations should be updated in one place.
+- The repo still has other unrelated dirty files; this round only stabilized test infra and updated the task/docs state.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot / ReplyPilot 專案，直接回到產品功能完整性修復，優先做 Inbox 第三輪 audit：列出仍然看得到但不能用的 search / filter / composer / note / assignment 控制項，補成最小可用或清楚 disabled UX，並利用目前可用的 TEST_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:55322/postgres 補 authenticated Playwright smoke；不要碰 production DB、不要部署 Production。
+```
+
+## 2026-06-29 - Visible PowerShell UTF-8 fix
+
+Task goal:
+
+- Fix the Chinese mojibake seen in visible PowerShell 7 AI_TEAM runs.
+- Make console display and log output use one consistent UTF-8 path.
+
+Files changed:
+
+- `AI_TEAM/scripts/local-ai-team.ps1`
+- `AI_TEAM/README.md`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Updated `local-ai-team.ps1` to force Windows code page `65001`.
+- Set PowerShell console input/output encoding to UTF-8 without BOM.
+- Disabled ANSI color output for this launcher path so redirected logs do not collect noisy escape sequences.
+- Added optional `-LogPath` support so visible QA / loop runs can write UTF-8 log files directly instead of relying on an external `Tee-Object` wrapper.
+- Verified the visible launcher with:
+  - `-QaOnly`
+  - `-TestDatabaseUrl`
+  - `-TestDirectUrl`
+  - `-LogPath AI_TEAM/runtime/visible-ai-team-qa-utf8.log`
+
+Validation:
+
+```text
+pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 -QaOnly -TestDatabaseUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -TestDirectUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -LogPath "AI_TEAM/runtime/visible-ai-team-qa-utf8.log"
+Result: passed. The log kept readable Chinese and the run completed with `QA 完成：全部通過。`
+```
+
+Launch impact:
+
+- No product behavior changed.
+- This only hardens the local visible AI_TEAM launcher and log readability.
+
+## 2026-06-29 - AI_TEAM orchestration MVP
+
+Task goal:
+
+- Rebuild AI_TEAM from the attached control document into a real local orchestration path.
+- Keep the scope on AI_TEAM scripts and docs only.
+- Do not touch production DB, migrations, Production deployment, Meta App Review, or PayUNI production.
+
+Files changed:
+
+- `.gitignore`
+- `package.json`
+- `README.md`
+- `AI_TEAM/README.md`
+- `AI_TEAM/MODEL_ASSIGNMENT.md`
+- `AI_TEAM/RUNNER_DESIGN.md`
+- `AI_TEAM/tasks/current-task.md`
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/scripts/ai-team.mjs`
+- `AI_TEAM/scripts/ai-team-runner.mjs`
+- `AI_TEAM/scripts/local-qa.mjs`
+- `AI_TEAM/scripts/local-ai-team.ps1`
+- `AI_TEAM/scripts/local-models.mjs`
+- `AI_TEAM/scripts/lib/ai-team-paths.mjs`
+- `AI_TEAM/scripts/browser-qa-prompt.md`
+- `AI_TEAM/runtime/.gitkeep`
+- `tests/unit/ai-team-local-models.test.ts`
+- `docs/fix-roadmap.md`
+- `docs/codex-session-log.md`
+
+Implementation notes:
+
+- Reworked AI_TEAM so runtime outputs now write to ignored `AI_TEAM/runtime/` instead of tracked `AI_TEAM/reports/*.md`, reducing noisy dirty files during long unattended loops.
+- Expanded `AI_TEAM/MODEL_ASSIGNMENT.md` to reflect the intended Codex / Ollama / Antigravity split from the control document.
+- Added `npm run ai-team:models` and the underlying local Ollama orchestrator for:
+  - `qwen2.5-coder:1.5b`
+  - `qwen2.5-coder:7b`
+  - `qwen3:8b`
+  - `deepseek-coder-v2:lite`
+- Updated `npm run ai-team:qa` so it now runs `ai-team:check`, local lint/test/build gates, and attempts a real `agy` Browser QA call.
+- Updated `npm run ai-team:loop` so it now runs a real pipeline (`qa -> local models -> health summary`) instead of only generating a prompt/summary.
+- Added a PowerShell 7 friendly launcher wrapper: `AI_TEAM/scripts/local-ai-team.ps1`.
+- Added focused Vitest coverage for parsing local Ollama model lists.
+
+Validation:
+
+```text
+npm run ai-team:check
+Result: passed.
+
+npx vitest run tests/unit/ai-team-local-models.test.ts tests/unit/gemini-cli.test.ts --reporter=dot
+Result: passed. 2 files, 4 tests.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed. Prisma generate reused existing locked client safely, then Next build passed.
+
+AI_TEAM_BROWSER_QA_TIMEOUT_MS=15000
+AI_TEAM_LOCAL_MODEL_TIMEOUT_MS=5000
+AI_TEAM_RUNNER_QA_ARGS='--skip-tests --skip-build'
+AI_TEAM_RUNNER_MODEL_ARGS='--only=error-summary,next-prompt'
+npm run ai-team:loop:once
+Result: passed. Runner executed a real pipeline and wrote runtime outputs under `AI_TEAM/runtime/`.
+
+npm run ai-team:qa -- --skip-tests --skip-build
+Result: passed with WARN. `agy` was called, but this run ended with no printed Browser QA output, so the runtime report recorded a WARN instead of pretending success.
+```
+
+Launch impact:
+
+- No product runtime behavior changed.
+- No production DB write, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+- This improves unattended local workflow readiness only.
+
+New risks:
+
+- Low. The main remaining risk is `agy --print` reliability for Browser QA; the path is wired, but some runs still return no output and therefore fall back to WARN.
+- Local model orchestration currently produces reports and next prompts, not auto-applied patches. That is intentional for safety.
+
+Next suggested Codex Prompt:
+
+```text
+請接續 InboxPilot 專案，使用現在的 AI_TEAM 流程，把重點切回 Channels / Social connect 第二輪產品完整性修復：先列出看得到但不能用或容易誤導的控制項，補成最小可用或清楚 disabled UX，並補 focused tests；不要碰 production DB、不要部署 Production。
+```
+
 ## 2026-06-28 - Inbox mobile scope and filter pass
 
 Task goal:
@@ -4839,6 +5107,71 @@ Launch impact:
 - Improves unattended test-gate diagnostics only.
 - Does not change product runtime behavior, production DB, Production deployment, Meta App Review, PayUNI production behavior, or application data model.
 
+## 2026-06-29 - Channels / Social connect product completeness round 2
+
+Task:
+
+- Continue the Channels / Social connect product audit using the current AI_TEAM flow.
+- Focus on controls that are visible on Channels surfaces but feel broken, misleading, or only half-supported.
+
+Audit:
+
+- Completed: Instagram connect, Telegram token connect, Instagram profile refresh, and existing Instagram channel action buttons all have real backing routes.
+- Misleading UX found: Mock OAuth provider was still rendered like a normal connect option on deployed surfaces even though it is only useful for local / QA popup verification.
+- Misleading UX found: when a connected Meta account existed but no synced channel was found, the page only showed a vague warning instead of telling the operator what to do next.
+- Lower-priority deferred: comments/media/token-related actions still need a separate pass to confirm whether each one should be minimally supported or explicitly disabled.
+
+Changes:
+
+- Added a shared Channels visibility helper to centralize connect-option and OAuth-provider visibility rules by release mode and deployment environment.
+- Updated `/channels`, `/channels/connect`, and `/channels/connect/social` to use the shared rule set.
+- On deployed environments, Mock OAuth now stays visible only as an explicitly disabled QA-only entry instead of looking like a broken live feature.
+- Improved the "connected account but no synced channel" state with a clearer explanation plus a direct link back to `Channels`.
+- Added focused unit tests for simple-release filtering and deployed-env Mock visibility rules.
+
+Validation:
+
+- `npx eslint src/app/channels/page.tsx src/app/channels/connect/page.tsx src/app/channels/connect/social/page.tsx src/lib/channels/channel-connect-visibility.ts tests/channels-connect-visibility.test.ts`: passed.
+- `npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts tests/instagram-profile-refresh-route.test.ts --reporter=dot`: passed.
+- `npm run build`: passed.
+
+Launch impact:
+
+- Reduces misleading Channels UX on production/staging-style deployments without changing DB schema, production data, OAuth callback storage, or release-mode routing.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+## 2026-06-29 - AI_TEAM dual-mode local model orchestration
+
+Task:
+
+- Simplify AI_TEAM into two practical local-model modes:
+  - `general`: faster day-to-day local model mode
+  - `sleep`: slower but stronger unattended mode
+- Keep Codex CLI and Antigravity CLI roles unchanged.
+
+Changes:
+
+- Added explicit `general` / `sleep` local-model presets in `AI_TEAM/scripts/local-models.mjs`.
+- Updated the runner so `AI_TEAM/scripts/ai-team-runner.mjs` forwards a model mode to the local-model step and records that mode in the health summary.
+- Updated `package.json` with mode-specific entrypoints:
+  - `ai-team:models:general`
+  - `ai-team:models:sleep`
+  - `ai-team:loop:general`
+  - `ai-team:loop:sleep`
+  - `ai-team:loop:once:sleep`
+- Updated `AI_TEAM/MODEL_ASSIGNMENT.md` and `AI_TEAM/README.md` to document the two-mode behavior.
+- Added focused unit coverage for model assignment defaults by mode.
+
+Validation:
+
+- `npx vitest run tests/unit/ai-team-local-models.test.ts --reporter=dot`: passed.
+- `npm run ai-team:check`: passed.
+
+Launch impact:
+
+- Tooling and unattended workflow only.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## 2026-06-28 - Inbox functionality repair round 1
 
 Task:
@@ -4952,3 +5285,260 @@ Launch impact:
 - Improves Inbox beta usability without requiring external AI API keys.
 - True provider-backed AI suggestions still need product/API design and cost/error controls.
 - No production DB, Production deployment, Meta App Review, PayUNI production switch, migration, or db push was performed.
+
+## 2026-06-29 - Daily AI model cache refresh
+
+Task:
+
+- Run the scheduled `npm run ai-models:refresh` automation and report provider model counts or failures.
+
+Result:
+
+- Refresh completed successfully for `default-workspace`.
+- Provider counts: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failure was reported.
+- `codex_cli` and `antigravity_cli` were not present in the refresh payload, consistent with the local CLI opt-in gating when `AI_ENABLE_LOCAL_CLI` is not enabled.
+
+Validation:
+
+- `npm run ai-models:refresh`: passed.
+
+Launch impact:
+
+- AI model cache refresh only.
+- No production DB mutation, migration, `db push`, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
+## 2026-06-29 - AI_TEAM current-task / backlog long-run restructure
+
+Task:
+
+- Reorganize `AI_TEAM` so the runner can keep going across cycles instead of repeatedly stopping on old single-round summaries.
+
+Changes:
+
+- Reworked `AI_TEAM/tasks/current-task.md` into a state-machine style task file with `PRIMARY_TARGET`, `SECONDARY_TARGET`, done criteria, hard stops, and blocked behavior.
+- Reworked `AI_TEAM/tasks/backlog.md` so the first actionable line is the next default task, and each item is marked as `UNBLOCKED`, `BLOCKED_BY_TEST_DB`, or `BLOCKED_BY_MANUAL_REVIEW`.
+- Updated `AI_TEAM/README.md` to define how the runner should interpret `current-task` and `backlog`, and what `HUMAN_REQUIRED` must be recorded.
+- Updated `AI_TEAM/reports/dev-report.md` and `AI_TEAM/reports/final-report.md` so the current queue design and remaining manual gates are explicit.
+- Added a no-wait AI_TEAM runner mode plus dedicated npm scripts so the next task can start immediately after the previous one finishes.
+
+Validation:
+
+- Documentation-only change; no product code, DB operation, migration, or deployment was performed.
+- `AI_TEAM` task files now expose an unblocked first priority for Inbox product-completeness work and keep authenticated DB-backed smoke explicitly blocked until safe test infra exists.
+
+Launch impact:
+
+- Improves AI_TEAM handoff and long-run continuity.
+- Does not directly change production behavior.
+
+## 2026-06-29 - Repo-local Supabase test DB bootstrap
+
+Task:
+
+- Create a repo-owned local Supabase setup so `TEST_DATABASE_URL` no longer depends on another project's occupied local ports.
+
+Changes:
+
+- Added `supabase/config.toml` for this repo with a dedicated port range (`55321` to `55329`).
+- Added a placeholder `supabase/seed.sql`.
+- Confirmed the previous port conflict was caused by another running local Supabase stack using `54322`.
+- Started a dedicated local stack for this repo successfully.
+
+Validation:
+
+- `supabase start`: passed for `ig-auto-reply-manychat`.
+- Repo-local DB URL is now available on `127.0.0.1:55322`.
+
+Launch impact:
+
+- Unblocks local non-production `TEST_DATABASE_URL` setup for authenticated smoke and DB-backed tests.
+- No production DB, migration, or Production deployment was touched.
+
+## 2026-06-29 - AI_TEAM 開發閉環重構
+
+Task:
+
+- 把 AI_TEAM 從「QA + 報告」提升成真正可長跑的開發閉環。
+
+Changes:
+
+- 新增 `AI_TEAM/scripts/codex-dev.mjs` 作為 Codex CLI 主開發入口，會根據 `PROJECT_STATE`、`current-task`、`backlog` 與 runtime QA 報告直接組出本輪實作 prompt。
+- `AI_TEAM/scripts/ai-team-runner.mjs` 主流程改成 `codex-dev -> local-qa -> local-models`，不再只停在回報。
+- `AI_TEAM/scripts/local-qa.mjs` 新增 `lite/full` QA 分級、QA lock、以及 lint / test / build 失敗時的 stdout / stderr tail 診斷。
+- 補上 `runner.lock.json`、`qa.lock.json`、`codex.lock.json` runtime lock 機制，避免背景 loop 與手動流程互撞。
+- 重寫 `AI_TEAM/README.md`、`AI_TEAM/MODEL_ASSIGNMENT.md`、`AI_TEAM/RUNNER_DESIGN.md`，明確把 Codex CLI 定位成主開發者，本地模型改成輔助層。
+- `package.json` 補上 `ai-team:dev`、`ai-team:qa:lite`、`ai-team:qa:full`。
+
+Validation:
+
+- `npm run ai-team:check`: passed
+- `node AI_TEAM/scripts/codex-dev.mjs --prompt-only`: passed
+- `node AI_TEAM/scripts/local-qa.mjs --level=lite`: passed
+
+Launch impact:
+
+- 不直接改產品功能，但大幅改善 AI_TEAM 持續開發與除錯能力。
+- 不碰 production DB、不跑 migration / db push、不部署 Production。
+
+## 2026-06-30 - AI_TEAM Codex CLI 長跑啟動修正
+
+Task:
+
+- 修正 AI_TEAM `codex-dev` 在 Windows 下可找到 Codex CLI 但容易 timeout / 報告不足的問題。
+
+Changes:
+
+- 保留 Windows shell 啟動 Codex CLI 的方式，避免 `spawn codex ENOENT`。
+- `codex-dev` 依 AI_TEAM mode 設定預設 timeout：一般模式 30 分鐘、睡覺模式 2 小時。
+- `codex-dev` timeout / fail 時會寫入 stdout / stderr 摘要到 `AI_TEAM/runtime/codex-last-message.md`。
+- `ai-team-runner` 會把 `AI_TEAM_MODE` / `AI_TEAM_RUNNER_MODE` 傳給子流程，讓 `codex-dev` 能判斷目前模式。
+
+Validation:
+
+- `node AI_TEAM/scripts/codex-dev.mjs --prompt-only`: passed.
+- `AI_TEAM_CODEX_SMOKE=1 node AI_TEAM/scripts/codex-dev.mjs`: passed, confirmed `codex-cli 0.134.0`.
+- `AI_TEAM_CODEX_SMOKE=1 npm run ai-team:loop:once`: passed with `codex-dev -> qa -> local-models` all PASS.
+- Visible PowerShell 7 smoke launch confirmed `pwsh -> npm -> cmd -> node AI_TEAM/scripts/ai-team-runner.mjs` process chain.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM single-worker delivery replay
+
+Task:
+
+- 補 `--only-worker=<name>`，讓 AI_TEAM 可沿用既有 loop state / QA 結果，單獨重跑 `git-delivery` 等 worker，方便做真實交付驗證。
+
+Changes:
+
+- `AI_TEAM/scripts/ai-team-runner.mjs`
+  - 新增 `--only-worker=<worker>` / `AI_TEAM_ONLY_WORKER`。
+  - 單工模式下會沿用既有 `loop-state.json` 內的 worker 結果，只重跑指定 worker。
+- `AI_TEAM/README.md`
+  - 補上單工模式使用方式。
+- `AI_TEAM/RUNNER_DESIGN.md`
+  - 補上單工模式用途與適用場景。
+
+Validation:
+
+- `npm run ai-team:check`: passed.
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/ai-team.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/lib/process-lock.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs AI_TEAM/scripts/playwright-browser-qa.mjs`: passed.
+- `npm run ai-team:loop:smoke`: passed.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM Worker Pipeline / Task Queue 重構
+
+Task:
+
+- 將 AI_TEAM runner 從固定外部 CLI 等待流程，改成 task queue + worker result 的 structured pipeline。
+
+Changes:
+
+- 新增 `AI_TEAM/tasks/queue.json` 作為任務佇列。
+- `ai-team-runner` 改為 worker pipeline：`planner -> codex-dev -> local-model-review -> qa -> browser-qa -> reporter -> git-delivery`。
+- 每個 worker 會輸出 structured JSON 到 `AI_TEAM/runtime/worker-result.json`，並更新 `loop-state.json`、`current-worker.json`、`heartbeat.json`。
+- runner 依 worker result 的 `status` / `next` 推進流程，timeout 僅保留為外部 CLI 卡死時的保險。
+- 新增 `npm run ai-team:loop:smoke`，可用 fake task 驗證完整 pipeline，不會真的改產品、commit、push、PR 或 deploy。
+- 更新 `AI_TEAM/README.md` 與 `AI_TEAM/RUNNER_DESIGN.md` 描述 queue / worker result 架構。
+
+Validation:
+
+- `npm run ai-team:loop:smoke`: passed，fake task 完整走過 7 個 worker。
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs`: passed。
+- `npm run ai-team:check`: passed。
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM git-delivery policy gate
+
+Task:
+
+- 為 AI_TEAM worker pipeline 補上真正的 `git-delivery` policy gate，先做安全判斷，再決定是否真的 commit / push / PR。
+
+Changes:
+
+- `git-delivery` 會讀取 `AI_TEAM/runtime/worker-result.json`、`AI_TEAM/runtime/loop-state.json` 與 `git status --porcelain`。
+- 只有在 QA PASS、沒有 failed / blocked worker、且 dirty files 沒有混入 `reports`、`AI_TEAM/runtime`、`.env*`、cache / log 類檔案時，policy 才會進入 `ready`。
+- 新增 dirty file 分類：可提交檔案與應排除檔案分開處理。
+- 新增交付開關：
+  - `AI_TEAM_ENABLE_GIT_DELIVERY=1`
+  - `AI_TEAM_GIT_COMMIT=1`
+  - `AI_TEAM_GIT_PUSH=1`
+  - `AI_TEAM_GIT_PR=1`
+- 若只開 delivery gate、不開 commit，`git-delivery` 會回報 `ready`，但不會真的 mutate git / remote。
+- `npm run ai-team:loop:smoke` 現在會覆蓋 `git-delivery` 的 `skipped / blocked / ready` 三種狀態。
+
+Validation:
+
+- `npm run ai-team:loop:smoke`: passed.
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/ai-team.mjs`: passed.
+- `npm run ai-team:check`: passed.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM branch safety / PR policy
+
+Task:
+
+- 補齊 unattended `git-delivery` 的 branch safety 與 PR policy，避免 runner 直接在保護分支上 commit。
+
+Changes:
+
+- `git-delivery` 新增 branch safety 規則：`master`、`main`、`staging`、`production`、`prod`、`release` 一律 blocked。
+- 新增 PR metadata 預設值：
+  - base branch = `master`
+  - draft = `true`
+  - title = `AI_TEAM: <task title>`
+  - body 會帶 task id、branch、validation 與 Production deploy 預設關閉說明
+- 新增 `AI_TEAM_ENABLE_PRODUCTION_DEPLOY` 阻擋：即使被設成 `1`，`git-delivery` 仍會 blocked，不會放行正式部署。
+- 若 `AI_TEAM_GIT_PR=1` 但 `AI_TEAM_GIT_PUSH` 沒開，會直接 blocked，不會假裝能建 PR。
+- `npm run ai-team:loop:smoke` 現在覆蓋：
+  - `branch unsafe`
+  - `ready but commit disabled`
+  - `commit enabled but push disabled`
+  - `push enabled but gh missing`
+
+Validation:
+
+- `npm run ai-team:loop:smoke`: passed.
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/ai-team.mjs`: passed.
+- `npm run ai-team:check`: passed.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM auto-branch / dry-run delivery
+
+Task:
+
+- 在 `git-delivery` 補上 auto-branch 與 dry-run，讓 unattended delivery 先模擬、再執行，避免直接在 unsafe branch 上改遠端。
+
+Changes:
+
+- 新增安全 branch 規劃：
+  - branch 不安全時，會規劃改用 `codex/<task-id>`。
+  - 若 `AI_TEAM_GIT_AUTO_BRANCH` 未關閉，非 dry-run 狀態下可自動 `git switch -c` / `git switch`。
+- 新增 `AI_TEAM_GIT_DRY_RUN`：
+  - 預設為開啟。
+  - dry-run 時只輸出將執行的 branch / add / commit / push / PR 計畫，不真的 mutate git / remote。
+- `git-delivery` 現在會先回傳交付計畫，再由顯式 env 決定是否真的 commit / push / PR。
+- 保持 `AI_TEAM_ENABLE_PRODUCTION_DEPLOY` 預設關閉，delivery worker 不會放行正式部署。
+
+Validation:
+
+- `npm run ai-team:loop:smoke`: passed.
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/ai-team.mjs`: passed.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
