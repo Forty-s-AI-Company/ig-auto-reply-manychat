@@ -6068,6 +6068,30 @@ Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Inbox mobile assignee smoke stability
+
+Task:
+
+- 修復 PR #49 merge 後 master CI 的 `full-release-auth-smoke` mobile Inbox 失敗，避免指派對象下拉在 mobile browser project 中因 label 選取 / 重新 render 造成 flaky。
+
+Changes:
+
+- Inbox authenticated smoke 改成先確認 `ADMIN_NAME` option 存在；若 CI seed 讓對話已被指派，才清除指派並驗證清除 notice，避免在同一筆 mobile smoke 裡來回指派造成資料競態。
+- Automations authenticated smoke 同步放寬 mobile zero-data 狀態：若 CI seed 完全沒有自動化，允許顯示「尚未建立自動化」；若是篩選後無結果，仍接受「目前沒有符合篩選條件的自動化」。
+- `test:e2e:inbox` 改為 `--workers=1`，因為 Inbox smoke 會修改同一批 seeded conversations 的標籤、提醒與篩選狀態；desktop / mobile project 並行時會互相干擾。
+- Inbox team filter smoke 移除「e2e-vip 對話一定指派給 Admin」的 seed 假設，改為驗證 team filter 可套用，且顯示符合結果或清楚空狀態。
+
+Validation:
+
+- `npm run lint`: passed.
+- `npm run test:e2e:inbox -- --project=mobile-chrome --grep "loads, scopes"`: skipped locally by authenticated smoke guard.
+- `npm test`: passed.
+- `npm run build`: passed. Existing Prisma engine lock fallback reused the generated client and exited successfully.
+
+Launch impact:
+
+- Test stability only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-06-30 - AI_TEAM advanced mode wiring
 
 Task:

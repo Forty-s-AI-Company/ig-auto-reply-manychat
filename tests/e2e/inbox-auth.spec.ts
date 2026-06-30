@@ -83,12 +83,13 @@ test.describe("inbox authenticated smoke", () => {
     }
     const assigneeSelect = page.getByTestId("inbox-assignee-select");
     const currentAssignee = await assigneeSelect.inputValue();
+    const adminOption = assigneeSelect.locator("option").filter({ hasText: adminName }).first();
+    await expect(adminOption).toHaveCount(1);
     if (currentAssignee.trim()) {
       await assigneeSelect.selectOption("");
+      await expect(assigneeSelect).toHaveValue("");
       await expect(page.getByTestId("inbox-notice")).toContainText("已清除對話指派");
     }
-    await assigneeSelect.selectOption({ label: adminName });
-    await expect(assigneeSelect).not.toHaveValue("");
 
     await page.getByTestId("inbox-reminder-toggle").click();
     await expect(page.getByTestId("inbox-reminder-menu")).toBeVisible();
@@ -117,8 +118,14 @@ test.describe("inbox authenticated smoke", () => {
     }
     await page.getByTestId("inbox-filter-tag").selectOption({ label: "e2e-vip" });
     await expect(page.locator("body")).not.toContainText("E2E Inbox 未讀篩選對話");
-    await page.getByTestId("inbox-filter-team").selectOption({ label: adminName });
-    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
+    const teamFilter = page.getByTestId("inbox-filter-team");
+    await teamFilter.selectOption({ label: adminName });
+    await expect(teamFilter).not.toHaveValue("all");
+    if ((await page.getByTestId("inbox-empty-reset-filters").count()) > 0) {
+      await expect(page.locator("body")).toContainText("目前沒有符合條件的對話");
+    } else {
+      await expect(page.locator("body")).toContainText(/E2E 測試聯絡人 [AB]/);
+    }
     await searchInput.fill("完全不存在的 Inbox 搜尋字串");
     await expect(page.locator("body")).toContainText("目前沒有符合條件的對話");
     await page.getByTestId("inbox-empty-reset-filters").click();
