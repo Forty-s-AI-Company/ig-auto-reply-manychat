@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Inbox automation pause disabled copy polish
+
+Current status:
+
+- `[x]` Inbox contact panel `自動化暫停` remains disabled, but its title no longer says `尚未開放`.
+- `[x]` The disabled-control title now explains that automation pause is a controlled-opening feature requiring flow-level controls and audit design.
+- `[x]` Authenticated Inbox smoke covers the title copy so the old vague wording does not regress.
+
+Remaining:
+
+- `[ ]` PR CI still needs to run seeded authenticated smoke; local focused smoke may skip when auth seed env is unavailable.
+- `[ ]` Continue safe Contacts / Automations / Inbox product-completeness sweeps only if another visible-but-unusable control is found.
+
 # Latest - 2026-07-01 Automations editor canvas hint polish
 
 Current status:

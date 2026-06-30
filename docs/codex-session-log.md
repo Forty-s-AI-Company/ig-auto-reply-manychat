@@ -1,3 +1,26 @@
+# 2026-07-01 - Inbox automation pause disabled copy polish
+
+Task:
+
+- Continue the post-PR #57 product completeness sweep without touching production DB or deployment.
+- Focus on a remaining Inbox disabled-control copy issue: the contact-panel `自動化暫停` button was properly disabled, but its browser title still said `尚未開放`.
+
+Changes:
+
+- Updated the `自動化暫停` title copy to describe it as a controlled-opening feature that needs flow-level controls and audit design.
+- Extended the authenticated Inbox smoke to assert the button is disabled and its title no longer uses `尚未開放`.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI copy and test coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Contacts detail tag smoke stability
 
 Task:

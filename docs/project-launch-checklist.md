@@ -1,3 +1,10 @@
+# 2026-07-01 - Inbox automation pause disabled copy polish
+
+- `[x]` Inbox contact-panel `自動化暫停` disabled title no longer uses vague `尚未開放` copy.
+- `[x]` The title now explains the controlled-opening requirement.
+- `[x]` Authenticated Inbox smoke covers this disabled copy.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Automations editor canvas hint polish
 
 - `[x]` Automations editor canvas hint now uses a consistent Lucide icon instead of emoji copy.
