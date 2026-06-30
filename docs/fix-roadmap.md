@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Analytics broadcast gate clarity
+
+Current status:
+
+- `[x]` Analytics simple release no longer shows a clickable full-only `/broadcasts` CTA.
+- `[x]` Simple release now shows a disabled `廣播活動受控開通` control with clear title copy.
+- `[x]` Added simple-release smoke coverage for this gate.
+
+Remaining:
+
+- `[ ]` Run branch validation and PR CI before merge.
+- `[ ]` Continue product-completeness sweeps only for safe UI / UX ambiguity.
+
 # Latest - 2026-07-01 Referrals light theme polish
 
 Current status:

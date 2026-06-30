@@ -85,6 +85,18 @@ test.describe("simple release smoke", () => {
     await expect(page.locator("body")).toContainText("https://staging.carry-digital-nomad.in.net");
   });
 
+  test("shows Analytics broadcast management as a controlled simple-release feature", async ({ page }) => {
+    await page.goto("/analytics", { waitUntil: "domcontentloaded" });
+
+    await expect(page.getByTestId("analytics-state-banner")).toBeVisible();
+    await expect(page.getByTestId("analytics-broadcast-gated")).toBeDisabled();
+    await expect(page.getByTestId("analytics-broadcast-gated")).toHaveAttribute(
+      "title",
+      "廣播活動在正式營運版中受控開通；目前 simple release 先保留分析讀取，不開放廣播管理。",
+    );
+    await expect(page.locator("body")).toContainText("廣播活動受控開通");
+  });
+
   test("shows a disabled sequence subscribe control in Inbox", async ({ page }) => {
     await page.goto("/inbox", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("inbox-client")).toHaveAttribute("data-ready", "true");

@@ -6,12 +6,14 @@ import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getAnalyticsSummary } from "@/lib/dashboard-summary";
 import { buildAnalyticsState, type AnalyticsSummarySnapshot } from "@/lib/analytics-state";
+import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export default async function AnalyticsPage() {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
+  const simpleRelease = await isSimpleRelease();
 
   let analyticsError: string | null = null;
   let analytics: AnalyticsSummarySnapshot = {
@@ -56,10 +58,24 @@ export default async function AnalyticsPage() {
               </span>
             </div>
           </div>
-          <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d]">
-            <Megaphone className="h-4 w-4" />
-            管理廣播活動
-          </Link>
+          {simpleRelease ? (
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              title="廣播活動在正式營運版中受控開通；目前 simple release 先保留分析讀取，不開放廣播管理。"
+              data-testid="analytics-broadcast-gated"
+              className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 text-sm font-semibold text-[var(--text-muted)]"
+            >
+              <Megaphone className="h-4 w-4" />
+              廣播活動受控開通
+            </button>
+          ) : (
+            <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d]">
+              <Megaphone className="h-4 w-4" />
+              管理廣播活動
+            </Link>
+          )}
         </section>
 
         <section

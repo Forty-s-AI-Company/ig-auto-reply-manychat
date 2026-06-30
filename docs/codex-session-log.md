@@ -1,3 +1,26 @@
+# 2026-07-01 - Analytics broadcast gate clarity
+
+Task:
+
+- Continue product completeness sweep after Referrals light theme polish.
+- Focus on Analytics because simple release still showed a primary `管理廣播活動` link to a full-only route.
+
+Changes:
+
+- Analytics now renders a disabled `廣播活動受控開通` control in simple release instead of linking to `/broadcasts`.
+- Full release keeps the existing `/broadcasts` management link.
+- Added simple-release smoke coverage for the controlled Analytics broadcast action.
+
+Validation:
+
+- Pending in this branch: lint, build, tests, and PR CI.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Referrals light theme polish
 
 Task:

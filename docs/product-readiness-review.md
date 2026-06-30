@@ -1,3 +1,16 @@
+# 2026-07-01 - Analytics broadcast gate clarity
+
+Status: improved for simple release navigation clarity; public paid launch remains Hold.
+
+- Analytics simple release now avoids linking directly to the full-only Broadcasts page.
+- Operators see a disabled `廣播活動受控開通` control instead of a CTA that redirects away.
+- Simple-release smoke covers this controlled action.
+
+Readiness implication:
+
+- Analytics feels less broken in production simple release because gated broadcast management is explicit.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Referrals light theme polish
 
 Status: improved for UI consistency; public paid launch remains Hold.
