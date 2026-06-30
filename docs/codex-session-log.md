@@ -1,4 +1,92 @@
+# 2026-06-30 - Analytics readability and data-state sweep
+
+Task:
+
+- 讓 Analytics 頁面不再只是把零散數字堆出來，而是明確說出目前的資料範圍、空資料原因與失敗狀態。
+- 補上只讀 analytics API 與對應測試，避免前端與未來自動刷新各算各的。
+
+Result:
+
+- `src/lib/analytics-state.ts` 新增純函式 helper，集中管理 scope、空資料、載入失敗、送達率與啟用率文案。
+- `src/lib/dashboard-summary.ts` 追加 `connectedInstagramChannels` 與 `selectedChannelDisplayName`，讓 Analytics 頁知道自己看的是全域還是單一 IG 帳號。
+- `src/app/analytics/page.tsx` 加上 data-state banner、語意化送達率 / 啟用率、以及更清楚的最近訊息 / 最近自動化說明。
+- `src/app/api/analytics/route.ts` 新增只讀 API，回傳 summary 與 state。
+- `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 已補 coverage。
+
+Validation:
+
+```text
+npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+```
+
+Launch impact:
+
+- Analytics 的數字與空態說明更清楚，較不容易讓 operator 以為圖表壞掉。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Codex Session Log
+
+## 2026-06-30 - Automations scope clarity and disabled UX sweep
+
+Task:
+
+- 把 Automations 的 scope 邊界說清楚，避免使用者誤以為左側 IG 帳號切換就等於 automation data model 已經按帳號隔離。
+- 將看得到但尚未支援的入口改成清楚 disabled UX，特別是回收桶、幾個 basic automations 與 simple release 的序列入口。
+- 補上 focused tests / smoke，確保 full release 與 simple release 的 Automations 說明都能被驗到。
+
+Result:
+
+- `src/components/AutomationScopeBanner.tsx` 新增共用 scope banner，讓 Automations 與預設回覆頁可共用一致的工作區共用說明。
+- `src/lib/automation-scope-policy.ts` 的 `getAutomationScopeNotice()` 現在會在有選到 IG 帳號時直接把帳號名稱寫進文案。
+- `src/app/automations/page.tsx` 與 `src/app/automations/instagram-default-reply/page.tsx` 都會讀取目前選擇的 IG 帳號名稱，再顯示對應 scope 說明。
+- `src/components/AutomationBuilderClient.tsx` 已把回收桶、更多操作、幾個尚未支援的 basic automations，以及 simple release 的序列入口改成清楚 disabled UX。
+- `tests/automation-scope-policy.test.ts`、`tests/e2e/public-and-auth.spec.ts`、`tests/e2e/simple-release.spec.ts` 都補上了對應驗證。
+
+Validation:
+
+```text
+npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/automation-scope-policy.test.ts --reporter=dot
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+
+$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Automations 的 scope 說明與 disabled UX 比前一版更不容易誤導 operator。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
 
 ## 2026-06-30 - Contacts product completeness sweep
 

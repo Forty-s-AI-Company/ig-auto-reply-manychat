@@ -1,35 +1,41 @@
 import Link from "next/link";
-import { BarChart3, Inbox, Megaphone, MessageCircle, TrendingUp, Users } from "lucide-react";
+import { BarChart3, Inbox, Megaphone, MessageCircle, TrendingUp, Users, AlertTriangle, Compass } from "lucide-react";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getAnalyticsSummary } from "@/lib/dashboard-summary";
+import { buildAnalyticsState, type AnalyticsSummarySnapshot } from "@/lib/analytics-state";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
-
-function formatPercent(value: number) {
-  return `${Math.round(value * 100)}%`;
-}
 
 export default async function AnalyticsPage() {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
 
-  const {
-    contacts,
-    messages,
-    recentMessages,
-    openConversations,
-    broadcasts,
-    queuedBroadcasts,
-    sentCount,
-    failedCount,
-    automations,
-    enabledAutomations,
-  } = await getAnalyticsSummary({ workspaceId, selectedChannelId });
+  let analyticsError: string | null = null;
+  let analytics: AnalyticsSummarySnapshot = {
+    contacts: 0,
+    messages: 0,
+    recentMessages: 0,
+    openConversations: 0,
+    broadcasts: 0,
+    queuedBroadcasts: 0,
+    sentCount: 0,
+    failedCount: 0,
+    automations: 0,
+    enabledAutomations: 0,
+    connectedInstagramChannels: 0,
+    selectedChannelDisplayName: null,
+  };
 
-  const deliveryRate = sentCount + failedCount > 0 ? sentCount / (sentCount + failedCount) : 0;
+  try {
+    analytics = await getAnalyticsSummary({ workspaceId, selectedChannelId });
+  } catch {
+    analyticsError = "分析資料暫時無法載入，請稍後再試。";
+  }
+
+  const analyticsState = buildAnalyticsState(analytics, analyticsError);
 
   return (
     <AdminShell title="分析">
@@ -38,6 +44,17 @@ export default async function AnalyticsPage() {
           <div>
             <p className="text-sm font-semibold text-[var(--teal-dark)]">Analytics</p>
             <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">訊息、受眾與廣播表現</h2>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
+              <span className="rounded-full border border-[var(--border-soft)] bg-white px-3 py-1 text-[var(--text-secondary)]">
+                資料範圍：{analyticsState.scopeBadge}
+              </span>
+              <span className="rounded-full border border-[var(--border-soft)] bg-white px-3 py-1 text-[var(--text-secondary)]">
+                IG 連線：{analytics.connectedInstagramChannels} 個
+              </span>
+              <span className="rounded-full border border-[var(--border-soft)] bg-white px-3 py-1 text-[var(--text-secondary)]">
+                近 7 天訊息：{analytics.recentMessages} 則
+              </span>
+            </div>
           </div>
           <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d]">
             <Megaphone className="h-4 w-4" />
@@ -45,11 +62,64 @@ export default async function AnalyticsPage() {
           </Link>
         </section>
 
+        <section
+          className={`rounded-2xl border px-5 py-4 shadow-sm ${
+            analyticsState.bannerTone === "danger"
+              ? "border-red-200 bg-red-50"
+              : analyticsState.bannerTone === "warning"
+                ? "border-amber-200 bg-amber-50"
+                : analyticsState.bannerTone === "success"
+                  ? "border-emerald-200 bg-emerald-50"
+                  : "border-cyan-200 bg-cyan-50"
+          }`}
+          data-testid="analytics-state-banner"
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                analyticsState.bannerTone === "danger"
+                  ? "bg-red-100 text-red-900"
+                  : analyticsState.bannerTone === "warning"
+                    ? "bg-amber-100 text-amber-900"
+                    : analyticsState.bannerTone === "success"
+                      ? "bg-emerald-100 text-emerald-900"
+                      : "bg-cyan-100 text-cyan-900"
+              }`}
+            >
+              {analyticsState.scopeBadge}
+            </span>
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[var(--text-secondary)]">
+              {analyticsState.scopeDetail}
+            </span>
+          </div>
+          <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+            <div className="max-w-3xl">
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{analyticsState.bannerTitle}</p>
+              <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">{analyticsState.bannerBody}</p>
+            </div>
+            {analyticsState.bannerActionLabel && analyticsState.bannerActionHref ? (
+              <Link
+                href={analyticsState.bannerActionHref}
+                className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] shadow-sm transition hover:bg-[var(--ip-surface-muted)]"
+              >
+                <Compass className="h-4 w-4" />
+                {analyticsState.bannerActionLabel}
+              </Link>
+            ) : null}
+          </div>
+          {analyticsError ? (
+            <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-900">
+              <AlertTriangle className="h-4 w-4" />
+              {analyticsError}
+            </div>
+          ) : null}
+        </section>
+
         <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <Metric icon={<Users className="h-5 w-5" />} label="聯絡人" value={contacts} />
-          <Metric icon={<MessageCircle className="h-5 w-5" />} label="總訊息" value={messages} />
-          <Metric icon={<TrendingUp className="h-5 w-5" />} label="近 7 天訊息" value={recentMessages} />
-          <Metric icon={<Inbox className="h-5 w-5" />} label="待處理對話" value={openConversations} />
+          <Metric icon={<Users className="h-5 w-5" />} label="聯絡人" value={analytics.contacts} />
+          <Metric icon={<MessageCircle className="h-5 w-5" />} label="總訊息" value={analytics.messages} />
+          <Metric icon={<TrendingUp className="h-5 w-5" />} label="近 7 天訊息" value={analytics.recentMessages} />
+          <Metric icon={<Inbox className="h-5 w-5" />} label="待處理對話" value={analytics.openConversations} />
         </section>
 
         <section className="grid gap-5 lg:grid-cols-2">
@@ -59,9 +129,9 @@ export default async function AnalyticsPage() {
               <BarChart3 className="h-5 w-5 text-[var(--text-muted)]" />
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <Stat label="活動數" value={broadcasts} />
-              <Stat label="排程中" value={queuedBroadcasts} />
-              <Stat label="送達率" value={formatPercent(deliveryRate)} />
+              <Stat label="活動數" value={analytics.broadcasts} hint={analytics.broadcasts === 0 ? "還沒有建立廣播活動。" : undefined} />
+              <Stat label="排程中" value={analytics.queuedBroadcasts} hint={analytics.queuedBroadcasts === 0 ? "目前沒有排程中的活動。" : undefined} />
+              <Stat label="送達率" value={analyticsState.deliveryRateLabel} hint={analyticsState.deliveryRateHint} />
             </div>
           </div>
 
@@ -71,9 +141,45 @@ export default async function AnalyticsPage() {
               <TrendingUp className="h-5 w-5 text-[var(--text-muted)]" />
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <Stat label="流程數" value={automations} />
-              <Stat label="啟用中" value={enabledAutomations} />
-              <Stat label="啟用率" value={automations > 0 ? formatPercent(enabledAutomations / automations) : "0%"} />
+              <Stat label="流程數" value={analytics.automations} hint={analytics.automations === 0 ? "還沒有建立自動化流程。" : undefined} />
+              <Stat label="啟用中" value={analytics.enabledAutomations} hint={analytics.enabledAutomations === 0 ? "目前沒有啟用中的流程。" : undefined} />
+              <Stat label="啟用率" value={analyticsState.automationRateLabel} hint={analyticsState.automationRateHint} />
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-5 lg:grid-cols-2">
+          <div className="ip-dashboard-card overflow-hidden">
+            <div className="border-b border-[var(--border-soft)] px-4 py-3">
+              <h3 className="font-semibold text-[var(--text-primary)]">最近訊息</h3>
+            </div>
+            <div className="px-4 py-6">
+              {analytics.recentMessages > 0 ? (
+                <div className="space-y-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  <p className="font-semibold text-[var(--text-primary)]">近 7 天共有 {analytics.recentMessages} 則訊息</p>
+                  <p>{analyticsState.scopeDetail}</p>
+                  <p>這裡先不畫假圖表，直接把數字與範圍說清楚，避免讓人誤以為資料壞掉。</p>
+                </div>
+              ) : (
+                <EmptyState title={analyticsState.recentMessagesTitle} body={analyticsState.recentMessagesBody} />
+              )}
+            </div>
+          </div>
+
+          <div className="ip-dashboard-card overflow-hidden">
+            <div className="border-b border-[var(--border-soft)] px-4 py-3">
+              <h3 className="font-semibold text-[var(--text-primary)]">最近自動化</h3>
+            </div>
+            <div className="px-4 py-6">
+              {analytics.automations > 0 ? (
+                <div className="space-y-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  <p className="font-semibold text-[var(--text-primary)]">共有 {analytics.automations} 個流程，啟用中 {analytics.enabledAutomations} 個</p>
+                  <p>{analyticsState.automationRateLabel === "尚未建立流程" ? analyticsState.recentAutomationsBody : analyticsState.automationRateHint}</p>
+                  <p>如果流程數量本來就少，顯示 0 不代表壞掉，只是目前還沒累積到太多資料。</p>
+                </div>
+              ) : (
+                <EmptyState title={analyticsState.recentAutomationsTitle} body={analyticsState.recentAutomationsBody} />
+              )}
             </div>
           </div>
         </section>
@@ -94,11 +200,21 @@ function Metric({ icon, label, value }: { icon: ReactNode; label: string; value:
   );
 }
 
-function Stat({ label, value }: { label: string; value: number | string }) {
+function Stat({ label, value, hint }: { label: string; value: number | string; hint?: string }) {
   return (
     <div className="rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-4">
       <p className="text-sm text-[var(--text-secondary)]">{label}</p>
       <p className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">{value}</p>
+      {hint ? <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{hint}</p> : null}
+    </div>
+  );
+}
+
+function EmptyState({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]">
+      <p className="font-semibold text-[var(--text-primary)]">{title}</p>
+      <p className="mt-1">{body}</p>
     </div>
   );
 }

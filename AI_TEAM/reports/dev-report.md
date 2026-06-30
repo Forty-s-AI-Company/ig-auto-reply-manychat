@@ -1,4 +1,121 @@
+# Latest - 2026-06-30 Analytics readability and data-state sweep
+
+Current status:
+
+- `[x]` Analytics 現在會清楚標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- `[x]` 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `[x]` 新增只讀 `/api/analytics`，回傳 analytics summary 與 state，方便前端或未來自動刷新共用。
+- `[x]` `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 都已補 coverage。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+
+What changed:
+
+- `src/lib/analytics-state.ts`
+  - 新增純函式 helper，把 analytics 的範圍、空資料、讀取失敗、送達率與啟用率文案集中管理。
+- `src/lib/dashboard-summary.ts`
+  - 追加 `connectedInstagramChannels` 與 `selectedChannelDisplayName`，讓 analytics 頁能看懂現在是全域還是單一 IG 帳號篩選。
+- `src/app/analytics/page.tsx`
+  - 新增 data-state banner，讓空資料與載入失敗不會看起來像壞掉。
+  - 送達率與啟用率改成語意化字串，不再只丟 0%。
+  - 最近訊息與最近自動化改成先說明資料狀態，再顯示數字摘要。
+- `src/app/api/analytics/route.ts`
+  - 新增只讀 analytics API，回傳 summary 與 state。
+- `tests/analytics-state.test.ts`
+  - 補上 missing connections / empty connected / active scope / loading failure 四種狀態單元測試。
+- `tests/integration/api-routes.test.ts`
+  - 補 analytics route integration test，並順手修掉廣播 route 測試的舊 fixture。
+- `tests/e2e/public-and-auth.spec.ts`
+  - 補 analytics scope 與 data-state smoke。
+
+Validation:
+
+```text
+npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+```
+
+Launch impact:
+
+- Analytics 的數字與空態說明更清楚，較不容易讓 operator 以為圖表壞掉。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Dev Report
+
+## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep
+
+Current status:
+
+- `[x]` Automations 頁面現在會清楚說明流程是工作區共用，左側 IG 帳號切換不會把 automation data model 切成不同帳號各一份。
+- `[x]` 頁面與 builder 都有 scope banner，並會帶出目前選擇的 IG 帳號名稱與 release note，避免使用者誤以為 scope 已完整依帳號隔離。
+- `[x]` 原本看起來像可直接使用的入口，現在改成 disabled UX 或明確說明，包含回收桶、幾個尚未支援的 basic automations，以及 simple release 下的序列入口。
+- `[x]` `tests/e2e/public-and-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Automations scope / disabled UX smoke。
+
+What changed:
+
+- `src/components/AutomationScopeBanner.tsx`
+  - 新增共用 scope banner，讓 Automations 與預設回覆頁面可以共用同一種工作區共用說明樣式。
+- `src/lib/automation-scope-policy.ts`
+  - `getAutomationScopeNotice()` 現在會在有選到 IG 帳號時直接把帳號名稱寫進說明，並維持資料模型與 migration 的提醒。
+- `src/app/automations/page.tsx`
+  - 讀取目前選擇的 IG 帳號與 release mode，傳給 builder 顯示更精準的 scope 文案。
+- `src/app/automations/instagram-default-reply/page.tsx`
+  - 同步補上 scope banner，讓預設回覆頁也不會看起來像每個 IG 帳號各自一套 automation scope。
+- `src/components/AutomationBuilderClient.tsx`
+  - 基礎流程裡幾個尚未支援的入口改成 disabled UX。
+  - 回收桶與更多操作改成真正 disabled，不再像假按鈕。
+  - simple release 的序列入口改成 disabled，並補上明確原因文案。
+  - 預覽按鈕現在會切到 preview 並捲到預覽區。
+- `tests/automation-scope-policy.test.ts`
+  - 補上帳號名稱與無選擇狀態的文案斷言。
+- `tests/e2e/public-and-auth.spec.ts`
+  - 補上 Authenticated Automations smoke，驗證 scope banner 與 disabled controls。
+- `tests/e2e/simple-release.spec.ts`
+  - 補上 simple release Automations smoke，驗證序列 disabled gate。
+
+Validation:
+
+```text
+npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/automation-scope-policy.test.ts --reporter=dot
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+
+$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Automations 的 scope 邊界與 disabled UX 都更清楚了，較不會誤導使用者以為帳號切換會直接拆分 automation 資料模型。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
 
 ## Latest - 2026-06-30 Contacts product completeness sweep
 

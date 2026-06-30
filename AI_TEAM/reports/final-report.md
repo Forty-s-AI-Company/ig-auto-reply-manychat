@@ -1,4 +1,44 @@
+# Latest - 2026-06-30 Analytics readability and data-state sweep
+
+Status:
+
+- `Completed` for the scoped Analytics readability and data-state sweep.
+
+Completed this round:
+
+- Analytics 現在會清楚標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- 新增只讀 `/api/analytics`，回傳 analytics summary 與 state，方便前端或未來自動刷新共用。
+- `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 都已補 coverage。
+- `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+
+Residual risk:
+
+- 這輪只改善 analytics readability 與 data-state 呈現，沒有變更實際資料來源或圖表引擎。
+- 若後續要做真正的時間序列圖表，仍需要再定義資料來源、刷新策略與更細的聚合 API。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Final Report
+
+## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep
+
+Status:
+
+- `Completed` for the scoped Automations scope clarity and disabled UX sweep.
+
+Completed this round:
+
+- Automations 頁面已清楚說明目前是工作區共用 scope，左側 IG 帳號切換不會把 automation data model 切成不同帳號各一份。
+- 頁面與 builder 都補上 scope banner，並帶出目前選擇的 IG 帳號名稱與 release note，避免 scope 邊界看起來像已做完但其實沒有。
+- 回收桶、幾個尚未支援的 basic automations、更多操作，以及 simple release 的序列入口都改成清楚 disabled UX。
+- `tests/e2e/public-and-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Automations scope / disabled controls smoke。
+- `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:auth`、`npm run test:e2e:simple` 都已通過。
+
+Residual risk:
+
+- 這輪只收斂 Automations 的 scope clarity 與 disabled UX，未變更 automation data model 或資料隔離設計。
+- 若後續真的要做 per-channel automation scope，還是需要先補資料模型與 migration。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
 
 ## Latest - 2026-06-30 Contacts product completeness sweep
 

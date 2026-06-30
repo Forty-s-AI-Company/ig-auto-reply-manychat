@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T04:05:00.000Z",
+  "updatedAt": "2026-06-30T00:27:28.722Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -320,7 +320,7 @@
         "暫時不支援的操作改為清楚 disabled UX",
         "補 focused tests 或 authenticated Playwright smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -334,15 +334,116 @@
       "startedAt": "2026-06-29T23:17:38.354Z",
       "lastPickedAt": "2026-06-29T23:17:38.354Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T04:05:00.000Z",
-      "lastSummary": "Contacts product completeness sweep 已完成，segment preview、batch tag hint、same-origin guard 與 deterministic smoke 都已收斂。",
-      "lastWorker": "reporter",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
       "lastValidation": [
-        "npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts",
-        "npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot",
+        "沒有可提交檔案。",
+        "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/contacts-product-completeness-autofill",
+        "scope=13"
+      ],
+      "blockedAt": "2026-06-29T23:41:34.016Z"
+    },
+    {
+      "id": "automations-scope-clarity-autofill",
+      "title": "Automations scope clarity and disabled UX sweep",
+      "priority": 4,
+      "lane": "product",
+      "scope": [
+        "src/app/automations",
+        "src/app/api/automations",
+        "tests",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Automations 頁面清楚說明目前 workspace / channel scope 行為",
+        "看得到但尚未支援的操作改成 disabled UX",
+        "不要讓使用者誤以為 sidebar IG channel 已完整隔離 automation data model",
+        "補 focused tests 或 smoke"
+      ],
+      "status": "failed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-29T23:41:34.121Z",
+      "summary": "Automations 已補上工作區共用 scope banner、selected IG 帳號提示、simple release 序列 disabled UX，並以 lint / vitest / auth / simple / build / test 驗證通過。",
+      "startedAt": "2026-06-29T23:41:34.122Z",
+      "lastPickedAt": "2026-06-29T23:41:34.122Z",
+      "attempts": 1,
+      "validation": [
+        "npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts",
+        "npx vitest run tests/automation-scope-policy.test.ts --reporter=dot",
+        "npm run test:e2e:auth",
+        "$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple",
+        "npm run lint",
         "npm run build",
-        "npm run test:e2e:contacts",
         "npm test"
+      ],
+      "failedAt": "2026-06-30T00:11:34.155Z",
+      "lastSummary": "Codex dev worker 失敗：body\")).toContainText(\"切換 IG 帳號只會影響看板與對話篩選\");\n+    await page.getByRole(\"button\", { name: \"序列流程\" }).click();\n+    await expect(page.getByTestId(\"automation-sequence-disabled\")).toBeDisabled();\n+    await expect(page.getByTestId(\"automation-sequence-disabled\")).toHaveAttribute(\n+      \"title\",\n+      \"序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。\",\n+    );\n+    await expect(page.locator(\"body\")).toContainText(\"目前只是把範圍說清楚，不是假裝序列已經在簡版可直接使用。\");\n+  });\n+\n+  test(\"gates billing with dashboard feature notice\", async ({ page }) => {\n+    const response = await page.request.get(\"/billing\", {\n+      maxRedirects: 0,\n     });\r\n     expect(response.status()).toBe(307);\r\n     const location = new URL(response.headers()[\"location\"] || \"\", \"http://127.0.0.1:3041\");\r\n\ncodex\nPR 已開，現在等 CI。這一步就像把鍋放在爐上，先看它自己滾不滾，不急著翻鍋鏟。\nexec\n\"C:\\\\Program Files\\\\WindowsApps\\\\Microsoft.PowerShellPreview_7.7.2.0_x64__8wekyb3d8bbwe\\\\pwsh.exe\" -Command 'gh pr checks 41 --watch --interval 10' in C:\\Users\\eden\\Downloads\\AI\\ig-auto-reply-manychat\n\ntimeout after 1800000ms\n◇ injected env (56) from .env.local // tip: ⌘ override existing { override: true }\n◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }",
+      "lastWorker": "codex-dev",
+      "lastValidation": [
+        "exit=124"
+      ]
+    },
+    {
+      "id": "analytics-readiness-autofill",
+      "title": "Analytics readability and data-state sweep",
+      "priority": 5,
+      "lane": "product",
+      "scope": [
+        "src/app/analytics",
+        "src/app/api/analytics",
+        "tests",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Analytics 空資料、載入失敗、權限不足與篩選狀態都要有清楚說明",
+        "不能讓圖表或數字看起來像壞掉",
+        "補 focused tests 或 smoke"
+      ],
+      "status": "completed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T00:11:34.262Z",
+      "summary": "Analytics 頁面現在會清楚區分工作區全域 / 單一 IG 帳號範圍，空資料、載入失敗與數值狀態都有說明，並補上只讀 analytics API 與 smoke。",
+      "startedAt": "2026-06-30T00:11:34.264Z",
+      "lastPickedAt": "2026-06-30T00:11:34.264Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T00:27:28.722Z",
+      "validation": [
+        "npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts",
+        "npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot",
+        "npm run lint",
+        "npm test",
+        "npm run build",
+        "npm run test:e2e:auth"
       ]
     }
   ]

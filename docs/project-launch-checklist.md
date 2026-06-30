@@ -21,7 +21,22 @@
 - `[x]` Updated `README.md` to point at `AI_TEAM/README.md`.
 - `[x]` Kept the product AI bridge files untouched.
 
+# 2026-06-30 - Analytics readability and data-state sweep
+
+- `[x]` Analytics 現在會清楚標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- `[x]` 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `[x]` 新增只讀 `/api/analytics`，回傳 summary 與 state，方便前端與未來自動刷新共用。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+- `[ ]` 若後續要做真正的時間序列圖表，先補資料來源、刷新策略與更細的聚合 API。
+
 # Project Launch Checklist
+
+## 2026-06-30 - Automations scope clarity and disabled UX sweep
+
+- `[x]` Automations 現在會明確說明流程是工作區共用，避免使用者誤以為左側 IG 帳號切換就代表 automation data model 已分帳號隔離。
+- `[x]` 回收桶、幾個尚未支援的 basic automations、以及 simple release 的序列入口都改成真正 disabled UX。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:auth`、`npm run test:e2e:simple` 都已通過。
+- `[ ]` 若後續要改成 per-channel automation scope，需先補資料模型與 migration，再重新評估 launch 範圍。
 
 ## 2026-06-30 - Channels / Connect visible-but-unusable sweep
 

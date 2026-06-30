@@ -44,6 +44,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AutomationScopeBanner } from "@/components/AutomationScopeBanner";
 
 type StepType = "send_message" | "add_tag" | "remove_tag" | "wait" | "condition" | "ai_reply" | "set_field";
 type TriggerType = "keyword" | "new_contact" | "manual" | "webhook";
@@ -124,6 +125,23 @@ type AutomationFolder = {
   name: string;
   updatedAt?: string;
   _count?: { automations: number };
+};
+
+type BasicAutomationItem = {
+  title: string;
+  description: string;
+  status: string;
+  action: string;
+  href?: string;
+  disabledReason?: string;
+  testId?: string;
+};
+
+type AutomationBuilderClientProps = {
+  initialItems: AutomationItem[];
+  initialFolders: AutomationFolder[];
+  selectedChannelName?: string | null;
+  isSimpleRelease: boolean;
 };
 
 type AutomationTemplate = {
@@ -720,7 +738,7 @@ const automationTemplates: AutomationTemplate[] = [
   },
 ];
 
-const basicAutomations = [
+const basicAutomations: BasicAutomationItem[] = [
   {
     title: "預設回覆",
     description: "當用戶傳入私訊但沒有命中其他自動化時，立即送出預設回覆。",
@@ -732,25 +750,33 @@ const basicAutomations = [
     title: "新追蹤者歡迎訊息",
     description: "用戶第一次追蹤後，送出一次性的歡迎私訊。此功能需 Meta 官方 API 支援。",
     status: "暫不可用",
-    action: "了解更多",
+    action: "暫不可用",
+    disabledReason: "此功能需要 Meta 官方 API 與事件支援，現在先保留說明，不做假按鈕。",
+    testId: "automation-basic-disabled-new-follower",
   },
   {
     title: "對話開場白",
     description: "在 Instagram 私訊入口顯示常見問題按鈕，點擊後觸發指定回覆。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "尚未開放",
+    disabledReason: "對話開場白需要先接好 Instagram 入口按鈕與對應流程，目前只保留說明。",
+    testId: "automation-basic-disabled-opening-prompts",
   },
   {
     title: "限動提及回覆",
     description: "當用戶在限動提及你的帳號時，自動送出感謝訊息或啟動流程。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "尚未開放",
+    disabledReason: "限動提及觸發還沒有完整的資料與事件串接，先不讓它看起來像已可直接使用。",
+    testId: "automation-basic-disabled-story-mentions",
   },
   {
     title: "主選單",
     description: "建立私訊底部的選單，協助追蹤者快速找到常見資訊。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "尚未開放",
+    disabledReason: "主選單會牽涉 Instagram 訊息入口配置，還沒整理成可直接啟用的流程。",
+    testId: "automation-basic-disabled-main-menu",
   },
 ];
 
@@ -1440,10 +1466,9 @@ function StepConfigEditor({
 function FlowBuilderInner({
   initialItems,
   initialFolders,
-}: {
-  initialItems: AutomationItem[];
-  initialFolders: AutomationFolder[];
-}) {
+  selectedChannelName,
+  isSimpleRelease,
+}: AutomationBuilderClientProps) {
   const [items, setItems] = useState(initialItems);
   const [folders, setFolders] = useState(initialFolders);
   const [view, setView] = useState<AutomationView>("overview");
@@ -1472,6 +1497,7 @@ function FlowBuilderInner({
   const [mediaError, setMediaError] = useState("");
   const [mediaErrorActionHref, setMediaErrorActionHref] = useState("");
   const nodeCounterRef = useRef(1000);
+  const previewPanelRef = useRef<HTMLDivElement | null>(null);
   const { fitView, screenToFlowPosition } = useReactFlow();
 
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
@@ -1740,6 +1766,19 @@ function FlowBuilderInner({
 
     return (
       <div className="w-full bg-[var(--ip-bg)] pb-10 text-[var(--ip-text)]">
+        <div className="px-4 pt-4 lg:px-6">
+          <AutomationScopeBanner
+            badgeLabel="工作區共用"
+            notice={
+              selectedChannelName
+                ? `目前左側選擇的是「${selectedChannelName}」，但自動化流程仍是整個工作區共用。`
+                : "自動化目前顯示整個工作區的流程。"
+            }
+            selectedChannelName={selectedChannelName || undefined}
+            releaseNote={isSimpleRelease ? "簡版生產站" : "完整版本"}
+            testId="automation-scope-notice"
+          />
+        </div>
         <div className="border-b border-[var(--ip-border)] bg-[var(--ip-surface)] px-4 py-4 lg:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-[28px] font-bold text-[var(--ip-text)]">自動化</h2>
@@ -1839,16 +1878,23 @@ function FlowBuilderInner({
                     <option value="stopped">已停止</option>
                   </select>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFolderDialogOpen(true)}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
+                >
+                  <Plus className="h-4 w-4" />
+                  新增資料夾
+                </button>
                   <button
                     type="button"
-                    onClick={() => setFolderDialogOpen(true)}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
+                    disabled
+                    aria-disabled="true"
+                    data-testid="automation-trash-disabled"
+                    title="回收桶目前還沒接好。先保留說明，不讓它像可直接使用的入口。"
+                    className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
                   >
-                    <Plus className="h-4 w-4" />
-                    新增資料夾
-                  </button>
-                  <button type="button" className="inline-flex h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]">
                     <Trash2 className="h-4 w-4" />
                     回收桶
                   </button>
@@ -1938,11 +1984,23 @@ function FlowBuilderInner({
                       <h3 className="text-base font-bold text-[var(--ip-text)]">{basic.title}</h3>
                     </div>
                     <p className="mt-2 max-w-4xl text-sm leading-6 text-[var(--ip-muted)]">{basic.description}</p>
+                    {basic.disabledReason ? <p className="mt-2 text-xs leading-5 text-[#667085]">{basic.disabledReason}</p> : null}
                   </div>
                   {basic.href ? (
                     <a href={basic.href} className="ip-button-primary inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold">
                       {basic.action}
                     </a>
+                  ) : basic.disabledReason ? (
+                    <button
+                      type="button"
+                      disabled
+                      title={basic.disabledReason}
+                      aria-disabled="true"
+                      data-testid={basic.testId}
+                      className="inline-flex h-10 items-center justify-center rounded-md border border-dashed border-[var(--ip-border)] px-4 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
+                    >
+                      {basic.action}
+                    </button>
                   ) : (
                     <button type="button" className="ip-button-secondary inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold">
                       {basic.action}
@@ -1963,10 +2021,29 @@ function FlowBuilderInner({
                 <p className="mt-3 text-sm leading-6 text-[var(--ip-muted)]">
                   序列流程用來在一段時間內自動傳送多則訊息，例如歡迎流程、課程通知、名單培養或活動提醒。
                 </p>
-                <a href="/sequences" className="ip-button-primary mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold">
-                  <Plus className="h-4 w-4" />
-                  新增序列
-                </a>
+                {isSimpleRelease ? (
+                  <button
+                    type="button"
+                    disabled
+                    title="序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。"
+                    aria-disabled="true"
+                    data-testid="automation-sequence-disabled"
+                    className="ip-button-secondary mt-5 inline-flex h-10 cursor-not-allowed items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold opacity-70"
+                  >
+                    <Plus className="h-4 w-4" />
+                    尚未開放
+                  </button>
+                ) : (
+                  <a href="/sequences" className="ip-button-primary mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold">
+                    <Plus className="h-4 w-4" />
+                    新增序列
+                  </a>
+                )}
+                {isSimpleRelease ? (
+                  <p className="mt-3 text-xs leading-5 text-[var(--ip-muted-2)]">
+                    目前只是把範圍說清楚，不是假裝序列已經在簡版可直接使用。
+                  </p>
+                ) : null}
               </div>
             </div>
               ) : null}
@@ -2117,6 +2194,19 @@ function FlowBuilderInner({
 
   return (
     <div className="min-h-[calc(100vh-112px)] w-full overflow-visible rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-950 lg:h-[calc(100vh-112px)] lg:overflow-hidden">
+      <div className="px-4 pt-4 lg:px-6">
+        <AutomationScopeBanner
+          badgeLabel="工作區共用"
+          notice={
+            selectedChannelName
+              ? `目前左側選擇的是「${selectedChannelName}」，但自動化流程仍是整個工作區共用。`
+              : "自動化目前顯示整個工作區的流程。"
+          }
+          selectedChannelName={selectedChannelName || undefined}
+          releaseNote={isSimpleRelease ? "簡版生產站" : "完整版本"}
+          testId="automation-scope-notice"
+        />
+      </div>
       <div className="flex min-h-16 flex-col gap-3 border-b border-zinc-200 bg-white px-3 py-3 sm:px-4 lg:flex-row lg:items-center lg:justify-between lg:py-0">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
@@ -2155,7 +2245,14 @@ function FlowBuilderInner({
             <Check className="h-4 w-4" />
             {draft.id ? "已儲存" : "草稿"}
           </span>
-          <button type="button" className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50">
+          <button
+            type="button"
+            onClick={() => {
+              setPreviewMode("preview");
+              previewPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50"
+          >
             預覽
           </button>
           <button
@@ -2167,7 +2264,13 @@ function FlowBuilderInner({
             <Save className="h-4 w-4" />
             {saving ? "儲存中..." : "儲存"}
           </button>
-          <button type="button" className="rounded-md border border-zinc-300 p-2 text-zinc-600 hover:bg-zinc-50">
+          <button
+            type="button"
+            disabled
+            title="更多操作目前還沒有接好，先保留清楚的 disabled 狀態。"
+            aria-disabled="true"
+            className="cursor-not-allowed rounded-md border border-zinc-300 p-2 text-zinc-400 opacity-60"
+          >
             <MoreVertical className="h-4 w-4" />
           </button>
         </div>
@@ -2340,7 +2443,7 @@ function FlowBuilderInner({
           </div>
         </main>
 
-        <aside className="hidden overflow-y-auto border-l border-zinc-200 bg-white xl:block">
+        <aside ref={previewPanelRef} className="hidden overflow-y-auto border-l border-zinc-200 bg-white xl:block">
           <div className="border-b border-zinc-200 p-4">
             <div className="flex rounded-md bg-zinc-100 p-1 text-sm">
               {(["preview", "test"] as PreviewMode[]).map((mode) => (
@@ -2405,13 +2508,17 @@ function FlowBuilderInner({
 export function AutomationBuilderClient({
   initialItems,
   initialFolders,
-}: {
-  initialItems: AutomationItem[];
-  initialFolders: AutomationFolder[];
-}) {
+  selectedChannelName,
+  isSimpleRelease,
+}: AutomationBuilderClientProps) {
   return (
     <ReactFlowProvider>
-      <FlowBuilderInner initialItems={initialItems} initialFolders={initialFolders} />
+      <FlowBuilderInner
+        initialItems={initialItems}
+        initialFolders={initialFolders}
+        selectedChannelName={selectedChannelName}
+        isSimpleRelease={isSimpleRelease}
+      />
     </ReactFlowProvider>
   );
 }

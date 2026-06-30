@@ -3,8 +3,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   requireApiUser: vi.fn(),
   getCurrentWorkspaceId: vi.fn(),
+  getSelectedInstagramChannelId: vi.fn(),
+  getAnalyticsSummary: vi.fn(),
   assertWorkspaceLimit: vi.fn(),
   db: {
+    auditEvent: {
+      create: vi.fn(),
+    },
     tag: {
       findMany: vi.fn(),
       create: vi.fn(),
@@ -18,9 +23,12 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/auth", () => ({ requireApiUser: mocks.requireApiUser }));
 vi.mock("@/lib/workspaces", () => ({ getCurrentWorkspaceId: mocks.getCurrentWorkspaceId }));
+vi.mock("@/lib/account-scope", () => ({ getSelectedInstagramChannelId: mocks.getSelectedInstagramChannelId }));
+vi.mock("@/lib/dashboard-summary", () => ({ getAnalyticsSummary: mocks.getAnalyticsSummary }));
 vi.mock("@/lib/billing/entitlements", () => ({ assertWorkspaceLimit: mocks.assertWorkspaceLimit }));
 vi.mock("@/lib/db", () => ({ getDb: () => mocks.db }));
 
+import * as analyticsRoute from "@/app/api/analytics/route";
 import * as broadcastsRoute from "@/app/api/broadcasts/route";
 import * as tagsRoute from "@/app/api/tags/route";
 
@@ -37,6 +45,21 @@ describe("integration: API route handlers", () => {
     vi.clearAllMocks();
     mocks.requireApiUser.mockResolvedValue({ user: { id: "user-1" }, response: null });
     mocks.getCurrentWorkspaceId.mockResolvedValue("workspace-1");
+    mocks.getSelectedInstagramChannelId.mockResolvedValue(undefined);
+    mocks.getAnalyticsSummary.mockResolvedValue({
+      contacts: 0,
+      messages: 0,
+      recentMessages: 0,
+      openConversations: 0,
+      broadcasts: 0,
+      queuedBroadcasts: 0,
+      sentCount: 0,
+      failedCount: 0,
+      automations: 0,
+      enabledAutomations: 0,
+      connectedInstagramChannels: 0,
+      selectedChannelDisplayName: null,
+    });
     mocks.assertWorkspaceLimit.mockResolvedValue(undefined);
   });
 
@@ -50,6 +73,41 @@ describe("integration: API route handlers", () => {
 
     expect(response.status).toBe(401);
     expect(mocks.getCurrentWorkspaceId).not.toHaveBeenCalled();
+  });
+
+  it("returns analytics state for the active workspace", async () => {
+    mocks.getAnalyticsSummary.mockResolvedValue({
+      contacts: 12,
+      messages: 34,
+      recentMessages: 8,
+      openConversations: 3,
+      broadcasts: 2,
+      queuedBroadcasts: 1,
+      sentCount: 9,
+      failedCount: 1,
+      automations: 4,
+      enabledAutomations: 2,
+      connectedInstagramChannels: 1,
+      selectedChannelDisplayName: "Carry",
+    });
+    mocks.getSelectedInstagramChannelId.mockResolvedValue("channel-1");
+
+    const response = await analyticsRoute.GET();
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      contacts: 12,
+      messages: 34,
+      connectedInstagramChannels: 1,
+      state: {
+        scopeBadge: "單一 IG 帳號：Carry",
+        bannerTitle: "目前只看「Carry」的資料",
+      },
+    });
+    expect(mocks.getAnalyticsSummary).toHaveBeenCalledWith({
+      workspaceId: "workspace-1",
+      selectedChannelId: "channel-1",
+    });
   });
 
   it("returns 401 for broadcast routes before validation", async () => {
@@ -94,7 +152,7 @@ describe("integration: API route handlers", () => {
   });
 
   it("lists broadcasts and enforces plan limits when creating one", async () => {
-    const scheduledAt = "2026-06-01T02:00:00.000Z";
+    const scheduledAt = new Date("2026-06-01T02:00:00.000Z");
     mocks.db.broadcast.findMany.mockResolvedValue([{ id: "broadcast-1", name: "Promo" }]);
     mocks.db.broadcast.create.mockResolvedValue({ id: "broadcast-2", name: "Promo", scheduledAt });
 
@@ -117,7 +175,7 @@ describe("integration: API route handlers", () => {
         name: "Promo",
         targetConfigJson: { tagId: "tag-1" },
         messageJson: { text: "Hello" },
-        scheduledAt: new Date(scheduledAt),
+        scheduledAt,
       },
     });
   });
@@ -132,7 +190,7 @@ describe("integration: API route handlers", () => {
     );
 
     expect(response.status).toBe(400);
-    expect(await response.json()).toEqual({ error: "廣播資料格式不正確。" });
+    expect(await response.json()).toEqual({ error: "廣播資料格式錯誤，請重新確認。" });
     expect(mocks.assertWorkspaceLimit).not.toHaveBeenCalled();
     expect(mocks.db.broadcast.create).not.toHaveBeenCalled();
   });

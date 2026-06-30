@@ -1,4 +1,5 @@
 import { instagramChannelWhere } from "@/lib/account-scope";
+import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
 import { getServerCache } from "@/lib/server-cache";
@@ -84,6 +85,8 @@ export function getAnalyticsSummary(input: SummaryInput) {
       sentBroadcasts,
       automations,
       enabledAutomations,
+      connectedInstagramChannels,
+      selectedChannel,
     ] = await Promise.all([
       db.contact.count({ where: channelWhere }),
       db.message.count({ where: channelWhere }),
@@ -94,7 +97,21 @@ export function getAnalyticsSummary(input: SummaryInput) {
       db.broadcast.aggregate({ where: { workspaceId: input.workspaceId }, _sum: { sentCount: true, failedCount: true } }),
       db.automation.count({ where: { workspaceId: input.workspaceId } }),
       db.automation.count({ where: { workspaceId: input.workspaceId, enabled: true } }),
+      db.channel.count({ where: { workspaceId: input.workspaceId, type: "instagram", enabled: true } }),
+      input.selectedChannelId
+        ? db.channel.findFirst({
+            where: { id: input.selectedChannelId, workspaceId: input.workspaceId, type: "instagram", enabled: true },
+            select: { name: true, configJson: true },
+          })
+        : Promise.resolve(null),
     ]);
+
+    const selectedChannelConfig = selectedChannel ? getMetaChannelConfig(selectedChannel.configJson) : null;
+    const selectedChannelDisplayName =
+      selectedChannelConfig?.instagramName ||
+      selectedChannelConfig?.instagramUsername ||
+      selectedChannel?.name ||
+      null;
 
     return {
       contacts,
@@ -107,6 +124,8 @@ export function getAnalyticsSummary(input: SummaryInput) {
       failedCount: sentBroadcasts._sum.failedCount || 0,
       automations,
       enabledAutomations,
+      connectedInstagramChannels,
+      selectedChannelDisplayName,
     };
   });
 }
