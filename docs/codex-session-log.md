@@ -1,3 +1,27 @@
+# 2026-07-01 - Automations trigger filter
+
+Task:
+
+- Continue product completeness sweep after Analytics broadcast gate clarity.
+- Focus on Automations because the `所有觸發條件` dropdown was visible but did not actually filter the list.
+
+Changes:
+
+- Added a real trigger filter for Automations overview: all, keyword/comment, new contact, manual, and webhook.
+- Automation rows now show a readable trigger label next to step count.
+- Empty filtered results now explain that no automations match the current search / trigger / status filters.
+- Added authenticated smoke coverage for the trigger filter behavior.
+
+Validation:
+
+- Pending in this branch: lint, build, tests, and PR CI.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Analytics broadcast gate clarity
 
 Task:
