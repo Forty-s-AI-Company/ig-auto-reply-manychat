@@ -6168,6 +6168,30 @@ Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Inbox category icon polish
+
+Task:
+
+- 收斂 Inbox 分類導覽與快速分類按鈕的 emoji icon，避免核心操作看起來像 demo 或臨時介面。
+
+Changes:
+
+- 將「熱門名單」與「合作夥伴」導覽 icon 從 emoji 改成 lucide `Flame` / `Handshake`。
+- 將右側聯絡人摘要的快速分類按鈕改成 icon + 文字按鈕，保留既有新增 / 移除系統標籤行為。
+- 補 Inbox authenticated smoke，驗證快速分類按鈕不再顯示 emoji placeholder。
+
+Validation:
+
+- `npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; known Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; known Windows Prisma DLL lock fallback reused the existing generated client.
+- `npm run test:e2e:inbox`: skipped locally by authenticated smoke guard; GitHub full-release auth smoke remains the real seeded browser gate.
+
+Launch impact:
+
+- UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Inbox mobile assignee smoke stability
 
 Task:

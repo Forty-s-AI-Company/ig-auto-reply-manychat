@@ -2264,3 +2264,16 @@ Remaining:
 
 - `[ ]` 讓 PR CI 驗證 Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
 - `[ ]` 繼續盤點 Inbox / Contacts / Automations 是否仍有 visible-but-unusable 控制項。
+
+## Latest - 2026-07-01 Inbox category icon polish
+
+Current status:
+
+- `[x]` Inbox 「熱門名單」與「合作夥伴」導覽不再使用 emoji icon。
+- `[x]` Inbox 右側快速分類按鈕改成 lucide icon + 文字，維持原本標籤切換行為。
+- `[x]` Authenticated Inbox smoke 增加快速分類按鈕不含 emoji 的覆蓋。
+
+Remaining:
+
+- `[ ]` 讓 PR CI 驗證 Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
+- `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。

@@ -509,3 +509,10 @@ Current decision:
 - `[x]` Contact summary avatar now uses initials-based UI consistent with the conversation list.
 - `[x]` Authenticated Inbox smoke covers the avatar rendering.
 - `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
+
+## 2026-07-01 - Inbox category icon polish
+
+- `[x]` Inbox hot lead and partner navigation icons no longer use emoji.
+- `[x]` Inbox quick classification buttons now use lucide icons with clear text labels.
+- `[x]` Authenticated Inbox smoke covers the quick classification icon polish.
+- `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
