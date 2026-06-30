@@ -1,3 +1,16 @@
+# 2026-07-01 - Referrals light theme polish
+
+Status: improved for UI consistency; public paid launch remains Hold.
+
+- Referrals now uses the shared light dashboard card style instead of dark cards.
+- The page still clearly states that simple release tracks invite links and trial bonuses, not affiliate cash rewards.
+- Authenticated route smoke now covers the key Referrals page surfaces.
+
+Readiness implication:
+
+- Referrals feels like part of the same admin product instead of a legacy dark-mode page.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Channels planned settings disabled UX
 
 Status: improved for settings clarity; public paid launch remains Hold.

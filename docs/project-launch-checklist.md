@@ -1,3 +1,10 @@
+# 2026-07-01 - Referrals light theme polish
+
+- `[x]` Referrals page now uses the shared light admin card style.
+- `[x]` Simple release referral copy still clearly excludes affiliate cash rewards.
+- `[x]` Authenticated route smoke covers the Referrals hero, URL, and records surfaces.
+- `[ ]` Branch validation and PR CI still need to pass before this polish is considered merged.
+
 # 2026-07-01 - Channels planned settings disabled UX
 
 - `[x]` Channels planned settings now have explicit disabled controls for operation logs, sequence settings, and conversion events.

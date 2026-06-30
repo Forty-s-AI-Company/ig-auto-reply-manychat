@@ -1,5 +1,15 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-01 - Referrals light theme polish
+
+- `[x]` Referrals page now uses the same light admin workspace styling as Dashboard, Billing, Analytics, and Channels.
+- `[x]` Simple release copy remains conservative: referral links and trial bonuses are visible, affiliate cash rewards stay out of the launch surface.
+- `[x]` Added route smoke coverage for the Referrals hero, referral URL, and records card.
+
+Affiliate launch implication:
+
+- Referral UX is clearer for beta usage, but full affiliate / cash reward launch remains gated until business rules, legal copy, and payout operations are explicitly approved.
+
 # 2026-07-01 - PayUNI gateway status without checkout secrets
 
 - `[x]` Billing page can now describe PayUNI sandbox / production gate state without requiring merchant/hash secrets at render time.

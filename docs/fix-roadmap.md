@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Referrals light theme polish
+
+Current status:
+
+- `[x]` Referrals page no longer uses the old dark panel styling inside the light admin shell.
+- `[x]` Simple release referral positioning remains explicit: invite tracking and trial bonuses are available, affiliate cash rewards are not.
+- `[x]` Added authenticated route smoke coverage for the Referrals hero, URL, and records surfaces.
+
+Remaining:
+
+- `[ ]` Run branch validation and PR CI before merge.
+- `[ ]` Continue safe product-completeness sweeps only if new UI ambiguity is found.
+
 # Latest - 2026-07-01 Channels planned settings disabled UX
 
 Current status:
