@@ -436,8 +436,12 @@ export function ContactsListClient({
           </div>
         ) : null}
 
+        <div className="border-b border-[#eef0f2] bg-[#f8fafc] px-5 py-2 text-xs leading-5 text-[#667085] md:hidden" data-testid="contacts-table-scroll-hint">
+          聯絡人欄位較多，手機版可左右滑動查看渠道、標籤、對話與最後互動。
+        </div>
+
         <div className="min-h-0 flex-1 overflow-auto">
-          <table className="w-full text-left text-sm">
+          <table className="min-w-[920px] w-full text-left text-sm">
             <thead className="sticky top-0 z-10 border-b border-[#d7dbe0] bg-[#f8fafc] text-[#667085]">
               <tr>
                 <th className="w-10 px-4 py-3">

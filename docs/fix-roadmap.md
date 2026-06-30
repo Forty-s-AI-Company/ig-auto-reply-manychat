@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Contacts mobile table guidance
+
+Current status:
+
+- `[x]` Contacts mobile table now explains that extra columns are available by horizontal swipe.
+- `[x]` Contact rows keep a stable minimum table width instead of compressing every column into the phone viewport.
+- `[x]` Contacts authenticated smoke now checks the mobile guidance is visible.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Remaining:
+
+- `[ ]` PR CI still needs to run seeded authenticated smoke; local `npm run test:e2e:contacts` is blocked by an unschematized local test DB and this branch does not run migration / `db push`.
+- `[ ]` Continue safe product-completeness sweeps only if new UI ambiguity is found.
+
 # Latest - 2026-07-01 Automations trigger filter
 
 Current status:

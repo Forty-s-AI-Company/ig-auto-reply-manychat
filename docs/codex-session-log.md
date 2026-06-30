@@ -1,3 +1,31 @@
+# 2026-07-01 - Contacts mobile table guidance
+
+Task:
+
+- Continue product completeness sweep after Inbox / Automations smoke stabilization.
+- Focus on Contacts mobile usability because the table was horizontally scrollable but did not make that behavior discoverable.
+
+Changes:
+
+- Added a mobile-only Contacts table hint explaining that operators can swipe horizontally to view channel, tags, conversations, and last interaction.
+- Added a stable minimum table width so contact columns do not compress into an unreadable mobile layout.
+- Extended Contacts authenticated smoke to assert the mobile guidance is visible.
+
+Validation:
+
+- `npx eslint src/components/ContactsListClient.tsx tests/e2e/contacts-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; existing Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; existing local Prisma engine lock fallback reused the generated client.
+- `npm run test:e2e:contacts`: skipped without `TEST_DATABASE_URL`; with local `TEST_DATABASE_URL`, e2e admin fixture setup was blocked because the local test database has no schema and this branch does not run migration / `db push`.
+- PR CI still needs to run seeded authenticated smoke.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Automations trigger filter
 
 Task:

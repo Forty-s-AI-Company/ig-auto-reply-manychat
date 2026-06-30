@@ -1,3 +1,17 @@
+# 2026-07-01 - Contacts mobile table guidance
+
+Status: improved for Contacts mobile usability; public paid launch remains Hold.
+
+- Contacts mobile now tells operators that the table can be swiped horizontally to reveal the remaining columns.
+- The table keeps a stable minimum width, reducing the chance that channel, tag, conversation, and last-interaction columns look broken on phones.
+- Contacts authenticated smoke covers the guidance.
+- Local lint, unit/integration tests, and build passed; seeded authenticated smoke still needs PR CI because the local test DB is not schematized and this branch does not run migration / `db push`.
+
+Readiness implication:
+
+- Contacts is easier to understand on mobile for beta operators.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Automations trigger filter
 
 Status: improved for Automations usability; public paid launch remains Hold.
