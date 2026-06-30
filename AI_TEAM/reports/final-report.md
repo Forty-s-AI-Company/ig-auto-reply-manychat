@@ -285,3 +285,13 @@ Residual risk:
 - Codex CLI 仍是主開發引擎，本地模型只做摘要、review、報告、低風險建議與 deferred queue。
 - Antigravity CLI 維持 QA 角色，預設 `Gemini 3.5 Flash`，必要時才 fallback 到 `Gemini 3.5 Pro`。
 - 下一步是用可視 PowerShell 7 重新啟動高級模式，回到 Inbox / Channels / Contacts 產品功能完整性主線。
+
+## 2026-06-30 - 三模式產品自治閉環
+
+- 一般模式、睡覺模式、高級模式都保留，沒有合併。
+- 三個模式現在共用同一套產品閉環能力：queue 空時會從產品文件與 runtime 訊號補下一題。
+- 產品補題不再是一次性清單，已支援 cycle task。
+- QA / Browser QA 失敗會自動建立 fix task，下一輪優先修失敗。
+- 已新增 IG metadata / profile refresh / error clarity 作為獨立產品主線。
+- smoke 驗證已覆蓋 general / sleep / advanced。
+- 單獨 planner 已驗證會補入 `IG metadata / profile refresh / error clarity sweep`，不再回 `autofill exhausted`。

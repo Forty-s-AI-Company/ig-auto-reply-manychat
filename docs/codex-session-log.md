@@ -5925,6 +5925,33 @@ Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-06-30 - AI_TEAM three-mode product autonomy
+
+Task:
+
+- 保留一般模式、睡覺模式、高級模式，但一次把三個模式都升級成不會因 queue 空掉就停止的產品閉環。
+
+Changes:
+
+- `planner` 現在會讀 backlog、current task、product readiness、launch checklist、fix roadmap、QA report、browser QA report、final report 來生成下一個產品任務。
+- 產品補題不再是一輪固定清單；第一輪跑完後會依執行次數最少的產品主線生成下一個 cycle task。
+- 新增 `IG metadata / profile refresh / error clarity sweep` 作為獨立產品主線。
+- 自動生成任務現在包含 `mode`、`generatedFrom`、`safetyConstraints`、`suggestedTests`。
+- `qa` / `browser-qa` 失敗時會建立 pending fix task，讓下一輪回到修復循環。
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
+- `npm run ai-team:check`: passed.
+- `npm run ai-team:loop:smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=sleep --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner`: passed and generated `IG metadata / profile refresh / error clarity sweep`.
+
+Launch impact:
+
+- AI_TEAM runner only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-06-30 - AI_TEAM disposable branch real delivery validation
 
 Task:

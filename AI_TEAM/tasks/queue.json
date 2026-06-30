@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T01:07:25.6355185Z",
+  "updatedAt": "2026-06-30T15:20:36.133Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -531,7 +531,7 @@
         "只把安全可自動處理的產品缺口補回 queue",
         "外部 gate 必須標成 human required，不猜 secret、不碰 production"
       ],
-      "status": "completed",
+      "status": "failed",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -545,12 +545,79 @@
       "startedAt": "2026-06-30T01:03:11.361Z",
       "lastPickedAt": "2026-06-30T01:03:11.361Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T01:07:25.6355185Z",
-      "lastSummary": "Launch readiness 差距已重新對齊，公開 paid launch 的剩餘 blocker 全部落成 HUMAN_REQUIRED，沒有新增需要自動補進 queue 的安全產品缺口。",
-      "lastWorker": "reporter",
+      "lastSummary": "Codex dev worker 失敗：28c93..a8ca4e8252254bf864e85ac3a182d1a258d1b29d\n--- a/tests/payuni-billing.test.ts\n+++ b/tests/payuni-billing.test.ts\n@@ -79,6 +79,18 @@\n     expect(enabledProductionStatus.detail).toContain(\"正式站已受控開通\");\n   });\n \n+  it(\"can describe the gateway state even when billing secrets are unavailable\", () => {\n+    vi.unstubAllEnvs();\n+    vi.stubEnv(\"PAYUNI_GATEWAY_URL\", \"https://payuni.com.tw/api\");\n+\n+    const status = getPayuniGatewayStatus();\n+\n+    expect(status.label).toBe(\"PayUNI 正式站\");\n+    expect(status.checkoutEnabled).toBe(false);\n+    expect(status.checkoutDisabledReason).toContain(\"正式金流尚未開通\");\n+    expect(status.detail).toContain(\"正式站尚未開通自動扣款\");\n+  });\n+\n   it(\"marks invoice paid and activates subscription once\", async () => {\n     const workspace = await db.workspace.create({\r\n       data: { id: \"billing-workspace\", name: \"Billing Workspace\", slug: \"billing-workspace\" },\r\n\nERROR: Selected model is at capacity. Please try a different model.\nERROR: Selected model is at capacity. Please try a different model.\ntokens used\n488,212\n\n◇ injected env (56) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]\n◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }",
+      "lastWorker": "codex-dev",
       "lastValidation": [
-        "git diff --check"
-      ]
+        "exit=1"
+      ],
+      "failedAt": "2026-06-30T01:20:01.353Z"
+    },
+    {
+      "id": "ig-metadata-error-clarity-autofill",
+      "title": "IG metadata / profile refresh / error clarity sweep",
+      "priority": 3,
+      "lane": "product",
+      "scope": [
+        "src/components/InboxPilotAccountDropdown.tsx",
+        "src/components/InstagramChannelActions.tsx",
+        "src/components/RefreshInstagramProfileButton.tsx",
+        "src/lib/account-channel-list.ts",
+        "src/app/api/channels/[id]/instagram-profile/refresh/route.ts",
+        "tests/account-channel-list.test.ts",
+        "tests/instagram-profile-refresh-route.test.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "IG 多帳號顯示不可只露出難懂 ID，fallback 狀態要清楚",
+        "metadata refresh / token / permission 錯誤不可暴露 provider raw error",
+        "sidebar dropdown 與 Channels 頁面的 partial metadata 狀態要一致",
+        "補 focused tests 或 browser smoke"
+      ],
+      "status": "running",
+      "mode": "general",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/account-channel-list.test.ts tests/instagram-profile-refresh-route.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "generatedFrom": [
+        "backlog",
+        "current-task",
+        "product-readiness-review",
+        "project-launch-checklist",
+        "fix-roadmap",
+        "qa-report",
+        "browser-qa",
+        "final-report"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T15:20:36.130Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-30T15:20:36.132Z",
+      "lastPickedAt": "2026-06-30T15:20:36.132Z",
+      "attempts": 1
     }
   ]
 }

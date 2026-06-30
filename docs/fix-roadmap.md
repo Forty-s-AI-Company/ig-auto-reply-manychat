@@ -2112,3 +2112,19 @@ Remaining:
 
 - `[ ]` Restart visible PowerShell 7 in advanced mode and let it continue product completeness tasks.
 - `[ ]` Watch whether Browser QA / agy can complete in the local CLI environment; if not, keep Playwright as the primary browser QA gate and record the agy failure reason.
+
+## Latest - 2026-06-30 AI_TEAM three-mode autonomy
+
+Current status:
+
+- `[x]` General / sleep / advanced modes remain selectable.
+- `[x]` Queue-empty behavior now reads backlog, current task, readiness docs, fix roadmap, QA report, browser QA report, and final report before generating the next task.
+- `[x]` Product autofill no longer stops after the first fixed list is exhausted; it can generate cycle tasks.
+- `[x]` QA / browser QA failures now create follow-up fix tasks.
+- `[x]` Added an explicit IG metadata / profile refresh / error clarity product lane.
+- `[x]` Auto-generated tasks now include `mode`, `generatedFrom`, `safetyConstraints`, and `suggestedTests`.
+
+Remaining:
+
+- `[ ]` Let the next non-smoke loop continue from `IG metadata / profile refresh / error clarity sweep`.
+- `[ ]` Watch whether Codex CLI capacity issues still interrupt long product tasks; if they do, deferred queue should capture the failed work for retry.

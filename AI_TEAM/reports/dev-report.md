@@ -632,3 +632,23 @@ Validation:
 - `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
 - `npm run ai-team:check`: passed.
 - `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+
+## 2026-06-30 - Three-mode product autonomy planner
+
+Current status:
+
+- `[x]` General / sleep / advanced modes are still separate selectable modes.
+- `[x]` All three modes now share the same product autonomy behavior: queue-empty generation, QA-failure fix task generation, and continuous product-topic cycling.
+- `[x]` Planner no longer treats product autofill as a one-time list; it can generate `cycle` tasks after the first product sweep set has been used.
+- `[x]` Added an explicit IG metadata / profile refresh / error clarity topic as the third shared product lane.
+- `[x]` Auto-generated tasks now include `mode`, `generatedFrom`, `safetyConstraints`, and `suggestedTests`.
+- `[x]` `qa` / `browser-qa` failures now create a pending fix task for the next loop.
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
+- `npm run ai-team:check`: passed.
+- `npm run ai-team:loop:smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=sleep --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner`: passed, generated `IG metadata / profile refresh / error clarity sweep` instead of `autofill exhausted`.

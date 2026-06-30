@@ -158,3 +158,18 @@ AI_TEAM 現在的閉環是：
 - QA 是獨立 gate
 - runtime 報告是給下一輪讀，不是流程終點
 - git / PR / merge / deployment 在這個版本裡是允許的交付步驟，不再當成預設阻斷點
+
+## 三模式共用自治規則
+
+一般模式、睡覺模式、高級模式都保留，但三者共用同一套產品閉環：
+
+- queue 空了不直接停，planner 會讀 backlog、readiness docs、fix roadmap、QA runtime report 生成下一個產品任務。
+- `qa` 或 `browser-qa` fail 時，runner 會建立 fix task，下一輪優先修失敗，而不是只產生報告。
+- 本地模型可做摘要、錯誤分類、review、低風險建議、deferred queue 與下一題拆解。
+- 本地模型不可主導 production DB、migration、auth / tenant isolation、payment callback、Meta OAuth / webhook 等高風險修改。
+
+三種模式的差異只在速度、QA 深度、模型配置與驗證強度：
+
+- 一般模式：快模型、lite QA 優先，適合白天快速修 blocker。
+- 睡覺模式：較強模型、full QA 與 Browser QA 優先，適合長時間收斂。
+- 高級模式：Codex-first fallback，本地模型輔助拆題與 deferred queue，適合產品功能閉環與交付。

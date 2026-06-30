@@ -13,7 +13,8 @@ backlog 第一個可執行項目，代表下一輪預設要接的任務。若第
 - [COMPLETED][P2][product] Contacts filtered empty-state guidance
 - [BLOCKED][P2][product] Channels / Connect visible-but-unusable product sweep
 - [BLOCKED][P3][product] Contacts product completeness sweep
+- [PENDING][P3][product] IG metadata / profile refresh / error clarity sweep
 - [FAILED][P4][product] Automations scope clarity and disabled UX sweep
 - [BLOCKED][P5][product] Analytics readability and data-state sweep
 - [FAILED][P6][product] Billing / PayUNI Sandbox product readiness sweep
-- [COMPLETED][P7][product] Launch readiness product sweep
+- [FAILED][P7][product] Launch readiness product sweep

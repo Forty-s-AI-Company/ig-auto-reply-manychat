@@ -107,7 +107,7 @@ const PRODUCT_AUTOFILL_TASKS = [
   {
     id: "contacts-product-completeness-autofill",
     title: "Contacts product completeness sweep",
-    priority: 3,
+    priority: 4,
     lane: "product",
     scope: [
       "src/app/contacts",
@@ -132,9 +132,39 @@ const PRODUCT_AUTOFILL_TASKS = [
     ],
   },
   {
+    id: "ig-metadata-error-clarity-autofill",
+    title: "IG metadata / profile refresh / error clarity sweep",
+    priority: 3,
+    lane: "product",
+    scope: [
+      "src/components/InboxPilotAccountDropdown.tsx",
+      "src/components/InstagramChannelActions.tsx",
+      "src/components/RefreshInstagramProfileButton.tsx",
+      "src/lib/account-channel-list.ts",
+      "src/app/api/channels/[id]/instagram-profile/refresh/route.ts",
+      "tests/account-channel-list.test.ts",
+      "tests/instagram-profile-refresh-route.test.ts",
+      "docs/codex-session-log.md",
+      "docs/fix-roadmap.md",
+      "docs/project-launch-checklist.md",
+      "docs/product-readiness-review.md",
+      "AI_TEAM/tasks/current-task.md",
+      "AI_TEAM/tasks/backlog.md",
+      "AI_TEAM/tasks/queue.json",
+      "AI_TEAM/reports/dev-report.md",
+      "AI_TEAM/reports/final-report.md",
+    ],
+    acceptance: [
+      "IG 多帳號顯示不可只露出難懂 ID，fallback 狀態要清楚",
+      "metadata refresh / token / permission 錯誤不可暴露 provider raw error",
+      "sidebar dropdown 與 Channels 頁面的 partial metadata 狀態要一致",
+      "補 focused tests 或 browser smoke",
+    ],
+  },
+  {
     id: "automations-scope-clarity-autofill",
     title: "Automations scope clarity and disabled UX sweep",
-    priority: 4,
+    priority: 5,
     lane: "product",
     scope: [
       "src/app/automations",
@@ -160,7 +190,7 @@ const PRODUCT_AUTOFILL_TASKS = [
   {
     id: "analytics-readiness-autofill",
     title: "Analytics readability and data-state sweep",
-    priority: 5,
+    priority: 6,
     lane: "product",
     scope: [
       "src/app/analytics",
@@ -185,7 +215,7 @@ const PRODUCT_AUTOFILL_TASKS = [
   {
     id: "billing-payuni-sandbox-autofill",
     title: "Billing / PayUNI Sandbox product readiness sweep",
-    priority: 6,
+    priority: 7,
     lane: "product",
     scope: [
       "src/app/billing",
@@ -213,7 +243,7 @@ const PRODUCT_AUTOFILL_TASKS = [
   {
     id: "launch-readiness-product-sweep-autofill",
     title: "Launch readiness product sweep",
-    priority: 7,
+    priority: 8,
     lane: "product",
     scope: [
       "docs/project-launch-checklist.md",
@@ -233,6 +263,66 @@ const PRODUCT_AUTOFILL_TASKS = [
     ],
   },
 ];
+
+const PLANNER_SIGNAL_FILES = [
+  { label: "backlog", path: trackedFiles.backlog },
+  { label: "current-task", path: trackedFiles.currentTask },
+  { label: "product-readiness-review", path: path.join(root, "docs", "product-readiness-review.md") },
+  { label: "project-launch-checklist", path: path.join(root, "docs", "project-launch-checklist.md") },
+  { label: "fix-roadmap", path: path.join(root, "docs", "fix-roadmap.md") },
+  { label: "qa-report", path: runtimeFiles.qaReport },
+  { label: "browser-qa", path: runtimeFiles.browserQaReport },
+  { label: "final-report", path: runtimeFiles.finalReport },
+];
+
+function collectPlannerSignals() {
+  const items = PLANNER_SIGNAL_FILES.map((source) => ({
+    ...source,
+    text: readFileSafe(source.path).trim(),
+  }));
+
+  return {
+    items,
+    text: items.map((item) => [`## ${item.label}`, item.text].join("\n")).join("\n\n"),
+    labels: items.filter((item) => item.text).map((item) => item.label),
+  };
+}
+
+function hasExplicitLaunchReadyEvidence(signals) {
+  const text = signals.text.toLowerCase();
+  return [
+    "status: launch_ready",
+    "launch_ready: true",
+    "paid_launch_ready: true",
+    "產品已達可上線",
+    "已達可販售",
+  ].some((marker) => text.includes(marker));
+}
+
+function inferSuggestedTests(seed) {
+  const id = seed.id || "";
+  if (id.includes("inbox")) return ["npm run lint", "npm run build", "npm run test:e2e:inbox"];
+  if (id.includes("channels")) return ["npm run lint", "npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot", "npm run build"];
+  if (id.includes("ig-metadata")) return ["npm run lint", "npx vitest run tests/account-channel-list.test.ts tests/instagram-profile-refresh-route.test.ts --reporter=dot", "npm run build"];
+  if (id.includes("contacts")) return ["npm run lint", "npm run test:e2e:contacts", "npm run build"];
+  if (id.includes("automations")) return ["npm run lint", "npx vitest run tests/automation-scope-policy.test.ts --reporter=dot", "npm run build"];
+  if (id.includes("analytics")) return ["npm run lint", "npx vitest run tests/analytics-state.test.ts --reporter=dot", "npm run build"];
+  if (id.includes("billing")) return ["npm run lint", "npx vitest run tests/payuni-billing.test.ts --reporter=dot", "npm run build"];
+  return ["npm run lint", "npm run build"];
+}
+
+function countGeneratedTasks(tasks, seedId) {
+  return tasks.filter((task) => task.id === seedId || String(task.id || "").startsWith(`${seedId}-cycle-`)).length;
+}
+
+function chooseNextProductSeed(tasks) {
+  return PRODUCT_AUTOFILL_TASKS
+    .map((seed) => ({
+      seed,
+      count: countGeneratedTasks(tasks, seed.id),
+    }))
+    .sort((a, b) => a.count - b.count || Number(a.seed.priority || 999) - Number(b.seed.priority || 999))[0]?.seed || null;
+}
 
 const workerTimeoutMs = {
   planner: 30 * 1000,
@@ -1077,21 +1167,30 @@ function saveQueue(queue) {
   );
 }
 
-function buildAutofillTask(seed) {
+function buildAutofillTask(seed, options = {}) {
+  const safety = [
+    "no-production-db",
+    "no-migration",
+    "no-production-deploy",
+    "no-meta-review",
+    "no-payuni-production",
+    ...(seed.safety || []),
+  ];
+  const cycle = Number(options.cycle || 1);
+  const id = options.id || (cycle <= 1 ? seed.id : `${seed.id}-cycle-${cycle}`);
+
   return {
     ...seed,
+    id,
     status: "pending",
-    safety: [
-      "no-production-db",
-      "no-migration",
-      "no-production-deploy",
-      "no-meta-review",
-      "no-payuni-production",
-      ...(seed.safety || []),
-    ],
+    mode: runnerMode,
+    safety,
+    safetyConstraints: safety,
+    suggestedTests: seed.suggestedTests || inferSuggestedTests(seed),
+    generatedFrom: options.generatedFrom || ["product-autofill"],
     createdBy: "ai-team-autofill",
     createdAt: nowIso(),
-    summary: "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+    summary: options.summary || "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
   };
 }
 
@@ -1102,13 +1201,24 @@ function ensureNextProductTask(queue) {
     return { queue, task: activeTask || null, created: false };
   }
 
-  const existingIds = new Set(tasks.map((task) => task.id));
-  const nextSeed = PRODUCT_AUTOFILL_TASKS.find((seed) => !existingIds.has(seed.id));
-  if (!nextSeed) {
-    return { queue, task: null, created: false };
+  const signals = collectPlannerSignals();
+  if (hasExplicitLaunchReadyEvidence(signals)) {
+    return { queue, task: null, created: false, reason: "launch-ready-evidence" };
   }
 
-  const task = buildAutofillTask(nextSeed);
+  const nextSeed = chooseNextProductSeed(tasks);
+  if (!nextSeed) {
+    return { queue, task: null, created: false, reason: "no-seed" };
+  }
+
+  const cycle = countGeneratedTasks(tasks, nextSeed.id) + 1;
+  const task = buildAutofillTask(nextSeed, {
+    cycle,
+    generatedFrom: signals.labels.length ? signals.labels : ["product-autofill-fallback"],
+    summary: cycle <= 1
+      ? "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。"
+      : `由 planner 第 ${cycle} 輪重新補入產品主題，避免 autofill exhausted 後停住。`,
+  });
   const nextQueue = {
     ...queue,
     tasks: [...tasks, task],
@@ -1192,6 +1302,54 @@ function syncTaskLifecycle(task, patch = {}) {
   }));
 }
 
+function ensureFailureFixTask(task, result) {
+  if (smoke || !task?.id || !["qa", "browser-qa"].includes(result?.worker)) return null;
+
+  const queue = loadQueue();
+  const tasks = Array.isArray(queue.tasks) ? queue.tasks : [];
+  const existing = tasks.find((item) =>
+    item.fixForTaskId === task.id &&
+    item.fixForWorker === result.worker &&
+    ["pending", "running"].includes(item.status)
+  );
+  if (existing) return existing;
+
+  const sourceReport = result.worker === "browser-qa" ? "browser-qa" : "qa-report";
+  const fixTask = {
+    id: `${task.id}-${result.worker}-fix-${Date.now()}`,
+    title: `Fix ${task.title || task.id} ${result.worker} failure`,
+    status: "pending",
+    priority: Math.max(1, Number(task.priority || 5) - 0.25),
+    lane: task.lane || "product",
+    scope: task.scope || [],
+    acceptance: [
+      `修復 ${result.worker} 失敗，不能只更新報告。`,
+      "重新跑失敗的 QA gate，確認問題已收斂。",
+      "若無法安全修復，必須把阻塞原因縮小並寫入 final report。",
+    ],
+    safety: task.safety || ["no-production-db", "no-migration", "no-production-deploy", "no-meta-review", "no-payuni-production"],
+    safetyConstraints: task.safetyConstraints || task.safety || ["no-production-db", "no-migration", "no-production-deploy", "no-meta-review", "no-payuni-production"],
+    suggestedTests: task.suggestedTests || inferSuggestedTests(task),
+    generatedFrom: [sourceReport, "worker-result", "loop-state"],
+    mode: runnerMode,
+    createdBy: "ai-team-failure-fix",
+    createdAt: nowIso(),
+    fixForTaskId: task.id,
+    fixForWorker: result.worker,
+    failureSummary: result.summary || "",
+    failureValidation: result.validation || [],
+    summary: `${result.worker} 失敗後自動建立的修復任務，下一輪應優先修復測試或 Browser QA 問題。`,
+  };
+
+  const nextQueue = {
+    ...queue,
+    tasks: [...tasks, fixTask],
+  };
+  saveQueue(nextQueue);
+  syncBacklogFromQueue(nextQueue);
+  return fixTask;
+}
+
 function selectTask(queue) {
   if (smoke) {
     return {
@@ -1227,10 +1385,14 @@ async function plannerWorker() {
   }
 
   if (!task) {
+    const signals = collectPlannerSignals();
+    const launchReady = hasExplicitLaunchReadyEvidence(signals);
     return writeWorkerResult(baseWorkerResult("planner", {
       status: "blocked",
-      summary: "queue.json 沒有 pending / running task，且產品自動補題清單已全部完成。",
-      validation: ["queue checked", "autofill exhausted"],
+      summary: launchReady
+        ? "queue.json 沒有 pending / running task，且 readiness 文件已明確標示可上線。"
+        : "queue.json 沒有 pending / running task，且 planner 找不到可安全生成的產品任務。",
+      validation: launchReady ? ["queue checked", "launch-ready-evidence"] : ["queue checked", "no-safe-generated-task"],
       next: null,
     }));
   }
@@ -1973,6 +2135,10 @@ async function runPipeline() {
     if (worker === "planner") {
       if (result.status !== "done") break;
       task = selectTask(loadQueue());
+    }
+
+    if (result.status === "failed" && ["qa", "browser-qa"].includes(worker)) {
+      ensureFailureFixTask(task, result);
     }
 
     if (["failed", "blocked"].includes(result.status)) {

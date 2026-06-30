@@ -77,15 +77,27 @@ queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
 
 完全自動閉環模式下，`planner` 不會因為 `queue.json` 暫時沒有 pending task 就直接停住。
 
-當 queue 空掉時，runner 會依固定產品主線自動補入下一個尚未完成的安全任務：
+當 queue 空掉時，runner 會先讀這些訊號，再依產品主線自動補入下一個安全任務：
+
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/tasks/current-task.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `AI_TEAM/runtime/qa-report.md`
+- `AI_TEAM/runtime/browser-qa.md`
+- `AI_TEAM/runtime/final-report.md`
+
+runner 不再把產品主線當成一次性清單。若第一輪都跑過，會依執行次數最少的主題產生下一輪 `cycle` task。
 
 1. Inbox visible-but-unusable product sweep
 2. Channels / Connect visible-but-unusable product sweep
-3. Contacts product completeness sweep
-4. Automations scope clarity and disabled UX sweep
-5. Analytics readability and data-state sweep
-6. Billing / PayUNI Sandbox product readiness sweep
-7. Launch readiness product sweep
+3. IG metadata / profile refresh / error clarity sweep
+4. Contacts product completeness sweep
+5. Automations scope clarity and disabled UX sweep
+6. Analytics readability and data-state sweep
+7. Billing / PayUNI Sandbox product readiness sweep
+8. Launch readiness product sweep
 
 這些任務仍遵守 hard stop：
 
@@ -95,7 +107,18 @@ queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
 - 不送 Meta App Review
 - 不切 PayUNI production
 
-若這些產品主線任務都已完成，planner 才會回報 `autofill exhausted`，表示目前自動化範圍內沒有下一個安全任務。
+只有 readiness 文件明確標示已可上線，或 planner 無法安全生成任務時，才會停下。正常情況不再回報 `autofill exhausted`。
+
+## QA 失敗自動回修
+
+`qa` 或 `browser-qa` 失敗時，runner 會：
+
+1. 把失敗摘要保留在 runtime report。
+2. 依原 task scope 建立 `fix` task。
+3. 將 `generatedFrom` 標成 `qa-report` / `browser-qa` / `worker-result`。
+4. 下一輪由 planner 優先撿 pending fix task。
+
+這讓測試失敗進入修復循環，而不是停在報告。
 
 ## Worker Result Schema
 

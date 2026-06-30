@@ -3,22 +3,16 @@
 ## Active Lane
 
 - `LANE`: product
-- `STATUS`: Completed
+- `STATUS`: Running
 - `OWNER`: AI_TEAM runner
-- `PRIMARY_TARGET`: Launch readiness product sweep
-- `SECONDARY_TARGET`: docs/project-launch-checklist.md, docs/product-readiness-review.md, docs/fix-roadmap.md, docs/codex-session-log.md, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md
+- `PRIMARY_TARGET`: IG metadata / profile refresh / error clarity sweep
+- `SECONDARY_TARGET`: src/components/InboxPilotAccountDropdown.tsx, src/components/InstagramChannelActions.tsx, src/components/RefreshInstagramProfileButton.tsx, src/lib/account-channel-list.ts, src/app/api/channels/[id]/instagram-profile/refresh/route.ts, tests/account-channel-list.test.ts, tests/instagram-profile-refresh-route.test.ts, docs/codex-session-log.md, docs/fix-roadmap.md, docs/project-launch-checklist.md, docs/product-readiness-review.md, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md
 
 ## Current Execution Goal
 
-- task id: `launch-readiness-product-sweep-autofill`
-- scope: docs/project-launch-checklist.md, docs/product-readiness-review.md, docs/fix-roadmap.md, docs/codex-session-log.md, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md
-- priority: 7
-
-## Result
-
-- `completedAt`: `2026-06-30T01:07:25.6355185Z`
-- `summary`: Launch readiness 差距已重新對齊，公開 paid launch 的剩餘 blocker 全部落成 `HUMAN_REQUIRED`，沒有新增需要自動補進 queue 的安全產品缺口。
-- `validation`: `git diff --check`
+- task id: `ig-metadata-error-clarity-autofill`
+- scope: src/components/InboxPilotAccountDropdown.tsx, src/components/InstagramChannelActions.tsx, src/components/RefreshInstagramProfileButton.tsx, src/lib/account-channel-list.ts, src/app/api/channels/[id]/instagram-profile/refresh/route.ts, tests/account-channel-list.test.ts, tests/instagram-profile-refresh-route.test.ts, docs/codex-session-log.md, docs/fix-roadmap.md, docs/project-launch-checklist.md, docs/product-readiness-review.md, AI_TEAM/tasks/current-task.md, AI_TEAM/tasks/backlog.md, AI_TEAM/tasks/queue.json, AI_TEAM/reports/dev-report.md, AI_TEAM/reports/final-report.md
+- priority: 3
 
 ## Hard Stops
 
