@@ -2210,3 +2210,16 @@ Remaining:
 
 - `[ ]` Let the next non-smoke loop continue from `IG metadata / profile refresh / error clarity sweep`.
 - `[ ]` Watch whether Codex CLI capacity issues still interrupt long product tasks; if they do, deferred queue should capture the failed work for retry.
+
+## Latest - 2026-07-01 Inbox mobile assignee smoke stability
+
+Current status:
+
+- `[x]` PR #49 的 Automations trigger filter 已合併，但 master CI 的 `full-release-auth-smoke` mobile project 在 Inbox 指派對象下拉發生 flaky。
+- `[x]` Inbox authenticated smoke 已改成以 option `value` 選取 `ADMIN_NAME`，並驗證成功 notice，降低 mobile browser project 重新 render 造成的誤判。
+- `[x]` 本地 lint / unit suite / build 已通過；本機 mobile Inbox smoke 因 authenticated guard 跳過，需以 GitHub Actions full-release-auth-smoke 作為實跑驗證。
+
+Remaining:
+
+- `[ ]` 讓 PR CI 驗證 mobile Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
+- `[ ]` 回到產品主線，繼續 Contacts / Automations / Inbox visible-but-unusable audit。

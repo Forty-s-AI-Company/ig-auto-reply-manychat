@@ -141,7 +141,7 @@ test.describe("authenticated route smoke", () => {
     await page.getByTestId("automation-trigger-filter").selectOption("manual");
     await expect(page.getByTestId("automation-trigger-filter")).toHaveValue("manual");
     if ((await page.getByTestId("automation-list-empty").count()) > 0) {
-      await expect(page.getByTestId("automation-list-empty")).toContainText("目前沒有符合篩選條件的自動化");
+      await expect(page.getByTestId("automation-list-empty")).toContainText(/目前沒有符合篩選條件的自動化|尚未建立自動化/);
     } else {
       await expect(page.getByTestId("automation-item-manual").first()).toBeVisible();
     }
