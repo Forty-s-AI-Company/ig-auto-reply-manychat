@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadProjectEnv } from "../../scripts/load-env.mjs";
 import {
+  buildSkillSummary,
   readFileSafe,
   readPreferred,
   runtimeFiles,
@@ -222,6 +223,7 @@ function collectContext() {
   const qaReport = readPreferred(runtimeFiles.qaReport, trackedFiles.qaReport);
   const browserQaReport = readPreferred(runtimeFiles.browserQaReport, trackedFiles.browserQaReport);
   const existingFinalReport = readPreferred(runtimeFiles.finalReport, trackedFiles.finalReport);
+  const skillSummary = buildSkillSummary(2);
 
   return [
     "# CONTEXT",
@@ -249,6 +251,9 @@ function collectContext() {
     "",
     "## EXISTING_FINAL_REPORT",
     existingFinalReport || "（空）",
+    "",
+    "## LOCAL_SKILLS",
+    skillSummary || "（空）",
   ].join("\n");
 }
 

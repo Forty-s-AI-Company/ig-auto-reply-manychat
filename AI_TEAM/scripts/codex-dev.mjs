@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadProjectEnv } from "../../scripts/load-env.mjs";
-import { readFileSafe, readPreferred, root, runtimeFiles, trackedFiles, writeRuntimeFile } from "./lib/ai-team-paths.mjs";
+import { buildSkillSummary, readFileSafe, readPreferred, root, runtimeFiles, trackedFiles, writeRuntimeFile } from "./lib/ai-team-paths.mjs";
 import { acquireLock, releaseLock } from "./lib/process-lock.mjs";
 
 loadProjectEnv();
@@ -147,6 +147,7 @@ function buildPrompt() {
   const errorSummary = readFileSafe(runtimeFiles.errorSummary).trim();
   const staticQa = readFileSafe(runtimeFiles.staticQa).trim();
   const codeReview = readFileSafe(runtimeFiles.codeReview).trim();
+  const skillSummary = buildSkillSummary(3);
 
   return [
     "請接續 InboxPilot / ReplyPilot 專案，直接執行當前最高優先且可安全處理的產品任務。",
@@ -167,6 +168,15 @@ function buildPrompt() {
     "- 若本輪只是文件、摘要、prompt 或 backlog 整理，建議 Codex CLI 使用 GPT-5.4 mini，reasoning medium。",
     "- 本地模型只負責摘要、review、錯誤分類、低風險建議與 deferred queue；不得主導高風險產品修改。",
     "- Antigravity CLI 只做 Browser QA；預設 Gemini 3.5 Flash，必要時才用 Gemini 3.5 Pro，不允許直接修改 source code。",
+    "",
+    "本地 skills：",
+    "- 先依主題套用對應的 in-repo skills，不要跳過。",
+    "- 產品決策用 `ui-ux-pro-max`。",
+    "- 設計語言用 `design-md`。",
+    "- UI 細修與完成度檢查用 `impeccable`。",
+    "- 元件實作用 `shadcn`。",
+    "- 上線前 UI 審查用 `web-design-guidelines`。",
+    "- OAuth / billing / tenant / admin 等高風險區先過 `security-best-practices`。",
     "",
     "安全限制：",
     "- 不碰 production DB",
@@ -222,6 +232,9 @@ function buildPrompt() {
     "",
     "## CODE_REVIEW",
     codeReview || "（空）",
+    "",
+    "## LOCAL_SKILLS",
+    skillSummary || "（空）",
   ].join("\n");
 }
 

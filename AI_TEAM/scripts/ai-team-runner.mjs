@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import {
+  buildSkillSummary,
   extractTopItems,
   readFileSafe,
   readPreferred,
@@ -309,6 +310,31 @@ function inferSuggestedTests(seed) {
   if (id.includes("analytics")) return ["npm run lint", "npx vitest run tests/analytics-state.test.ts --reporter=dot", "npm run build"];
   if (id.includes("billing")) return ["npm run lint", "npx vitest run tests/payuni-billing.test.ts --reporter=dot", "npm run build"];
   return ["npm run lint", "npm run build"];
+}
+
+function inferSuggestedSkills(seed) {
+  const id = String(seed?.id || "").toLowerCase();
+  const scopeText = Array.isArray(seed?.scope) ? seed.scope.join(" ").toLowerCase() : "";
+  const combined = `${id} ${scopeText}`;
+  const skills = new Set(["ui-ux-pro-max", "impeccable"]);
+
+  if (combined.includes("channels") || combined.includes("inbox") || combined.includes("contacts") || combined.includes("analytics") || combined.includes("automations") || combined.includes("billing")) {
+    skills.add("web-design-guidelines");
+  }
+
+  if (combined.includes("channels") || combined.includes("contacts") || combined.includes("inbox")) {
+    skills.add("shadcn");
+  }
+
+  if (combined.includes("oauth") || combined.includes("token") || combined.includes("instagram-profile") || combined.includes("meta") || combined.includes("billing") || combined.includes("payuni") || combined.includes("admin")) {
+    skills.add("security-best-practices");
+  }
+
+  if (combined.includes("dashboard") || combined.includes("contacts") || combined.includes("channels") || combined.includes("analytics") || combined.includes("automations") || combined.includes("billing")) {
+    skills.add("design-md");
+  }
+
+  return [...skills];
 }
 
 function countGeneratedTasks(tasks, seedId) {
@@ -986,6 +1012,9 @@ function buildHealthSummary(results = []) {
     "## FINAL_REPORT",
     extractTopItems(finalReport, 6).map((item) => `- ${item}`).join("\n") || "（空）",
     "",
+    "## LOCAL_SKILLS",
+    buildSkillSummary(2) || "（空）",
+    "",
     "## WORKER_RESULTS",
     results.map((result) => `- ${result.worker}: ${result.status} - ${result.summary}`).join("\n") || "（空）",
   ].join("\n");
@@ -1148,9 +1177,54 @@ function writeDeliveryState(state) {
   });
 }
 
+function normalizeTask(task) {
+  const normalized = { ...task };
+  const safety = [
+    "no-production-db",
+    "no-migration",
+    "no-production-deploy",
+    "no-meta-review",
+    "no-payuni-production",
+    ...((task?.safety || task?.safetyConstraints || []).filter(Boolean)),
+  ];
+  const uniqueSafety = [...new Set(safety)];
+
+  normalized.safety = uniqueSafety;
+  normalized.safetyConstraints = [...uniqueSafety];
+  normalized.suggestedTests = Array.isArray(task?.suggestedTests) && task.suggestedTests.length > 0
+    ? task.suggestedTests
+    : inferSuggestedTests(task || {});
+  normalized.skills = Array.isArray(task?.skills) && task.skills.length > 0
+    ? task.skills
+    : inferSuggestedSkills(task || {});
+  normalized.mode = task?.mode || runnerMode;
+
+  return normalized;
+}
+
 function loadQueue() {
   const fallback = { version: 1, updatedAt: nowIso(), tasks: [] };
-  return readJsonSafe(trackedFiles.queue, fallback);
+  const queue = readJsonSafe(trackedFiles.queue, fallback);
+  const tasks = Array.isArray(queue.tasks) ? queue.tasks : [];
+  let changed = false;
+  const normalizedTasks = tasks.map((task) => {
+    const normalized = normalizeTask(task);
+    if (JSON.stringify(normalized) !== JSON.stringify(task)) {
+      changed = true;
+    }
+    return normalized;
+  });
+
+  const normalizedQueue = {
+    ...queue,
+    tasks: normalizedTasks,
+  };
+
+  if (changed && !smoke) {
+    saveQueue(normalizedQueue);
+  }
+
+  return normalizedQueue;
 }
 
 function saveQueue(queue) {
@@ -1187,6 +1261,7 @@ function buildAutofillTask(seed, options = {}) {
     safety,
     safetyConstraints: safety,
     suggestedTests: seed.suggestedTests || inferSuggestedTests(seed),
+    skills: seed.skills || inferSuggestedSkills(seed),
     generatedFrom: options.generatedFrom || ["product-autofill"],
     createdBy: "ai-team-autofill",
     createdAt: nowIso(),
@@ -1257,11 +1332,13 @@ function writeCurrentTaskFromQueue(task, statusLabel, details = []) {
     "- `OWNER`: AI_TEAM runner",
     `- \`PRIMARY_TARGET\`: ${task.title || task.id}`,
     `- \`SECONDARY_TARGET\`: ${task.scope?.join(", ") || "（空）"}`,
+    `- \`REQUIRED_SKILLS\`: ${task.skills?.join(", ") || "（空）"}`,
     "",
     "## Current Execution Goal",
     "",
     `- task id: \`${task.id}\``,
     ...details.map((item) => `- ${item}`),
+    ...(task.skills?.length ? [`- skills: ${task.skills.join(", ")}`] : []),
     "",
     "## Hard Stops",
     "",

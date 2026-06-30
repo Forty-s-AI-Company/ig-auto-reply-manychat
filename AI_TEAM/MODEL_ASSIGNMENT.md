@@ -128,6 +128,29 @@ Browser QA 預設順序：
 - `agy` 預設只允許 `Gemini 3.5 Flash`，需要更完整 browser QA 或 Flash 不可用時才 fallback 到 `Gemini 3.5 Pro`
 - CLI 版 Antigravity 不該當第一層 gate，避免整個 runner 被卡住
 
+## Project-local skills
+
+AI_TEAM also uses local skill briefs from `AI_TEAM/skills/` to keep decisions
+consistent even when marketplace plugins are unavailable.
+
+Core mapping:
+
+- `ui-ux-pro-max-skill.md`
+  - product decision layer for minimum-usable vs disabled UX
+- `design-md-skill.md`
+  - shared design language and durable UI conventions
+- `impeccable-skill.md`
+  - post-implementation polish audit
+- `shadcn-skill.md`
+  - implementation guidance for dialogs, dropdowns, toasts, and forms
+- `web-design-guidelines-skill.md`
+  - release-facing UI review and responsive checks
+- `security-best-practices-skill.md`
+  - higher-signal security review overlay for OAuth, billing, and tenant scope
+
+These local skills do not replace Codex CLI ownership. They narrow decisions,
+review criteria, and QA expectations for InboxPilot-specific work.
+
 ## 不可讓本地模型主導的區域
 
 以下區域只能由 Codex CLI 主導，或至少由 Codex CLI 最終複查：

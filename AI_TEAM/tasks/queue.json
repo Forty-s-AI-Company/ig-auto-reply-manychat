@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T15:20:36.133Z",
+  "updatedAt": "2026-06-30T18:27:51.556Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -46,7 +46,23 @@
         "npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/ai-team.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs AI_TEAM/scripts/playwright-browser-qa.mjs",
         "npm run ai-team:loop:smoke",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --smoke --only-worker=merge-delivery"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
     },
     {
       "id": "ai-team-disposable-delivery-002",
@@ -87,7 +103,23 @@
         "npx eslint AI_TEAM/scripts/ai-team-runner.mjs",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
     },
     {
       "id": "inbox-channels-visible-but-unusable-003",
@@ -136,7 +168,27 @@
       "lastWorker": "deploy",
       "lastValidation": [
         "deploy-disabled"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "contacts-filtered-empty-state-guidance-004",
@@ -179,7 +231,27 @@
       "lastWorker": "deploy",
       "lastValidation": [
         "deploy-disabled"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run test:e2e:contacts",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "inbox-visible-but-unusable-autofill",
@@ -229,7 +301,26 @@
         "scope=13",
         "ignored-out-of-scope=6"
       ],
-      "blockedAt": "2026-06-29T22:55:42.094Z"
+      "blockedAt": "2026-06-29T22:55:42.094Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn"
+      ],
+      "mode": "general"
     },
     {
       "id": "channels-connect-visible-but-unusable-autofill",
@@ -292,7 +383,28 @@
         "branch codex/channels-connect-visible-but-unusable-sweep-20260630 可進入交付 gate。",
         "scope=18",
         "ignored-out-of-scope=6"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "security-best-practices",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "contacts-product-completeness-autofill",
@@ -341,7 +453,27 @@
         "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/contacts-product-completeness-autofill",
         "scope=13"
       ],
-      "blockedAt": "2026-06-29T23:41:34.016Z"
+      "blockedAt": "2026-06-29T23:41:34.016Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run test:e2e:contacts",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "automations-scope-clarity-autofill",
@@ -396,7 +528,26 @@
       "lastWorker": "codex-dev",
       "lastValidation": [
         "exit=124"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/automation-scope-policy.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "analytics-readiness-autofill",
@@ -452,7 +603,26 @@
         "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/analytics-readiness-autofill",
         "scope=12",
         "ignored-out-of-scope=6"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/analytics-state.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "billing-payuni-sandbox-autofill",
@@ -508,7 +678,27 @@
       "lastValidation": [
         "exit=1",
         "qa-level=full"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/payuni-billing.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "security-best-practices",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "launch-readiness-product-sweep-autofill",
@@ -550,7 +740,23 @@
       "lastValidation": [
         "exit=1"
       ],
-      "failedAt": "2026-06-30T01:20:01.353Z"
+      "failedAt": "2026-06-30T01:20:01.353Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
     },
     {
       "id": "ig-metadata-error-clarity-autofill",
@@ -616,8 +822,16 @@
       "createdAt": "2026-06-30T15:20:36.130Z",
       "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
       "startedAt": "2026-06-30T15:20:36.132Z",
-      "lastPickedAt": "2026-06-30T15:20:36.132Z",
-      "attempts": 1
+      "lastPickedAt": "2026-06-30T18:27:51.555Z",
+      "attempts": 2,
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "security-best-practices",
+        "design-md"
+      ]
     }
   ]
 }

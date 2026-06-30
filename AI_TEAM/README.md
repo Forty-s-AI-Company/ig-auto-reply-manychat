@@ -17,6 +17,7 @@ AI_TEAM 是 InboxPilot 的本機無人值守開發控制層。
 4. `AI_TEAM/tasks/backlog.md`
 5. `AI_TEAM/RUNNER_DESIGN.md`
 6. `AI_TEAM/MODEL_ASSIGNMENT.md`
+7. `AI_TEAM/skills/README.md`
 
 ## 核心原則
 
@@ -27,6 +28,22 @@ AI_TEAM 是 InboxPilot 的本機無人值守開發控制層。
 - 不切 PayUNI production
 - 不輸出 secret
 - runtime 輸出不提交 git
+
+## Local Skill Layer
+
+AI_TEAM also carries an in-repo skill layer under `AI_TEAM/skills/`.
+
+This is where project-local equivalents live for:
+
+- `ui-ux-pro-max`
+- `design-md`
+- `impeccable`
+- `shadcn`
+- `web-design-guidelines`
+- `security-best-practices`
+
+They are not external marketplace plugins. They are reusable operating guides
+for Codex, local models, and QA workers.
 
 ## 指令總表
 
