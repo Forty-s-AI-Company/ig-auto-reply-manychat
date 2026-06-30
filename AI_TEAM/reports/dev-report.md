@@ -1,3 +1,59 @@
+# Latest - 2026-06-30 Analytics readability and data-state sweep
+
+Current status:
+
+- `[x]` Analytics 現在會清楚標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- `[x]` 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `[x]` 新增只讀 `/api/analytics`，回傳 analytics summary 與 state，方便前端或未來自動刷新共用。
+- `[x]` `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 都已補 coverage。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+
+What changed:
+
+- `src/lib/analytics-state.ts`
+  - 新增純函式 helper，把 analytics 的範圍、空資料、讀取失敗、送達率與啟用率文案集中管理。
+- `src/lib/dashboard-summary.ts`
+  - 追加 `connectedInstagramChannels` 與 `selectedChannelDisplayName`，讓 analytics 頁能看懂現在是全域還是單一 IG 帳號篩選。
+- `src/app/analytics/page.tsx`
+  - 新增 data-state banner，讓空資料與載入失敗不會看起來像壞掉。
+  - 送達率與啟用率改成語意化字串，不再只丟 0%。
+  - 最近訊息與最近自動化改成先說明資料狀態，再顯示數字摘要。
+- `src/app/api/analytics/route.ts`
+  - 新增只讀 analytics API，回傳 summary 與 state。
+- `tests/analytics-state.test.ts`
+  - 補上 missing connections / empty connected / active scope / loading failure 四種狀態單元測試。
+- `tests/integration/api-routes.test.ts`
+  - 補 analytics route integration test，並順手修掉廣播 route 測試的舊 fixture。
+- `tests/e2e/public-and-auth.spec.ts`
+  - 補 analytics scope 與 data-state smoke。
+
+Validation:
+
+```text
+npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+```
+
+Launch impact:
+
+- Analytics 的數字與空態說明更清楚，較不容易讓 operator 以為圖表壞掉。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Dev Report
 
 ## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep

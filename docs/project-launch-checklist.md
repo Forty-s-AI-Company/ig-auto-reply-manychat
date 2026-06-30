@@ -21,6 +21,14 @@
 - `[x]` Updated `README.md` to point at `AI_TEAM/README.md`.
 - `[x]` Kept the product AI bridge files untouched.
 
+# 2026-06-30 - Analytics readability and data-state sweep
+
+- `[x]` Analytics 現在會清楚標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- `[x]` 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `[x]` 新增只讀 `/api/analytics`，回傳 summary 與 state，方便前端與未來自動刷新共用。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+- `[ ]` 若後續要做真正的時間序列圖表，先補資料來源、刷新策略與更細的聚合 API。
+
 # Project Launch Checklist
 
 ## 2026-06-30 - Automations scope clarity and disabled UX sweep

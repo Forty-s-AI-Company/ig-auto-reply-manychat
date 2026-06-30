@@ -1,3 +1,18 @@
+# Latest - 2026-06-30 Analytics readability and data-state sweep
+
+Current status:
+
+- `[x]` Analytics 現在會明確標出資料範圍：工作區全域 / 單一 IG 帳號，避免 0 值看起來像壞掉。
+- `[x]` 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `[x]` 新增只讀 `/api/analytics`，回傳 analytics summary 與 state，方便前端或未來自動刷新共用。
+- `[x]` `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 都已補 coverage。
+- `[x]` `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+
+Remaining:
+
+- `[ ]` 若後續要做真正的時間序列圖表，先定義資料來源、刷新策略與更細的聚合 API。
+- `[ ]` 保持 production DB、migration、Meta App Review、PayUNI production 都在人工 gate 外。
+
 # InboxPilot Fix Roadmap
 
 ## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep

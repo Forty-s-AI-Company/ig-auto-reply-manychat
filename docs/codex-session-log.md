@@ -1,3 +1,45 @@
+# 2026-06-30 - Analytics readability and data-state sweep
+
+Task:
+
+- 讓 Analytics 頁面不再只是把零散數字堆出來，而是明確說出目前的資料範圍、空資料原因與失敗狀態。
+- 補上只讀 analytics API 與對應測試，避免前端與未來自動刷新各算各的。
+
+Result:
+
+- `src/lib/analytics-state.ts` 新增純函式 helper，集中管理 scope、空資料、載入失敗、送達率與啟用率文案。
+- `src/lib/dashboard-summary.ts` 追加 `connectedInstagramChannels` 與 `selectedChannelDisplayName`，讓 Analytics 頁知道自己看的是全域還是單一 IG 帳號。
+- `src/app/analytics/page.tsx` 加上 data-state banner、語意化送達率 / 啟用率、以及更清楚的最近訊息 / 最近自動化說明。
+- `src/app/api/analytics/route.ts` 新增只讀 API，回傳 summary 與 state。
+- `tests/analytics-state.test.ts`、`tests/integration/api-routes.test.ts`、`tests/e2e/public-and-auth.spec.ts` 已補 coverage。
+
+Validation:
+
+```text
+npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts
+Result: passed.
+
+npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+```
+
+Launch impact:
+
+- Analytics 的數字與空態說明更清楚，較不容易讓 operator 以為圖表壞掉。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Codex Session Log
 
 ## 2026-06-30 - Automations scope clarity and disabled UX sweep

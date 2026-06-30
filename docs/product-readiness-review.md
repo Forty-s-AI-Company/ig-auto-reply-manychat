@@ -49,6 +49,20 @@ Status: documentation re-org only; product readiness unchanged.
 - `AI_TEAM/` is now the source of truth for unattended workflows.
 - No product code, production DB, Meta submission, or PayUNI production action was changed.
 
+# 2026-06-30 - Analytics readability and data-state sweep
+
+Status: improved for operator trust; public paid launch status remains Hold.
+
+- Analytics 現在會清楚標出資料範圍：工作區共用或單一 IG 帳號，避免 0 值看起來像壞掉。
+- 空資料、載入失敗、沒有 IG 連線、以及本來就沒有發送 / 啟用紀錄的數值，都有對應說明或 CTA。
+- `/api/analytics` 現在提供只讀 summary 與 state，方便前端與未來自動刷新共用。
+- `npm run lint`、`npm test`、`npm run build`、`npm run test:e2e:auth` 都已通過。
+
+Readiness implication:
+
+- Analytics 的可讀性更像正式營運後台，而不是只有一排看不懂的數字。
+- Public paid launch 仍維持 Hold；這輪沒有碰 production DB、Meta review、或 PayUNI production。
+
 # InboxPilot Product Readiness Review
 
 ## 2026-06-30 - Automations scope clarity and disabled UX sweep

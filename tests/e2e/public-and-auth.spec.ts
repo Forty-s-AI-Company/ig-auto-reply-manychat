@@ -23,7 +23,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
     heading: /連接 Social Accounts/,
     bodyText: /Instagram OAuth|已連接帳號|還沒有任何 Social Login 連接/,
   },
-  { path: "/analytics", heading: /分析/, bodyText: /訊息、受眾與廣播表現|聯絡人|總訊息/ },
+  { path: "/analytics", heading: /分析/, bodyText: /訊息、受眾與廣播表現|資料範圍|聯絡人|總訊息/ },
   { path: "/automations", heading: /自動化/, bodyText: /自動化|流程|資料夾|新增/ },
   { path: "/referrals", heading: /推薦活動/, bodyText: /你的推薦碼|推薦紀錄|推薦/ },
   { path: "/billing", heading: /付款與用量/, bodyText: /目前方案|PayUNI|發票紀錄/ },
@@ -144,6 +144,15 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+  });
+
+  test("shows analytics scope and data-state guidance", async ({ page }) => {
+    await page.goto("/analytics", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("analytics-state-banner")).toBeVisible();
+    await expect(page.locator("body")).toContainText("資料範圍");
+    await expect(page.locator("body")).toContainText(/目前看整個工作區的資料|目前只看「.+」的資料/);
+    await expect(page.locator("body")).toContainText(/尚未有發送紀錄|成功 \d+ \/ 失敗 \d+/);
+    await expect(page.locator("body")).toContainText(/尚未建立流程|啟用 \d+ \/ 全部 \d+/);
   });
 
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {
