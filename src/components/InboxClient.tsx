@@ -1469,7 +1469,7 @@ function ContactPanel({
           type="button"
           disabled
           aria-disabled="true"
-          title="自動化暫停目前尚未開放"
+          title="自動化暫停屬於受控開通功能，需先完成流程級控制與稽核設計。"
           data-testid="inbox-automation-pause-disabled"
           className="h-9 w-full cursor-not-allowed rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] text-sm text-[#98a2b3]"
         >

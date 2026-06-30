@@ -1,3 +1,18 @@
+# 2026-07-01 - Inbox automation pause disabled copy polish
+
+Status: improved for Inbox disabled UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Inbox contact-panel `自動化暫停` was already disabled, but its browser title still used the vague `尚未開放` wording.
+- The title now explains that automation pause is a controlled-opening feature that needs flow-level controls and audit design.
+- Authenticated Inbox smoke covers the title copy.
+
+Launch impact:
+
+- Inbox has one fewer placeholder-feeling disabled control.
+- This does not unlock Meta, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Automations editor canvas hint polish
 
 Status: improved for Automations editor polish; public paid launch remains Hold.

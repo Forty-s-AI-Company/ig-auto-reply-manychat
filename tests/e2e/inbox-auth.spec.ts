@@ -188,6 +188,9 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-more-actions-button")).toBeDisabled();
     await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("視訊通話與更多對話操作目前先停用");
     await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("文字回覆、內部備註、指派、標籤與提醒");
+    await expect(page.getByTestId("inbox-automation-pause-disabled")).toBeDisabled();
+    await expect(page.getByTestId("inbox-automation-pause-disabled")).toHaveAttribute("title", /受控開通/);
+    await expect(page.getByTestId("inbox-automation-pause-disabled")).not.toHaveAttribute("title", /尚未開放/);
 
     await page.getByRole("button", { name: "備註", exact: true }).click();
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);
