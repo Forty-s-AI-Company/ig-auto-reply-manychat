@@ -971,3 +971,16 @@ Readiness implication:
 
 - Inbox feels less like a demo surface and more like a finished operator tool.
 - Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.
+
+## 2026-07-01 - Inbox category icon polish
+
+Status:
+
+- Inbox category navigation for hot leads and partners now uses lucide icons instead of emoji.
+- Contact summary quick classification buttons now use icon + label controls while keeping the existing tag behavior.
+- Authenticated Inbox smoke guards against the controls regressing to emoji placeholders.
+
+Readiness implication:
+
+- Inbox operator controls are more consistent with the rest of the SaaS UI.
+- Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.

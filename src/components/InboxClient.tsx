@@ -8,6 +8,8 @@ import {
   ChevronDown,
   Clock,
   Filter,
+  Flame,
+  Handshake,
   Heart,
   ImageIcon,
   Inbox,
@@ -633,8 +635,8 @@ export function InboxClient({
             </div>
             <div className="space-y-1 text-sm">
               <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => selectCategory("favorites")} />
-              <InboxNavItem active={category === "hot"} icon={<span className="text-base">🔥</span>} label="熱門名單" count={counts.hot} onClick={() => selectCategory("hot")} />
-              <InboxNavItem active={category === "partners"} icon={<span className="text-base">🤝</span>} label="合作夥伴" count={counts.partners} onClick={() => selectCategory("partners")} />
+              <InboxNavItem active={category === "hot"} icon={<Flame className="h-4 w-4" />} label="熱門名單" count={counts.hot} onClick={() => selectCategory("hot")} />
+              <InboxNavItem active={category === "partners"} icon={<Handshake className="h-4 w-4" />} label="合作夥伴" count={counts.partners} onClick={() => selectCategory("partners")} />
               {tags.length > 0 ? (
                 <>
                   <div className="my-2 border-t border-[#dfe3e8]" />
@@ -1480,11 +1482,23 @@ function ContactPanel({
 
       <PanelSection title="快速分類">
         <div className="grid grid-cols-2 gap-2">
-          <button type="button" onClick={() => toggleSystemTag(hotTag)} className="rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]">
-            🔥 {hotTag && selectedTagIds.has(hotTag.id) ? "移出熱門" : "加入熱門"}
+          <button
+            type="button"
+            onClick={() => toggleSystemTag(hotTag)}
+            data-testid="inbox-quick-hot-tag"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]"
+          >
+            <Flame className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
+            {hotTag && selectedTagIds.has(hotTag.id) ? "移出熱門" : "加入熱門"}
           </button>
-          <button type="button" onClick={() => toggleSystemTag(partnerTag)} className="rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]">
-            🤝 {partnerTag && selectedTagIds.has(partnerTag.id) ? "移出夥伴" : "加入夥伴"}
+          <button
+            type="button"
+            onClick={() => toggleSystemTag(partnerTag)}
+            data-testid="inbox-quick-partner-tag"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]"
+          >
+            <Handshake className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
+            {partnerTag && selectedTagIds.has(partnerTag.id) ? "移出夥伴" : "加入夥伴"}
           </button>
         </div>
       </PanelSection>
