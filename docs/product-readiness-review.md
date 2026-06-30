@@ -984,3 +984,15 @@ Readiness implication:
 
 - Inbox operator controls are more consistent with the rest of the SaaS UI.
 - Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.
+
+## 2026-07-01 - Analytics heading localization
+
+Status:
+
+- Analytics page eyebrow now uses Chinese copy (`分析總覽`) instead of the English `Analytics`.
+- Simple-release smoke verifies the localized heading.
+
+Readiness implication:
+
+- Analytics now better matches the Chinese-first product experience.
+- Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.

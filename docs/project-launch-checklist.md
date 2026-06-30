@@ -516,3 +516,9 @@ Current decision:
 - `[x]` Inbox quick classification buttons now use lucide icons with clear text labels.
 - `[x]` Authenticated Inbox smoke covers the quick classification icon polish.
 - `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
+
+## 2026-07-01 - Analytics heading localization
+
+- `[x]` Analytics page eyebrow is localized to `分析總覽`.
+- `[x]` Simple-release smoke covers the localized Analytics heading.
+- `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.

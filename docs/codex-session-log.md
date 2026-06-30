@@ -6192,6 +6192,31 @@ Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Analytics heading localization
+
+Task:
+
+- 收斂 Analytics 頁面的中英混用，避免正式營運版核心頁面仍顯示英文 eyebrow。
+
+Changes:
+
+- 將 Analytics 頁面 eyebrow 從 `Analytics` 改成 `分析總覽`。
+- 補 simple-release Playwright smoke，驗證頁面顯示中文標籤且不再出現英文 eyebrow。
+- PR CI 發現 Inbox smoke 既有競態：加標籤 API 的 notice 可能晚於提醒操作回來，覆蓋提醒 notice；已補上先等待標籤成功 notice 再進入提醒流程。
+
+Validation:
+
+- `npx eslint src/app/analytics/page.tsx tests/e2e/simple-release.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; known Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; known Windows Prisma DLL lock fallback reused the existing generated client.
+- `npm run test:e2e:simple`: skipped locally by authenticated smoke guard; GitHub simple-release smoke remains the real seeded browser gate.
+- PR CI retry pending after Inbox smoke stability patch.
+
+Launch impact:
+
+- UI copy polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Inbox mobile assignee smoke stability
 
 Task:

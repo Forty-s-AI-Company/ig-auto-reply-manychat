@@ -44,7 +44,7 @@ export default async function AnalyticsPage() {
       <div className="space-y-5">
         <section className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-[var(--teal-dark)]">Analytics</p>
+            <p className="text-sm font-semibold text-[var(--teal-dark)]">分析總覽</p>
             <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">訊息、受眾與廣播表現</h2>
             <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
               <span className="rounded-full border border-[var(--border-soft)] bg-white px-3 py-1 text-[var(--text-secondary)]">
