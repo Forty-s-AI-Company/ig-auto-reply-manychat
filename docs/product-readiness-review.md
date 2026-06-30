@@ -1,3 +1,16 @@
+# 2026-06-30 - Launch readiness product sweep
+
+Status: ready for private beta; public paid launch remains Hold.
+
+- 這一輪把 launch readiness 差距再對齊一次，確認目前已經沒有新的安全產品缺口要自動補進 queue。
+- Inbox / Channels / Contacts / Automations / Analytics / Billing 的 visible-but-unusable 區塊已分別收斂到較清楚的最小可用或 disabled UX。
+- 剩餘 blocker 都是外部或人工 gate：Meta App Review / Advanced Access / Business Verification、PayUNI production merchant approval、controlled enablement、第一筆低額 production smoke、與最終法務 / 支援文件 read-through。
+
+Readiness implication:
+
+- Private beta / whitelist 仍然可以 Go。
+- Public paid launch 仍然 Hold；目前不該再把 human gate 誤當成可自動完成的產品缺口。
+
 # 2026-06-30 - Inbox / Channels visible-but-unusable closeout
 
 Status: improved for beta operator trust; still one more disabled UX pass can be做 if we want every visible entry to feel equally intentional.
@@ -48,6 +61,19 @@ Status: documentation re-org only; product readiness unchanged.
 - The old root autopilot entrypoints are retired.
 - `AI_TEAM/` is now the source of truth for unattended workflows.
 - No product code, production DB, Meta submission, or PayUNI production action was changed.
+
+# 2026-06-30 - Billing checkout gate clarity
+
+Status: improved for beta operator trust; public paid launch status remains Hold.
+
+- Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。
+- sandbox 仍可直接驗證付款流程，正式站 gate 不會再像可直接送出的假按鈕。
+- `npm run lint`、`npm test`、`npm run build` 都已通過。
+
+Readiness implication:
+
+- Billing / PayUNI 的 sandbox 與 production gate 體感更清楚，少一個「按了才知道不能用」的誤導點。
+- Public paid launch 仍維持 Hold；正式站 merchant approval 與 controlled enablement 還是必要門檻。
 
 # 2026-06-30 - Analytics readability and data-state sweep
 

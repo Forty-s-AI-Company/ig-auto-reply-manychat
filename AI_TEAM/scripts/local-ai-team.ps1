@@ -14,7 +14,7 @@ param(
   [string]$TestDatabaseUrl,
   [string]$TestDirectUrl,
   [string]$LogPath,
-  [ValidateSet("general", "sleep")]
+  [ValidateSet("general", "advanced", "sleep")]
   [string]$Mode = "general"
 )
 
@@ -48,6 +48,12 @@ if ($TestDirectUrl) {
 
 $env:AI_TEAM_MODE = $Mode
 $env:AI_TEAM_RUNNER_MODE = $Mode
+
+if ($Mode -eq "advanced") {
+  $env:AI_TEAM_QA_LEVEL = "full"
+  $env:AI_TEAM_BROWSER_QA_MODEL = "Gemini 3.5 Flash"
+  $env:AI_TEAM_BROWSER_QA_FALLBACK_MODEL = "Gemini 3.5 Pro"
+}
 
 if ($EnableGitDelivery) {
   $env:AI_TEAM_ENABLE_GIT_DELIVERY = "1"
@@ -93,7 +99,7 @@ if ($QaOnly) {
   exit $LASTEXITCODE
 }
 
-$loopCommand = if ($Mode -eq "sleep") { "ai-team:loop:sleep" } else { "ai-team:loop:general" }
+$loopCommand = if ($Mode -eq "sleep") { "ai-team:loop:sleep" } elseif ($Mode -eq "advanced") { "ai-team:loop:advanced" } else { "ai-team:loop:general" }
 $loopArgs = @("run", $loopCommand, "--", "--interval=$Interval")
 
 if ($Once) {

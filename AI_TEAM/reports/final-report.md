@@ -1,3 +1,40 @@
+# 2026-06-30 - Launch readiness product sweep
+
+Status:
+
+- `Completed` for the scoped launch readiness product sweep.
+
+Completed this round:
+
+- 重新整理 launch readiness 差距，確認沒有新的安全產品缺口需要自動補進 queue。
+- 將公開 paid launch 的剩餘 blocker 收斂為清楚的 `HUMAN_REQUIRED` 項目。
+- 保持 private beta / whitelist 為 Go、public paid launch 為 Hold 的判定一致。
+
+Residual risk:
+
+- Meta App Review / Advanced Access / Business Verification 仍是人工門檻。
+- PayUNI production merchant approval、controlled enablement、第一筆低額 production smoke 仍是人工門檻。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+# 2026-06-30 - Billing / PayUNI sandbox checkout gate clarity
+
+Status:
+
+- `Completed` for the scoped Billing / PayUNI sandbox checkout gate clarity pass.
+
+Completed this round:
+
+- `src/lib/payuni.ts` 新增 `getPayuniGatewayStatus()`，把 sandbox / 正式站 / checkout enablement / disabled reason 集中成可重用的狀態 helper。
+- `src/app/billing/page.tsx` 在正式金流尚未開通時直接停用付款按鈕，並顯示原因，避免使用者先按了才知道不能送。
+- `tests/payuni-billing.test.ts` 新增 helper coverage，確認 sandbox 可用、正式站 gate 會停用、受控開通會恢復可用。
+- `npm run lint`、`npm test`、`npm run build` 都已通過。
+
+Residual risk:
+
+- `npm run test:e2e:auth` 在本機目前卡在既有 e2e admin / DB 狀態的 HTTP 401，屬於環境層問題，不是本次 billing UI 變更造成。
+- 公開正式收費仍持續 Hold，直到 PayUNI production merchant approval 與 controlled enablement 完成。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Latest - 2026-06-30 Analytics readability and data-state sweep
 
 Status:
@@ -240,3 +277,11 @@ Residual risk:
 
 - 繼續 Inbox 第四輪 visible-but-unusable audit，優先收斂 contact panel 與剩餘 bulk action UX。
 - 完成後再回到 Channels 次要控制項 audit。
+
+## 2026-06-30 - 高級模式啟動前狀態
+
+- `advanced` mode 已補成實際 runner mode，不再降回 `general`。
+- 高級模式預設 `full` QA，並會跑 Browser QA。
+- Codex CLI 仍是主開發引擎，本地模型只做摘要、review、報告、低風險建議與 deferred queue。
+- Antigravity CLI 維持 QA 角色，預設 `Gemini 3.5 Flash`，必要時才 fallback 到 `Gemini 3.5 Pro`。
+- 下一步是用可視 PowerShell 7 重新啟動高級模式，回到 Inbox / Channels / Contacts 產品功能完整性主線。

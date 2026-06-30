@@ -353,8 +353,11 @@ async function runBrowserQa() {
   const prompt = buildBrowserQaPrompt();
   const preferredModels = [
     process.env.AI_TEAM_BROWSER_QA_MODEL?.trim(),
+    "Gemini 3.5 Flash",
     "Gemini 3.5 Flash (High)",
     "Gemini 3.5 Flash (Medium)",
+    process.env.AI_TEAM_BROWSER_QA_FALLBACK_MODEL?.trim(),
+    "Gemini 3.5 Pro",
   ].filter(Boolean);
 
   let lastResult = null;

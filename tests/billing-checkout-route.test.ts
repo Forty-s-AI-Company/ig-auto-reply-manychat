@@ -67,6 +67,16 @@ describe("billing checkout route", () => {
     mocks.getClientIp.mockReturnValue("127.0.0.1");
     mocks.getPlan.mockReturnValue({ key: "creator", name: "Creator" });
     mocks.getPlanAmount.mockReturnValue(5990);
+    mocks.getPayuniConfig.mockReturnValue({
+      merchantId: "TEST_MERCHANT",
+      hashKey: "12345678901234567890123456789012",
+      hashIv: "1234567890123456",
+      version: "1.0",
+      gatewayUrl: "https://sandbox-api.payuni.com.tw/api",
+      returnUrl: "https://local.test/api/billing/payuni/return",
+      notifyUrl: "https://local.test/api/billing/payuni/notify",
+    });
+    mocks.isPayuniSandboxGateway.mockReturnValue(true);
     mocks.db.paymentOrder.findFirst.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
     mocks.createPlanInvoice.mockResolvedValue({
       id: "invoice-1",
@@ -104,5 +114,25 @@ describe("billing checkout route", () => {
     });
     expect(response.status).toBe(303);
     expect(response.headers.get("location")).toBe("http://local.test/billing?payment=success&credit=1");
+  });
+
+  it("redirects back to billing when PayUNI production is still gated", async () => {
+    mocks.createPlanInvoice.mockResolvedValue({
+      id: "invoice-2",
+      totalAmount: 5990,
+      currency: "TWD",
+    });
+    mocks.isPayuniSandboxGateway.mockReturnValue(false);
+
+    const response = await checkoutRoute.POST(
+      formRequest({
+        planKey: "creator",
+        interval: "month",
+      }),
+    );
+
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe("http://local.test/billing?payuni=production_gate_pending");
+    expect(mocks.createPayuniCheckout).not.toHaveBeenCalled();
   });
 });

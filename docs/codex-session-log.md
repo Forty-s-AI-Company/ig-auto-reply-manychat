@@ -1,3 +1,43 @@
+# 2026-06-30 - Launch readiness product sweep
+
+Task:
+
+- 整理目前產品距離 private beta / public paid launch 的差距。
+- 只把安全可自動處理的產品缺口留在 queue 的範圍內。
+- 讓外部 gate 清楚落成 `HUMAN_REQUIRED`，不要誤寫成可自動完成的任務。
+
+Result:
+
+- launch readiness 差距已重新對齊，確認目前沒有新的安全產品缺口需要補進 queue。
+- Inbox / Channels / Contacts / Automations / Analytics / Billing 的 visible-but-unusable 區塊維持在較清楚的最小可用或 disabled UX。
+- 目前剩下的 public paid launch gate 全部都是人工門檻：Meta App Review / Advanced Access / Business Verification、PayUNI production merchant approval、controlled enablement、first low-value production smoke、以及最終法務 / 支援文件複核。
+
+Launch impact:
+
+- Private beta / whitelist 仍然 Go。
+- Public paid launch 仍然 Hold；這一輪沒有碰 production DB、沒有部署 Production、也沒有把外部 gate 假裝成已完成。
+
+# 2026-06-30 - Billing checkout gate clarity
+
+Task:
+
+- 讓 Billing 頁在 PayUNI 正式金流尚未開通時不要呈現可直接送出的假付款按鈕。
+- 保留 sandbox 驗證流程可用，但把 production gate 的原因提早講清楚。
+- 補上 helper 單元測試與文件同步。
+
+Result:
+
+- `src/lib/payuni.ts` 新增 `getPayuniGatewayStatus()`，把 sandbox / 正式站 / checkout enablement / disabled reason 集中起來。
+- `src/app/billing/page.tsx` 在 production gate pending 時會直接停用付款按鈕，並在按鈕下方說明原因。
+- `tests/payuni-billing.test.ts` 補上 sandbox / 正式站 / 受控開通三種狀態的 helper coverage。
+- `npm run lint`、`npm test`、`npm run build` 通過。
+- `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態的 HTTP 401，屬於環境層問題，不是這次 billing 變更造成。
+
+Launch impact:
+
+- Billing 的 sandbox / production gate 可讀性更好。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # 2026-06-30 - Analytics readability and data-state sweep
 
 Task:
@@ -5861,6 +5901,25 @@ Validation:
 - `AI_TEAM_CODEX_SMOKE=1 node AI_TEAM/scripts/codex-dev.mjs`: passed, confirmed `codex-cli 0.134.0`.
 - `AI_TEAM_CODEX_SMOKE=1 npm run ai-team:loop:once`: passed with `codex-dev -> qa -> local-models` all PASS.
 - Visible PowerShell 7 smoke launch confirmed `pwsh -> npm -> cmd -> node AI_TEAM/scripts/ai-team-runner.mjs` process chain.
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM advanced mode wiring
+
+Task:
+
+- 將使用者定義的「高級模式」補成 AI_TEAM runner 的真實執行模式，而不是只停在提示詞或文件層。
+
+Changes:
+
+- `ai-team-runner` 現在支援 `--mode=advanced`。
+- 高級模式預設 full QA，且不會略過 Browser QA。
+- PowerShell launcher 新增 `-Mode advanced`。
+- package scripts 新增 advanced loop / once / continuous / local models 入口。
+- local models 新增 advanced assignment：Codex-first fallback，local-model assist，deferred queue。
+- Antigravity CLI QA policy 補成 Flash 優先、Pro fallback。
 
 Launch impact:
 

@@ -1,3 +1,23 @@
+# 2026-06-30 - Launch readiness product sweep
+
+- `[x]` 這一輪只整理 launch readiness 差距，不再把外部 gate 當成可以自動完成的產品任務。
+- `[x]` 目前可安全自動處理的產品缺口，前幾輪已分別收斂到 Inbox / Channels / Contacts / Automations / Analytics / Billing 各自的可用邊界與 disabled UX。
+- `[x]` 目前剩下的 public paid launch gate 都屬於 `HUMAN_REQUIRED`：Meta App Review / Advanced Access / Business Verification、PayUNI production merchant approval、controlled enablement、第一筆低額 production smoke、以及最後的法務 / 支援文件複核。
+- `[ ]` 後續若再接產品任務，只能挑仍屬於安全 UI / UX 收斂的部分，不要把 human gate 重新塞回自動化 queue。
+
+# 2026-06-30 - Billing checkout gate clarity
+
+- `[x]` Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。
+- `[x]` sandbox 仍可直接驗證付款流程，正式站 gate 不會再像可直接送出的假按鈕。
+- `[x]` `npm run lint`、`npm test`、`npm run build` 已通過。
+- `[ ]` `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態，等環境修好後再補一次 billing smoke。
+
+## 2026-06-30 - Billing / PayUNI sandbox readiness
+
+- `[x]` Billing 頁對 sandbox / production gate 的說明更清楚了。
+- `[x]` 付款按鈕在未開通正式金流時會先停用，避免假操作感。
+- `[ ]` 若後續要開正式站，仍需要 PayUNI production merchant approval 與 controlled enablement SOP。
+
 # 2026-06-30 - Inbox / Channels visible-but-unusable closeout
 
 - `[x]` Inbox contact panel `自動化暫停` 已改成真正 disabled UX。

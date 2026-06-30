@@ -1,3 +1,30 @@
+# Latest - 2026-06-30 Launch readiness product sweep
+
+Current status:
+
+- `[x]` 產品 launch readiness 的安全缺口已整理完畢，沒有再新增需要自動 queue 的產品任務。
+- `[x]` 私測可用區塊已經夠清楚；目前的公開 paid launch 差距都屬於人工 gate，而不是產品邏輯缺口。
+
+Remaining:
+
+- `[HUMAN_REQUIRED]` Meta App Review / Advanced Access / Business Verification。
+- `[HUMAN_REQUIRED]` PayUNI production merchant approval、controlled enablement、第一筆低額 production smoke。
+- `[HUMAN_REQUIRED]` 最終 Billing / Terms / Privacy / Data Deletion read-through。
+
+# Latest - 2026-06-30 Billing checkout gate clarity
+
+Current status:
+
+- `[x]` Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。
+- `[x]` sandbox 仍可直接驗證付款流程，正式站 gate 不會再像可直接送出的假按鈕。
+- `[x]` `tests/payuni-billing.test.ts`、`npm run lint`、`npm test`、`npm run build` 已通過。
+- `[ ]` `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態，等環境修好後再補一次 billing smoke。
+
+Remaining:
+
+- `[ ]` 先保留 PayUNI sandbox / controlled production gate 的文件與 UI 說明，不要提前開正式金流。
+- `[ ]` 保持 production DB、migration、Meta App Review、PayUNI production 都在人工 gate 外。
+
 # Latest - 2026-06-30 Analytics readability and data-state sweep
 
 Current status:
@@ -2071,3 +2098,17 @@ Remaining:
 
 - `[ ]` 將這套 delivery validation 接回下一個產品主題，而不是再跑流程本身。
 - `[ ]` 評估 `merge-delivery` 在一般模式是否要維持 draft gate 鎖定。
+
+## Latest - 2026-06-30 AI_TEAM high mode wiring
+
+Current status:
+
+- `[x]` Added `advanced` as a real AI_TEAM runner mode.
+- `[x]` Advanced mode uses Codex-first fallback, local-model assist, full QA, and Browser QA.
+- `[x]` Added advanced npm scripts and visible PowerShell launcher support.
+- `[x]` Documented Codex CLI model recommendations and Antigravity CLI model policy.
+
+Remaining:
+
+- `[ ]` Restart visible PowerShell 7 in advanced mode and let it continue product completeness tasks.
+- `[ ]` Watch whether Browser QA / agy can complete in the local CLI environment; if not, keep Playwright as the primary browser QA gate and record the agy failure reason.

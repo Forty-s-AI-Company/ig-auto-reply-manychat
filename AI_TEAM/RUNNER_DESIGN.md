@@ -29,9 +29,9 @@ AI_TEAM runner 現在不是單純的 QA 報告機。
    - 用本地模型做錯誤摘要、靜態 QA、code review
 4. `qa`
    - 一般模式預設 `lite`
-   - 睡覺模式預設 `full`
+   - 高級模式 / 睡覺模式預設 `full`
 5. `browser-qa`
-   - 一般模式預設略過，睡覺模式或 full QA 才跑
+   - 一般模式預設略過，高級模式 / 睡覺模式或 full QA 才跑
 6. `reporter`
    - 產出 final report、next prompt
 7. `git-delivery`
@@ -162,7 +162,7 @@ node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=depl
 
 ### full QA
 
-給睡覺模式或整批功能收尾時用。
+給高級模式、睡覺模式或整批功能收尾時用。
 
 預設內容：
 
@@ -181,7 +181,7 @@ node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=depl
 
 - 小修先 lite QA
 - 一組功能完成再 full QA
-- 睡覺模式偏向 full QA
+- 高級模式與睡覺模式偏向 full QA
 
 這比較符合真實開發節奏。
 
@@ -236,7 +236,7 @@ runner 現在有三層 lock：
 
 這些檔案是 loop 的工作記憶，不提交 git。
 
-## 一般模式 vs 睡覺模式
+## 一般模式 vs 高級模式 vs 睡覺模式
 
 ### 一般模式
 
@@ -244,6 +244,15 @@ runner 現在有三層 lock：
 - lite QA
 - 快模型整理摘要
 - 適合白天快速連跑
+
+### 高級模式
+
+- Codex CLI 主開發
+- full QA
+- Playwright browser QA
+- `agy` / Antigravity CLI fallback
+- 本地模型只做摘要、review、deferred queue 與低風險建議
+- 適合產品功能閉環、交付與需要較高把關的自動化長跑
 
 ### 睡覺模式
 

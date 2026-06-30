@@ -73,6 +73,31 @@ Codex CLI 不應該浪費在：
 | Prompt Engineer | qwen3:8b | 下一輪任務拆解與 prompt |
 | Report Writer | qwen2.5-coder:1.5b | final report / dev report 初稿 |
 
+### 高級模式
+
+用途：
+
+- Codex-first fallback
+- 一般產品功能閉環，但比一般模式跑得完整
+- Codex CLI 優先做真正產品修復與交付
+- 本地模型先做整理、摘要、拆題、報告與低風險建議
+- Codex CLI 額度不足或暫時不可用時，本地模型先把可安全處理的部分收斂，做不了的高風險任務寫入 deferred queue
+
+| 職位 | 模型 | 工作 |
+|---|---|---|
+| Error Summarizer | qwen2.5-coder:7b | 較完整的錯誤摘要與阻塞分類 |
+| Bug Fix Advisor | qwen2.5-coder:7b | 低風險修補建議，不主導高風險改碼 |
+| Code Reviewer | deepseek-coder-v2:lite | code review / 安全與維護性提示 |
+| Prompt Engineer | qwen3:8b | 下一輪主題拆解、Codex prompt、deferred queue 整理 |
+| Report Writer | qwen2.5-coder:7b | final report / launch delta 初稿 |
+
+高級模式的 Codex CLI 建議：
+
+- 大型功能重構、多檔案聯動、API / auth / tenant / data flow：`GPT-5.5`，reasoning `high`
+- 一般產品修復、稍大功能閉環：`GPT-5.4`，reasoning `medium` 到 `high`
+- 文件、摘要、prompt、backlog：`GPT-5.4 mini`，reasoning `medium`
+- 小整理或低風險建議：`GPT-5.4 mini`，reasoning `low` 到 `medium`
+
 ### 睡覺模式
 
 用途：
@@ -100,6 +125,7 @@ Browser QA 預設順序：
 
 - Playwright 可重現、可自動化、適合長跑
 - `agy` 適合補 prompt-driven 的瀏覽器檢查
+- `agy` 預設只允許 `Gemini 3.5 Flash`，需要更完整 browser QA 或 Flash 不可用時才 fallback 到 `Gemini 3.5 Pro`
 - CLI 版 Antigravity 不該當第一層 gate，避免整個 runner 被卡住
 
 ## 不可讓本地模型主導的區域

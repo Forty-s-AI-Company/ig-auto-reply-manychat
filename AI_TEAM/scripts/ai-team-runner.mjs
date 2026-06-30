@@ -21,8 +21,10 @@ const alwaysRun = process.argv.includes("--always-run");
 const noWait = process.argv.includes("--no-wait") || intervalMinutes === 0;
 const smoke = process.argv.includes("--smoke") || process.env.AI_TEAM_PIPELINE_SMOKE === "1";
 const requestedMode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1]?.trim().toLowerCase() || "";
-const runnerMode = requestedMode === "sleep" ? "sleep" : "general";
-const qaLevel = (process.env.AI_TEAM_QA_LEVEL?.trim().toLowerCase() || (runnerMode === "sleep" ? "full" : "lite")) === "full" ? "full" : "lite";
+const SUPPORTED_RUNNER_MODES = new Set(["general", "advanced", "sleep"]);
+const runnerMode = SUPPORTED_RUNNER_MODES.has(requestedMode) ? requestedMode : "general";
+const defaultQaLevel = runnerMode === "general" ? "lite" : "full";
+const qaLevel = (process.env.AI_TEAM_QA_LEVEL?.trim().toLowerCase() || defaultQaLevel) === "full" ? "full" : "lite";
 const maxCyclesArg = process.argv.find((arg) => arg.startsWith("--cycles="))?.split("=")[1];
 const parsedMaxCycles = maxCyclesArg ? Number.parseInt(maxCyclesArg, 10) : Number.POSITIVE_INFINITY;
 const maxCycles = Number.isFinite(parsedMaxCycles) && parsedMaxCycles > 0 ? parsedMaxCycles : Number.POSITIVE_INFINITY;
@@ -234,11 +236,11 @@ const PRODUCT_AUTOFILL_TASKS = [
 
 const workerTimeoutMs = {
   planner: 30 * 1000,
-  "codex-dev": runnerMode === "sleep" ? 2 * 60 * 60 * 1000 : 30 * 60 * 1000,
-  "local-model-review": runnerMode === "sleep" ? 20 * 60 * 1000 : 6 * 60 * 1000,
-  qa: runnerMode === "sleep" ? 45 * 60 * 1000 : 15 * 60 * 1000,
+  "codex-dev": runnerMode === "sleep" ? 2 * 60 * 60 * 1000 : runnerMode === "advanced" ? 60 * 60 * 1000 : 30 * 60 * 1000,
+  "local-model-review": runnerMode === "sleep" ? 20 * 60 * 1000 : runnerMode === "advanced" ? 12 * 60 * 1000 : 6 * 60 * 1000,
+  qa: runnerMode === "sleep" ? 45 * 60 * 1000 : runnerMode === "advanced" ? 30 * 60 * 1000 : 15 * 60 * 1000,
   "browser-qa": 10 * 60 * 1000,
-  reporter: runnerMode === "sleep" ? 20 * 60 * 1000 : 6 * 60 * 1000,
+  reporter: runnerMode === "sleep" ? 20 * 60 * 1000 : runnerMode === "advanced" ? 12 * 60 * 1000 : 6 * 60 * 1000,
   "git-delivery": 60 * 1000,
   "merge-delivery": 60 * 1000,
   deploy: 10 * 60 * 1000,
@@ -1321,7 +1323,7 @@ async function browserQaWorker(task) {
       taskId: task.id,
       summary: smoke
         ? "Smoke mode 確認 browser-qa worker 可產出 structured result。"
-        : "一般模式先略過 browser QA；大功能完成或睡覺模式再跑。",
+        : "一般模式先略過 browser QA；高級模式或睡覺模式會跑完整 Browser QA。",
       validation: [smoke ? "smoke-skip" : "general-mode-skip"],
       next: "reporter",
     }));

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T00:27:28.722Z",
+  "updatedAt": "2026-06-30T01:07:25.6355185Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -422,7 +422,7 @@
         "不能讓圖表或數字看起來像壞掉",
         "補 focused tests 或 smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -436,7 +436,6 @@
       "startedAt": "2026-06-30T00:11:34.264Z",
       "lastPickedAt": "2026-06-30T00:11:34.264Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T00:27:28.722Z",
       "validation": [
         "npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts",
         "npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot",
@@ -444,6 +443,113 @@
         "npm test",
         "npm run build",
         "npm run test:e2e:auth"
+      ],
+      "blockedAt": "2026-06-30T00:43:02.315Z",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
+      "lastValidation": [
+        "沒有可提交檔案。",
+        "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/analytics-readiness-autofill",
+        "scope=12",
+        "ignored-out-of-scope=6"
+      ]
+    },
+    {
+      "id": "billing-payuni-sandbox-autofill",
+      "title": "Billing / PayUNI Sandbox product readiness sweep",
+      "priority": 6,
+      "lane": "product",
+      "scope": [
+        "src/app/billing",
+        "src/app/api/billing",
+        "src/lib/payuni.ts",
+        "tests",
+        "docs/billing-affiliate-readiness.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "PayUNI 維持 Sandbox，不切 production",
+        "Billing 頁面清楚說明 Sandbox / production gate",
+        "能安全測的 checkout / return / notify path 補 smoke 或文件化",
+        "不執行正式交易"
+      ],
+      "status": "failed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T00:43:02.528Z",
+      "summary": "Billing 頁現在會在 PayUNI 仍停留在正式站且未開通時，先把付款按鈕停用並說明原因；sandbox 仍可直接驗證，正式站 gate 不再像可直接送出的按鈕。",
+      "startedAt": "2026-06-30T00:43:02.530Z",
+      "lastPickedAt": "2026-06-30T00:47:34.605Z",
+      "attempts": 2,
+      "validation": [
+        "npx eslint src/app/billing/page.tsx src/lib/payuni.ts tests/payuni-billing.test.ts",
+        "npx vitest run tests/payuni-billing.test.ts --reporter=dot",
+        "npm run lint",
+        "npm test",
+        "npm run build"
+      ],
+      "failedAt": "2026-06-30T01:03:11.128Z",
+      "lastSummary": "QA worker 失敗：ƒ /api/sequences\n├ ƒ /api/sequences/[id]\n├ ƒ /api/sequences/[id]/subscribe\n├ ƒ /api/tags\n├ ƒ /api/tags/[id]\n├ ƒ /api/webhooks/meta\n├ ƒ /api/webhooks/mock\n├ ƒ /api/webhooks/telegram\n├ ƒ /api/webhooks/whatsapp\n├ ƒ /api/workspace-scope\n├ ƒ /automations\n├ ƒ /automations/instagram-default-reply\n├ ƒ /billing\n├ ƒ /broadcasts\n├ ƒ /channels\n├ ƒ /channels/connect\n├ ƒ /channels/connect/instagram\n├ ƒ /channels/connect/instagram/switch-account\n├ ƒ /channels/connect/messenger\n├ ƒ /channels/connect/social\n├ ƒ /channels/connect/success\n├ ○ /contact\n├ ƒ /contacts\n├ ƒ /contacts/[id]\n├ ƒ /dashboard\n├ ○ /data-deletion\n├ ○ /help-center\n├ ƒ /inbox\n├ ○ /inboxpilot\n├ ƒ /knowledge-base\n├ ƒ /login\n├ ƒ /mock-tester\n├ ƒ /oauth/popup/callback\n├ ƒ /oauth/providers/mock\n├ ƒ /oauth/providers/telegram\n├ ○ /official\n├ ○ /official/v2\n├ ○ /official/v3\n├ ○ /pricing\n├ ○ /privacy-policy\n├ ƒ /profile\n├ ƒ /referrals\n├ ƒ /segments\n├ ƒ /sequences\n├ ƒ /signup\n├ ○ /status\n├ ƒ /tags\n├ ○ /templates\n├ ○ /terms-of-service\n└ ƒ /wallet\n\n\nƒ Proxy (Middleware)\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n[AI_TEAM] 執行 Antigravity Browser QA...\n[AI_TEAM] QA 完成：有失敗，請看 AI_TEAM/runtime/qa-report.md",
+      "lastWorker": "qa",
+      "lastValidation": [
+        "exit=1",
+        "qa-level=full"
+      ]
+    },
+    {
+      "id": "launch-readiness-product-sweep-autofill",
+      "title": "Launch readiness product sweep",
+      "priority": 7,
+      "lane": "product",
+      "scope": [
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "docs/fix-roadmap.md",
+        "docs/codex-session-log.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "整理產品是否已達 beta / paid launch 的差距",
+        "只把安全可自動處理的產品缺口補回 queue",
+        "外部 gate 必須標成 human required，不猜 secret、不碰 production"
+      ],
+      "status": "completed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T01:03:11.359Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-30T01:03:11.361Z",
+      "lastPickedAt": "2026-06-30T01:03:11.361Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T01:07:25.6355185Z",
+      "lastSummary": "Launch readiness 差距已重新對齊，公開 paid launch 的剩餘 blocker 全部落成 HUMAN_REQUIRED，沒有新增需要自動補進 queue 的安全產品缺口。",
+      "lastWorker": "reporter",
+      "lastValidation": [
+        "git diff --check"
       ]
     }
   ]

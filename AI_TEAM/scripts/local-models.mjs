@@ -19,7 +19,8 @@ const thisFilePath = fileURLToPath(import.meta.url);
 const onlyArg = process.argv.find((arg) => arg.startsWith("--only="))?.split("=")[1];
 const onlyKeys = new Set((onlyArg || "").split(",").map((value) => value.trim()).filter(Boolean));
 const requestedMode = process.argv.find((arg) => arg.startsWith("--mode="))?.split("=")[1]?.trim().toLowerCase() || "";
-const MODE = requestedMode === "sleep" ? "sleep" : "general";
+const SUPPORTED_MODES = new Set(["general", "advanced", "sleep"]);
+const MODE = SUPPORTED_MODES.has(requestedMode) ? requestedMode : "general";
 
 const MODEL_MODE_DEFAULTS = {
   general: {
@@ -28,6 +29,13 @@ const MODEL_MODE_DEFAULTS = {
     codeReview: "deepseek-coder-v2:lite",
     prompt: "qwen2.5-coder:7b",
     finalReport: "qwen2.5-coder:1.5b",
+  },
+  advanced: {
+    errorSummary: "qwen2.5-coder:7b",
+    bugFixer: "qwen2.5-coder:7b",
+    codeReview: "deepseek-coder-v2:lite",
+    prompt: "qwen3:8b",
+    finalReport: "qwen2.5-coder:7b",
   },
   sleep: {
     errorSummary: "qwen2.5-coder:7b",
@@ -39,7 +47,7 @@ const MODEL_MODE_DEFAULTS = {
 };
 
 export function resolveModelAssignment(mode = MODE) {
-  const normalizedMode = mode === "sleep" ? "sleep" : "general";
+  const normalizedMode = SUPPORTED_MODES.has(mode) ? mode : "general";
   const defaults = MODEL_MODE_DEFAULTS[normalizedMode];
 
   return {
@@ -54,6 +62,12 @@ export function resolveModelAssignment(mode = MODE) {
 
 const modelAssignment = resolveModelAssignment(MODE);
 
+function modeLabel(mode = modelAssignment.mode) {
+  if (mode === "sleep") return "睡覺模式";
+  if (mode === "advanced") return "高級模式";
+  return "一般模式";
+}
+
 const MODEL_PLAN = [
   {
     key: "error-summary",
@@ -62,7 +76,7 @@ const MODEL_PLAN = [
     output: runtimeFiles.errorSummary,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Error Summarizer。",
-      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
+      `目前執行模式：${modeLabel()}。`,
       "請根據以下 QA / build / test 狀態，整理成精簡繁體中文 Markdown。",
       "只輸出這三段：",
       "1. 現況摘要",
@@ -79,7 +93,7 @@ const MODEL_PLAN = [
     output: runtimeFiles.staticQa,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Bug Fixer。",
-      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
+      `目前執行模式：${modeLabel()}。`,
       "請針對目前狀態提出最小可安全修補建議。",
       "限制：不要建議 production DB、migration、Production deploy。",
       "只輸出這四段：",
@@ -98,7 +112,7 @@ const MODEL_PLAN = [
     output: runtimeFiles.codeReview,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Code Reviewer / Security Assistant。",
-      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
+      `目前執行模式：${modeLabel()}。`,
       "請從安全性、穩定性、可維護性三個面向，對目前狀態做簡短 review。",
       "只輸出這四段：",
       "1. 目前風險",
@@ -116,7 +130,7 @@ const MODEL_PLAN = [
     output: runtimeFiles.nextPrompt,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Prompt Engineer。",
-      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
+      `目前執行模式：${modeLabel()}。`,
       "請產出下一輪給 Codex 的可直接執行提示詞。",
       "用繁體中文，必須包含：目標、範圍、安全限制、驗證、完成後回報格式。",
       "請直接輸出 prompt 內容，不要加前言。",
@@ -131,7 +145,7 @@ const MODEL_PLAN = [
     output: runtimeFiles.finalReport,
     buildPrompt: (context) => [
       "你是 InboxPilot AI_TEAM 的 Final Report Writer。",
-      `目前執行模式：${modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式"}。`,
+      `目前執行模式：${modeLabel()}。`,
       "請把目前狀態整理成精簡繁體中文 Markdown。",
       "只輸出這四段：",
       "1. 本輪完成",
@@ -213,7 +227,7 @@ function collectContext() {
     "# CONTEXT",
     "",
     "## MODE",
-    modelAssignment.mode === "sleep" ? "睡覺模式" : "一般模式",
+    modeLabel(),
     "",
     "## PROJECT_STATE",
     projectState || "（空）",

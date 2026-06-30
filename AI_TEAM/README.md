@@ -54,16 +54,20 @@ AI_TEAM 是 InboxPilot 的本機無人值守開發控制層。
 
 - `npm run ai-team:models`
 - `npm run ai-team:models:general`
+- `npm run ai-team:models:advanced`
 - `npm run ai-team:models:sleep`
 
 ### 閉環 runner
 
 - `npm run ai-team:loop:once`
+- `npm run ai-team:loop:once:advanced`
 - `npm run ai-team:loop:once:sleep`
 - `npm run ai-team:loop:smoke`
 - `npm run ai-team:loop:general`
+- `npm run ai-team:loop:advanced`
 - `npm run ai-team:loop:sleep`
 - `npm run ai-team:loop:continuous`
+- `npm run ai-team:loop:continuous:advanced`
 - `npm run ai-team:loop:continuous:sleep`
 
 ## runner 真正會做什麼
@@ -170,6 +174,15 @@ node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general
 - 本地模型：快模型
 - 目的：先把 blocker 解掉、快速迭代
 
+### 高級模式
+
+- 主開發：Codex CLI
+- QA：full
+- 本地模型：輔助摘要、review、deferred queue 與低風險建議
+- Browser QA：Playwright + `agy` fallback
+- Antigravity CLI 模型：預設 `Gemini 3.5 Flash`，必要時 fallback `Gemini 3.5 Pro`
+- 目的：Codex-first fallback，適合產品功能閉環與交付
+
 ### 睡覺模式
 
 - 主開發：Codex CLI
@@ -191,6 +204,12 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 
 pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 -Mode sleep -AlwaysRun -Interval 0 -TestDatabaseUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -TestDirectUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres"
 ```
 
+### 高級模式長跑
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 -Mode advanced -AlwaysRun -Interval 0 -TestDatabaseUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -TestDirectUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres"
+```
+
 ### 只跑 QA
 
 ```powershell
@@ -201,6 +220,12 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 -Mode general -AlwaysRun -Interval 0 -EnableGitDelivery -DisableDryRun -EnableMerge -TestDatabaseUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -TestDirectUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres"
+```
+
+### 高級模式開啟真實交付
+
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File AI_TEAM/scripts/local-ai-team.ps1 -Mode advanced -AlwaysRun -Interval 0 -EnableGitDelivery -DisableDryRun -EnableMerge -TestDatabaseUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres" -TestDirectUrl "postgresql://postgres:postgres@127.0.0.1:55322/postgres"
 ```
 
 預設仍不開 `-EnableDeploy`。要部署時再明確加上，且 Production deploy 仍需另外開 `AI_TEAM_ENABLE_PRODUCTION_DEPLOY=1`。
