@@ -1,3 +1,29 @@
+# 2026-07-01 - Channels planned settings disabled UX
+
+Task:
+
+- Continue product completeness sweep after Contacts empty-state closeout.
+- Focus on Channels settings panels that were marked planned but did not expose a consistent disabled action.
+
+Changes:
+
+- Added explicit disabled controls for Channels `操作紀錄`, `序列設定`, and `轉換事件`.
+- Added authenticated route smoke coverage so planned settings remain clearly disabled instead of drifting back into text-only placeholders.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npm run build`: passed. Windows printed the known Prisma engine lock warning, and `prisma-generate-safe` reused the existing generated client.
+- `npm test`: passed.
+- `npm run test:e2e:auth -- --grep "Channels planned settings"`: skipped by the local authenticated smoke guard; CI is expected to run this path with seeded test DB.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+- No Meta App Review or PayUNI production action.
+
 # 2026-07-01 - Contacts no-filter empty-state guidance
 
 Task:

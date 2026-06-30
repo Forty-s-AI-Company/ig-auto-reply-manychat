@@ -155,6 +155,16 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText(/尚未建立流程|啟用 \d+ \/ 全部 \d+/);
   });
 
+  test("shows Channels planned settings as explicit disabled controls", async ({ page }) => {
+    await page.goto("/channels", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("channels-logs-disabled")).toBeDisabled();
+    await expect(page.getByTestId("channels-logs-disabled")).toContainText("稽核紀錄整理中");
+    await expect(page.getByTestId("channels-sequence-settings-disabled")).toBeDisabled();
+    await expect(page.getByTestId("channels-sequence-settings-disabled")).toContainText("序列設定整理中");
+    await expect(page.getByTestId("channels-conversion-events-disabled")).toBeDisabled();
+    await expect(page.getByTestId("channels-conversion-events-disabled")).toContainText("轉換事件整理中");
+  });
+
   test("shows billing sandbox gate guidance", async ({ page }) => {
     await page.goto("/billing", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: /付款與用量/ })).toBeVisible();

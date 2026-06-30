@@ -1,3 +1,10 @@
+# 2026-07-01 - Channels planned settings disabled UX
+
+- `[x]` Channels planned settings now have explicit disabled controls for operation logs, sequence settings, and conversion events.
+- `[x]` Authenticated route smoke covers these planned settings controls.
+- `[x]` `npm run lint`、`npm run build`、`npm test` passed.
+- `[ ]` Meta App Review, PayUNI production enablement, production DB mutation, and Production deployment remain manual launch gates.
+
 # 2026-07-01 - Contacts no-filter empty-state guidance
 
 - `[x]` Contacts no-filter empty-state now gives new workspaces concrete next steps: connect Instagram, open Inbox, or understand why CSV import is intentionally disabled.
