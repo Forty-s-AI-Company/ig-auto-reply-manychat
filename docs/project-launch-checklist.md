@@ -1,3 +1,10 @@
+# 2026-07-01 - Automations trigger filter
+
+- `[x]` Automations trigger dropdown now filters the overview list.
+- `[x]` Filtered empty state explains when no automations match the selected trigger / status / search.
+- `[x]` Authenticated smoke covers the trigger filter interaction.
+- `[ ]` Branch validation and PR CI still need to pass before this change is considered merged.
+
 # 2026-07-01 - Analytics broadcast gate clarity
 
 - `[x]` Analytics simple release now shows broadcast management as a disabled controlled feature instead of a full-only link.

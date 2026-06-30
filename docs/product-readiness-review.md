@@ -1,3 +1,16 @@
+# 2026-07-01 - Automations trigger filter
+
+Status: improved for Automations usability; public paid launch remains Hold.
+
+- Automations trigger filtering is now functional instead of a visible static dropdown.
+- Rows communicate their trigger type clearly, and filtered empty states explain why nothing is shown.
+- Authenticated route smoke covers this interaction.
+
+Readiness implication:
+
+- Automations has one fewer visible-but-unusable control.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Analytics broadcast gate clarity
 
 Status: improved for simple release navigation clarity; public paid launch remains Hold.

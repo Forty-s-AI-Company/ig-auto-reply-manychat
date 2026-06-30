@@ -52,6 +52,7 @@ type PreviewMode = "preview" | "test";
 type PostSelectionMode = "specific" | "all" | "next" | "continue";
 type AutomationView = "overview" | "folder" | "editor";
 type AutomationTab = "my" | "basic" | "sequences";
+type AutomationTriggerFilter = "all" | TriggerType;
 type TemplateCategory =
   | "all"
   | "grow-followers"
@@ -198,6 +199,21 @@ const stepMeta: Record<StepType, { label: string; description: string; iconName:
   condition: { label: "條件分流", description: "依訊息、標籤或欄位走不同路徑。", iconName: "branch" },
   ai_reply: { label: "AI 回覆", description: "使用知識庫或 AI 產生回覆。", iconName: "bot" },
   set_field: { label: "更新欄位", description: "儲存電子信箱、電話或其他資料。", iconName: "wand" },
+};
+
+const triggerFilterOptions: Array<{ value: AutomationTriggerFilter; label: string }> = [
+  { value: "all", label: "所有觸發條件" },
+  { value: "keyword", label: "關鍵字 / 留言" },
+  { value: "new_contact", label: "新聯絡人" },
+  { value: "manual", label: "手動觸發" },
+  { value: "webhook", label: "Webhook" },
+];
+
+const triggerTypeLabels: Record<TriggerType, string> = {
+  keyword: "關鍵字 / 留言",
+  new_contact: "新聯絡人",
+  manual: "手動觸發",
+  webhook: "Webhook",
 };
 
 const defaultSteps: AutomationStep[] = [
@@ -1486,6 +1502,7 @@ function FlowBuilderInner({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialGraph.edges);
   const [selectedNodeId, setSelectedNodeId] = useState("trigger");
   const [search, setSearch] = useState("");
+  const [triggerFilter, setTriggerFilter] = useState<AutomationTriggerFilter>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "stopped">("all");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -1509,13 +1526,14 @@ function FlowBuilderInner({
   const visibleItems = useMemo(() => {
     return items.filter((item) => {
       const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+      const matchesTrigger = triggerFilter === "all" || item.triggerType === triggerFilter;
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "active" && item.enabled) ||
         (statusFilter === "stopped" && !item.enabled);
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesTrigger && matchesStatus;
     });
-  }, [items, search, statusFilter]);
+  }, [items, search, statusFilter, triggerFilter]);
   const selectedFolder = selectedFolderId ? folders.find((folder) => folder.id === selectedFolderId) || null : null;
   const folderItems = useMemo(
     () => visibleItems.filter((item) => (selectedFolderId ? item.folderId === selectedFolderId : true)),
@@ -1861,12 +1879,18 @@ function FlowBuilderInner({
                       className="min-w-0 flex-1 bg-transparent outline-none"
                     />
                   </label>
-                  <select className="h-10 rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] px-3 text-sm text-[var(--ip-muted)] outline-none md:w-[180px]">
-                    <option>所有觸發條件</option>
-                    <option>貼文 / Reels 留言</option>
-                    <option>私訊</option>
-                    <option>限動回覆</option>
-                    <option>直播留言</option>
+                  <select
+                    value={triggerFilter}
+                    onChange={(event) => setTriggerFilter(event.target.value as AutomationTriggerFilter)}
+                    data-testid="automation-trigger-filter"
+                    aria-label="篩選自動化觸發條件"
+                    className="h-10 rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] px-3 text-sm text-[var(--ip-muted)] outline-none md:w-[180px]"
+                  >
+                    {triggerFilterOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                   <select
                     value={statusFilter}
@@ -1938,7 +1962,11 @@ function FlowBuilderInner({
               <div className="grid gap-3">
                 {folderItems.length ? (
                   folderItems.map((item) => (
-                    <article key={item.id} className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-4 shadow-sm">
+                    <article
+                      key={item.id}
+                      data-testid={`automation-item-${item.triggerType}`}
+                      className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-4 shadow-sm"
+                    >
                       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_90px_80px_130px_36px] md:items-center">
                         <button type="button" onClick={() => loadAutomation(item)} className="min-w-0 text-left">
                           <span className="flex flex-wrap items-center gap-2">
@@ -1953,7 +1981,7 @@ function FlowBuilderInner({
                           </span>
                           <span className="mt-2 block text-sm text-[var(--ip-muted-2)]">
                             {item.folder?.name ? `${item.folder.name} · ` : ""}
-                            {item.steps.length} 個步驟
+                            {triggerTypeLabels[item.triggerType] || item.triggerType} · {item.steps.length} 個步驟
                           </span>
                         </button>
                         <span className="text-sm font-medium text-[var(--ip-text)]">{item.runs?.length || 0}</span>
@@ -1966,8 +1994,14 @@ function FlowBuilderInner({
                     </article>
                   ))
                 ) : (
-                  <div className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-8 text-center text-lg text-[var(--ip-text)] shadow-sm">
-                    {emptyMessage}
+                  <div
+                    className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-8 text-center text-lg text-[var(--ip-text)] shadow-sm"
+                    data-testid="automation-list-empty"
+                  >
+                    {search || triggerFilter !== "all" || statusFilter !== "all" ? "目前沒有符合篩選條件的自動化" : emptyMessage}
+                    {search || triggerFilter !== "all" || statusFilter !== "all" ? (
+                      <p className="mt-2 text-sm font-normal text-[var(--ip-muted)]">請調整搜尋、觸發條件或狀態篩選。</p>
+                    ) : null}
                   </div>
                 )}
               </div>

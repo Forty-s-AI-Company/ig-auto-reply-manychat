@@ -138,6 +138,14 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-scope-notice")).toBeVisible();
     await expect(page.getByTestId("automation-scope-notice")).toContainText("工作區共用");
     await expect(page.locator("body")).toContainText("切換 IG 帳號只會影響看板與對話篩選");
+    await page.getByTestId("automation-trigger-filter").selectOption("manual");
+    await expect(page.getByTestId("automation-trigger-filter")).toHaveValue("manual");
+    if ((await page.getByTestId("automation-list-empty").count()) > 0) {
+      await expect(page.getByTestId("automation-list-empty")).toContainText("目前沒有符合篩選條件的自動化");
+    } else {
+      await expect(page.getByTestId("automation-item-manual").first()).toBeVisible();
+    }
+    await page.getByTestId("automation-trigger-filter").selectOption("all");
     await expect(page.getByRole("button", { name: "回收桶" })).toBeDisabled();
     await page.getByRole("button", { name: "基礎流程" }).click();
     await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();

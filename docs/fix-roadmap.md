@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Automations trigger filter
+
+Current status:
+
+- `[x]` Automations `所有觸發條件` dropdown now filters real automation rows instead of acting like a static control.
+- `[x]` Automation rows show readable trigger labels next to step count.
+- `[x]` Filtered empty state explains that search / trigger / status filters produced no matches.
+- `[x]` Added authenticated smoke coverage for trigger filtering.
+
+Remaining:
+
+- `[ ]` Run branch validation and PR CI before merge.
+- `[ ]` Continue product-completeness sweeps only for safe UI / UX ambiguity.
+
 # Latest - 2026-07-01 Analytics broadcast gate clarity
 
 Current status:
