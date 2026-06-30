@@ -178,7 +178,10 @@ test.describe("contacts authenticated smoke", () => {
     await expect(email).toHaveValue("detail-after@example.com");
     await expect(phone).toHaveValue("0922222222");
 
-    await page.getByTestId("contact-detail-tag-select").selectOption({ label: "e2e-detail-tag" });
+    const tagSelect = page.getByTestId("contact-detail-tag-select");
+    await tagSelect.selectOption({ label: "e2e-detail-tag" });
+    await expect(tagSelect).not.toHaveValue("");
+    await expect(page.getByTestId("contact-detail-add-tag")).toBeEnabled();
     await page.getByTestId("contact-detail-add-tag").click();
     await expect(page.getByRole("status")).toContainText("標籤已新增到聯絡人");
     await expect(page.locator("body")).toContainText("e2e-detail-tag");

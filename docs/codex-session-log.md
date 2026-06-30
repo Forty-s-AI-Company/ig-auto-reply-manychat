@@ -1,3 +1,25 @@
+# 2026-07-01 - Contacts detail tag smoke stability
+
+Task:
+
+- Fix the post-PR #52 master CI failure in `full-release-auth-smoke`.
+- Root cause: mobile Contacts detail smoke selected `e2e-detail-tag` and immediately clicked the add button before the controlled select had enabled the button.
+
+Changes:
+
+- Contacts detail smoke now waits for the tag select value to become non-empty and for the add-tag button to be enabled before clicking.
+
+Validation:
+
+- Pending in this branch: focused lint, build/tests as needed, PR CI.
+
+Safety:
+
+- Test-only change.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Automations editor canvas hint polish
 
 Task:
