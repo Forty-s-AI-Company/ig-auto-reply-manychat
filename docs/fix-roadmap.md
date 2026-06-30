@@ -2251,3 +2251,16 @@ Remaining:
 
 - `[ ]` 讓 PR CI 驗證 mobile Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
 - `[ ]` 回到產品主線，繼續 Contacts / Automations / Inbox visible-but-unusable audit。
+
+## Latest - 2026-07-01 Inbox contact avatar polish
+
+Current status:
+
+- `[x]` Inbox 右側聯絡人摘要不再使用固定 robot emoji placeholder。
+- `[x]` 聯絡人摘要頭像改用與對話列表一致的名稱縮寫頭像。
+- `[x]` Authenticated Inbox smoke 增加頭像可見且不含 placeholder emoji 的覆蓋。
+
+Remaining:
+
+- `[ ]` 讓 PR CI 驗證 Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
+- `[ ]` 繼續盤點 Inbox / Contacts / Automations 是否仍有 visible-but-unusable 控制項。

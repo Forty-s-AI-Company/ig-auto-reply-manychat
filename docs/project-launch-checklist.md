@@ -502,3 +502,10 @@ Current decision:
 - `[x]` Automations channel-scope expectation is documented in UI.
 - `[x]` Clean PR validation passed: targeted Vitest, `npm run lint`, `npm run build`, and local Docker PostgreSQL-backed `npm test`.
 - `[ ]` Merge only after review; deploy Production later through controlled manual deployment.
+
+## 2026-07-01 - Inbox contact avatar polish
+
+- `[x]` Inbox contact summary no longer uses a fixed robot emoji placeholder.
+- `[x]` Contact summary avatar now uses initials-based UI consistent with the conversation list.
+- `[x]` Authenticated Inbox smoke covers the avatar rendering.
+- `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
