@@ -1,3 +1,17 @@
+# 2026-07-01 - Contacts no-filter empty-state guidance
+
+Status: improved for new-workspace onboarding; public paid launch remains Hold.
+
+- Contacts no-filter empty-state now gives concrete next steps instead of only saying there are no contacts.
+- New workspaces can connect Instagram, open Inbox, or see that CSV import is intentionally disabled until field mapping, dedupe, masking, and audit controls are ready.
+- Filtered empty-state behavior remains unchanged and still focuses on clearing active filters.
+- `npx vitest run tests/contacts-empty-state.test.ts --reporter=dot`、`npm run lint`、`npm test`、`npm run build` passed.
+
+Readiness implication:
+
+- Contacts is clearer for first-time beta operators with no synced audience yet.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Billing CI render resilience
 
 Status: improved for CI / preview confidence; public paid launch remains Hold.

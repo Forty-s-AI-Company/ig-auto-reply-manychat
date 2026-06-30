@@ -1,3 +1,11 @@
+# 2026-07-01 - Contacts no-filter empty-state guidance
+
+- `[x]` Contacts no-filter empty-state now gives new workspaces concrete next steps: connect Instagram, open Inbox, or understand why CSV import is intentionally disabled.
+- `[x]` Filtered empty-state behavior remains covered and unchanged.
+- `[x]` Focused unit coverage now locks both empty-state modes.
+- `[x]` `npx vitest run tests/contacts-empty-state.test.ts --reporter=dot`、`npm run lint`、`npm test`、`npm run build` passed.
+- `[ ]` Meta App Review, PayUNI production enablement, production DB mutation, and Production deployment remain manual launch gates.
+
 # 2026-06-30 - Launch readiness product sweep
 
 - `[x]` 這一輪只整理 launch readiness 差距，不再把外部 gate 當成可以自動完成的產品任務。

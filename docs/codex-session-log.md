@@ -1,3 +1,33 @@
+# 2026-07-01 - Contacts no-filter empty-state guidance
+
+Task:
+
+- Continue safe product completeness work after PR #44 restored master CI.
+- Focus on Contacts no-filter empty-state, which still felt too passive for new workspaces with zero contacts.
+
+Changes:
+
+- Contacts empty-state copy now gives concrete next steps when no filters are active:
+  - connect Instagram,
+  - open Inbox,
+  - understand CSV import is intentionally disabled until mapping / dedupe / masking / audit are ready.
+- Filtered empty-state behavior is preserved and still focuses on clearing active filters.
+- Added focused unit coverage for both empty-state modes.
+
+Validation:
+
+- `npx vitest run tests/contacts-empty-state.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed.
+- `npm run build`: passed. Windows printed the known Prisma engine lock warning, and `prisma-generate-safe` reused the existing generated client.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+- No Meta App Review or PayUNI production action.
+
 # 2026-07-01 - PR #43 CI billing smoke and local test runner unblock
 
 Task:
