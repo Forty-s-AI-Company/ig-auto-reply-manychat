@@ -1,3 +1,15 @@
+# 2026-07-01 - Automations editor canvas hint polish
+
+Status: improved for Automations editor polish; public paid launch remains Hold.
+
+- Automations editor now uses a consistent icon hint instead of an emoji affordance on the canvas.
+- Authenticated route smoke opens a blank automation and verifies the editor hint is visible.
+
+Readiness implication:
+
+- Automations editor feels less like a temporary prototype and more like a production tool.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Contacts mobile table guidance
 
 Status: improved for Contacts mobile usability; public paid launch remains Hold.

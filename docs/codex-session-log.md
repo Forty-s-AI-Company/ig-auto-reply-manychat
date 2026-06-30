@@ -1,3 +1,29 @@
+# 2026-07-01 - Automations editor canvas hint polish
+
+Task:
+
+- Continue product completeness sweep after Contacts mobile table guidance.
+- Focus on Automations editor polish because the desktop canvas hint still used an emoji-style temporary affordance.
+
+Changes:
+
+- Replaced the emoji canvas hint with a consistent Lucide icon, bordered hint chip, and stable `data-testid`.
+- Extended authenticated route smoke to open a blank automation and verify the editor canvas hint.
+
+Validation:
+
+- `npx eslint src/components/AutomationBuilderClient.tsx tests/e2e/public-and-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; existing Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; existing local Prisma engine lock fallback reused the generated client.
+- `npm run test:e2e:auth -- --grep "Automations scope clarity"`: skipped locally by authenticated smoke guard; PR CI should run the seeded smoke.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Contacts mobile table guidance
 
 Task:
