@@ -522,3 +522,10 @@ Current decision:
 - `[x]` Analytics page eyebrow is localized to `分析總覽`.
 - `[x]` Simple-release smoke covers the localized Analytics heading.
 - `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
+
+## 2026-07-01 - Automations disabled copy polish
+
+- `[x]` Automations basic disabled actions now use controlled-opening copy.
+- `[x]` Simple-release sequence disabled action now uses full-release copy.
+- `[x]` Playwright smoke covers the new disabled copy.
+- `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.

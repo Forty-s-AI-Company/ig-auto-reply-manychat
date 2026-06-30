@@ -996,3 +996,16 @@ Readiness implication:
 
 - Analytics now better matches the Chinese-first product experience.
 - Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.
+
+## 2026-07-01 - Automations disabled copy polish
+
+Status:
+
+- Automations basic disabled actions now use `受控開通` instead of `尚未開放`.
+- Simple-release sequence disabled action now uses `完整版開放`.
+- Playwright smoke covers the clearer disabled copy.
+
+Readiness implication:
+
+- Automations reads more like a controlled product surface instead of unfinished UI.
+- Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.

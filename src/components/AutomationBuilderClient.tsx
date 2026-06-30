@@ -774,7 +774,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "對話開場白",
     description: "在 Instagram 私訊入口顯示常見問題按鈕，點擊後觸發指定回覆。",
     status: "規劃中",
-    action: "尚未開放",
+    action: "受控開通",
     disabledReason: "對話開場白需要先接好 Instagram 入口按鈕與對應流程，目前只保留說明。",
     testId: "automation-basic-disabled-opening-prompts",
   },
@@ -782,7 +782,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "限動提及回覆",
     description: "當用戶在限動提及你的帳號時，自動送出感謝訊息或啟動流程。",
     status: "規劃中",
-    action: "尚未開放",
+    action: "受控開通",
     disabledReason: "限動提及觸發還沒有完整的資料與事件串接，先不讓它看起來像已可直接使用。",
     testId: "automation-basic-disabled-story-mentions",
   },
@@ -790,7 +790,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "主選單",
     description: "建立私訊底部的選單，協助追蹤者快速找到常見資訊。",
     status: "規劃中",
-    action: "尚未開放",
+    action: "受控開通",
     disabledReason: "主選單會牽涉 Instagram 訊息入口配置，還沒整理成可直接啟用的流程。",
     testId: "automation-basic-disabled-main-menu",
   },
@@ -2065,7 +2065,7 @@ function FlowBuilderInner({
                     className="ip-button-secondary mt-5 inline-flex h-10 cursor-not-allowed items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold opacity-70"
                   >
                     <Plus className="h-4 w-4" />
-                    尚未開放
+                    完整版開放
                   </button>
                 ) : (
                   <a href="/sequences" className="ip-button-primary mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold">

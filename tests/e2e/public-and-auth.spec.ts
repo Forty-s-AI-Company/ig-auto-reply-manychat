@@ -152,6 +152,9 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toContainText("受控開通");
+    await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toContainText("受控開通");
+    await expect(page.getByTestId("automation-basic-disabled-main-menu")).toContainText("受控開通");
 
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
