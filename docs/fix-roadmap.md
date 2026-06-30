@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Automations editor canvas hint polish
+
+Current status:
+
+- `[x]` Automations editor no longer uses an emoji hint on the canvas.
+- `[x]` The canvas hint now uses the shared icon/button vocabulary and a stable test id.
+- `[x]` Authenticated smoke opens a blank automation and checks the editor hint.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Remaining:
+
+- `[ ]` PR CI still needs to run seeded authenticated smoke; local focused smoke skipped by guard.
+- `[ ]` Continue safe product-completeness sweeps only if new UI ambiguity is found.
+
 # Latest - 2026-07-01 Contacts mobile table guidance
 
 Current status:

@@ -152,6 +152,13 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByRole("button", { name: "從空白開始" }).click();
+    await expect(page.getByTestId("automation-canvas-editor-hint")).toBeVisible();
+    await expect(page.getByTestId("automation-canvas-editor-hint")).toContainText("點選節點即可編輯");
   });
 
   test("shows analytics scope and data-state guidance", async ({ page }) => {

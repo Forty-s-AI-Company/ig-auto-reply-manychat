@@ -1,3 +1,9 @@
+# 2026-07-01 - Automations editor canvas hint polish
+
+- `[x]` Automations editor canvas hint now uses a consistent Lucide icon instead of emoji copy.
+- `[x]` Authenticated smoke opens a blank automation and checks the editor hint.
+- `[ ]` Branch validation and PR CI still need to pass before this change is considered merged.
+
 # 2026-07-01 - Contacts mobile table guidance
 
 - `[x]` Contacts mobile table now includes explicit horizontal swipe guidance.

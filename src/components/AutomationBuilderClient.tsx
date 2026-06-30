@@ -2393,8 +2393,12 @@ function FlowBuilderInner({
         </aside>
 
         <main className="relative hidden min-w-0 bg-[#f3f6f8] lg:block">
-          <div className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-md bg-white px-3 py-2 text-sm text-zinc-500 shadow">
-            👇 點選節點即可編輯
+          <div
+            className="absolute left-1/2 top-3 z-10 inline-flex -translate-x-1/2 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 shadow"
+            data-testid="automation-canvas-editor-hint"
+          >
+            <MousePointer2 className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
+            點選節點即可編輯
           </div>
           {!editorOpen ? (
             <button
