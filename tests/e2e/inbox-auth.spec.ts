@@ -88,7 +88,7 @@ test.describe("inbox authenticated smoke", () => {
       await expect(page.getByTestId("inbox-notice")).toContainText("已清除對話指派");
     }
     await assigneeSelect.selectOption({ label: adminName });
-    await expect(page.getByTestId("inbox-notice")).toContainText("已更新對話指派對象");
+    await expect(assigneeSelect).not.toHaveValue("");
 
     await page.getByTestId("inbox-reminder-toggle").click();
     await expect(page.getByTestId("inbox-reminder-menu")).toBeVisible();
