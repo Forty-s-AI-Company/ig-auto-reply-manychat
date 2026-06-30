@@ -59,6 +59,8 @@ test.describe("contacts authenticated smoke", () => {
 
     await page.goto("/contacts", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
+    await expect(page.getByTestId("contacts-table-scroll-hint")).toBeVisible();
+    await expect(page.getByTestId("contacts-table-scroll-hint")).toContainText("手機版可左右滑動");
     await expect(page.locator("body")).toContainText(batchContactName);
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 B");
 
