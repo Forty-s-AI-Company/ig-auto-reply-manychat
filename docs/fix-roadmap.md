@@ -2277,3 +2277,15 @@ Remaining:
 
 - `[ ]` 讓 PR CI 驗證 Inbox smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
 - `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。
+
+## Latest - 2026-07-01 Analytics heading localization
+
+Current status:
+
+- `[x]` Analytics 頁面 eyebrow 已改成中文「分析總覽」。
+- `[x]` Simple-release smoke 增加 Analytics 頁面中文 heading 覆蓋，避免中英混用回歸。
+
+Remaining:
+
+- `[ ]` 讓 PR CI 驗證 simple-release smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
+- `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。

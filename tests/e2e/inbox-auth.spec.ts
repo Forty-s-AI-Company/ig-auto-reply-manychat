@@ -81,6 +81,7 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-quick-hot-tag")).not.toContainText("🔥");
     await expect(page.getByTestId("inbox-quick-partner-tag")).not.toContainText("🤝");
     await page.locator('section:has-text("聯絡人標籤") select').selectOption({ label: "e2e-vip" });
+    await expect(page.getByTestId("inbox-notice")).toContainText("標籤已加入聯絡人");
     if (isMobileProject) {
       await page.getByTestId("inbox-pane-detail").click();
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();

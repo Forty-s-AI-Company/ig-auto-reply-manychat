@@ -89,6 +89,8 @@ test.describe("simple release smoke", () => {
     await page.goto("/analytics", { waitUntil: "domcontentloaded" });
 
     await expect(page.getByTestId("analytics-state-banner")).toBeVisible();
+    await expect(page.locator("body")).toContainText("分析總覽");
+    await expect(page.locator("body")).not.toContainText("Analytics");
     await expect(page.getByTestId("analytics-broadcast-gated")).toBeDisabled();
     await expect(page.getByTestId("analytics-broadcast-gated")).toHaveAttribute(
       "title",
