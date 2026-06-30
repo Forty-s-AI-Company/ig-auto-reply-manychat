@@ -51,6 +51,20 @@ Status: documentation re-org only; product readiness unchanged.
 
 # InboxPilot Product Readiness Review
 
+## 2026-06-30 - Automations scope clarity and disabled UX sweep
+
+Status: improved for beta operator trust; public paid launch status remains Hold.
+
+- Automations 頁面現在會清楚說明目前是工作區共用 scope，不會因左側 IG 帳號切換就讓人誤以為已經做成 per-channel automation data model。
+- 頁面與 builder 都補上 scope banner，並會帶出目前選擇的 IG 帳號名稱與 release note。
+- 回收桶、幾個尚未支援的 basic automations、以及 simple release 的序列入口都改成真正 disabled UX。
+- `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:auth`、`npm run test:e2e:simple` 都已通過。
+
+Readiness implication:
+
+- Automations 的可理解性比前一版更好，beta operator 不容易把 workspace scope 誤認成 channel scope。
+- Public paid launch 仍維持 Hold；如果未來要真的拆成 per-channel automation scope，還需要先補資料模型與 migration。
+
 ## 2026-06-30 - Contacts product completeness sweep
 
 Status: improved for operator trust; public paid launch status remains Hold.

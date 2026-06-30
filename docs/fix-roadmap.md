@@ -1,5 +1,20 @@
 # InboxPilot Fix Roadmap
 
+## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep
+
+Current status:
+
+- `[x]` Automations 頁面現在會清楚說明目前是工作區共用 scope，不會因左側 IG 帳號切換就看起來像分成不同 automation data model。
+- `[x]` 頁面與 builder 都補上 scope banner，並帶出目前選擇的 IG 帳號名稱與 release note。
+- `[x]` 回收桶、幾個尚未支援的 basic automations，以及 simple release 的序列入口都改成清楚 disabled UX。
+- `[x]` `tests/e2e/public-and-auth.spec.ts`、`tests/e2e/simple-release.spec.ts`、`tests/automation-scope-policy.test.ts` 都已補 smoke / unit coverage。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:auth`、`npm run test:e2e:simple` 都已通過。
+
+Remaining:
+
+- `[ ]` 如果後續要真的做 per-channel automation scope，先補資料模型與 migration，再談 UI 切分。
+- `[ ]` 保持 production DB、migration、Meta App Review、PayUNI production 都在人工 gate 外。
+
 ## Latest - 2026-06-30 Contacts product completeness sweep
 
 Current status:

@@ -133,6 +133,19 @@ test.describe("authenticated route smoke", () => {
     }
   });
 
+  test("shows Automations scope clarity and disabled controls", async ({ page }) => {
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("automation-scope-notice")).toBeVisible();
+    await expect(page.getByTestId("automation-scope-notice")).toContainText("工作區共用");
+    await expect(page.locator("body")).toContainText("切換 IG 帳號只會影響看板與對話篩選");
+    await expect(page.getByRole("button", { name: "回收桶" })).toBeDisabled();
+    await page.getByRole("button", { name: "基礎流程" }).click();
+    await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+  });
+
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {
     test.skip(!testInfo.project.name.includes("mobile"), "Mobile admin menu smoke only applies to mobile viewport projects.");
 

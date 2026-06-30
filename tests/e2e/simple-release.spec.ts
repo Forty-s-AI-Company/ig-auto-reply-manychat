@@ -54,6 +54,21 @@ test.describe("simple release smoke", () => {
     await expect(page.locator("body")).not.toContainText("WhatsApp");
   });
 
+  test("shows Automations scope clarity and gates simple-release sequences", async ({ page }) => {
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+
+    await expect(page.getByTestId("automation-scope-notice")).toBeVisible();
+    await expect(page.getByTestId("automation-scope-notice")).toContainText("工作區共用");
+    await expect(page.locator("body")).toContainText("切換 IG 帳號只會影響看板與對話篩選");
+    await page.getByRole("button", { name: "序列流程" }).click();
+    await expect(page.getByTestId("automation-sequence-disabled")).toBeDisabled();
+    await expect(page.getByTestId("automation-sequence-disabled")).toHaveAttribute(
+      "title",
+      "序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。",
+    );
+    await expect(page.locator("body")).toContainText("目前只是把範圍說清楚，不是假裝序列已經在簡版可直接使用。");
+  });
+
   test("gates billing with dashboard feature notice", async ({ page }) => {
     const response = await page.request.get("/billing", {
       maxRedirects: 0,

@@ -6,5 +6,7 @@ describe("automation scope policy", () => {
     expect(AUTOMATION_SCOPE_MODE).toBe("workspace");
     expect(getAutomationScopeNotice("channel-a")).toContain("工作區共用");
     expect(getAutomationScopeNotice("channel-a")).toContain("資料模型與 migration");
+    expect(getAutomationScopeNotice("channel-a")).toContain("channel-a");
+    expect(getAutomationScopeNotice()).toContain("整個工作區");
   });
 });

@@ -1,5 +1,51 @@
 # Codex Session Log
 
+## 2026-06-30 - Automations scope clarity and disabled UX sweep
+
+Task:
+
+- 把 Automations 的 scope 邊界說清楚，避免使用者誤以為左側 IG 帳號切換就等於 automation data model 已經按帳號隔離。
+- 將看得到但尚未支援的入口改成清楚 disabled UX，特別是回收桶、幾個 basic automations 與 simple release 的序列入口。
+- 補上 focused tests / smoke，確保 full release 與 simple release 的 Automations 說明都能被驗到。
+
+Result:
+
+- `src/components/AutomationScopeBanner.tsx` 新增共用 scope banner，讓 Automations 與預設回覆頁可共用一致的工作區共用說明。
+- `src/lib/automation-scope-policy.ts` 的 `getAutomationScopeNotice()` 現在會在有選到 IG 帳號時直接把帳號名稱寫進文案。
+- `src/app/automations/page.tsx` 與 `src/app/automations/instagram-default-reply/page.tsx` 都會讀取目前選擇的 IG 帳號名稱，再顯示對應 scope 說明。
+- `src/components/AutomationBuilderClient.tsx` 已把回收桶、更多操作、幾個尚未支援的 basic automations，以及 simple release 的序列入口改成清楚 disabled UX。
+- `tests/automation-scope-policy.test.ts`、`tests/e2e/public-and-auth.spec.ts`、`tests/e2e/simple-release.spec.ts` 都補上了對應驗證。
+
+Validation:
+
+```text
+npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/automation-scope-policy.test.ts --reporter=dot
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+
+$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Automations 的 scope 說明與 disabled UX 比前一版更不容易誤導 operator。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## 2026-06-30 - Contacts product completeness sweep
 
 Task:

@@ -1,5 +1,66 @@
 # Dev Report
 
+## Latest - 2026-06-30 Automations scope clarity and disabled UX sweep
+
+Current status:
+
+- `[x]` Automations 頁面現在會清楚說明流程是工作區共用，左側 IG 帳號切換不會把 automation data model 切成不同帳號各一份。
+- `[x]` 頁面與 builder 都有 scope banner，並會帶出目前選擇的 IG 帳號名稱與 release note，避免使用者誤以為 scope 已完整依帳號隔離。
+- `[x]` 原本看起來像可直接使用的入口，現在改成 disabled UX 或明確說明，包含回收桶、幾個尚未支援的 basic automations，以及 simple release 下的序列入口。
+- `[x]` `tests/e2e/public-and-auth.spec.ts` 與 `tests/e2e/simple-release.spec.ts` 已補上 Automations scope / disabled UX smoke。
+
+What changed:
+
+- `src/components/AutomationScopeBanner.tsx`
+  - 新增共用 scope banner，讓 Automations 與預設回覆頁面可以共用同一種工作區共用說明樣式。
+- `src/lib/automation-scope-policy.ts`
+  - `getAutomationScopeNotice()` 現在會在有選到 IG 帳號時直接把帳號名稱寫進說明，並維持資料模型與 migration 的提醒。
+- `src/app/automations/page.tsx`
+  - 讀取目前選擇的 IG 帳號與 release mode，傳給 builder 顯示更精準的 scope 文案。
+- `src/app/automations/instagram-default-reply/page.tsx`
+  - 同步補上 scope banner，讓預設回覆頁也不會看起來像每個 IG 帳號各自一套 automation scope。
+- `src/components/AutomationBuilderClient.tsx`
+  - 基礎流程裡幾個尚未支援的入口改成 disabled UX。
+  - 回收桶與更多操作改成真正 disabled，不再像假按鈕。
+  - simple release 的序列入口改成 disabled，並補上明確原因文案。
+  - 預覽按鈕現在會切到 preview 並捲到預覽區。
+- `tests/automation-scope-policy.test.ts`
+  - 補上帳號名稱與無選擇狀態的文案斷言。
+- `tests/e2e/public-and-auth.spec.ts`
+  - 補上 Authenticated Automations smoke，驗證 scope banner 與 disabled controls。
+- `tests/e2e/simple-release.spec.ts`
+  - 補上 simple release Automations smoke，驗證序列 disabled gate。
+
+Validation:
+
+```text
+npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts
+Result: passed.
+
+npx vitest run tests/automation-scope-policy.test.ts --reporter=dot
+Result: passed.
+
+npm run test:e2e:auth
+Result: passed.
+
+$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple
+Result: passed.
+
+npm run lint
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm test
+Result: passed.
+```
+
+Launch impact:
+
+- Automations 的 scope 邊界與 disabled UX 都更清楚了，較不會誤導使用者以為帳號切換會直接拆分 automation 資料模型。
+- No production DB mutation, migration, Production deployment, Meta App Review submission, or PayUNI production change was performed.
+
 ## Latest - 2026-06-30 Contacts product completeness sweep
 
 Current status:

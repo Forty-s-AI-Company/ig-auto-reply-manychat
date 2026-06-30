@@ -23,6 +23,13 @@
 
 # Project Launch Checklist
 
+## 2026-06-30 - Automations scope clarity and disabled UX sweep
+
+- `[x]` Automations 現在會明確說明流程是工作區共用，避免使用者誤以為左側 IG 帳號切換就代表 automation data model 已分帳號隔離。
+- `[x]` 回收桶、幾個尚未支援的 basic automations、以及 simple release 的序列入口都改成真正 disabled UX。
+- `[x]` `npm run lint`、`npm run build`、`npm test`、`npm run test:e2e:auth`、`npm run test:e2e:simple` 都已通過。
+- `[ ]` 若後續要改成 per-channel automation scope，需先補資料模型與 migration，再重新評估 launch 範圍。
+
 ## 2026-06-30 - Channels / Connect visible-but-unusable sweep
 
 - `[x]` Channels / Connect 現在把可連線 / 規劃中 / 暫停中的入口分流得更清楚，降低把未開放平台誤認成可直接授權的機率。

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T04:05:00.000Z",
+  "updatedAt": "2026-06-30T00:00:38.1259921Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -320,7 +320,7 @@
         "暫時不支援的操作改為清楚 disabled UX",
         "補 focused tests 或 authenticated Playwright smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -334,16 +334,65 @@
       "startedAt": "2026-06-29T23:17:38.354Z",
       "lastPickedAt": "2026-06-29T23:17:38.354Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T04:05:00.000Z",
-      "lastSummary": "Contacts product completeness sweep 已完成，segment preview、batch tag hint、same-origin guard 與 deterministic smoke 都已收斂。",
-      "lastWorker": "reporter",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
       "lastValidation": [
-        "npx eslint src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/app/api/contacts/[id]/fields/route.ts tests/e2e/contacts-auth.spec.ts tests/tenant-isolation-routes.test.ts",
-        "npx vitest run tests/tenant-isolation-routes.test.ts --reporter=dot",
+        "沒有可提交檔案。",
+        "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/contacts-product-completeness-autofill",
+        "scope=13"
+      ],
+      "blockedAt": "2026-06-29T23:41:34.016Z"
+    },
+    {
+      "id": "automations-scope-clarity-autofill",
+      "title": "Automations scope clarity and disabled UX sweep",
+      "priority": 4,
+      "lane": "product",
+      "scope": [
+        "src/app/automations",
+        "src/app/api/automations",
+        "tests",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "Automations 頁面清楚說明目前 workspace / channel scope 行為",
+        "看得到但尚未支援的操作改成 disabled UX",
+        "不要讓使用者誤以為 sidebar IG channel 已完整隔離 automation data model",
+        "補 focused tests 或 smoke"
+      ],
+      "status": "completed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-29T23:41:34.121Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-29T23:41:34.122Z",
+      "lastPickedAt": "2026-06-29T23:41:34.122Z",
+      "attempts": 1,
+      "completedAt": "2026-06-30T00:00:38.1259921Z",
+      "validation": [
+        "npx eslint src/app/automations/page.tsx src/app/automations/instagram-default-reply/page.tsx src/components/AutomationScopeBanner.tsx src/components/AutomationBuilderClient.tsx src/lib/automation-scope-policy.ts tests/automation-scope-policy.test.ts tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts",
+        "npx vitest run tests/automation-scope-policy.test.ts --reporter=dot",
+        "npm run test:e2e:auth",
+        "$env:INBOXPILOT_RELEASE_CHANNEL='simple'; npm run test:e2e:simple",
+        "npm run lint",
         "npm run build",
-        "npm run test:e2e:contacts",
         "npm test"
-      ]
+      ],
+      "summary": "Automations 已補上工作區共用 scope banner、selected IG 帳號提示、simple release 序列 disabled UX，並以 lint / vitest / auth / simple / build / test 驗證通過。"
     }
   ]
 }
