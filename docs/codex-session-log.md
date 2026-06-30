@@ -6217,6 +6217,31 @@ Launch impact:
 
 - UI copy polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Automations disabled copy polish
+
+Task:
+
+- 收斂 Automations disabled controls 的「尚未開放」字眼，避免使用者覺得是半成品或假按鈕。
+
+Changes:
+
+- 基礎流程中仍需 Meta / IG 平台能力的 disabled actions 改成「受控開通」。
+- Simple release 的序列 disabled action 改成「完整版開放」，與 release gating 說法一致。
+- 補 Playwright smoke，驗證基礎流程 disabled controls 與 simple-release 序列按鈕顯示新的清楚文案。
+
+Validation:
+
+- `npx eslint src/components/AutomationBuilderClient.tsx tests/e2e/public-and-auth.spec.ts tests/e2e/simple-release.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; known Windows Vitest batch crash was isolated by one-by-one rerun, and known Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; known Windows Prisma DLL lock fallback reused the existing generated client.
+- `npm run test:e2e:auth`: public smoke passed locally; authenticated smoke skipped locally by guard.
+- `npm run test:e2e:simple`: skipped locally by authenticated smoke guard; GitHub simple-release smoke remains the real seeded browser gate.
+
+Launch impact:
+
+- UI copy polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Inbox mobile assignee smoke stability
 
 Task:

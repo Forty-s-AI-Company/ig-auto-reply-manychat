@@ -2289,3 +2289,16 @@ Remaining:
 
 - `[ ]` 讓 PR CI 驗證 simple-release smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
 - `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。
+
+## Latest - 2026-07-01 Automations disabled copy polish
+
+Current status:
+
+- `[x]` Automations 基礎流程 disabled actions 不再使用「尚未開放」，改成「受控開通」。
+- `[x]` Simple release 序列 disabled action 改成「完整版開放」。
+- `[x]` Playwright smoke 覆蓋新 disabled copy，避免回到半成品字眼。
+
+Remaining:
+
+- `[ ]` 讓 PR CI 驗證 auth / simple smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
+- `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。

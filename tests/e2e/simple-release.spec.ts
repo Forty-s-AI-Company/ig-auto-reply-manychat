@@ -62,6 +62,7 @@ test.describe("simple release smoke", () => {
     await expect(page.locator("body")).toContainText("切換 IG 帳號只會影響看板與對話篩選");
     await page.getByRole("button", { name: "序列流程" }).click();
     await expect(page.getByTestId("automation-sequence-disabled")).toBeDisabled();
+    await expect(page.getByTestId("automation-sequence-disabled")).toContainText("完整版開放");
     await expect(page.getByTestId("automation-sequence-disabled")).toHaveAttribute(
       "title",
       "序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。",
