@@ -1,3 +1,10 @@
+# 2026-07-01 - Analytics broadcast gate clarity
+
+- `[x]` Analytics simple release now shows broadcast management as a disabled controlled feature instead of a full-only link.
+- `[x]` Full release still keeps the real `/broadcasts` management link.
+- `[x]` Simple-release smoke covers the disabled analytics broadcast control.
+- `[ ]` Branch validation and PR CI still need to pass before this change is considered merged.
+
 # 2026-07-01 - Referrals light theme polish
 
 - `[x]` Referrals page now uses the shared light admin card style.
