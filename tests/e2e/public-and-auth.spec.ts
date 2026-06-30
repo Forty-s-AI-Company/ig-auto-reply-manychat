@@ -172,6 +172,14 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText(/受控開通|正式站尚未開通自動扣款|目前付款會先走 sandbox/);
   });
 
+  test("shows Referrals in the shared light dashboard style", async ({ page }) => {
+    await page.goto("/referrals", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("referrals-hero-card")).toBeVisible();
+    await expect(page.getByTestId("referrals-url")).toContainText(/ref=|邀請|http/);
+    await expect(page.getByTestId("referrals-records-card")).toBeVisible();
+    await expect(page.locator("body")).toContainText(/目前推薦活動只記錄邀請連結|有效推薦會讓雙方/);
+  });
+
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {
     test.skip(!testInfo.project.name.includes("mobile"), "Mobile admin menu smoke only applies to mobile viewport projects.");
 

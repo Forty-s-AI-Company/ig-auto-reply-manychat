@@ -1,3 +1,27 @@
+# 2026-07-01 - Referrals light theme polish
+
+Task:
+
+- Continue product completeness sweep after Channels planned settings closeout.
+- Focus on Referrals page visual consistency because it still used a dark card style inside the light admin workspace.
+
+Changes:
+
+- Reworked `/referrals` into the shared light dashboard card style.
+- Kept simple release wording clear: referral links and trial bonuses are active, affiliate cash rewards remain unavailable.
+- Added authenticated route smoke coverage for the Referrals hero card, referral URL, and records card.
+
+Validation:
+
+- Pending in this branch: lint, build, tests, and PR CI.
+
+Safety:
+
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+- No PayUNI production change.
+
 # 2026-07-01 - Channels planned settings disabled UX
 
 Task:
