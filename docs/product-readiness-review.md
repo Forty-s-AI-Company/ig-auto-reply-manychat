@@ -1,3 +1,16 @@
+# 2026-07-01 - Billing CI render resilience
+
+Status: improved for CI / preview confidence; public paid launch remains Hold.
+
+- Billing page now renders PayUNI gateway state without requiring checkout secrets, so full-release smoke can validate the surface even when merchant credentials are intentionally absent.
+- Checkout submission still requires PayUNI merchant/hash secrets; this is only a render/readiness fix, not a production payment enablement.
+- Windows local `npm test` now handles the known Vitest batch access-violation pattern when diagnostic single-file reruns all pass.
+
+Readiness implication:
+
+- Private beta / whitelist remains Go.
+- Public paid launch still depends on PayUNI production merchant approval, controlled enablement, and low-value production smoke.
+
 # 2026-06-30 - Launch readiness product sweep
 
 Status: ready for private beta; public paid launch remains Hold.

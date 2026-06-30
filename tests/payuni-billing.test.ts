@@ -79,6 +79,18 @@ describe("PayUNI billing callback", () => {
     expect(enabledProductionStatus.detail).toContain("正式站已受控開通");
   });
 
+  it("can describe the gateway state even when billing secrets are unavailable", () => {
+    vi.unstubAllEnvs();
+    vi.stubEnv("PAYUNI_GATEWAY_URL", "https://payuni.com.tw/api");
+
+    const status = getPayuniGatewayStatus();
+
+    expect(status.label).toBe("PayUNI 正式站");
+    expect(status.checkoutEnabled).toBe(false);
+    expect(status.checkoutDisabledReason).toContain("正式金流尚未開通");
+    expect(status.detail).toContain("正式站尚未開通自動扣款");
+  });
+
   it("marks invoice paid and activates subscription once", async () => {
     const workspace = await db.workspace.create({
       data: { id: "billing-workspace", name: "Billing Workspace", slug: "billing-workspace" },

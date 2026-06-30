@@ -1,5 +1,17 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-01 - PayUNI gateway status without checkout secrets
+
+- `[x]` Billing page can now describe PayUNI sandbox / production gate state without requiring merchant/hash secrets at render time.
+- `[x]` Checkout creation still requires `PAYUNI_MERCHANT_ID`、`PAYUNI_HASH_KEY`、`PAYUNI_HASH_IV`，沒有放寬真正付款流程的安全邊界。
+- `[x]` Added regression coverage for missing billing secrets during gateway-state display.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Billing launch implication:
+
+- CI and preview smoke can verify the Billing surface without live merchant credentials.
+- Public paid launch remains Hold until PayUNI production merchant approval, controlled enablement, and first low-value production smoke are manually approved.
+
 # 2026-06-30 - Billing checkout gate clarity
 
 - `[x]` Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。

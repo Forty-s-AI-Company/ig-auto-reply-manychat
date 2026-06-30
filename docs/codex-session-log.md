@@ -1,3 +1,38 @@
+# 2026-07-01 - PR #43 CI billing smoke and local test runner unblock
+
+Task:
+
+- 修正 PR #43 的 `full-release-auth-smoke` 失敗。
+- 保持 PayUNI production 關閉，不碰 production DB、不部署 Production、不跑 migration/db push。
+- 讓本機 Windows `npm test` 不再因 Vitest batch-level access violation 而卡住安全交付。
+
+Result:
+
+- GitHub Actions log 顯示 `/billing` smoke 失敗根因是 CI 沒有 PayUNI merchant secrets 時，`getPayuniGatewayStatus()` 仍間接呼叫 `getPayuniConfig()`，導致 server render 500。
+- `src/lib/payuni.ts` 現在讓 gateway 狀態描述只讀取 gateway URL / production gate，不要求 `PAYUNI_MERCHANT_ID`、`PAYUNI_HASH_KEY`、`PAYUNI_HASH_IV`。
+- 真正建立 checkout 的 `createPayuniCheckout()` 仍會要求 PayUNI secrets，因此不會放寬付款安全邊界。
+- `tests/payuni-billing.test.ts` 補上「缺少 billing secrets 仍可描述 gateway state」coverage。
+- `scripts/run-tests.mjs` 對 Windows `3221225477` batch crash 增加保守容錯：只有在所有單檔診斷重跑都通過時才繼續，真正的單檔失敗仍會 fail。
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npm test
+Result: passed across all 9 batches.
+
+npm run build
+Result: passed. Prisma generate safe fallback reused the existing generated client because the local Prisma engine DLL was locked by another Node process.
+```
+
+Launch impact:
+
+- Billing page should render in CI even when PayUNI checkout secrets are intentionally absent.
+- Public paid launch remains Hold; PayUNI production merchant approval and controlled enablement are still manual gates.
+- No production DB mutation, migration, Production deployment, Meta App Review, or PayUNI production action was performed.
+
 # 2026-06-30 - Launch readiness product sweep
 
 Task:

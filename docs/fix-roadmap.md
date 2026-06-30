@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 PR #43 billing smoke and Windows test runner unblock
+
+Current status:
+
+- `[x]` PR #43 `full-release-auth-smoke` root cause identified: `/billing` rendered 500 when PayUNI merchant/hash secrets were intentionally absent in CI.
+- `[x]` PayUNI gateway status display no longer requires checkout secrets; checkout creation still requires secrets.
+- `[x]` Windows `npm test` runner now treats `3221225477` as batch-level instability only when every diagnostic single-file rerun passes.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Remaining:
+
+- `[ ]` Push PR #43 updates and re-check GitHub CI `full-release-auth-smoke`.
+- `[ ]` Keep PayUNI production enablement as a manual launch gate.
+
 # Latest - 2026-06-30 Launch readiness product sweep
 
 Current status:

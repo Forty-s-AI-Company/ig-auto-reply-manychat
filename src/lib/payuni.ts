@@ -52,6 +52,10 @@ function appUrl() {
   return process.env.APP_URL?.replace(/\/$/, "") || "http://localhost:3041";
 }
 
+function payuniGatewayUrl() {
+  return (process.env.PAYUNI_GATEWAY_URL?.trim() || "https://sandbox-api.payuni.com.tw/api").replace(/\/$/, "");
+}
+
 function resolveGatewayAction(rawGatewayUrl: string) {
   const normalized = rawGatewayUrl.replace(/\/$/, "");
   return normalized.endsWith("/upp") ? normalized : `${normalized}/upp`;
@@ -68,14 +72,14 @@ export function getPayuniConfig(): PayuniConfig {
     hashKey: requiredEnv("PAYUNI_HASH_KEY"),
     hashIv: requiredEnv("PAYUNI_HASH_IV"),
     version: process.env.PAYUNI_VERSION?.trim() || "1.0",
-    gatewayUrl: (process.env.PAYUNI_GATEWAY_URL?.trim() || "https://sandbox-api.payuni.com.tw/api").replace(/\/$/, ""),
+    gatewayUrl: payuniGatewayUrl(),
     returnUrl: process.env.PAYUNI_RETURN_URL?.trim() || `${appUrl()}/api/billing/payuni/return`,
     notifyUrl: process.env.PAYUNI_NOTIFY_URL?.trim() || `${appUrl()}/api/billing/payuni/notify`,
   };
 }
 
 export function getPayuniGatewayStatus(
-  config: Pick<PayuniConfig, "gatewayUrl"> = getPayuniConfig(),
+  config: Pick<PayuniConfig, "gatewayUrl"> = { gatewayUrl: payuniGatewayUrl() },
   productionEnabled = process.env.PAYUNI_ALLOW_PRODUCTION === "true",
 ): PayuniGatewayStatus {
   const sandbox = isPayuniSandboxGateway(config.gatewayUrl);
