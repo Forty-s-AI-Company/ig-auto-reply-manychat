@@ -6144,6 +6144,30 @@ Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Inbox contact avatar polish
+
+Task:
+
+- 收斂 Inbox 右側聯絡人摘要的 placeholder 感，避免靜態 emoji 頭像讓使用者誤以為功能仍是 demo 狀態。
+
+Changes:
+
+- 將 Inbox 聯絡人摘要的大頭貼從固定 `🤖` 改成依聯絡人名稱產生的縮寫頭像。
+- 延伸既有 `Avatar` 元件支援 large size 與 smoke test id，維持與對話列表頭像一致的品牌色漸層。
+- 補 Inbox authenticated smoke，驗證聯絡人頭像可見且不再顯示 robot placeholder。
+
+Validation:
+
+- `npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed; known Windows Vitest batch crash was isolated by one-by-one rerun, and known Meta webhook audit mock stderr remains non-fatal.
+- `npm run build`: passed; known Windows Prisma DLL lock fallback reused the existing generated client.
+- `npm run test:e2e:inbox`: skipped locally by authenticated smoke guard; GitHub full-release auth smoke remains the real seeded browser gate.
+
+Launch impact:
+
+- UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Inbox mobile assignee smoke stability
 
 Task:

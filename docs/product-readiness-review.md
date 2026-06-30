@@ -958,3 +958,16 @@ Readiness implication:
 
 - This reduces confusion for multi-account IG beta testing.
 - Public paid launch status does not change; Meta App Review and PayUNI production go-live remain manual external gates.
+
+## 2026-07-01 - Inbox contact avatar polish
+
+Status:
+
+- Inbox contact summary now uses the same initials-based avatar pattern as the conversation list.
+- The previous fixed robot placeholder has been removed from the operator-facing contact panel.
+- Authenticated Inbox smoke covers the avatar rendering so this does not regress back to a placeholder.
+
+Readiness implication:
+
+- Inbox feels less like a demo surface and more like a finished operator tool.
+- Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.

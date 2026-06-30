@@ -74,6 +74,8 @@ test.describe("inbox authenticated smoke", () => {
     } else {
       await expect(page.getByText("E2E 測試聯絡人 A").first()).toBeVisible();
     }
+    await expect(page.getByTestId("inbox-contact-avatar")).toBeVisible();
+    await expect(page.getByTestId("inbox-contact-avatar")).not.toContainText("🤖");
     await expect(page.getByTestId("inbox-automation-pause-disabled")).toBeDisabled();
     await expect(page.locator('section:has-text("自動化")')).toContainText("自動化暫停需要先完成流程級控制與稽核設計");
     await page.locator('section:has-text("聯絡人標籤") select').selectOption({ label: "e2e-vip" });

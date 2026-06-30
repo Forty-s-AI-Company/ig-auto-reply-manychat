@@ -1231,12 +1231,24 @@ function ComposerIconButton({
   );
 }
 
-function Avatar({ name, small = false }: { name: string; small?: boolean }) {
+function Avatar({
+  name,
+  small = false,
+  large = false,
+  testId,
+}: {
+  name: string;
+  small?: boolean;
+  large?: boolean;
+  testId?: string;
+}) {
   return (
     <div
+      data-testid={testId}
       className={`flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-300 to-amber-500 font-bold text-white ${
-        small ? "h-7 w-7 text-xs" : "h-10 w-10 text-sm"
+        large ? "h-28 w-28 text-3xl" : small ? "h-7 w-7 text-xs" : "h-10 w-10 text-sm"
       }`}
+      aria-label={`${name} 的聯絡人頭像`}
     >
       {initials(name)}
     </div>
@@ -1434,7 +1446,9 @@ function ContactPanel({
       </div>
 
       <div className="border-b border-[#d7dbe0] px-4 py-6 text-center">
-        <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-lg bg-[#f9aa2b] text-4xl">🤖</div>
+        <div className="flex justify-center">
+          <Avatar name={selected.contact.displayName} large testId="inbox-contact-avatar" />
+        </div>
         <p className={`mt-4 text-sm font-medium ${consentState.tone}`}>{consentState.label}</p>
         <p className="mt-1 text-xs text-[#98a2b3]">訂閱狀態管理將在聯絡人詳情頁完成，這裡先維持唯讀摘要。</p>
         <p className="mt-2 text-sm text-[#667085]">聯絡時間：未知</p>
