@@ -5,6 +5,7 @@ import { Filter, Plus, Search, Tags, Users, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ContactTagCreateButton } from "@/components/ContactTagCreateButton";
+import { getContactsEmptyState } from "@/lib/contacts-empty-state";
 
 type ContactTag = {
   id: string;
@@ -94,6 +95,7 @@ export function ContactsListClient({
   }, [q, status, activeStatusLabel, activeTag]);
   const hasActiveFilters = activeFilterLabels.length > 0;
   const resetFiltersHref = buildContactHref(pathname, {});
+  const emptyState = getContactsEmptyState({ activeFilterLabels });
 
   useEffect(() => {
     queueMicrotask(() => setIsHydrated(true));
@@ -494,12 +496,10 @@ export function ContactsListClient({
                         </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="text-base font-semibold text-[#111827]">
-                            {hasActiveFilters ? "目前沒有符合這些篩選條件的聯絡人。" : "目前還沒有聯絡人。"}
+                            {emptyState.heading}
                           </h3>
                           <p className="mt-2 max-w-xl text-sm leading-6 text-[#667085]">
-                            {hasActiveFilters
-                              ? `你現在套用了 ${activeFilterLabels.length} 個條件：${activeFilterLabels.join("、")}。先清除篩選回到完整聯絡人清單，再繼續找人。`
-                              : "目前沒有任何聯絡人資料。你可以先從 Instagram 對話累積名單，或稍後再回來查看。"}
+                            {emptyState.description}
                           </p>
                           {hasActiveFilters ? (
                             <div className="mt-4 flex flex-wrap gap-2">
@@ -511,19 +511,41 @@ export function ContactsListClient({
                             </div>
                           ) : null}
                           <div className="mt-5 flex flex-wrap gap-2">
-                            {hasActiveFilters ? (
-                              <Link
-                                href={resetFiltersHref}
-                                data-testid="contacts-empty-clear-filters"
-                                className="inline-flex h-9 items-center justify-center rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8]"
-                              >
-                                清除篩選並重新查看
-                              </Link>
-                            ) : null}
+                            {emptyState.actions.map((action, index) =>
+                              action.disabledReason ? (
+                                <button
+                                  key={action.testId}
+                                  type="button"
+                                  disabled
+                                  aria-disabled="true"
+                                  title={action.disabledReason}
+                                  data-testid={action.testId}
+                                  className="inline-flex h-9 cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-white px-3 text-sm text-[#98a2b3]"
+                                >
+                                  {action.label}
+                                </button>
+                              ) : (
+                                <Link
+                                  key={action.testId}
+                                  href={action.href || resetFiltersHref}
+                                  data-testid={action.testId}
+                                  className={`inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium ${
+                                    index === 0 ? "bg-[#006fe6] text-white hover:bg-[#0057b8]" : "border border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
+                                  }`}
+                                >
+                                  {action.label}
+                                </Link>
+                              ),
+                            )}
                             <Link href="/tags" className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
                               前往標籤管理
                             </Link>
                           </div>
+                          {!hasActiveFilters ? (
+                            <p className="mt-3 text-xs leading-5 text-[#98a2b3]">
+                              CSV 匯入不是壞掉，而是先等欄位對應、去重與稽核流程完成後再開放。
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                     </div>

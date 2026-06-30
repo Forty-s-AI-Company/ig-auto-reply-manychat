@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Contacts no-filter empty-state guidance
+
+Current status:
+
+- `[x]` Contacts filtered empty-state guidance was already covered; this pass closes the no-filter / zero-contact state.
+- `[x]` New workspaces now get clear next steps from Contacts: connect Instagram, check Inbox, and understand CSV import is intentionally disabled.
+- `[x]` Added focused unit coverage for the empty-state model.
+- `[x]` `npx vitest run tests/contacts-empty-state.test.ts --reporter=dot`、`npm run lint`、`npm test`、`npm run build` passed.
+
+Remaining:
+
+- `[ ]` Continue safe product-completeness sweeps only if new UI ambiguity is found.
+- `[ ]` Keep Meta App Review, PayUNI production, production DB, and production deployment as human gates.
+
 # Latest - 2026-07-01 PR #43 billing smoke and Windows test runner unblock
 
 Current status:
