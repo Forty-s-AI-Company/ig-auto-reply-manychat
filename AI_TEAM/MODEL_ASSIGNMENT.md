@@ -73,6 +73,31 @@ Codex CLI 不應該浪費在：
 | Prompt Engineer | qwen3:8b | 下一輪任務拆解與 prompt |
 | Report Writer | qwen2.5-coder:1.5b | final report / dev report 初稿 |
 
+### 高級模式
+
+用途：
+
+- Codex-first fallback
+- 一般產品功能閉環，但比一般模式跑得完整
+- Codex CLI 優先做真正產品修復與交付
+- 本地模型先做整理、摘要、拆題、報告與低風險建議
+- Codex CLI 額度不足或暫時不可用時，本地模型先把可安全處理的部分收斂，做不了的高風險任務寫入 deferred queue
+
+| 職位 | 模型 | 工作 |
+|---|---|---|
+| Error Summarizer | qwen2.5-coder:7b | 較完整的錯誤摘要與阻塞分類 |
+| Bug Fix Advisor | qwen2.5-coder:7b | 低風險修補建議，不主導高風險改碼 |
+| Code Reviewer | deepseek-coder-v2:lite | code review / 安全與維護性提示 |
+| Prompt Engineer | qwen3:8b | 下一輪主題拆解、Codex prompt、deferred queue 整理 |
+| Report Writer | qwen2.5-coder:7b | final report / launch delta 初稿 |
+
+高級模式的 Codex CLI 建議：
+
+- 大型功能重構、多檔案聯動、API / auth / tenant / data flow：`GPT-5.5`，reasoning `high`
+- 一般產品修復、稍大功能閉環：`GPT-5.4`，reasoning `medium` 到 `high`
+- 文件、摘要、prompt、backlog：`GPT-5.4 mini`，reasoning `medium`
+- 小整理或低風險建議：`GPT-5.4 mini`，reasoning `low` 到 `medium`
+
 ### 睡覺模式
 
 用途：
@@ -100,7 +125,31 @@ Browser QA 預設順序：
 
 - Playwright 可重現、可自動化、適合長跑
 - `agy` 適合補 prompt-driven 的瀏覽器檢查
+- `agy` 預設只允許 `Gemini 3.5 Flash`，需要更完整 browser QA 或 Flash 不可用時才 fallback 到 `Gemini 3.5 Pro`
 - CLI 版 Antigravity 不該當第一層 gate，避免整個 runner 被卡住
+
+## Project-local skills
+
+AI_TEAM also uses local skill briefs from `AI_TEAM/skills/` to keep decisions
+consistent even when marketplace plugins are unavailable.
+
+Core mapping:
+
+- `ui-ux-pro-max-skill.md`
+  - product decision layer for minimum-usable vs disabled UX
+- `design-md-skill.md`
+  - shared design language and durable UI conventions
+- `impeccable-skill.md`
+  - post-implementation polish audit
+- `shadcn-skill.md`
+  - implementation guidance for dialogs, dropdowns, toasts, and forms
+- `web-design-guidelines-skill.md`
+  - release-facing UI review and responsive checks
+- `security-best-practices-skill.md`
+  - higher-signal security review overlay for OAuth, billing, and tenant scope
+
+These local skills do not replace Codex CLI ownership. They narrow decisions,
+review criteria, and QA expectations for InboxPilot-specific work.
 
 ## 不可讓本地模型主導的區域
 
@@ -132,3 +181,18 @@ AI_TEAM 現在的閉環是：
 - QA 是獨立 gate
 - runtime 報告是給下一輪讀，不是流程終點
 - git / PR / merge / deployment 在這個版本裡是允許的交付步驟，不再當成預設阻斷點
+
+## 三模式共用自治規則
+
+一般模式、睡覺模式、高級模式都保留，但三者共用同一套產品閉環：
+
+- queue 空了不直接停，planner 會讀 backlog、readiness docs、fix roadmap、QA runtime report 生成下一個產品任務。
+- `qa` 或 `browser-qa` fail 時，runner 會建立 fix task，下一輪優先修失敗，而不是只產生報告。
+- 本地模型可做摘要、錯誤分類、review、低風險建議、deferred queue 與下一題拆解。
+- 本地模型不可主導 production DB、migration、auth / tenant isolation、payment callback、Meta OAuth / webhook 等高風險修改。
+
+三種模式的差異只在速度、QA 深度、模型配置與驗證強度：
+
+- 一般模式：快模型、lite QA 優先，適合白天快速修 blocker。
+- 睡覺模式：較強模型、full QA 與 Browser QA 優先，適合長時間收斂。
+- 高級模式：Codex-first fallback，本地模型輔助拆題與 deferred queue，適合產品功能閉環與交付。

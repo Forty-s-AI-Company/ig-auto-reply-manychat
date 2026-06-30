@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handlePayuniCallback } from "@/lib/billing/payuni-callback";
 import { completeInternalInvoicePaymentOrder } from "@/lib/billing/payment-service";
 import { getDb } from "@/lib/db";
-import { createPayuniCheckout } from "@/lib/payuni";
+import { createPayuniCheckout, getPayuniGatewayStatus } from "@/lib/payuni";
 
 const db = getDb();
 
@@ -44,6 +44,51 @@ describe("PayUNI billing callback", () => {
     vi.stubEnv("PAYUNI_HASH_IV", "1234567890123456");
     vi.stubEnv("PAYUNI_GATEWAY_URL", "https://sandbox-api.payuni.com.tw/api/upp");
     await cleanDb();
+  });
+
+  it("marks production checkout as disabled until the production gate is opened", () => {
+    const sandboxStatus = getPayuniGatewayStatus(
+      {
+        gatewayUrl: "https://sandbox-api.payuni.com.tw/api",
+      },
+      false,
+    );
+    const productionStatus = getPayuniGatewayStatus(
+      {
+        gatewayUrl: "https://payuni.com.tw/api",
+      },
+      false,
+    );
+    const enabledProductionStatus = getPayuniGatewayStatus(
+      {
+        gatewayUrl: "https://payuni.com.tw/api",
+      },
+      true,
+    );
+
+    expect(sandboxStatus.label).toBe("PayUNI 測試站");
+    expect(sandboxStatus.checkoutEnabled).toBe(true);
+    expect(sandboxStatus.checkoutDisabledReason).toBeNull();
+    expect(sandboxStatus.detail).toContain("sandbox");
+    expect(productionStatus.label).toBe("PayUNI 正式站");
+    expect(productionStatus.checkoutEnabled).toBe(false);
+    expect(productionStatus.checkoutDisabledReason).toContain("請先切回測試站驗證流程");
+    expect(productionStatus.detail).toContain("付款按鈕已先停用");
+    expect(enabledProductionStatus.checkoutEnabled).toBe(true);
+    expect(enabledProductionStatus.checkoutDisabledReason).toBeNull();
+    expect(enabledProductionStatus.detail).toContain("正式站已受控開通");
+  });
+
+  it("can describe the gateway state even when billing secrets are unavailable", () => {
+    vi.unstubAllEnvs();
+    vi.stubEnv("PAYUNI_GATEWAY_URL", "https://payuni.com.tw/api");
+
+    const status = getPayuniGatewayStatus();
+
+    expect(status.label).toBe("PayUNI 正式站");
+    expect(status.checkoutEnabled).toBe(false);
+    expect(status.checkoutDisabledReason).toContain("正式金流尚未開通");
+    expect(status.detail).toContain("正式站尚未開通自動扣款");
   });
 
   it("marks invoice paid and activates subscription once", async () => {

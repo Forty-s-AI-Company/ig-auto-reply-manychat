@@ -29,9 +29,9 @@ AI_TEAM runner 現在不是單純的 QA 報告機。
    - 用本地模型做錯誤摘要、靜態 QA、code review
 4. `qa`
    - 一般模式預設 `lite`
-   - 睡覺模式預設 `full`
+   - 高級模式 / 睡覺模式預設 `full`
 5. `browser-qa`
-   - 一般模式預設略過，睡覺模式或 full QA 才跑
+   - 一般模式預設略過，高級模式 / 睡覺模式或 full QA 才跑
 6. `reporter`
    - 產出 final report、next prompt
 7. `git-delivery`
@@ -77,15 +77,27 @@ queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
 
 完全自動閉環模式下，`planner` 不會因為 `queue.json` 暫時沒有 pending task 就直接停住。
 
-當 queue 空掉時，runner 會依固定產品主線自動補入下一個尚未完成的安全任務：
+當 queue 空掉時，runner 會先讀這些訊號，再依產品主線自動補入下一個安全任務：
+
+- `AI_TEAM/tasks/backlog.md`
+- `AI_TEAM/tasks/current-task.md`
+- `docs/product-readiness-review.md`
+- `docs/project-launch-checklist.md`
+- `docs/fix-roadmap.md`
+- `AI_TEAM/runtime/qa-report.md`
+- `AI_TEAM/runtime/browser-qa.md`
+- `AI_TEAM/runtime/final-report.md`
+
+runner 不再把產品主線當成一次性清單。若第一輪都跑過，會依執行次數最少的主題產生下一輪 `cycle` task。
 
 1. Inbox visible-but-unusable product sweep
 2. Channels / Connect visible-but-unusable product sweep
-3. Contacts product completeness sweep
-4. Automations scope clarity and disabled UX sweep
-5. Analytics readability and data-state sweep
-6. Billing / PayUNI Sandbox product readiness sweep
-7. Launch readiness product sweep
+3. IG metadata / profile refresh / error clarity sweep
+4. Contacts product completeness sweep
+5. Automations scope clarity and disabled UX sweep
+6. Analytics readability and data-state sweep
+7. Billing / PayUNI Sandbox product readiness sweep
+8. Launch readiness product sweep
 
 這些任務仍遵守 hard stop：
 
@@ -95,7 +107,18 @@ queue 狀態會同步回 `AI_TEAM/tasks/queue.json`，目前 lifecycle 為：
 - 不送 Meta App Review
 - 不切 PayUNI production
 
-若這些產品主線任務都已完成，planner 才會回報 `autofill exhausted`，表示目前自動化範圍內沒有下一個安全任務。
+只有 readiness 文件明確標示已可上線，或 planner 無法安全生成任務時，才會停下。正常情況不再回報 `autofill exhausted`。
+
+## QA 失敗自動回修
+
+`qa` 或 `browser-qa` 失敗時，runner 會：
+
+1. 把失敗摘要保留在 runtime report。
+2. 依原 task scope 建立 `fix` task。
+3. 將 `generatedFrom` 標成 `qa-report` / `browser-qa` / `worker-result`。
+4. 下一輪由 planner 優先撿 pending fix task。
+
+這讓測試失敗進入修復循環，而不是停在報告。
 
 ## Worker Result Schema
 
@@ -162,7 +185,7 @@ node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=depl
 
 ### full QA
 
-給睡覺模式或整批功能收尾時用。
+給高級模式、睡覺模式或整批功能收尾時用。
 
 預設內容：
 
@@ -181,7 +204,7 @@ node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=depl
 
 - 小修先 lite QA
 - 一組功能完成再 full QA
-- 睡覺模式偏向 full QA
+- 高級模式與睡覺模式偏向 full QA
 
 這比較符合真實開發節奏。
 
@@ -236,7 +259,7 @@ runner 現在有三層 lock：
 
 這些檔案是 loop 的工作記憶，不提交 git。
 
-## 一般模式 vs 睡覺模式
+## 一般模式 vs 高級模式 vs 睡覺模式
 
 ### 一般模式
 
@@ -244,6 +267,15 @@ runner 現在有三層 lock：
 - lite QA
 - 快模型整理摘要
 - 適合白天快速連跑
+
+### 高級模式
+
+- Codex CLI 主開發
+- full QA
+- Playwright browser QA
+- `agy` / Antigravity CLI fallback
+- 本地模型只做摘要、review、deferred queue 與低風險建議
+- 適合產品功能閉環、交付與需要較高把關的自動化長跑
 
 ### 睡覺模式
 

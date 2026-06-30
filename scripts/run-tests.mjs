@@ -6,6 +6,7 @@ import { loadProjectEnv } from "./load-env.mjs";
 import {
   buildTestBatches,
   formatBatchLabel,
+  isWindowsAccessViolationExitCode,
   shouldDiagnoseBatchFailure,
 } from "./run-tests-plan.mjs";
 
@@ -104,6 +105,13 @@ async function diagnoseBatchFailure(batch, error) {
     throw new Error(`Vitest batch failed; isolated failing file(s): ${failedFiles.join(", ")}`);
   }
 
+  if (process.platform === "win32" && isWindowsAccessViolationExitCode(error.exitCode)) {
+    console.warn(
+      `Vitest batch crashed with Windows access violation exit ${error.exitCode}, but every file passed when rerun individually. Continuing after confirming this is batch-level runner instability: ${batch.join(", ")}`,
+    );
+    return;
+  }
+
   throw new Error(
     `Vitest batch crashed with exit ${error.exitCode}, but every file passed when rerun individually. Suspect batch-level runner instability in: ${batch.join(", ")}`,
   );
@@ -125,6 +133,7 @@ try {
     } catch (error) {
       if (shouldDiagnoseBatchFailure({ code: error.exitCode, batch, withCoverage })) {
         await diagnoseBatchFailure(batch, error);
+        continue;
       }
 
       throw error;

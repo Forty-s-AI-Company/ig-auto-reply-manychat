@@ -1,3 +1,63 @@
+# 2026-06-30 - Launch readiness product sweep
+
+Task:
+
+- 重新整理 launch readiness 差距，確認現在還剩哪些真的要人手處理、哪些屬於產品可自動修的缺口。
+- 避免把 Meta / PayUNI 外部 gate 再塞回 queue，讓 runner 誤以為那是可直接完成的產品任務。
+
+Result:
+
+- launch readiness 差距已重新對齊，沒有新增安全可自動處理的產品缺口。
+- 目前的公開 paid launch blocker 都已明確標成 `HUMAN_REQUIRED`。
+- queue 維持只承載安全可自動處理的產品工作，不把外部 gate 包裝成產品修補項目。
+
+Launch impact:
+
+- Private beta / whitelist 仍然 Go。
+- Public paid launch 仍然 Hold。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
+# 2026-06-30 - Billing / PayUNI sandbox checkout gate clarity
+
+Task:
+
+- 讓 Billing 頁面不要把尚未開通的正式金流 checkout 做成看起來可直接送出的按鈕。
+- 保留 sandbox 可驗證的流程，但把 production gate 的原因提前在 UI 說清楚。
+- 補上單元測試，確認 sandbox / 正式站 / 受控開通三種狀態的 checkout state 都會對。
+
+Result:
+
+- `src/lib/payuni.ts` 新增 `getPayuniGatewayStatus()`，把 sandbox / 正式站 / checkout enablement / disabled reason 集中成可重用的狀態 helper。
+- `src/app/billing/page.tsx` 會在正式金流尚未開通時直接停用付款按鈕，並顯示原因，不再讓使用者先按了才知道不能送。
+- `tests/payuni-billing.test.ts` 新增 helper coverage，確認 sandbox 可用、正式站 gate 會停用、受控開通會恢復可用。
+
+Validation:
+
+```text
+npx eslint src/app/billing/page.tsx src/lib/payuni.ts tests/payuni-billing.test.ts
+Result: passed.
+
+npx vitest run tests/payuni-billing.test.ts --reporter=dot
+Result: passed. 5 tests.
+
+npm run lint
+Result: passed.
+
+npm test
+Result: passed.
+
+npm run build
+Result: passed.
+
+npm run test:e2e:auth
+Result: failed in existing local e2e admin / DB state with HTTP 401 during login; not caused by this billing UI change.
+```
+
+Launch impact:
+
+- Billing 的 sandbox / production gate 行為更清楚，beta operator 不會先被可點的假付款按鈕誤導。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # Latest - 2026-06-30 Analytics readability and data-state sweep
 
 Current status:
@@ -556,3 +616,39 @@ Launch impact:
   - `docs/product-readiness-review.md`
   - `docs/fix-roadmap.md`
   - `docs/codex-session-log.md`
+
+## 2026-06-30 - AI_TEAM high mode runner wiring
+
+Current status:
+
+- `[x]` Added real `advanced` runner mode instead of falling back to `general`.
+- `[x]` `advanced` defaults to full QA and runs Browser QA instead of skipping it like general mode.
+- `[x]` Added `ai-team:loop:advanced`, `ai-team:loop:continuous:advanced`, `ai-team:loop:once:advanced`, and `ai-team:models:advanced`.
+- `[x]` PowerShell launcher now accepts `-Mode advanced` and sets the Antigravity fallback model policy.
+- `[x]` Local model assignment now supports high mode: Codex-first, local-model assist, deferred queue support.
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
+- `npm run ai-team:check`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+
+## 2026-06-30 - Three-mode product autonomy planner
+
+Current status:
+
+- `[x]` General / sleep / advanced modes are still separate selectable modes.
+- `[x]` All three modes now share the same product autonomy behavior: queue-empty generation, QA-failure fix task generation, and continuous product-topic cycling.
+- `[x]` Planner no longer treats product autofill as a one-time list; it can generate `cycle` tasks after the first product sweep set has been used.
+- `[x]` Added an explicit IG metadata / profile refresh / error clarity topic as the third shared product lane.
+- `[x]` Auto-generated tasks now include `mode`, `generatedFrom`, `safetyConstraints`, and `suggestedTests`.
+- `[x]` `qa` / `browser-qa` failures now create a pending fix task for the next loop.
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
+- `npm run ai-team:check`: passed.
+- `npm run ai-team:loop:smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=sleep --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner`: passed, generated `IG metadata / profile refresh / error clarity sweep` instead of `autofill exhausted`.

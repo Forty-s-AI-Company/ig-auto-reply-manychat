@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadProjectEnv } from "../../scripts/load-env.mjs";
-import { readFileSafe, readPreferred, root, runtimeFiles, trackedFiles, writeRuntimeFile } from "./lib/ai-team-paths.mjs";
+import { buildSkillSummary, readFileSafe, readPreferred, root, runtimeFiles, trackedFiles, writeRuntimeFile } from "./lib/ai-team-paths.mjs";
 import { acquireLock, releaseLock } from "./lib/process-lock.mjs";
 
 loadProjectEnv();
@@ -10,7 +10,7 @@ loadProjectEnv();
 const __filename = fileURLToPath(import.meta.url);
 const CODEX_MODEL = process.env.AI_TEAM_CODEX_MODEL?.trim() || "gpt-5.4-mini";
 const runnerMode = (process.env.AI_TEAM_MODE || process.env.AI_TEAM_RUNNER_MODE || "general").trim().toLowerCase();
-const defaultCodexTimeoutMs = runnerMode === "sleep" ? 2 * 60 * 60 * 1000 : 30 * 60 * 1000;
+const defaultCodexTimeoutMs = runnerMode === "sleep" ? 2 * 60 * 60 * 1000 : runnerMode === "advanced" ? 60 * 60 * 1000 : 30 * 60 * 1000;
 const CODEX_TIMEOUT_MS = Number(process.env.AI_TEAM_CODEX_TIMEOUT_MS || defaultCodexTimeoutMs);
 const PROMPT_ONLY = process.argv.includes("--prompt-only");
 const SMOKE_ONLY = process.env.AI_TEAM_CODEX_SMOKE === "1";
@@ -147,6 +147,7 @@ function buildPrompt() {
   const errorSummary = readFileSafe(runtimeFiles.errorSummary).trim();
   const staticQa = readFileSafe(runtimeFiles.staticQa).trim();
   const codeReview = readFileSafe(runtimeFiles.codeReview).trim();
+  const skillSummary = buildSkillSummary(3);
 
   return [
     "請接續 InboxPilot / ReplyPilot 專案，直接執行當前最高優先且可安全處理的產品任務。",
@@ -160,6 +161,22 @@ function buildPrompt() {
     "- 若暫時不能安全支援某功能，改成清楚 disabled UX，不要留下假按鈕。",
     "- 這是 AI_TEAM 的開發閉環，請真的動手改碼，不要停在報告層。",
     "- 當 lint / test / build / Browser QA 與 diff check 都通過，且沒有人工阻塞時，請自動完成 git add / commit / push / PR / merge，然後依目前部署規則推進 deployment。",
+    "",
+    "高級模式模型與 QA 分工：",
+    "- 若本輪是大型功能重構、多檔案聯動修復、API / auth / tenant / data flow，建議 Codex CLI 使用 GPT-5.5，reasoning high。",
+    "- 若本輪是一般產品修復或稍大功能閉環，建議 Codex CLI 使用 GPT-5.4，reasoning medium 到 high。",
+    "- 若本輪只是文件、摘要、prompt 或 backlog 整理，建議 Codex CLI 使用 GPT-5.4 mini，reasoning medium。",
+    "- 本地模型只負責摘要、review、錯誤分類、低風險建議與 deferred queue；不得主導高風險產品修改。",
+    "- Antigravity CLI 只做 Browser QA；預設 Gemini 3.5 Flash，必要時才用 Gemini 3.5 Pro，不允許直接修改 source code。",
+    "",
+    "本地 skills：",
+    "- 先依主題套用對應的 in-repo skills，不要跳過。",
+    "- 產品決策用 `ui-ux-pro-max`。",
+    "- 設計語言用 `design-md`。",
+    "- UI 細修與完成度檢查用 `impeccable`。",
+    "- 元件實作用 `shadcn`。",
+    "- 上線前 UI 審查用 `web-design-guidelines`。",
+    "- OAuth / billing / tenant / admin 等高風險區先過 `security-best-practices`。",
     "",
     "安全限制：",
     "- 不碰 production DB",
@@ -215,6 +232,9 @@ function buildPrompt() {
     "",
     "## CODE_REVIEW",
     codeReview || "（空）",
+    "",
+    "## LOCAL_SKILLS",
+    skillSummary || "（空）",
   ].join("\n");
 }
 

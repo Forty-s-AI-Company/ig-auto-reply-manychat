@@ -1,3 +1,78 @@
+# 2026-07-01 - PR #43 CI billing smoke and local test runner unblock
+
+Task:
+
+- 修正 PR #43 的 `full-release-auth-smoke` 失敗。
+- 保持 PayUNI production 關閉，不碰 production DB、不部署 Production、不跑 migration/db push。
+- 讓本機 Windows `npm test` 不再因 Vitest batch-level access violation 而卡住安全交付。
+
+Result:
+
+- GitHub Actions log 顯示 `/billing` smoke 失敗根因是 CI 沒有 PayUNI merchant secrets 時，`getPayuniGatewayStatus()` 仍間接呼叫 `getPayuniConfig()`，導致 server render 500。
+- `src/lib/payuni.ts` 現在讓 gateway 狀態描述只讀取 gateway URL / production gate，不要求 `PAYUNI_MERCHANT_ID`、`PAYUNI_HASH_KEY`、`PAYUNI_HASH_IV`。
+- 真正建立 checkout 的 `createPayuniCheckout()` 仍會要求 PayUNI secrets，因此不會放寬付款安全邊界。
+- `tests/payuni-billing.test.ts` 補上「缺少 billing secrets 仍可描述 gateway state」coverage。
+- `scripts/run-tests.mjs` 對 Windows `3221225477` batch crash 增加保守容錯：只有在所有單檔診斷重跑都通過時才繼續，真正的單檔失敗仍會 fail。
+
+Validation:
+
+```text
+npm run lint
+Result: passed.
+
+npm test
+Result: passed across all 9 batches.
+
+npm run build
+Result: passed. Prisma generate safe fallback reused the existing generated client because the local Prisma engine DLL was locked by another Node process.
+```
+
+Launch impact:
+
+- Billing page should render in CI even when PayUNI checkout secrets are intentionally absent.
+- Public paid launch remains Hold; PayUNI production merchant approval and controlled enablement are still manual gates.
+- No production DB mutation, migration, Production deployment, Meta App Review, or PayUNI production action was performed.
+
+# 2026-06-30 - Launch readiness product sweep
+
+Task:
+
+- 整理目前產品距離 private beta / public paid launch 的差距。
+- 只把安全可自動處理的產品缺口留在 queue 的範圍內。
+- 讓外部 gate 清楚落成 `HUMAN_REQUIRED`，不要誤寫成可自動完成的任務。
+
+Result:
+
+- launch readiness 差距已重新對齊，確認目前沒有新的安全產品缺口需要補進 queue。
+- Inbox / Channels / Contacts / Automations / Analytics / Billing 的 visible-but-unusable 區塊維持在較清楚的最小可用或 disabled UX。
+- 目前剩下的 public paid launch gate 全部都是人工門檻：Meta App Review / Advanced Access / Business Verification、PayUNI production merchant approval、controlled enablement、first low-value production smoke、以及最終法務 / 支援文件複核。
+
+Launch impact:
+
+- Private beta / whitelist 仍然 Go。
+- Public paid launch 仍然 Hold；這一輪沒有碰 production DB、沒有部署 Production、也沒有把外部 gate 假裝成已完成。
+
+# 2026-06-30 - Billing checkout gate clarity
+
+Task:
+
+- 讓 Billing 頁在 PayUNI 正式金流尚未開通時不要呈現可直接送出的假付款按鈕。
+- 保留 sandbox 驗證流程可用，但把 production gate 的原因提早講清楚。
+- 補上 helper 單元測試與文件同步。
+
+Result:
+
+- `src/lib/payuni.ts` 新增 `getPayuniGatewayStatus()`，把 sandbox / 正式站 / checkout enablement / disabled reason 集中起來。
+- `src/app/billing/page.tsx` 在 production gate pending 時會直接停用付款按鈕，並在按鈕下方說明原因。
+- `tests/payuni-billing.test.ts` 補上 sandbox / 正式站 / 受控開通三種狀態的 helper coverage。
+- `npm run lint`、`npm test`、`npm run build` 通過。
+- `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態的 HTTP 401，屬於環境層問題，不是這次 billing 變更造成。
+
+Launch impact:
+
+- Billing 的 sandbox / production gate 可讀性更好。
+- No production DB mutation, migration, Production deployment, Meta App Review action, or PayUNI production action was performed.
+
 # 2026-06-30 - Analytics readability and data-state sweep
 
 Task:
@@ -5865,6 +5940,52 @@ Validation:
 Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM advanced mode wiring
+
+Task:
+
+- 將使用者定義的「高級模式」補成 AI_TEAM runner 的真實執行模式，而不是只停在提示詞或文件層。
+
+Changes:
+
+- `ai-team-runner` 現在支援 `--mode=advanced`。
+- 高級模式預設 full QA，且不會略過 Browser QA。
+- PowerShell launcher 新增 `-Mode advanced`。
+- package scripts 新增 advanced loop / once / continuous / local models 入口。
+- local models 新增 advanced assignment：Codex-first fallback，local-model assist，deferred queue。
+- Antigravity CLI QA policy 補成 Flash 優先、Pro fallback。
+
+Launch impact:
+
+- Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-06-30 - AI_TEAM three-mode product autonomy
+
+Task:
+
+- 保留一般模式、睡覺模式、高級模式，但一次把三個模式都升級成不會因 queue 空掉就停止的產品閉環。
+
+Changes:
+
+- `planner` 現在會讀 backlog、current task、product readiness、launch checklist、fix roadmap、QA report、browser QA report、final report 來生成下一個產品任務。
+- 產品補題不再是一輪固定清單；第一輪跑完後會依執行次數最少的產品主線生成下一個 cycle task。
+- 新增 `IG metadata / profile refresh / error clarity sweep` 作為獨立產品主線。
+- 自動生成任務現在包含 `mode`、`generatedFrom`、`safetyConstraints`、`suggestedTests`。
+- `qa` / `browser-qa` 失敗時會建立 pending fix task，讓下一輪回到修復循環。
+
+Validation:
+
+- `npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/local-models.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs`: passed.
+- `npm run ai-team:check`: passed.
+- `npm run ai-team:loop:smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=sleep --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=advanced --smoke`: passed.
+- `node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=planner`: passed and generated `IG metadata / profile refresh / error clarity sweep`.
+
+Launch impact:
+
+- AI_TEAM runner only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
 ## 2026-06-30 - AI_TEAM disposable branch real delivery validation
 

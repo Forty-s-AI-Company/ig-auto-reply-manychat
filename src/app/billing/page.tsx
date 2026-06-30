@@ -6,6 +6,7 @@ import { getWorkspaceEntitlement } from "@/lib/billing/entitlements";
 import { listInvoices } from "@/lib/billing/invoice-service";
 import { requireUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
+import { getPayuniGatewayStatus } from "@/lib/payuni";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 function formatDate(date?: Date | null) {
@@ -16,16 +17,6 @@ function formatDate(date?: Date | null) {
 function progress(used: number, limit: number) {
   if (limit <= 0) return 0;
   return Math.min(Math.round((used / limit) * 100), 100);
-}
-
-function payuniGatewayLabel() {
-  const gatewayUrl = process.env.PAYUNI_GATEWAY_URL || "https://sandbox-api.payuni.com.tw/api";
-  const hostname = new URL(gatewayUrl).hostname.toLowerCase();
-  return hostname.includes("sandbox") || hostname.includes("test") ? "PayUNI 測試站" : "PayUNI 正式站";
-}
-
-function payuniProductionEnabled() {
-  return process.env.PAYUNI_ALLOW_PRODUCTION === "true";
 }
 
 function ProgressBar({ label, used, limit }: { label: string; used: number; limit: number }) {
@@ -45,10 +36,11 @@ function ProgressBar({ label, used, limit }: { label: string; used: number; limi
   );
 }
 
-export default async function BillingPage({ searchParams }: { searchParams?: Promise<{ payment?: string }> }) {
+export default async function BillingPage({ searchParams }: { searchParams?: Promise<{ payment?: string; payuni?: string }> }) {
   await requireUser();
   const params = await searchParams;
   const workspaceId = await getCurrentWorkspaceId();
+  const payuniStatus = getPayuniGatewayStatus();
   const [entitlement, invoices, recentOrders, subscriptions] = await Promise.all([
     getWorkspaceEntitlement(workspaceId),
     listInvoices(workspaceId),
@@ -70,13 +62,19 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
             請重新確認訂單。
           </DismissibleNoticeToast>
         ) : null}
+        {params?.payuni === "production_gate_pending" ? (
+          <DismissibleNoticeToast title="PayUNI 正式站尚未開通" tone="danger">
+            這次付款還沒真的送到正式金流，先停在受控開通階段。請先用測試站驗證流程，等 merchant review 與營運開關完成後再切正式站。
+          </DismissibleNoticeToast>
+        ) : null}
 
         <ManualActionNotice title="需要你操作：PayUNI 付款" tone="cyan" stackIndex={params?.payment ? 1 : 0}>
           <p>信用卡資料、OTP、3D 驗證都會在 PayUNI 頁面完成；系統只接收回傳結果，不會保存卡號。</p>
-          {!payuniProductionEnabled() ? (
-            <p className="mt-2">
-              目前正式自動扣款仍在受控開通階段；若你是白名單客戶，可以先由營運人員人工確認付款與方案啟用。
-            </p>
+          <p className="mt-2">
+            {payuniStatus.label} - {payuniStatus.detail}
+          </p>
+          {!payuniStatus.productionEnabled ? (
+            <p className="mt-2">若你是白名單客戶，可以先由營運人員人工確認付款與方案啟用，不會直接打開正式自動扣款。</p>
           ) : null}
         </ManualActionNotice>
 
@@ -94,11 +92,14 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
                 {entitlement.usageWarning80 ? "用量已達 80%，建議加購或升級。" : "用量正常"}
               </span>
               <span className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 font-medium text-amber-800">
-                {payuniGatewayLabel()}
-                {!payuniProductionEnabled() ? " / 受控開通" : ""}
+                {payuniStatus.label}
+                {!payuniStatus.productionEnabled ? " / 受控開通" : ""}
               </span>
             </div>
           </div>
+          <p className="mt-4 rounded-md border border-dashed border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+            {payuniStatus.detail}
+          </p>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <ProgressBar label="活躍聯絡人" used={entitlement.usage.activeContacts} limit={entitlement.limits.activeContacts} />
             <ProgressBar label="訊息事件" used={entitlement.usage.messageEvents} limit={entitlement.limits.messageEvents} />
@@ -115,12 +116,21 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
                 <input type="hidden" name="planKey" value={plan.key} />
                 <input type="hidden" name="interval" value="month" />
                 <button
-                  disabled={plan.customSales}
+                  type="submit"
+                  disabled={plan.customSales || !payuniStatus.checkoutEnabled}
+                  title={
+                    plan.customSales
+                      ? "客製方案需要由管理員手動開通。"
+                      : payuniStatus.checkoutDisabledReason || undefined
+                  }
                   className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
                 >
-                  {plan.customSales ? "聯絡管理員" : "月繳付款"}
+                  {plan.customSales ? "聯絡管理員" : payuniStatus.checkoutEnabled ? "月繳付款" : "正式站受控開通中"}
                 </button>
               </form>
+              {!plan.customSales && !payuniStatus.checkoutEnabled ? (
+                <p className="mt-2 text-xs leading-5 text-amber-800">{payuniStatus.checkoutDisabledReason}</p>
+              ) : null}
             </article>
           ))}
         </section>

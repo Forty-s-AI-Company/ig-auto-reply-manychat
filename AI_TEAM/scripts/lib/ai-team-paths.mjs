@@ -24,7 +24,47 @@ export const trackedFiles = {
   qaReport: path.join(reportsDir, "qa-report.md"),
   browserQaReport: path.join(reportsDir, "browser-qa-report.md"),
   nextPrompt: path.join(reportsDir, "next-codex-prompt.md"),
+  skillsReadme: path.join(aiTeamRoot, "skills", "README.md"),
+  skillUiUxProMax: path.join(aiTeamRoot, "skills", "ui-ux-pro-max-skill.md"),
+  skillDesignMd: path.join(aiTeamRoot, "skills", "design-md-skill.md"),
+  skillImpeccable: path.join(aiTeamRoot, "skills", "impeccable-skill.md"),
+  skillShadcn: path.join(aiTeamRoot, "skills", "shadcn-skill.md"),
+  skillWebDesignGuidelines: path.join(aiTeamRoot, "skills", "web-design-guidelines-skill.md"),
+  skillSecurityBestPractices: path.join(aiTeamRoot, "skills", "security-best-practices-skill.md"),
 };
+
+export const skillFiles = [
+  {
+    key: "ui-ux-pro-max",
+    label: "UI UX Pro Max",
+    path: trackedFiles.skillUiUxProMax,
+  },
+  {
+    key: "design-md",
+    label: "Design MD",
+    path: trackedFiles.skillDesignMd,
+  },
+  {
+    key: "impeccable",
+    label: "Impeccable",
+    path: trackedFiles.skillImpeccable,
+  },
+  {
+    key: "shadcn",
+    label: "Shadcn",
+    path: trackedFiles.skillShadcn,
+  },
+  {
+    key: "web-design-guidelines",
+    label: "Web Design Guidelines",
+    path: trackedFiles.skillWebDesignGuidelines,
+  },
+  {
+    key: "security-best-practices",
+    label: "Security Best Practices",
+    path: trackedFiles.skillSecurityBestPractices,
+  },
+];
 
 export const runtimeFiles = {
   healthSummary: path.join(runtimeDir, "health-summary.md"),
@@ -81,4 +121,22 @@ export function extractTopItems(markdown, maxItems = 5) {
 
 export function section(title, content) {
   return `\n## ${title}\n\n${content.trim() || "（空）"}\n`;
+}
+
+export function buildSkillSummary(maxItemsPerSkill = 4) {
+  return skillFiles
+    .map((skill) => {
+      const lines = readFileSafe(skill.path)
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("- "))
+        .slice(0, maxItemsPerSkill);
+
+      return {
+        ...skill,
+        summary: lines.length > 0 ? lines.join("\n") : "（空）",
+      };
+    })
+    .map((skill) => `## ${skill.label}\n${skill.summary}`)
+    .join("\n\n");
 }

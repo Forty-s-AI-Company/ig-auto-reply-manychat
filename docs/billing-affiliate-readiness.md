@@ -1,5 +1,29 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-01 - PayUNI gateway status without checkout secrets
+
+- `[x]` Billing page can now describe PayUNI sandbox / production gate state without requiring merchant/hash secrets at render time.
+- `[x]` Checkout creation still requires `PAYUNI_MERCHANT_ID`、`PAYUNI_HASH_KEY`、`PAYUNI_HASH_IV`，沒有放寬真正付款流程的安全邊界。
+- `[x]` Added regression coverage for missing billing secrets during gateway-state display.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Billing launch implication:
+
+- CI and preview smoke can verify the Billing surface without live merchant credentials.
+- Public paid launch remains Hold until PayUNI production merchant approval, controlled enablement, and first low-value production smoke are manually approved.
+
+# 2026-06-30 - Billing checkout gate clarity
+
+- `[x]` Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。
+- `[x]` sandbox 仍可直接驗證付款流程，正式站 gate 不會再像可直接送出的假按鈕。
+- `[x]` `tests/payuni-billing.test.ts`、`npm run lint`、`npm test`、`npm run build` 已通過。
+- `[ ]` `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態，等環境修好後再補一次 billing smoke。
+
+Billing launch implication:
+
+- sandbox / production gate 的體感更清楚，少一個「按了才知道不能用」的誤導點。
+- Public paid launch 仍維持 Hold；production merchant approval 與 controlled enablement 還是必要門檻。
+
 ## 2026-06-26 - Autopilot PayUNI sandbox refresh
 
 - `npm run payuni:smoke` now passes locally against sandbox behavior.

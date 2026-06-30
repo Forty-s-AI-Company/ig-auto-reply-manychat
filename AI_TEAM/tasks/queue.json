@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-30T00:27:28.722Z",
+  "updatedAt": "2026-06-30T18:27:51.556Z",
   "tasks": [
     {
       "id": "ai-team-delivery-autonomy-001",
@@ -46,7 +46,23 @@
         "npx eslint AI_TEAM/scripts/ai-team-runner.mjs AI_TEAM/scripts/ai-team.mjs AI_TEAM/scripts/lib/ai-team-paths.mjs AI_TEAM/scripts/codex-dev.mjs AI_TEAM/scripts/local-qa.mjs AI_TEAM/scripts/playwright-browser-qa.mjs",
         "npm run ai-team:loop:smoke",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --smoke --only-worker=merge-delivery"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
     },
     {
       "id": "ai-team-disposable-delivery-002",
@@ -87,7 +103,23 @@
         "npx eslint AI_TEAM/scripts/ai-team-runner.mjs",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=git-delivery",
         "node AI_TEAM/scripts/ai-team-runner.mjs --once --mode=general --only-worker=merge-delivery"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
     },
     {
       "id": "inbox-channels-visible-but-unusable-003",
@@ -136,7 +168,27 @@
       "lastWorker": "deploy",
       "lastValidation": [
         "deploy-disabled"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "contacts-filtered-empty-state-guidance-004",
@@ -179,7 +231,27 @@
       "lastWorker": "deploy",
       "lastValidation": [
         "deploy-disabled"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run test:e2e:contacts",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "inbox-visible-but-unusable-autofill",
@@ -229,7 +301,26 @@
         "scope=13",
         "ignored-out-of-scope=6"
       ],
-      "blockedAt": "2026-06-29T22:55:42.094Z"
+      "blockedAt": "2026-06-29T22:55:42.094Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build",
+        "npm run test:e2e:inbox"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn"
+      ],
+      "mode": "general"
     },
     {
       "id": "channels-connect-visible-but-unusable-autofill",
@@ -292,7 +383,28 @@
         "branch codex/channels-connect-visible-but-unusable-sweep-20260630 可進入交付 gate。",
         "scope=18",
         "ignored-out-of-scope=6"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/channels-connect-visibility.test.ts tests/account-channel-list.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "security-best-practices",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "contacts-product-completeness-autofill",
@@ -341,7 +453,27 @@
         "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/contacts-product-completeness-autofill",
         "scope=13"
       ],
-      "blockedAt": "2026-06-29T23:41:34.016Z"
+      "blockedAt": "2026-06-29T23:41:34.016Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run test:e2e:contacts",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "automations-scope-clarity-autofill",
@@ -396,7 +528,26 @@
       "lastWorker": "codex-dev",
       "lastValidation": [
         "exit=124"
-      ]
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/automation-scope-policy.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "design-md"
+      ],
+      "mode": "general"
     },
     {
       "id": "analytics-readiness-autofill",
@@ -422,7 +573,7 @@
         "不能讓圖表或數字看起來像壞掉",
         "補 focused tests 或 smoke"
       ],
-      "status": "completed",
+      "status": "blocked",
       "safety": [
         "no-production-db",
         "no-migration",
@@ -436,7 +587,6 @@
       "startedAt": "2026-06-30T00:11:34.264Z",
       "lastPickedAt": "2026-06-30T00:11:34.264Z",
       "attempts": 1,
-      "completedAt": "2026-06-30T00:27:28.722Z",
       "validation": [
         "npx eslint src/app/analytics/page.tsx src/app/api/analytics/route.ts src/lib/analytics-state.ts src/lib/dashboard-summary.ts tests/analytics-state.test.ts tests/integration/api-routes.test.ts tests/e2e/public-and-auth.spec.ts",
         "npx vitest run tests/analytics-state.test.ts tests/integration/api-routes.test.ts --reporter=dot",
@@ -444,6 +594,243 @@
         "npm test",
         "npm run build",
         "npm run test:e2e:auth"
+      ],
+      "blockedAt": "2026-06-30T00:43:02.315Z",
+      "lastSummary": "沒有可提交檔案。",
+      "lastWorker": "git-delivery",
+      "lastValidation": [
+        "沒有可提交檔案。",
+        "目前 branch 為 master，不允許直接在保護分支上 unattended commit。 將改用安全 branch：codex/analytics-readiness-autofill",
+        "scope=12",
+        "ignored-out-of-scope=6"
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/analytics-state.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "design-md"
+      ],
+      "mode": "general"
+    },
+    {
+      "id": "billing-payuni-sandbox-autofill",
+      "title": "Billing / PayUNI Sandbox product readiness sweep",
+      "priority": 6,
+      "lane": "product",
+      "scope": [
+        "src/app/billing",
+        "src/app/api/billing",
+        "src/lib/payuni.ts",
+        "tests",
+        "docs/billing-affiliate-readiness.md",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "PayUNI 維持 Sandbox，不切 production",
+        "Billing 頁面清楚說明 Sandbox / production gate",
+        "能安全測的 checkout / return / notify path 補 smoke 或文件化",
+        "不執行正式交易"
+      ],
+      "status": "failed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T00:43:02.528Z",
+      "summary": "Billing 頁現在會在 PayUNI 仍停留在正式站且未開通時，先把付款按鈕停用並說明原因；sandbox 仍可直接驗證，正式站 gate 不再像可直接送出的按鈕。",
+      "startedAt": "2026-06-30T00:43:02.530Z",
+      "lastPickedAt": "2026-06-30T00:47:34.605Z",
+      "attempts": 2,
+      "validation": [
+        "npx eslint src/app/billing/page.tsx src/lib/payuni.ts tests/payuni-billing.test.ts",
+        "npx vitest run tests/payuni-billing.test.ts --reporter=dot",
+        "npm run lint",
+        "npm test",
+        "npm run build"
+      ],
+      "failedAt": "2026-06-30T01:03:11.128Z",
+      "lastSummary": "QA worker 失敗：ƒ /api/sequences\n├ ƒ /api/sequences/[id]\n├ ƒ /api/sequences/[id]/subscribe\n├ ƒ /api/tags\n├ ƒ /api/tags/[id]\n├ ƒ /api/webhooks/meta\n├ ƒ /api/webhooks/mock\n├ ƒ /api/webhooks/telegram\n├ ƒ /api/webhooks/whatsapp\n├ ƒ /api/workspace-scope\n├ ƒ /automations\n├ ƒ /automations/instagram-default-reply\n├ ƒ /billing\n├ ƒ /broadcasts\n├ ƒ /channels\n├ ƒ /channels/connect\n├ ƒ /channels/connect/instagram\n├ ƒ /channels/connect/instagram/switch-account\n├ ƒ /channels/connect/messenger\n├ ƒ /channels/connect/social\n├ ƒ /channels/connect/success\n├ ○ /contact\n├ ƒ /contacts\n├ ƒ /contacts/[id]\n├ ƒ /dashboard\n├ ○ /data-deletion\n├ ○ /help-center\n├ ƒ /inbox\n├ ○ /inboxpilot\n├ ƒ /knowledge-base\n├ ƒ /login\n├ ƒ /mock-tester\n├ ƒ /oauth/popup/callback\n├ ƒ /oauth/providers/mock\n├ ƒ /oauth/providers/telegram\n├ ○ /official\n├ ○ /official/v2\n├ ○ /official/v3\n├ ○ /pricing\n├ ○ /privacy-policy\n├ ƒ /profile\n├ ƒ /referrals\n├ ƒ /segments\n├ ƒ /sequences\n├ ƒ /signup\n├ ○ /status\n├ ƒ /tags\n├ ○ /templates\n├ ○ /terms-of-service\n└ ƒ /wallet\n\n\nƒ Proxy (Middleware)\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n[AI_TEAM] 執行 Antigravity Browser QA...\n[AI_TEAM] QA 完成：有失敗，請看 AI_TEAM/runtime/qa-report.md",
+      "lastWorker": "qa",
+      "lastValidation": [
+        "exit=1",
+        "qa-level=full"
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/payuni-billing.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "security-best-practices",
+        "design-md"
+      ],
+      "mode": "general"
+    },
+    {
+      "id": "launch-readiness-product-sweep-autofill",
+      "title": "Launch readiness product sweep",
+      "priority": 7,
+      "lane": "product",
+      "scope": [
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "docs/fix-roadmap.md",
+        "docs/codex-session-log.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "整理產品是否已達 beta / paid launch 的差距",
+        "只把安全可自動處理的產品缺口補回 queue",
+        "外部 gate 必須標成 human required，不猜 secret、不碰 production"
+      ],
+      "status": "failed",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T01:03:11.359Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-30T01:03:11.361Z",
+      "lastPickedAt": "2026-06-30T01:03:11.361Z",
+      "attempts": 1,
+      "lastSummary": "Codex dev worker 失敗：28c93..a8ca4e8252254bf864e85ac3a182d1a258d1b29d\n--- a/tests/payuni-billing.test.ts\n+++ b/tests/payuni-billing.test.ts\n@@ -79,6 +79,18 @@\n     expect(enabledProductionStatus.detail).toContain(\"正式站已受控開通\");\n   });\n \n+  it(\"can describe the gateway state even when billing secrets are unavailable\", () => {\n+    vi.unstubAllEnvs();\n+    vi.stubEnv(\"PAYUNI_GATEWAY_URL\", \"https://payuni.com.tw/api\");\n+\n+    const status = getPayuniGatewayStatus();\n+\n+    expect(status.label).toBe(\"PayUNI 正式站\");\n+    expect(status.checkoutEnabled).toBe(false);\n+    expect(status.checkoutDisabledReason).toContain(\"正式金流尚未開通\");\n+    expect(status.detail).toContain(\"正式站尚未開通自動扣款\");\n+  });\n+\n   it(\"marks invoice paid and activates subscription once\", async () => {\n     const workspace = await db.workspace.create({\r\n       data: { id: \"billing-workspace\", name: \"Billing Workspace\", slug: \"billing-workspace\" },\r\n\nERROR: Selected model is at capacity. Please try a different model.\nERROR: Selected model is at capacity. Please try a different model.\ntokens used\n488,212\n\n◇ injected env (56) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]\n◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }",
+      "lastWorker": "codex-dev",
+      "lastValidation": [
+        "exit=1"
+      ],
+      "failedAt": "2026-06-30T01:20:01.353Z",
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npm run build"
+      ],
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable"
+      ],
+      "mode": "general"
+    },
+    {
+      "id": "ig-metadata-error-clarity-autofill",
+      "title": "IG metadata / profile refresh / error clarity sweep",
+      "priority": 3,
+      "lane": "product",
+      "scope": [
+        "src/components/InboxPilotAccountDropdown.tsx",
+        "src/components/InstagramChannelActions.tsx",
+        "src/components/RefreshInstagramProfileButton.tsx",
+        "src/lib/account-channel-list.ts",
+        "src/app/api/channels/[id]/instagram-profile/refresh/route.ts",
+        "tests/account-channel-list.test.ts",
+        "tests/instagram-profile-refresh-route.test.ts",
+        "docs/codex-session-log.md",
+        "docs/fix-roadmap.md",
+        "docs/project-launch-checklist.md",
+        "docs/product-readiness-review.md",
+        "AI_TEAM/tasks/current-task.md",
+        "AI_TEAM/tasks/backlog.md",
+        "AI_TEAM/tasks/queue.json",
+        "AI_TEAM/reports/dev-report.md",
+        "AI_TEAM/reports/final-report.md"
+      ],
+      "acceptance": [
+        "IG 多帳號顯示不可只露出難懂 ID，fallback 狀態要清楚",
+        "metadata refresh / token / permission 錯誤不可暴露 provider raw error",
+        "sidebar dropdown 與 Channels 頁面的 partial metadata 狀態要一致",
+        "補 focused tests 或 browser smoke"
+      ],
+      "status": "running",
+      "mode": "general",
+      "safety": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "safetyConstraints": [
+        "no-production-db",
+        "no-migration",
+        "no-production-deploy",
+        "no-meta-review",
+        "no-payuni-production"
+      ],
+      "suggestedTests": [
+        "npm run lint",
+        "npx vitest run tests/account-channel-list.test.ts tests/instagram-profile-refresh-route.test.ts --reporter=dot",
+        "npm run build"
+      ],
+      "generatedFrom": [
+        "backlog",
+        "current-task",
+        "product-readiness-review",
+        "project-launch-checklist",
+        "fix-roadmap",
+        "qa-report",
+        "browser-qa",
+        "final-report"
+      ],
+      "createdBy": "ai-team-autofill",
+      "createdAt": "2026-06-30T15:20:36.130Z",
+      "summary": "由 planner 在 queue 無 pending / running task 時自動補入，讓產品閉環不中斷。",
+      "startedAt": "2026-06-30T15:20:36.132Z",
+      "lastPickedAt": "2026-06-30T18:27:51.555Z",
+      "attempts": 2,
+      "skills": [
+        "ui-ux-pro-max",
+        "impeccable",
+        "web-design-guidelines",
+        "shadcn",
+        "security-best-practices",
+        "design-md"
       ]
     }
   ]
