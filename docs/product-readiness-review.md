@@ -1,3 +1,16 @@
+# 2026-07-01 - Channels planned settings disabled UX
+
+Status: improved for settings clarity; public paid launch remains Hold.
+
+- Channels `操作紀錄`, `序列設定`, and `轉換事件` now show explicit disabled controls instead of only text and planned badges.
+- Authenticated route smoke now checks these planned settings stay intentionally disabled.
+- `npm run lint`、`npm run build`、`npm test` passed.
+
+Readiness implication:
+
+- Channels settings feel more intentional for beta operators; planned surfaces are less likely to be mistaken for broken controls.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Contacts no-filter empty-state guidance
 
 Status: improved for new-workspace onboarding; public paid launch remains Hold.

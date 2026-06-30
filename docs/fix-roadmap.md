@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Channels planned settings disabled UX
+
+Current status:
+
+- `[x]` Channels planned settings now expose explicit disabled controls for operation logs, sequence settings, and conversion events.
+- `[x]` Added authenticated route smoke coverage for the planned settings disabled controls.
+- `[x]` `npm run lint`、`npm run build`、`npm test` passed.
+- `[x]` Local focused authenticated smoke skipped by guard; CI should run it with seeded test DB.
+
+Remaining:
+
+- `[ ]` Continue safe product-completeness sweeps only if new UI ambiguity is found.
+- `[ ]` Keep Meta App Review, PayUNI production, production DB, and production deployment as human gates.
+
 # Latest - 2026-07-01 Contacts no-filter empty-state guidance
 
 Current status:

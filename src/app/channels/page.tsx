@@ -282,6 +282,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
             </SettingPanel>
             <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
               設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
+              <div>
+                <DisabledFeatureButton testId="channels-logs-disabled">稽核紀錄整理中</DisabledFeatureButton>
+              </div>
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
               目前介面固定使用繁體中文與 InboxPilot 淺色版面。
@@ -395,6 +398,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
               </SettingPanel>
               <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
                 序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
+                <div>
+                  <DisabledFeatureButton testId="channels-sequence-settings-disabled">序列設定整理中</DisabledFeatureButton>
+                </div>
               </SettingPanel>
             </div>
           </section>
@@ -408,6 +414,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
             </SettingPanel>
             <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
               Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
+              <div>
+                <DisabledFeatureButton testId="channels-conversion-events-disabled">轉換事件整理中</DisabledFeatureButton>
+              </div>
             </SettingPanel>
           </section>
 
@@ -547,12 +556,13 @@ function EmptyState({ children }: { children: ReactNode }) {
   return <div className="rounded-lg border border-dashed border-[#d7dbe0] bg-white p-6 text-sm text-[#667085]">{children}</div>;
 }
 
-function DisabledFeatureButton({ children }: { children: ReactNode }) {
+function DisabledFeatureButton({ children, testId }: { children: ReactNode; testId?: string }) {
   return (
     <button
       type="button"
       disabled
       aria-disabled="true"
+      data-testid={testId}
       className="mt-4 inline-flex cursor-not-allowed items-center rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
     >
       {children}
