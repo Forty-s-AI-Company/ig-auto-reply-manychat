@@ -84,6 +84,16 @@ const REMINDER_PRESETS: ReminderPreset[] = [
   { label: "12 小時", minutes: 720 },
 ];
 
+const INBOX_CATEGORY_LABELS: Record<InboxCategory, string> = {
+  all: "全部對話",
+  unassigned: "未指派",
+  assigned: "指派給我",
+  reminders: "提醒",
+  favorites: "收藏",
+  hot: "熱門名單",
+  partners: "合作夥伴",
+};
+
 function latestMessage(conversation: Conversation) {
   return conversation.messages[conversation.messages.length - 1]?.text || "尚無訊息";
 }
@@ -318,6 +328,24 @@ export function InboxClient({
   const selectedCount = visibleSelectedConversationIds.size;
   const allVisibleSelected =
     selectedVisibleIds.length > 0 && selectedVisibleIds.every((id) => visibleSelectedConversationIds.has(id));
+  const activeFilterDescriptions = useMemo(() => {
+    const descriptions: string[] = [];
+    const keyword = query.trim();
+    if (keyword) descriptions.push(`搜尋「${keyword}」`);
+    if (category !== "all") descriptions.push(INBOX_CATEGORY_LABELS[category]);
+    if (statusFilter === "open") descriptions.push("只看開啟對話");
+    if (unreadOnly) descriptions.push("只看未讀");
+    if (!sortNewest) descriptions.push("最舊優先");
+    if (channelFilter === "instagram") descriptions.push("只看 Instagram");
+    if (selectedTagId !== "all") {
+      descriptions.push(`標籤：${tags.find((tag) => tag.id === selectedTagId)?.name || "已選標籤"}`);
+    }
+    if (selectedTeamMemberId !== "all") {
+      const member = teamMembers.find((item) => item.id === selectedTeamMemberId);
+      descriptions.push(`指派：${member?.name || member?.email || "已選成員"}`);
+    }
+    return descriptions;
+  }, [category, channelFilter, query, selectedTagId, selectedTeamMemberId, sortNewest, statusFilter, tags, teamMembers, unreadOnly]);
 
   function showNotice(tone: InboxNotice["tone"], message: string) {
     setNotice({ tone, message });
@@ -529,12 +557,15 @@ export function InboxClient({
     >
       <div className="flex shrink-0 items-center gap-2 border-b border-[#d7dbe0] bg-white p-3 sm:hidden">
         <label className="relative min-w-0 flex-1">
+          <span className="sr-only">搜尋收件匣對話</span>
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             className="h-10 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6]"
-            placeholder="搜尋對話"
+            placeholder="搜尋姓名、帳號或訊息…"
+            aria-label="搜尋收件匣對話"
+            autoComplete="off"
             data-testid="inbox-mobile-search"
           />
         </label>
@@ -719,9 +750,33 @@ export function InboxClient({
             {showFilterHint ? (
               <div
                 className="fixed left-4 right-4 top-20 z-50 w-auto rounded-md border border-[#d7dbe0] bg-white p-3 text-xs text-[#667085] shadow-lg sm:absolute sm:left-[468px] sm:right-auto sm:top-11 sm:w-72"
+                role="dialog"
+                aria-modal="false"
+                aria-label="收件匣篩選"
                 data-testid="inbox-filter-panel"
               >
-                <p className="mb-3 font-semibold text-[#111827]">收件匣篩選</p>
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-[#111827]">收件匣篩選</p>
+                    <p className="mt-1 text-[11px] leading-4 text-[#667085]">
+                      用狀態、標籤、指派對象快速縮小對話範圍。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowFilterHint(false)}
+                    className="rounded-md px-2 py-1 text-[#667085] hover:bg-[#f8fafc]"
+                    aria-label="關閉收件匣篩選"
+                  >
+                    ×
+                  </button>
+                </div>
+                {activeFilterDescriptions.length > 0 ? (
+                  <div className="mb-3 rounded-md bg-[#f8fafc] px-3 py-2" data-testid="inbox-active-filter-summary">
+                    <p className="font-medium text-[#344054]">目前套用</p>
+                    <p className="mt-1 leading-5">{activeFilterDescriptions.join("、")}</p>
+                  </div>
+                ) : null}
                 <label className="mb-2 block">
                   <span className="mb-1 block">狀態</span>
                   <select
@@ -874,6 +929,11 @@ export function InboxClient({
                 {filteredConversations.length === 0 ? (
                   <div className="px-4 py-8 text-sm text-[#667085]">
                     <p>目前沒有符合條件的對話。</p>
+                    {activeFilterDescriptions.length > 0 ? (
+                      <p className="mt-2 text-xs leading-5" data-testid="inbox-empty-filter-summary">
+                        目前套用：{activeFilterDescriptions.join("、")}。你可以清除篩選，或換一個關鍵字再找一次。
+                      </p>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => {
