@@ -2622,6 +2622,19 @@ Remaining:
 - `[ ]` 後續可把通知頻率、瀏覽器提醒、語言 / 主題選擇做成真正可編輯設定。
 - `[ ]` API / 第三方整合仍是受控開通區塊，正式開放前需要另外補 API key 管理、權限與 audit。
 
+## Latest - 2026-07-01 Public pricing page polish
+
+Current status:
+
+- `[x]` `/pricing` now uses `方案與價格` instead of an English `Pricing` eyebrow / metadata title.
+- `[x]` Public plan cards now localize active contacts, message events, team seats, retention, and affiliate payout copy.
+- `[x]` Pricing CTAs now distinguish free trial from paid plan selection and include visible focus states.
+- `[x]` Source-level regression coverage prevents the public pricing page from drifting back into mixed English labels.
+
+Remaining:
+
+- `[ ]` Before public paid launch, run one browser QA pass across `/official`, `/pricing`, `/signup`, and the authenticated billing route to confirm the full visitor-to-trial path feels consistent.
+
 ## Latest - 2026-07-01 Inbox filter clarity polish
 
 Current status:

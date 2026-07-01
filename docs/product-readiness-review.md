@@ -1,3 +1,18 @@
+# 2026-07-01 - Public pricing page polish
+
+Status: improved for public visitor-to-trial clarity; public paid launch remains Hold.
+
+What changed:
+
+- `/pricing` now reads as a Chinese SaaS pricing page instead of mixing an English `Pricing` eyebrow with Chinese body copy.
+- Plan limits are described with user-facing labels: active contacts became `活躍聯絡人`, message events became `訊息事件`, and team seats / retention / affiliate payout copy is localized.
+- The page now gives visitors a compact explanation of trial, usage-based pricing, and PayUNI Sandbox status before the plan grid.
+
+Readiness implication:
+
+- The visitor-to-signup path is clearer and less likely to feel like an internal draft page.
+- This does not change payment execution, production billing credentials, Meta App Review, or Production deployment gates.
+
 # 2026-07-01 - Admin affiliate / payout light-theme polish
 
 Status: improved for internal operations readiness; public paid launch remains Hold.
