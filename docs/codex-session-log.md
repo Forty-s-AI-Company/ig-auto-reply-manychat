@@ -1,3 +1,27 @@
+# 2026-07-02 - Contact detail mobile tag add stability
+
+Task:
+
+- Fix the master CI `full-release-auth-smoke` failure where the mobile Contacts detail smoke selected a tag but the add-tag button stayed disabled.
+
+Changes:
+
+- Made the contact detail tag add action read the current select DOM value as a fallback in addition to React state.
+- Kept the add-tag button disabled only when no tags are available or an update is in progress, so mobile state-sync lag cannot make the control look broken.
+- Added a user-readable validation message when the add action is triggered without a selected tag.
+
+Validation:
+
+- `npm run e2e:admin:ensure` passed.
+- `npm run test:e2e:contacts` passed: 8 passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves Contacts detail reliability and CI stability without changing schema, production DB, deployment, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Affiliate controlled cash copy polish
 
 Task:

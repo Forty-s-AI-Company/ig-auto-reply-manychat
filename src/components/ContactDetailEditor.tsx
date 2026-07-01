@@ -2,7 +2,7 @@
 
 import { Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition, type FormEvent } from "react";
+import { useRef, useState, useTransition, type FormEvent } from "react";
 
 type ContactTag = {
   tag: {
@@ -57,6 +57,7 @@ export function ContactDetailEditor({
   const [isSaving, setIsSaving] = useState(false);
   const [isTagUpdating, setIsTagUpdating] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const tagSelectRef = useRef<HTMLSelectElement>(null);
 
   const selectedTags = allTags.filter((tag) => selectedTagIds.has(tag.id));
   const availableTags = allTags.filter((tag) => !selectedTagIds.has(tag.id));
@@ -107,7 +108,12 @@ export function ContactDetailEditor({
   }
 
   async function addTag() {
-    if (!tagToAdd || isTagUpdating) return;
+    const nextTagId = tagToAdd || tagSelectRef.current?.value || "";
+    if (isTagUpdating) return;
+    if (!nextTagId) {
+      setToast({ tone: "danger", message: "請先選擇要新增的標籤。" });
+      return;
+    }
 
     setIsTagUpdating(true);
     setToast(null);
@@ -115,14 +121,14 @@ export function ContactDetailEditor({
       const response = await fetch(`/api/contacts/${contact.id}/tags`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tagId: tagToAdd }),
+        body: JSON.stringify({ tagId: nextTagId }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(typeof data.error === "string" ? data.error : "新增標籤失敗。");
       }
 
-      setSelectedTagIds((current) => new Set(current).add(tagToAdd));
+      setSelectedTagIds((current) => new Set(current).add(nextTagId));
       setTagToAdd("");
       setToast({ tone: "success", message: "標籤已新增到聯絡人。" });
       refreshPage();
@@ -246,9 +252,11 @@ export function ContactDetailEditor({
           </div>
           <div className="flex gap-2">
             <select
+              ref={tagSelectRef}
               data-testid="contact-detail-tag-select"
               value={tagToAdd}
               onChange={(event) => setTagToAdd(event.target.value)}
+              onInput={(event) => setTagToAdd(event.currentTarget.value)}
               disabled={availableTags.length === 0 || isTagUpdating}
               className="h-9 min-w-[180px] rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe] disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="選擇要新增的標籤"
@@ -264,7 +272,7 @@ export function ContactDetailEditor({
               type="button"
               onClick={addTag}
               data-testid="contact-detail-add-tag"
-              disabled={!tagToAdd || isTagUpdating}
+              disabled={availableTags.length === 0 || isTagUpdating}
               className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
