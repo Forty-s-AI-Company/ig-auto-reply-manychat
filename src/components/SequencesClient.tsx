@@ -83,7 +83,9 @@ export function SequencesClient({
       const next = await response.json();
       setSequences(next);
       if (!selectedSequenceId && next[0]) setSelectedSequenceId(next[0].id);
+      return;
     }
+    setMessage("重新載入序列失敗，請稍後再試。");
   }
 
   function updateStep(index: number, patch: Partial<StepDraft>) {
@@ -169,7 +171,13 @@ export function SequencesClient({
 
   async function deleteSequence(id: string) {
     if (!confirm("確定要刪除這個序列？")) return;
-    await fetch(`/api/sequences/${id}`, { method: "DELETE" });
+    setMessage("");
+    const response = await fetch(`/api/sequences/${id}`, { method: "DELETE" });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setMessage(data.error || "刪除序列失敗，請稍後再試。");
+      return;
+    }
     if (selectedSequenceId === id) setSelectedSequenceId("");
     await reload();
   }

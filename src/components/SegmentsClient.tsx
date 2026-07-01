@@ -90,7 +90,11 @@ export function SegmentsClient({
 
   async function reload() {
     const response = await fetch("/api/segments");
-    if (response.ok) setSegments(await response.json());
+    if (response.ok) {
+      setSegments(await response.json());
+      return;
+    }
+    setError("重新載入分群失敗，請稍後再試。");
   }
 
   async function save() {
@@ -118,7 +122,13 @@ export function SegmentsClient({
 
   async function remove(id: string) {
     if (!confirm("確定要刪除這個分群？")) return;
-    await fetch(`/api/segments/${id}`, { method: "DELETE" });
+    setError("");
+    const response = await fetch(`/api/segments/${id}`, { method: "DELETE" });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setError(data.error || "刪除分群失敗，請稍後再試。");
+      return;
+    }
     if (draft.id === id) setDraft(emptyDraft);
     await reload();
   }

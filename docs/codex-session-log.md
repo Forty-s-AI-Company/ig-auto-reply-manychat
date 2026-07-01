@@ -1,3 +1,26 @@
+# 2026-07-02 - Segments and Sequences delete failure feedback
+
+Task:
+
+- Make Segments and Sequences destructive actions show clear feedback when delete or reload requests fail.
+
+Changes:
+
+- Added Segments reload/delete failure messages instead of silently leaving the view unchanged.
+- Added Sequences reload/delete failure messages instead of silently leaving the view unchanged.
+- Extended source regression coverage for both user-facing fallback messages.
+
+Validation:
+
+- `npx vitest run tests/segments-light-theme.test.ts tests/sequences-form-state.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves visible action reliability without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Sequences hydration-safe save guard
 
 Task:
