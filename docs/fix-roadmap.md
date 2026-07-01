@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Mock tester light-theme and feedback polish
+
+Current status:
+
+- `[x]` Webhook 測試工具不再使用深色內部工具表單。
+- `[x]` 測試表單已補齊 label、name、autocomplete、focus-visible 與送出中狀態。
+- `[x]` 模擬 webhook 成功 / 失敗會顯示 inline feedback，不再只顯示 raw JSON。
+- `[x]` Source-level regression test 防止測試工具回到暗色樣式與 silent-submit 行為。
+
+Remaining:
+
+- `[ ]` 若後續要讓測試工具支援多 channel / 多 persona，需要另補 channel picker 與 tenant-safe seeded smoke。
+- `[ ]` 繼續掃描 admin-only 頁面是否仍有深色內部工具樣式。
+
 # Latest - 2026-07-01 Affiliate light-theme and eligibility UX polish
 
 Current status:
