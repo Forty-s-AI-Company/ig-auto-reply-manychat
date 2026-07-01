@@ -142,7 +142,7 @@ export async function GET(request: Request, context: RouteContext) {
       displayName: account.displayName,
     };
     if (syncResult.channelIds.length > 0) {
-      successPayload.message = `Connected ${syncResult.channelIds.length} channel(s).`;
+      successPayload.message = `已同步 ${syncResult.channelIds.length} 個 Instagram 帳號。`;
     }
     await clearPopupState();
     if (stored.transport === "redirect") {
@@ -152,7 +152,7 @@ export async function GET(request: Request, context: RouteContext) {
           oauth_provider: provider.id,
           oauth_account_id: account.id,
           oauth_display_name: account.displayName,
-          oauth_message: successPayload.message || "Connected successfully.",
+          oauth_message: successPayload.message || "已成功連接社群帳號。",
         }),
       );
     }

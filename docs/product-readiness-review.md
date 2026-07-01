@@ -1,3 +1,31 @@
+# 2026-07-01 - PR #93 Sequences smoke stability follow-up
+
+Status: improved for delivery reliability; public paid launch remains Hold.
+
+What changed:
+
+- The Sequences disabled-state Playwright smoke now waits for hydrated client state before clearing the name field.
+- This reduces false CI failures where the blank-name disabled state was checked before the client component finished settling.
+
+Readiness implication:
+
+- This does not change product behavior. It improves confidence that the existing disabled-state UX is verified consistently in CI.
+
+# 2026-07-01 - Analytics and OAuth sync user-facing copy polish
+
+Status: improved for product IA and error-message clarity; public paid launch remains Hold.
+
+What changed:
+
+- Analytics no-data state now uses the Settings IA language instead of the old Channels naming.
+- OAuth account re-sync actions and failures now use user-facing Instagram account language rather than internal ConnectedAccount / Channel phrasing.
+- Generic OAuth callback success copy is localized.
+
+Readiness implication:
+
+- Users are less likely to interpret sync and analytics states as unfinished implementation surfaces.
+- This does not change OAuth behavior, token handling, production data, Meta review, PayUNI production, or deployment gates.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Status: improved for product IA consistency; public paid launch remains Hold.

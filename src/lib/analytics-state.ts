@@ -112,7 +112,7 @@ export function buildAnalyticsState(summary: AnalyticsSummarySnapshot, summaryEr
       bannerTone: "warning",
       bannerTitle: "尚未連接 Instagram 帳號",
       bannerBody:
-        "目前沒有可分析的 IG 資料。先到 Channels 完成連接，這裡才會開始累積留言、對話與廣播數字；如果你明明已經連線，請回到 Channels 檢查授權與啟用狀態。",
+        "目前沒有可分析的 IG 資料。先到設定完成 Instagram 連接，這裡才會開始累積留言、對話與廣播數字；如果你明明已經連線，請回到設定檢查授權與啟用狀態。",
       bannerActionLabel: "連接 IG 帳號",
       bannerActionHref: "/channels/connect",
     };

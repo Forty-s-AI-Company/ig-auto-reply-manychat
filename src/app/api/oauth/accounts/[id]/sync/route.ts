@@ -19,11 +19,11 @@ export async function POST(_request: Request, context: RouteContext) {
   const account = await getConnectedAccountForSync(workspaceId, id);
 
   if (!account) {
-    return NextResponse.json({ error: "Connected account not found." }, { status: 404 });
+    return NextResponse.json({ error: "找不到這筆社群帳號連接，請回到設定重新整理後再試一次。" }, { status: 404 });
   }
 
   if (!account.accessToken) {
-    return NextResponse.json({ error: "這筆 ConnectedAccount 沒有可用的 access token，無法重新同步。" }, { status: 400 });
+    return NextResponse.json({ error: "這筆社群帳號連接沒有可用授權，請重新登入 Instagram 後再同步。" }, { status: 400 });
   }
 
   try {
@@ -61,7 +61,7 @@ export async function POST(_request: Request, context: RouteContext) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Channel sync failed." },
+      { error: error instanceof Error ? error.message : "目前無法重新同步 Instagram 帳號，請稍後再試。" },
       { status: 400 },
     );
   }
