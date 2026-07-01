@@ -3,6 +3,9 @@ import { handlePayuniCallback } from "@/lib/billing/payuni-callback";
 import { completeInternalInvoicePaymentOrder } from "@/lib/billing/payment-service";
 import { getDb } from "@/lib/db";
 import { createPayuniCheckout, getPayuniGatewayStatus } from "@/lib/payuni";
+import { loadProjectEnv } from "../scripts/load-env.mjs";
+
+loadProjectEnv();
 
 const db = getDb();
 

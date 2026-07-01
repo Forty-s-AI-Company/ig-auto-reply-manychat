@@ -1,3 +1,33 @@
+# 2026-07-02 - Referral credit refund reconciliation
+
+Task:
+
+- Add the service-level refund reconciliation piece for the non-cash referral credit lifecycle without touching production DB, production deployment, Meta App Review, or PayUNI production.
+
+Changes:
+
+- Added `markInvoiceRefunded()` in the billing invoice service as a controlled service entrypoint.
+- Added refund reconciliation logic that cancels pending referral credits and creates an idempotent `clawback` debit when an available referral credit must be reversed.
+- Added DB-backed regression coverage for pending cancellation and idempotent available-credit clawback.
+- Updated PayUNI billing tests to load the project env consistently when run as a focused file.
+- Updated billing / affiliate readiness notes to keep the remaining gap explicit: a real PayUNI refund callback or operator refund event still needs to call the service.
+
+Validation:
+
+- `npx vitest run tests/referral-credit-refund-lifecycle.test.ts tests/referral-credit-wallet-lifecycle.test.ts`: passed.
+- `npx vitest run tests/payuni-billing.test.ts`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run e2e:admin:ensure`: passed.
+- `npm run test:e2e:auth`: passed, 27 passed / 1 expected skipped.
+
+Launch impact:
+
+- Referral credits now have the missing service-level refund behavior for pending cancellation and available-credit clawback.
+- Public paid launch still remains Hold because the service is not yet wired to a real refund event source.
+- No production DB, production deployment, PayUNI production switch, Meta App Review action, or secret output occurred.
+
 # 2026-07-02 - Referral credit v1 direction
 
 Task:

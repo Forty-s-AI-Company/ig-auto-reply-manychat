@@ -2,7 +2,7 @@ import type { BillingInterval } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 import { billingAddons, getAddon, getPlan, getPlanAmount } from "@/lib/billing";
 import { calculateInvoice } from "@/lib/billing/calculations";
-import { applyAvailableCredits } from "@/lib/billing/wallet-service";
+import { applyAvailableCredits, reconcileReferralCreditsForRefundedInvoice } from "@/lib/billing/wallet-service";
 import { getDb } from "@/lib/db";
 
 type DbOrTx = ReturnType<typeof getDb> | Prisma.TransactionClient;
@@ -136,6 +136,21 @@ export async function markInvoicePaid(invoiceId: string, db: DbOrTx = getDb()) {
   return db.invoice.update({
     where: { id: invoiceId },
     data: { status: "paid", paidAt: new Date() },
+  });
+}
+
+export async function markInvoiceRefunded(invoiceId: string, db = getDb()) {
+  return db.$transaction(async (tx) => {
+    const invoice = await tx.invoice.update({
+      where: { id: invoiceId },
+      data: { status: "refunded" },
+    });
+    const referralCreditReconciliation = await reconcileReferralCreditsForRefundedInvoice({ invoiceId }, tx);
+
+    return {
+      invoice,
+      referralCreditReconciliation,
+    };
   });
 }
 

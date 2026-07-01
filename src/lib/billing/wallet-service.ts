@@ -161,6 +161,66 @@ export async function applyAvailableCredits(params: {
   return { usedAmount };
 }
 
+export async function reconcileReferralCreditsForRefundedInvoice(params: {
+  invoiceId: string;
+}, db: DbOrTx = getDb()) {
+  const referralCredits = await db.walletLedger.findMany({
+    where: {
+      relatedInvoiceId: params.invoiceId,
+      source: "referral_credit",
+      type: "credit",
+      status: { in: ["pending", "available"] },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  let cancelledPendingAmount = 0;
+  let clawbackAmount = 0;
+
+  for (const credit of referralCredits) {
+    if (credit.status === "pending") {
+      await db.walletLedger.update({
+        where: { id: credit.id },
+        data: { status: "cancelled" },
+      });
+      cancelledPendingAmount += credit.amount;
+      continue;
+    }
+
+    const existingClawback = await db.walletLedger.aggregate({
+      where: {
+        userId: credit.userId,
+        relatedInvoiceId: params.invoiceId,
+        source: "clawback",
+        type: "debit",
+      },
+      _sum: { amount: true },
+    });
+    const remainingClawback = Math.max(credit.amount - (existingClawback._sum.amount || 0), 0);
+    if (remainingClawback <= 0) continue;
+
+    await db.walletLedger.create({
+      data: {
+        userId: credit.userId,
+        workspaceId: credit.workspaceId,
+        type: "debit",
+        source: "clawback",
+        amount: remainingClawback,
+        status: "used",
+        relatedInvoiceId: params.invoiceId,
+        relatedPaymentOrderId: credit.relatedPaymentOrderId,
+      },
+    });
+    clawbackAmount += remainingClawback;
+  }
+
+  return {
+    affectedCredits: referralCredits.length,
+    cancelledPendingAmount,
+    clawbackAmount,
+  };
+}
+
 export async function getWalletLedger(userId: string, db: DbOrTx = getDb()) {
   await syncWalletLedgerLifecycle(userId, new Date(), db);
   return db.walletLedger.findMany({

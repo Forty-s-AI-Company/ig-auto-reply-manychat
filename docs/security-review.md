@@ -1,3 +1,20 @@
+# 2026-07-02 - Referral credit refund reconciliation
+
+Scope:
+
+- Added service-level refund reconciliation for referral-credit wallet ledger rows.
+- Pending referral credits are cancelled; available referral credits receive an idempotent clawback debit.
+- No production DB action, migration, deployment, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- Reversal is idempotent to avoid duplicate debit creation when a refund event or operator action is retried.
+- The service only works from an invoice id and does not expose a public refund endpoint in this change.
+
+Residual risk:
+
+- A future PayUNI refund callback or operator refund action must preserve auth, tenant scope, signature/idempotency, and audit requirements before invoking this service.
+
 # 2026-07-02 - Referral credit v1 boundary refresh
 
 Scope:

@@ -1,3 +1,19 @@
+# 2026-07-02 - Referral credit refund reconciliation service
+
+Status: improved for referral-credit financial correctness; public paid launch remains Hold.
+
+What changed:
+
+- Pending referral credits can now be cancelled when their related invoice is marked refunded.
+- Available referral credits can now be reversed with an idempotent clawback debit.
+- Regression tests cover both lifecycle paths so the 7-day pending window and refund reversal policy are no longer documentation-only.
+
+Readiness implication:
+
+- The non-cash referral-credit direction is closer to an auditable MVP.
+- A real PayUNI refund callback or operator refund action still needs to call the reconciliation service before refund handling is fully automatic.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
+
 # 2026-07-02 - Referral credit v1 product direction
 
 Status: improved for public pricing / referral clarity; public paid launch remains Hold.
