@@ -1260,3 +1260,16 @@ Readiness implication:
 - 中文化產品體感更完整，特別是從 profile/settings 進入低頻頁面時比較不像工程後台。
 - 不改功能權限、不改資料模型、不改 production launch gates。
 - Admin-only 頁面仍可在後續另做 light-theme UI polish。
+
+## 2026-07-01 - Instagram channel action light-theme polish
+
+Status:
+
+- Channels 頁 Instagram profile refresh 與 channel action controls 已從深色內部工具樣式調整成亮色設定頁樣式。
+- 動作區塊使用淡藍資訊面板、白底次要按鈕與清楚 disabled button 狀態。
+- 新增 source-level regression test，避免 Instagram channel controls 再退回暗色 class。
+
+Readiness implication:
+
+- Settings / Channels 頁的視覺一致性更接近主流 SaaS 設定頁。
+- 本輪不改 Meta OAuth、token refresh、webhook、App Review 或資料模型；只收斂 UI/UX。

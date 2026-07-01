@@ -45,7 +45,7 @@ export function RefreshInstagramProfileButton({ channelId, hasStoredToken = true
         disabled={isRefreshing || Boolean(disabledReason)}
         title={disabledReason || "重新讀取帳號名稱"}
         aria-label={disabledReason || "重新讀取帳號名稱"}
-        className="inline-flex items-center gap-1.5 rounded-md border border-amber-700 px-3 py-1.5 text-xs font-medium text-amber-100 hover:bg-amber-900/40 disabled:cursor-not-allowed disabled:border-[#d7dbe0] disabled:text-[#98a2b3] disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-md border border-[#f79009] bg-white px-3 py-1.5 text-xs font-medium text-[#b54708] hover:bg-[#fffaeb] disabled:cursor-not-allowed disabled:border-[#d7dbe0] disabled:bg-[#f8fafc] disabled:text-[#98a2b3] disabled:opacity-80"
       >
         <RotateCw className={isRefreshing ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} aria-hidden="true" />
         重新讀取帳號名稱

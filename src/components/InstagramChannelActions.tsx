@@ -92,7 +92,7 @@ export function InstagramChannelActions({
   }
 
   const messageClass =
-    state.tone === "success" ? "text-green-300" : state.tone === "error" ? "text-red-300" : "text-zinc-400";
+    state.tone === "success" ? "text-green-700" : state.tone === "error" ? "text-red-700" : "text-[#667085]";
   const displayedMessage =
     state.tone === "neutral"
       ? state.message === idleState.message || !disabledReasonList.includes(state.message)
@@ -101,25 +101,25 @@ export function InstagramChannelActions({
       : state.message;
 
   return (
-    <div className="mt-4 rounded-md border border-cyan-900/70 bg-cyan-950/20 p-3">
+    <div className="mt-4 rounded-md border border-[#b9e6fe] bg-[#f0f9ff] p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="text-sm font-medium text-cyan-100">Instagram 功能已開始實作</p>
+          <p className="text-sm font-medium text-[#0b4a6f]">Instagram 功能已開始實作</p>
           <p className={`mt-1 text-xs ${messageClass}`}>{displayedMessage}</p>
         </div>
-        {state.loading ? <RefreshCw className="h-4 w-4 animate-spin text-cyan-200" aria-hidden="true" /> : null}
+        {state.loading ? <RefreshCw className="h-4 w-4 animate-spin text-[#006fe6]" aria-hidden="true" /> : null}
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href="/automations"
-          className="rounded-md bg-cyan-400 px-3 py-1.5 text-xs font-medium text-zinc-950 hover:bg-cyan-300"
+          className="rounded-md bg-[#006fe6] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0057b8]"
         >
           開啟視覺化自動化
         </Link>
         <Link
           href="/automations/instagram-default-reply"
-          className="rounded-md border border-cyan-800 px-3 py-1.5 text-xs font-medium text-cyan-100 hover:bg-cyan-900/40"
+          className="rounded-md border border-[#84caff] bg-white px-3 py-1.5 text-xs font-medium text-[#0057b8] hover:bg-[#e0f2fe]"
         >
           設定預設回覆
         </Link>
@@ -128,7 +128,7 @@ export function InstagramChannelActions({
           onClick={() => runAction("media")}
           disabled={state.loading || Boolean(disabledReasons.media)}
           title={disabledReasons.media || "抓取貼文"}
-          className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-[#d0d5dd] bg-white px-3 py-1.5 text-xs font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#98a2b3]"
         >
           抓取貼文
         </button>
@@ -137,7 +137,7 @@ export function InstagramChannelActions({
           onClick={() => runAction("comments")}
           disabled={state.loading || Boolean(disabledReasons.comments)}
           title={disabledReasons.comments || "同步留言觸發"}
-          className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-[#d0d5dd] bg-white px-3 py-1.5 text-xs font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#98a2b3]"
         >
           同步留言觸發
         </button>
@@ -146,13 +146,13 @@ export function InstagramChannelActions({
           onClick={() => runAction("token")}
           disabled={state.loading || Boolean(disabledReasons.token)}
           title={disabledReasons.token || "更新長效權杖"}
-          className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-100 hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-md border border-[#d0d5dd] bg-white px-3 py-1.5 text-xs font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#98a2b3]"
         >
           更新長效權杖
         </button>
       </div>
       {disabledReasonList.length > 0 ? (
-        <p className="mt-3 text-xs leading-6 text-cyan-100/80">
+        <p className="mt-3 text-xs leading-6 text-[#0b4a6f]">
           目前至少有一個 Instagram 動作先維持 disabled：{disabledReasonList.join("；")}。
         </p>
       ) : null}
