@@ -6591,3 +6591,34 @@ Validation:
 Launch impact:
 
 - Runner infrastructure only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-07-01 - Inbox tag creation semantics
+
+Task:
+
+- 做一次產品完成度快速 audit，優先修掉 Inbox 右側「聯絡人標籤」區塊的 visible-but-misleading 控制項。
+
+Changes:
+
+- 共用 `ContactTagCreateButton` 支援 inline 文字按鈕與建立後 callback。
+- Inbox 聯絡人標籤區塊拆成兩個明確動作：
+  - `套用既有標籤` 下拉選單只負責把既有標籤套用到目前聯絡人。
+  - `建立新標籤` 按鈕會開啟建立標籤 Modal，建立後套用到目前聯絡人並刷新頁面。
+- Authenticated Inbox smoke 增加語意覆蓋，避免「套用」功能再回歸成「+ 新增標籤」假入口。
+
+Audit notes:
+
+- Staging 目前仍落後 master，不能用 Staging 畫面判斷 master 最新功能是否已部署。
+- Profile menu / sidebar IA 仍需下一輪集中整理：`帳單` 應往 `方案` 語意靠攏、`渠道` 應往 `設定` 語意靠攏、`AI` / 稽核 / 說明中心等低頻入口應重新分組，避免主選單過度膨脹。
+
+Validation:
+
+- `npx eslint src/components/ContactTagCreateButton.tsx src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Windows Vitest batch 3 hit known `3221225477` batch-level instability, then every file passed in diagnostic rerun.
+- `npm run build`: passed. Prisma generate reported a locked Windows query engine file and reused the existing generated client through `prisma-generate-safe`.
+- `npm run test:e2e:inbox`: skipped locally because authenticated smoke guard requires seeded auth credentials / test DB context in the target environment.
+
+Launch impact:
+
+- Product UX improvement only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

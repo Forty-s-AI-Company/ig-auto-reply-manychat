@@ -6,7 +6,21 @@ import { FormEvent, useState, useTransition } from "react";
 
 const PRESET_COLORS = ["#2563eb", "#16a34a", "#f97316", "#dc2626", "#7c3aed", "#0891b2"];
 
-export function ContactTagCreateButton() {
+type CreatedTag = { id: string; name: string; color: string };
+
+type ContactTagCreateButtonProps = {
+  variant?: "icon" | "inline";
+  buttonLabel?: string;
+  modalDescription?: string;
+  onCreated?: (tag: CreatedTag) => void | Promise<void>;
+};
+
+export function ContactTagCreateButton({
+  variant = "icon",
+  buttonLabel = "新增標籤",
+  modalDescription = "建立後會出現在左側標籤清單。",
+  onCreated,
+}: ContactTagCreateButtonProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
@@ -44,6 +58,9 @@ export function ContactTagCreateButton() {
         throw new Error(typeof data.error === "string" ? data.error : "新增標籤失敗。");
       }
 
+      const createdTag = data as CreatedTag;
+      await onCreated?.(createdTag);
+
       setIsOpen(false);
       setName("");
       setColor(PRESET_COLORS[0]);
@@ -57,15 +74,26 @@ export function ContactTagCreateButton() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        aria-label="新增標籤"
-        title="新增標籤"
-        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#667085] transition hover:bg-[#e4e7ec] hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#006fe6] focus:ring-offset-2"
-      >
-        <Plus className="h-4 w-4" aria-hidden="true" />
-      </button>
+      {variant === "inline" ? (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-[#d7dbe0] bg-white px-2.5 text-xs font-medium text-[#344054] transition hover:bg-[#f8fafc] focus:outline-none focus:ring-2 focus:ring-[#006fe6] focus:ring-offset-2"
+        >
+          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+          {buttonLabel}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          aria-label={buttonLabel}
+          title={buttonLabel}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#667085] transition hover:bg-[#e4e7ec] hover:text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#006fe6] focus:ring-offset-2"
+        >
+          <Plus className="h-4 w-4" aria-hidden="true" />
+        </button>
+      )}
 
       {isOpen ? (
         <div
@@ -79,7 +107,7 @@ export function ContactTagCreateButton() {
               <h2 id="create-contact-tag-title" className="text-base font-semibold text-[#111827]">
                 新增標籤
               </h2>
-              <p className="mt-1 text-sm text-[#667085]">建立後會出現在左側標籤清單。</p>
+              <p className="mt-1 text-sm text-[#667085]">{modalDescription}</p>
             </div>
 
             <form onSubmit={createTag} className="space-y-4">

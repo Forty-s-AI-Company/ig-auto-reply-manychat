@@ -80,7 +80,9 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.locator('section:has-text("自動化")')).toContainText("自動化暫停需要先完成流程級控制與稽核設計");
     await expect(page.getByTestId("inbox-quick-hot-tag")).not.toContainText("🔥");
     await expect(page.getByTestId("inbox-quick-partner-tag")).not.toContainText("🤝");
-    await page.locator('section:has-text("聯絡人標籤") select').selectOption({ label: "e2e-vip" });
+    await expect(page.getByTestId("inbox-apply-tag-select")).toContainText("套用既有標籤");
+    await expect(page.getByRole("button", { name: "建立新標籤" })).toBeVisible();
+    await page.getByTestId("inbox-apply-tag-select").selectOption({ label: "e2e-vip" });
     await expect(page.getByTestId("inbox-notice")).toContainText("標籤已加入聯絡人");
     if (isMobileProject) {
       await page.getByTestId("inbox-pane-detail").click();

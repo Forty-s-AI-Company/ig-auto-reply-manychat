@@ -26,6 +26,7 @@ import {
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { ContactTagCreateButton } from "@/components/ContactTagCreateButton";
 
 type Tag = { id: string; name: string; color: string };
 type TeamMember = { id: string; name: string; email: string };
@@ -1506,14 +1507,28 @@ function ContactPanel({
       <PanelSection
         title="聯絡人標籤"
         action={
-          <select value="" onChange={(event) => addTag(event.target.value)} className="text-xs text-[#006fe6]">
-            <option value="">+ 新增標籤</option>
-            {tags.map((tag) => (
-              <option key={tag.id} value={tag.id}>
-                {tag.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <select
+              value=""
+              onChange={(event) => addTag(event.target.value)}
+              data-testid="inbox-apply-tag-select"
+              className="h-8 rounded-md border border-[#d7dbe0] bg-white px-2 text-xs text-[#344054] hover:bg-[#f8fafc]"
+              aria-label="套用既有標籤"
+            >
+              <option value="">套用既有標籤</option>
+              {tags.map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
+            </select>
+            <ContactTagCreateButton
+              variant="inline"
+              buttonLabel="建立新標籤"
+              modalDescription="建立後會套用到目前選取的聯絡人，也會同步出現在標籤清單。"
+              onCreated={async (tag) => addTag(tag.id)}
+            />
+          </div>
         }
       >
         <div className="flex flex-wrap gap-2">
