@@ -2353,5 +2353,21 @@ Current status:
 
 Remaining:
 
-- `[ ]` 將 Profile menu / sidebar IA 集中調整：`帳單` 改往 `方案` 語意、`渠道` 改往 `設定` 語意、低頻入口收進個人檔案或設定分組。
+- `[x]` 將 Profile menu / sidebar IA 集中調整：`帳單` 改往 `方案與用量` 語意、`渠道` 改往 `設定` 語意、低頻入口收進個人檔案或設定分組。
 - `[ ]` 補一次完整 in-app browser 或 Playwright 視覺 QA，檢查 Inbox / Contacts / Channels / Automations / Analytics 的主流 SaaS 導航與 RWD 一致性。
+
+## Latest - 2026-07-01 Product navigation IA polish
+
+Current status:
+
+- `[x]` 左側主選單不再顯示 AI、帳單、錢包、稽核紀錄等低頻入口。
+- `[x]` `渠道` 主選單改名為 `設定`，保留既有 `/channels` route。
+- `[x]` Billing 頁標題改成 `方案與用量`。
+- `[x]` Profile menu 新增目前方案摘要與升級 / 管理方案 CTA。
+- `[x]` Profile menu 集中設定、方案、分析、通知、AI、API、稽核與說明中心入口。
+- `[x]` 移除 `進階功能`、`新增登入方式`、`Email 通知設定`、`排隊中` 這類容易讓人覺得半成品的入口。
+
+Remaining:
+
+- `[ ]` 後續可再做 Settings 頁第二輪，把通知、AI、API、稽核改成真正可編輯或更清楚的 disabled UX，而不只是入口重新歸位。
+- `[ ]` 若要把 `/channels` route 正式改名為 `/settings`，需另外做 redirect / route alias / SEO / tests，不在本輪處理。

@@ -50,7 +50,7 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
   const activeSubscription = subscriptions.find((subscription) => ["active", "trialing"].includes(subscription.status));
 
   return (
-    <AdminShell title="付款與用量">
+    <AdminShell title="方案與用量">
       <div className="space-y-6">
         {params?.payment === "success" ? (
           <DismissibleNoticeToast title="付款已完成" tone="success">
