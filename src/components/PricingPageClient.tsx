@@ -115,7 +115,7 @@ export function PricingPageClient() {
                 </li>
                 <li className="flex gap-2">
                   <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-cyan-600" />
-                  現金分潤 {plan.affiliateCashPayoutEligible ? "可申請" : "暫不開放"}
+                  推薦折抵 {plan.affiliateCashPayoutEligible ? "可查看成效" : "可使用"}
                 </li>
               </ul>
               <Link
@@ -131,7 +131,7 @@ export function PricingPageClient() {
 
         <section className="mt-8 rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-sm leading-7 text-cyan-950">
           <strong>加量包：</strong>
-          訊息事件、活躍聯絡人、團隊席次與資料保存天數可按月加購；可用折抵金折抵，也會產生較低比例的聯盟分潤。
+          訊息事件、活躍聯絡人、團隊席次與資料保存天數可按月加購；可用推薦折抵金折抵方案費，單筆帳單最低可折到 0 元。
         </section>
       </section>
     </main>

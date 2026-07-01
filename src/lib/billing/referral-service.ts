@@ -1,8 +1,8 @@
 import { randomBytes } from "node:crypto";
 import type { Prisma } from "@prisma/client";
 import { addDays, applyTrialReferralBonus, calculateReferralCredit } from "@/lib/billing/calculations";
-import { REFERRAL_CREDIT_EXPIRES_DAYS, TRIAL_DAYS } from "@/lib/billing/plans";
-import { createReferralCredit } from "@/lib/billing/wallet-service";
+import { REFERRAL_CREDIT_EXPIRES_DAYS, REFERRAL_CREDIT_PENDING_DAYS, TRIAL_DAYS } from "@/lib/billing/plans";
+import { createReferralCredit, getWalletSummary, syncWalletLedgerLifecycle } from "@/lib/billing/wallet-service";
 import { getDb } from "@/lib/db";
 
 type DbOrTx = ReturnType<typeof getDb> | Prisma.TransactionClient;
@@ -65,8 +65,9 @@ export async function applyReferralCode(params: {
 }
 
 export async function getReferralDashboard(userId: string, db: DbOrTx = getDb()) {
+  await syncWalletLedgerLifecycle(userId, new Date(), db);
   const code = await ensureReferralCode(userId, db);
-  const [attributions, rewards, walletCredits] = await Promise.all([
+  const [attributions, rewards, walletCredits, walletSummary] = await Promise.all([
     db.referralAttribution.findMany({
       where: { referrerUserId: userId },
       orderBy: { createdAt: "desc" },
@@ -77,6 +78,7 @@ export async function getReferralDashboard(userId: string, db: DbOrTx = getDb())
       where: { userId, source: "referral_credit" },
       orderBy: { createdAt: "desc" },
     }),
+    getWalletSummary(userId, db),
   ]);
 
   return {
@@ -89,6 +91,7 @@ export async function getReferralDashboard(userId: string, db: DbOrTx = getDb())
     creditsEarned: walletCredits
       .filter((entry) => entry.type === "credit" && entry.status !== "cancelled")
       .reduce((sum, entry) => sum + entry.amount, 0),
+    walletSummary,
     metrics: {
       clickTrackingAvailable: false,
       signupsTracked: attributions.length,
@@ -162,6 +165,7 @@ export async function createFirstPaymentReferralCredit(params: {
 
   const amount = calculateReferralCredit(params.actualPaidAmount, params.creditsUsed);
   if (amount <= 0) return null;
+  const availableAt = addDays(new Date(), REFERRAL_CREDIT_PENDING_DAYS);
 
   await db.referralAttribution.update({
     where: { id: attribution.id },
@@ -173,6 +177,7 @@ export async function createFirstPaymentReferralCredit(params: {
     amount,
     relatedInvoiceId: params.invoiceId,
     relatedPaymentOrderId: params.paymentOrderId,
-    expiresAt: addDays(new Date(), REFERRAL_CREDIT_EXPIRES_DAYS),
+    availableAt,
+    expiresAt: addDays(availableAt, REFERRAL_CREDIT_EXPIRES_DAYS),
   }, db);
 }

@@ -38,11 +38,20 @@ export default async function AffiliatePage() {
   const user = await requireUser();
   const [dashboard, canApply] = await Promise.all([getAffiliateDashboard(user.id), canApplyAffiliate(user.id)]);
   const profileStatus = dashboard.profile?.status;
-  const applyDisabled = !canApply || profileStatus === "pending" || profileStatus === "approved";
-  const applyLabel = profileStatus === "pending" ? "審核中" : profileStatus === "approved" ? "已是聯盟夥伴" : "申請聯盟夥伴";
-  const applyHelp = canApply
-    ? "送出後會由營運人員審核，確認資格與稅務/匯款資料後才會開通現金分潤。"
-    : "現金分潤目前只開放 Creator 以上付費方案；Starter 仍可使用推薦活動與折抵金。";
+  const cashProgramControlled = true;
+  const applyDisabled = cashProgramControlled || !canApply || profileStatus === "pending" || profileStatus === "approved";
+  const applyLabel = cashProgramControlled
+    ? "現金分潤後續開放"
+    : profileStatus === "pending"
+      ? "審核中"
+      : profileStatus === "approved"
+        ? "已是聯盟夥伴"
+        : "申請聯盟夥伴";
+  const applyHelp = cashProgramControlled
+    ? "正式產品主線目前以推薦折抵為主。現金分潤、提領與批次匯款先維持受控能力，等法務、風控、對帳與營運流程完全收斂後再開放。"
+    : canApply
+      ? "送出後會由營運人員審核，確認資格與稅務/匯款資料後才會開通現金分潤。"
+      : "現金分潤目前只開放 Creator 以上付費方案；Starter 仍可使用推薦活動與折抵金。";
   const summaryCards = [
     {
       label: "等待確認",
@@ -76,11 +85,11 @@ export default async function AffiliatePage() {
               <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">{affiliateStatusLabel(profileStatus)}</h2>
             </div>
             <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-1 text-sm font-medium text-[var(--text-secondary)]">
-              {canApply ? "可申請現金分潤" : "目前僅開放折抵金"}
+              {cashProgramControlled ? "現金分潤受控開通中" : canApply ? "可申請現金分潤" : "目前僅開放折抵金"}
             </span>
           </div>
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
-            Starter 只能拿折抵金；Creator 以上審核通過後可累積現金分潤。佣金會經過等待期、退款 / 爭議檢查與人工審核，才會進入批次匯款。
+            推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前保留給後續受控聯盟流程：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金分潤。
           </p>
           <form action="/api/affiliate/apply" method="post" className="mt-4">
             <button
@@ -107,20 +116,26 @@ export default async function AffiliatePage() {
         <section className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
           <article className="ip-dashboard-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">提領狀態</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">受控功能狀態</h2>
               <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)]">
                 最低 {formatTwd(dashboard.minimumPayoutAmount)}
               </span>
             </div>
-            {dashboard.cashPayoutReady ? (
+            {dashboard.cashPayoutReady && !cashProgramControlled ? (
               <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
                 已達提領門檻。正式提領仍由營運端建立或審核 payout request，避免付款資料、稅務資料或退款爭議未完成時誤匯款。
               </p>
             ) : (
               <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900">
-                <p className="font-semibold">暫時不能申請提領</p>
+                <p className="font-semibold">目前不開放現金提領</p>
                 <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {dashboard.payoutBlockedReasons.length > 0 ? (
+                  {cashProgramControlled ? (
+                    <>
+                      <li>正式產品主線已改為推薦折抵制度 v1，現金分潤不作為公開銷售主打。</li>
+                      <li>提領流程仍需要法務條款、退款觀察、反作弊規則、對帳與人工付款 SOP。</li>
+                      <li>若後續重新開放，現有佣金資料仍可作為內部驗證基礎，不需要重做整個資料模型。</li>
+                    </>
+                  ) : dashboard.payoutBlockedReasons.length > 0 ? (
                     dashboard.payoutBlockedReasons.map((reason) => <li key={reason}>{reason}</li>)
                   ) : (
                     <li>提領流程仍需營運端完成對帳與付款批次。</li>
@@ -133,7 +148,7 @@ export default async function AffiliatePage() {
               disabled
               className="mt-4 inline-flex h-10 cursor-not-allowed items-center rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 text-sm font-semibold text-[var(--text-muted)]"
             >
-              申請提領（營運審核開通）
+              現金提領後續開放
             </button>
           </article>
 

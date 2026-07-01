@@ -226,20 +226,27 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("referrals-hero-card")).toBeVisible();
     await expect(page.getByTestId("referrals-url")).toContainText(/ref=|邀請|http/);
     await expect(page.getByTestId("referrals-records-card")).toBeVisible();
-    await expect(page.locator("body")).toContainText(/目前推薦活動只記錄邀請連結|有效推薦會讓雙方/);
-    await expect(page.locator("body")).toContainText("付費轉換");
-    await expect(page.locator("body")).toContainText("推薦活動與聯盟分潤的差異");
-    await expect(page.locator("body")).toContainText("點擊追蹤");
+    await expect(page.locator("body")).toContainText(/推薦折抵制度 v1|待確認折抵|可用折抵/);
+    await expect(page.locator("body")).toContainText("7 天退款觀察期");
+    await expect(page.locator("body")).toContainText("單筆帳單最多折到 0 元");
     await expect(page.locator("body")).toContainText("不顯示假點擊數");
   });
 
-  test("shows Affiliate payout gates without a fake self-service payout", async ({ page }) => {
+  test("keeps Affiliate cash payout behind a controlled opening", async ({ page }) => {
     await page.goto("/affiliate", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "聯盟分潤" })).toBeVisible();
-    await expect(page.locator("body")).toContainText("提領狀態");
+    await expect(page.locator("body")).toContainText("正式產品主線目前以推薦折抵為主");
+    await expect(page.locator("body")).toContainText("目前不開放現金提領");
+    await expect(page.getByRole("button", { name: "現金提領後續開放" })).toBeDisabled();
     await expect(page.locator("body")).toContainText("分潤安全規則");
-    await expect(page.getByRole("button", { name: "申請提領（營運審核開通）" })).toBeDisabled();
-    await expect(page.locator("body")).toContainText("不自動匯款");
+  });
+
+  test("shows wallet lifecycle guidance for pending and expiring referral credits", async ({ page }) => {
+    await page.goto("/wallet", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "折抵金錢包" })).toBeVisible();
+    await expect(page.locator("body")).toContainText("待確認折抵金");
+    await expect(page.locator("body")).toContainText("7 天");
+    await expect(page.locator("body")).toContainText("30 天內未使用會自動失效");
   });
 
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {

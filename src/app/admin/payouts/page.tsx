@@ -64,7 +64,7 @@ export default async function AdminPayoutsPage() {
         <div className="border-b border-[var(--border-soft)] px-4 py-4">
           <h2 className="text-base font-semibold text-[var(--text-primary)]">提領申請</h2>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
-            審核 Creator / Affiliate 的提領申請與付款狀態。核准只代表進入批次對帳，不會自動匯款。
+            這是內部保留的受控提領面板，不屬於目前公開銷售主線。核准只代表進入批次對帳，不會自動匯款。
           </p>
         </div>
 

@@ -1,4 +1,35 @@
-# 2026-07-01 - Affiliate / Referral MVP closeout
+# 2026-07-02 - Referral credit refund reconciliation service
+
+Status: improved for referral-credit financial correctness; public paid launch remains Hold.
+
+What changed:
+
+- Pending referral credits can now be cancelled when their related invoice is marked refunded.
+- Available referral credits can now be reversed with an idempotent clawback debit.
+- Regression tests cover both lifecycle paths so the 7-day pending window and refund reversal policy are no longer documentation-only.
+
+Readiness implication:
+
+- The non-cash referral-credit direction is closer to an auditable MVP.
+- A real PayUNI refund callback or operator refund action still needs to call the reconciliation service before refund handling is fully automatic.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
+
+# 2026-07-02 - Referral credit v1 product direction
+
+Status: improved for public pricing / referral clarity; public paid launch remains Hold.
+
+What changed:
+
+- Referral credits now have a clearer lifecycle target: `pending -> available -> expired / cancelled / clawback`.
+- Public-facing copy now treats recommendation credits as the main growth program, not cash payout.
+- Billing and Wallet explain that credits can only offset plan fees, can reduce a bill to zero, and expire 30 days after becoming available.
+- Affiliate cash payout surfaces are now clearly controlled-opening rather than a core launch promise.
+
+Readiness implication:
+
+- The referral product is now closer to a launchable non-cash incentive system.
+- Automatic refund-driven cancellation / clawback still needs a real refund event hook before the financial lifecycle can be called fully complete.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
 
 Status: improved for affiliate readiness; public paid launch remains Hold.
 

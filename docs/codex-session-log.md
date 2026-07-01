@@ -1,3 +1,67 @@
+# 2026-07-02 - Referral credit refund reconciliation
+
+Task:
+
+- Add the service-level refund reconciliation piece for the non-cash referral credit lifecycle without touching production DB, production deployment, Meta App Review, or PayUNI production.
+
+Changes:
+
+- Added `markInvoiceRefunded()` in the billing invoice service as a controlled service entrypoint.
+- Added refund reconciliation logic that cancels pending referral credits and creates an idempotent `clawback` debit when an available referral credit must be reversed.
+- Added DB-backed regression coverage for pending cancellation and idempotent available-credit clawback.
+- Updated PayUNI billing tests to load the project env consistently when run as a focused file.
+- Updated billing / affiliate readiness notes to keep the remaining gap explicit: a real PayUNI refund callback or operator refund event still needs to call the service.
+
+Validation:
+
+- `npx vitest run tests/referral-credit-refund-lifecycle.test.ts tests/referral-credit-wallet-lifecycle.test.ts`: passed.
+- `npx vitest run tests/payuni-billing.test.ts`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run e2e:admin:ensure`: passed.
+- `npm run test:e2e:auth`: passed, 27 passed / 1 expected skipped.
+
+Launch impact:
+
+- Referral credits now have the missing service-level refund behavior for pending cancellation and available-credit clawback.
+- Public paid launch still remains Hold because the service is not yet wired to a real refund event source.
+- No production DB, production deployment, PayUNI production switch, Meta App Review action, or secret output occurred.
+
+# 2026-07-02 - Referral credit v1 direction
+
+Task:
+
+- Downgrade the public affiliate cash-payout storyline and move the launch direction to `推薦折抵制度 v1` without touching production DB, production deployment, Meta App Review, or PayUNI production.
+
+Audit:
+
+- Existing schema already supports most of the needed lifecycle through `WalletLedgerStatus` (`pending`, `available`, `used`, `expired`, `cancelled`) and `WalletLedgerSource` (`referral_credit`, `invoice_credit`, `clawback`, `expiry`).
+- The main product gap was not schema depth but lifecycle wiring and user-facing copy: referral credits were granted immediately, expiry was still 180 days, and multiple pages still implied public cash payout.
+- There is still no real refund event hook that automatically cancels pending credits or claws back already-used credits when a paid invoice is refunded.
+
+Changes:
+
+- Added `REFERRAL_CREDIT_PENDING_DAYS = 7` and reduced `REFERRAL_CREDIT_EXPIRES_DAYS` to 30 for the launch-safe referral-credit direction.
+- `createReferralCredit()` now creates pending referral credits first and saves `availableAt`; `getWalletSummary()` / `getWalletLedger()` now auto-release matured credits and expire outdated ones.
+- `createFirstPaymentReferralCredit()` now creates pending credits that become available after the 7-day observation window, then expire 30 days later.
+- Updated `/referrals`, `/wallet`, `/billing`, `/pricing`, `/affiliate`, and `/admin/payouts` copy so the public promise is recommendation credits for plan fees, not immediate cash payout.
+- Added a DB-backed wallet lifecycle regression test and updated referral / affiliate source guards plus authenticated Playwright smoke expectations.
+
+Validation:
+
+- `npm run lint`: passed.
+- `npx vitest run tests/billing-calculations.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/referral-credit-wallet-lifecycle.test.ts tests/pricing-page-polish.test.ts`: passed.
+- `npm run build`: passed. Existing Windows Prisma engine lock fallback reused the generated client successfully.
+- `npm test`: passed. Existing `meta-webhook.test` audit warning still prints during invalid-signature coverage, but the suite passed.
+- `npm run test:e2e:auth`: passed, 27 passed / 1 expected skipped.
+
+Launch impact:
+
+- Public launch direction is now clearer and safer: recommendation credits can offset plan fees, but public cash payout is no longer implied as a ready feature.
+- Remaining gap is refund-event wiring for automatic cancel / clawback; until that exists, refund handling still depends on future controlled wiring.
+- No production DB, production deploy, PayUNI production switch, Meta App Review action, or secret output occurred.
+
 # 2026-07-01 - Affiliate / Referral MVP closeout
 
 Task:

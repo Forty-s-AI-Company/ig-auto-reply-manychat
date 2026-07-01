@@ -1,4 +1,37 @@
-# 2026-07-01 - Affiliate application write guard
+# 2026-07-02 - Referral credit refund reconciliation
+
+Scope:
+
+- Added service-level refund reconciliation for referral-credit wallet ledger rows.
+- Pending referral credits are cancelled; available referral credits receive an idempotent clawback debit.
+- No production DB action, migration, deployment, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- Reversal is idempotent to avoid duplicate debit creation when a refund event or operator action is retried.
+- The service only works from an invoice id and does not expose a public refund endpoint in this change.
+
+Residual risk:
+
+- A future PayUNI refund callback or operator refund action must preserve auth, tenant scope, signature/idempotency, and audit requirements before invoking this service.
+
+# 2026-07-02 - Referral credit v1 boundary refresh
+
+Scope:
+
+- Reframed the public incentive system around recommendation credits instead of public cash payout.
+- Adjusted referral-credit lifecycle to use pending / available / expired states on existing wallet-ledger records.
+- No production DB action, migration, deployment, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- This reduces product-surface misrepresentation risk by avoiding a public cash-payout promise before refund / clawback / payout ops are fully controlled.
+- Financial lifecycle wiring is still incomplete until a real refund event can cancel pending credits or claw back already-used credits automatically.
+
+Residual risk:
+
+- Refund-event integration is still required before recommendation credits can be treated as fully closed-loop financial state.
+- Public cash payout remains a controlled future capability and should not be reopened without legal / fraud / reconciliation review.
 
 Scope:
 

@@ -1,5 +1,21 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Referral credit v1 as the primary launch direction
+
+- `[x]` Public referral / affiliate direction is now being narrowed to `推薦折抵制度 v1`, not public cash payout.
+- `[x]` Referral credit now enters `pending` first, waits 7 days, then becomes `available`.
+- `[x]` Available referral credit is now intended to expire after 30 days if unused.
+- `[x]` Refund reconciliation service can cancel pending referral credits and create idempotent clawback debits for available credits.
+- `[x]` Billing, Referrals, Wallet, Pricing, and Affiliate copy now explains `待確認 -> 可用 -> 失效 / 沖回` more clearly.
+- `[x]` Affiliate cash payout UI remains visible only as a controlled future capability, not as the current public product promise.
+- `[ ]` A real PayUNI / operator refund event entrypoint still needs to call the refund reconciliation service before this becomes fully automatic in production operations.
+- `[ ]` Public cash payout launch remains Hold until legal / fraud / reconciliation / payout ops are explicitly approved.
+
+Billing launch implication:
+
+- Current launch-safe direction is recommendation credits that offset subscription fees only.
+- No production DB action, production deployment, PayUNI production switch, or Meta App Review action was performed in this change.
+
 # 2026-07-01 - Affiliate / Referral MVP closeout
 
 - `[x]` Referral page now separates general referral rewards from reviewed affiliate cash commissions.
