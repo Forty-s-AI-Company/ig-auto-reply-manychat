@@ -1,3 +1,29 @@
+# 2026-07-02 - Affiliate controlled cash copy polish
+
+Task:
+
+- Remove remaining public-facing self-service payout wording from the affiliate page and wallet status labels.
+
+Changes:
+
+- Replaced `可提領佣金`, `提領申請中`, and similar public payout wording with internal review / controlled operations wording.
+- Kept the affiliate page consistent with the current launch direction: referral credit v1 first, cash payout later as a controlled capability.
+- Updated wallet fallback labels for legacy payout statuses so they do not imply user self-service cash withdrawal.
+- Added regression expectations to keep public payout wording from returning.
+
+Validation:
+
+- `npx vitest run tests/referral-affiliate-mvp-ui.test.ts tests/affiliate-light-theme.test.ts tests/wallet-light-theme.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `npm test` passed; the known Windows Vitest batch access-violation diagnostic reran the affected files individually and all passed.
+- `npm run e2e:admin:ensure` passed.
+- `npm run test:e2e:auth` passed: 27 passed, 1 skipped.
+
+Launch impact:
+
+- Reduces product and legal ambiguity around cash payout without changing schema, payment behavior, production DB, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Admin invoice refund operator UI
 
 Task:

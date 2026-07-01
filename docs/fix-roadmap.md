@@ -1,3 +1,16 @@
+# Latest - 2026-07-02 Affiliate controlled cash copy polish
+
+Current status:
+
+- `[x]` Affiliate page no longer labels amounts as user-facing `可提領佣金`.
+- `[x]` Affiliate commission statuses now use internal review / controlled operations wording.
+- `[x]` Wallet legacy payout status labels no longer imply self-service cash withdrawal.
+- `[x]` Regression tests prevent `可提領佣金`, `提領申請中`, and `已提領` from returning to public-facing referral credit surfaces.
+
+Remaining:
+
+- `[ ]` Cash affiliate payout remains Hold until legal, tax, anti-fraud, refund, and payout operations are explicitly approved.
+
 # Latest - 2026-07-02 Admin invoice refund operator UI
 
 Current status:

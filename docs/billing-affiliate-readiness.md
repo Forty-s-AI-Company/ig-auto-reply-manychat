@@ -1,5 +1,12 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Affiliate controlled cash copy polish
+
+- `[x]` Affiliate UI wording now treats cash commission amounts as internal review / controlled operations data.
+- `[x]` Wallet fallback labels no longer imply self-service cash withdrawal.
+- `[x]` Public product direction remains referral credits first; cash payout remains Hold.
+- `[ ]` Cash affiliate payout still requires legal, tax, anti-fraud, refund / clawback, payout reconciliation, and final operations approval.
+
 # 2026-07-02 - Admin invoice refund operator UI
 
 - `[x]` Internal admins now have a controlled `/admin/invoices` surface for paid invoice refund marking.

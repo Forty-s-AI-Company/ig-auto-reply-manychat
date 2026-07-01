@@ -1,3 +1,17 @@
+# 2026-07-02 - Affiliate controlled cash copy polish
+
+Status: improved for product clarity; public paid launch remains Hold.
+
+What changed:
+
+- Affiliate amounts that were previously labeled as withdrawable are now described as internal review / controlled operations values.
+- Wallet legacy payout labels no longer suggest user self-service cash withdrawal.
+
+Readiness implication:
+
+- Referral credit v1 is clearer as the public launch direction.
+- Cash affiliate payout remains intentionally gated until legal, tax, fraud, refund, and operations requirements are complete.
+
 # 2026-07-02 - Admin invoice refund operator UI
 
 Status: improved for internal billing operations; public paid launch remains Hold.

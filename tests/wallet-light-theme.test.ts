@@ -18,6 +18,9 @@ describe("wallet page light theme", () => {
     expect(source).toContain('scope="col"');
     expect(source).toContain("待確認折抵金");
     expect(source).toContain("ledgerStatusLabel");
+    expect(source).toContain("內部審核中");
+    expect(source).not.toContain("提領申請中");
+    expect(source).not.toContain("已提領");
     expect(source).not.toContain("Pending");
     expect(source).not.toContain("toLocaleDateString");
   });
