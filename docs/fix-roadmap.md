@@ -1,3 +1,29 @@
+# Latest - 2026-07-02 Daily AI model cache refresh
+
+Current status:
+
+- `[x]` Daily AI model cache refresh completed successfully.
+- `[x]` `failed-workspace` refreshed `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- `[x]` `available-refund-workspace` refreshed `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- `[x]` No API provider failure was reported.
+- `[x]` Local CLI providers were not included in the payload, consistent with `AI_ENABLE_LOCAL_CLI` opt-in gating.
+
+Remaining:
+
+- `[ ]` Keep monitoring whether local CLI providers are intentionally enabled before expecting `codex_cli` / `antigravity_cli` counts in shared refresh output.
+
+# Latest - 2026-07-02 Official v3 footer placeholder link cleanup
+
+Current status:
+
+- `[x]` Official v3 footer no longer uses `href="#"` placeholder links.
+- `[x]` Privacy, Terms, and Contact now route to real public pages.
+- `[x]` Source regression coverage prevents the footer from becoming static-only again.
+
+Remaining:
+
+- `[ ]` Continue public-page QA for older official/marketing pages if they are still linked from production navigation.
+
 # Latest - 2026-07-02 Sequences mobile form state stability
 
 Current status:
