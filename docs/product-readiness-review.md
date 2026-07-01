@@ -1246,3 +1246,17 @@ Readiness implication:
 
 - Settings/profile navigation is clearer and less likely to feel broken in the simple release.
 - Launch gates are unchanged: Meta App Review, PayUNI production go-live, and production deployment remain manual.
+
+## 2026-07-01 - Remaining admin title localization
+
+Status:
+
+- AI 設定、分眾名單、Instagram 預設回覆不再顯示英文 AdminShell 標題。
+- Admin-only 聯盟與提領管理頁面已改成繁中標題、繁中權限提示與繁中操作文案。
+- 新增 source-level regression test，防止這些次要後台頁退回英文內部工具語氣。
+
+Readiness implication:
+
+- 中文化產品體感更完整，特別是從 profile/settings 進入低頻頁面時比較不像工程後台。
+- 不改功能權限、不改資料模型、不改 production launch gates。
+- Admin-only 頁面仍可在後續另做 light-theme UI polish。

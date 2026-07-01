@@ -7004,3 +7004,26 @@ Validation:
 Launch impact:
 
 - Product UI / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Remaining admin title localization
+
+Task:
+
+- Continue product UI completeness after secondary admin title localization, focusing on remaining English AdminShell titles and admin-only action copy.
+
+Changes:
+
+- `InboxPilot AI` became `AI 設定`.
+- `Segments` became `分眾名單`.
+- `Instagram Default Reply` became `Instagram 預設回覆`.
+- Admin-only payout / affiliate pages now use Traditional Chinese titles, permission copy, batch link text, and approve / reject button labels.
+- `tests/admin-shell-localized-titles.test.ts` now guards these secondary titles and admin-only copy.
+
+Validation:
+
+- `npx eslint src/app/ai-settings/page.tsx src/app/segments/page.tsx src/app/automations/instagram-default-reply/page.tsx src/app/admin/payouts/page.tsx src/app/admin/payouts/batches/page.tsx src/app/admin/affiliates/page.tsx tests/admin-shell-localized-titles.test.ts`: passed.
+- `npx vitest run tests/admin-shell-localized-titles.test.ts`: passed.
+
+Launch impact:
+
+- Product copy / localization polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

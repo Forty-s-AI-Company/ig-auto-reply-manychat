@@ -36,7 +36,7 @@ export default async function InstagramDefaultReplyPage() {
     : null;
 
   return (
-    <AdminShell title="Instagram Default Reply">
+    <AdminShell title="Instagram 預設回覆">
       <AutomationScopeBanner
         badgeLabel="工作區共用"
         notice={getAutomationScopeNotice(selectedChannel?.name)}
