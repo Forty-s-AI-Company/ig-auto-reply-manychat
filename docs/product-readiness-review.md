@@ -1,3 +1,18 @@
+# 2026-07-01 - Wallet light-theme polish
+
+Status: improved for Billing / Wallet UI consistency; public paid launch remains Hold.
+
+What changed:
+
+- `/wallet` now follows the light dashboard visual system instead of the old dark internal-tool surface.
+- Wallet summary cards, ledger table, status badges, date formatting, and empty state now use consistent white cards, pale surfaces, readable labels, and semantic table markup.
+- A focused guard prevents the page from regressing to the dark class set or raw `Pending` ledger copy.
+
+Launch impact:
+
+- This improves the perceived completeness of the billing / credits product area for beta operators.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Segments light-theme polish
 
 Status: improved for Segments UI consistency; public paid launch remains Hold.
