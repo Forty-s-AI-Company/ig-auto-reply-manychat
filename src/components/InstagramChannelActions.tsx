@@ -48,7 +48,7 @@ export function InstagramChannelActions({
       return;
     }
 
-    setState({ loading: true, message: "處理中，請稍候...", tone: "neutral" });
+    setState({ loading: true, message: "處理中，請稍候…", tone: "neutral" });
     try {
       const response =
         action === "media"

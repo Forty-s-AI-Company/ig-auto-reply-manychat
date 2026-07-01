@@ -179,7 +179,7 @@ test.describe("contacts authenticated smoke", () => {
     await email.fill("detail-after@example.com");
     await phone.fill("0922222222");
     await page.getByRole("button", { name: "儲存變更" }).click();
-    await expect(page.getByRole("status")).toContainText("聯絡人資料已更新");
+    await expect(page.getByText("聯絡人資料已更新。")).toBeVisible();
 
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(username).toHaveValue("detail_after");
@@ -191,11 +191,11 @@ test.describe("contacts authenticated smoke", () => {
     await expect(tagSelect).not.toHaveValue("");
     await expect(page.getByTestId("contact-detail-add-tag")).toBeEnabled();
     await page.getByTestId("contact-detail-add-tag").click();
-    await expect(page.getByRole("status")).toContainText("標籤已新增到聯絡人");
+    await expect(page.getByText("標籤已新增到聯絡人。")).toBeVisible();
     await expect(page.locator("body")).toContainText("e2e-detail-tag");
 
     await page.getByTestId("contact-detail-remove-tag-e2e-detail-tag").click();
-    await expect(page.getByRole("status")).toContainText("標籤已從聯絡人移除");
+    await expect(page.getByText("標籤已從聯絡人移除。")).toBeVisible();
     await expect(page.getByTestId("contact-detail-tag-select")).toContainText("e2e-detail-tag");
   });
 });

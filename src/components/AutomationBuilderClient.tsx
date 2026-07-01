@@ -849,7 +849,7 @@ function postSelectionLabel(mode: PostSelectionMode) {
 
 function mediaTitle(item: InstagramMediaItem) {
   const caption = item.caption?.replace(/\s+/g, " ").trim();
-  if (caption) return caption.length > 52 ? `${caption.slice(0, 52)}...` : caption;
+  if (caption) return caption.length > 52 ? `${caption.slice(0, 52)}…` : caption;
   return `${item.mediaType || "MEDIA"} ${item.id}`;
 }
 
