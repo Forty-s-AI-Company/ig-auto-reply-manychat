@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Affiliate light-theme and eligibility UX polish
+
+Current status:
+
+- `[x]` 聯盟分潤頁不再使用深色內部工具卡片。
+- `[x]` 不符合 Creator 以上方案時，申請現金分潤按鈕會清楚 disabled，避免使用者按下後才被 API 拒絕。
+- `[x]` 聯盟狀態、等級、佣金狀態與佣金紀錄已改成使用者可讀的繁體中文與亮色表格。
+- `[x]` Source-level regression test 防止聯盟頁回到暗色樣式與 raw `not_applied` / date formatting。
+
+Remaining:
+
+- `[ ]` 聯盟分潤仍不是 simple release 主軸；正式開通前仍需 affiliate terms、anti-fraud、refund/clawback 與 payout reconciliation。
+- `[ ]` 繼續掃描 admin-only 聯盟 / 提領頁是否仍有深色內部工具樣式。
+
 # Latest - 2026-07-01 Wallet light-theme polish
 
 Current status:
@@ -9,7 +23,7 @@ Current status:
 
 Remaining:
 
-- `[ ]` 繼續掃描聯盟與 admin-only 頁面是否仍有深色內部工具樣式。
+- `[ ]` 繼續掃描 admin-only 頁面是否仍有深色內部工具樣式。
 - `[ ]` 若後續要開放提領或折抵操作，需要另做 idempotency、權限與付款/帳單測試。
 
 # Latest - 2026-07-01 Segments light-theme polish

@@ -7086,6 +7086,29 @@ Launch impact:
 
 - Product copy / localization polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Affiliate light-theme and eligibility UX polish
+
+Task:
+
+- Continue product UI completeness after Wallet polish, focusing on `/affiliate` where the page still used dark internal-tool styling and let ineligible users submit a cash-payout application only to be rejected by the API.
+
+Changes:
+
+- Affiliate status and summary cards now use light dashboard styling.
+- Ineligible cash-payout application now appears as a disabled control with clear Creator+ plan requirements.
+- Commission records now use a semantic table, localized status labels, `Intl.DateTimeFormat`, and an empty state explaining that simple release still focuses on referrals and credits.
+- `tests/affiliate-light-theme.test.ts` guards against dark class regressions and raw `not_applied` copy.
+
+Validation:
+
+- `npx eslint src/app/affiliate/page.tsx tests/affiliate-light-theme.test.ts`: passed.
+- `npx vitest run tests/affiliate-light-theme.test.ts --reporter=dot`: passed.
+- `npm run lint`, `npm test`, and `npm run build`: passed.
+
+Launch impact:
+
+- UI / eligibility UX polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Wallet light-theme polish
 
 Task:
