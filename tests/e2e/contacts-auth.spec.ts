@@ -61,6 +61,8 @@ test.describe("contacts authenticated smoke", () => {
     await expect(page.getByTestId("contacts-list-client")).toHaveAttribute("data-ready", "true");
     await expect(page.getByTestId("contacts-table-scroll-hint")).toBeVisible();
     await expect(page.getByTestId("contacts-table-scroll-hint")).toContainText("手機版可左右滑動");
+    await expect(page.getByLabel("搜尋聯絡人")).toHaveAttribute("autocomplete", "off");
+    await expect(page.getByLabel("搜尋聯絡人")).toHaveAttribute("placeholder", "搜尋姓名、Instagram username、Email…");
     await expect(page.locator("body")).toContainText(batchContactName);
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 B");
 
@@ -158,6 +160,12 @@ test.describe("contacts authenticated smoke", () => {
     const username = page.getByTestId("contact-detail-username");
     const email = page.getByTestId("contact-detail-email");
     const phone = page.getByTestId("contact-detail-phone");
+
+    await expect(username).toHaveAttribute("autocomplete", "username");
+    await expect(email).toHaveAttribute("autocomplete", "email");
+    await expect(phone).toHaveAttribute("autocomplete", "tel");
+    await expect(email).toHaveAttribute("placeholder", "例如：hello@example.com");
+    await expect(phone).toHaveAttribute("type", "tel");
 
     await username.fill("cancelled_username");
     await email.fill("cancelled@example.com");

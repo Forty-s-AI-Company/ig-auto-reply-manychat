@@ -6655,6 +6655,33 @@ Launch impact:
 
 - Product IA / UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Contacts / Automations form accessibility polish
+
+Task:
+
+- Continue the product-completeness loop without waiting for another prompt, focusing on low-risk Contacts / Automations visible-but-unusable and completion-detail issues.
+
+Changes:
+
+- Contacts list search now has an explicit accessible label, autocomplete policy, and polished placeholder copy.
+- Contacts success / error feedback now uses live regions (`role=status` / `role=alert`) instead of silent inline text.
+- Contact detail username / email / phone fields now include `name`, autocomplete, proper `tel` input semantics, and clearer example placeholders.
+- Automations editor copy now uses proper ellipsis, hides decorative icons from assistive tech, and gives icon-only controls readable labels.
+- Playwright smoke coverage was extended for the Contacts field metadata and Automations editor labels / placeholders.
+
+Validation:
+
+- `npx eslint src/components/ContactsListClient.tsx src/components/ContactDetailEditor.tsx src/components/AutomationBuilderClient.tsx tests/e2e/contacts-auth.spec.ts tests/e2e/public-and-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+- `npm run test:e2e:contacts`: skipped locally by authenticated smoke guard.
+- `npm run test:e2e:auth`: public smoke passed; authenticated smoke skipped locally by guard.
+
+Launch impact:
+
+- Product UI / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Settings profile menu second pass
 
 Task:

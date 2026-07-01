@@ -286,8 +286,10 @@ export function ContactsListClient({
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
             <input
               name="q"
+              aria-label="搜尋聯絡人"
+              autoComplete="off"
               defaultValue={q}
-              placeholder="搜尋姓名、Instagram username、email"
+              placeholder="搜尋姓名、Instagram username、Email…"
               className="h-9 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
             />
           </form>
@@ -390,8 +392,16 @@ export function ContactsListClient({
             {q ? <ActiveChip label={`搜尋：${q}`} href={buildContactHref(pathname, { status, tag: tagId })} /> : null}
             {status ? <ActiveChip label={activeStatusLabel} href={buildContactHref(pathname, { q, tag: tagId })} /> : null}
             {activeTag ? <ActiveChip label={`標籤：${activeTag.name}`} href={buildContactHref(pathname, { q, status })} /> : null}
-            {message ? <span className="rounded-md bg-green-50 px-3 py-1 text-green-700">{message}</span> : null}
-            {error ? <span className="rounded-md bg-red-50 px-3 py-1 text-red-700">{error}</span> : null}
+            {message ? (
+              <span role="status" aria-live="polite" className="rounded-md bg-green-50 px-3 py-1 text-green-700">
+                {message}
+              </span>
+            ) : null}
+            {error ? (
+              <span role="alert" className="rounded-md bg-red-50 px-3 py-1 text-red-700">
+                {error}
+              </span>
+            ) : null}
           </div>
         ) : null}
 
@@ -418,7 +428,7 @@ export function ContactsListClient({
               data-testid="contacts-batch-add-tag"
               className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isPending ? "處理中" : "批次加標籤"}
+              {isPending ? "處理中…" : "批次加標籤"}
             </button>
             <button
               type="button"

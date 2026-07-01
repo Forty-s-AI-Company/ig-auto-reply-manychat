@@ -164,9 +164,13 @@ test.describe("authenticated route smoke", () => {
     await page.getByRole("button", { name: "從空白開始" }).click();
     await expect(page.getByTestId("automation-canvas-editor-hint")).toBeVisible();
     await expect(page.getByTestId("automation-canvas-editor-hint")).toContainText("點選節點即可編輯");
+    await expect(page.getByLabel("返回自動化列表")).toBeVisible();
+    await expect(page.getByLabel("展開節點編輯面板")).toHaveCount(0);
     await expect(page.getByTestId("automation-editor-more-disabled")).toBeDisabled();
+    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-label", "更多操作受控開通");
     await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("title", /受控開通/);
     await expect(page.getByTestId("automation-editor-more-disabled")).not.toHaveAttribute("title", /沒有接好/);
+    await expect(page.getByPlaceholder("搜尋其他自動化…")).toBeVisible();
   });
 
   test("shows analytics scope and data-state guidance", async ({ page }) => {
