@@ -104,7 +104,7 @@ export function InstagramChannelActions({
     <div className="mt-4 rounded-md border border-[#b9e6fe] bg-[#f0f9ff] p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <p className="text-sm font-medium text-[#0b4a6f]">Instagram 功能已開始實作</p>
+          <p className="text-sm font-medium text-[#0b4a6f]">Instagram 功能檢查</p>
           <p className={`mt-1 text-xs ${messageClass}`}>{displayedMessage}</p>
         </div>
         {state.loading ? <RefreshCw className="h-4 w-4 animate-spin text-[#006fe6]" aria-hidden="true" /> : null}
@@ -153,7 +153,7 @@ export function InstagramChannelActions({
       </div>
       {disabledReasonList.length > 0 ? (
         <p className="mt-3 text-xs leading-6 text-[#0b4a6f]">
-          目前至少有一個 Instagram 動作先維持 disabled：{disabledReasonList.join("；")}。
+          目前至少有一個 Instagram 動作暫時停用：{disabledReasonList.join("；")}。
         </p>
       ) : null}
     </div>

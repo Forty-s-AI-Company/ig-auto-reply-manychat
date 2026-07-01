@@ -102,7 +102,7 @@ export default async function ChannelConnectionPage() {
           <section className="space-y-3">
             <SectionHeading
               title="規劃中與受控開通"
-              description="這些平台保留成清楚的 disabled 入口，但不會打開授權流程，避免看起來像壞掉的按鈕。"
+              description="這些平台保留成清楚的受控開通入口，但不會打開授權流程，避免看起來像壞掉的按鈕。"
             />
             <div className="space-y-3">
               {disabledChannels.map((channel) => (

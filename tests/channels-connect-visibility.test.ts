@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { getChannelConnectOptionState, getOAuthProviderUiState } from "@/lib/channels/channel-connect-visibility";
 
 describe("channel connect visibility", () => {
@@ -92,5 +93,12 @@ describe("channel connect visibility", () => {
       disabledReason: "這個平台還沒進入正式可用範圍，先保留清楚的受控開通入口，不會打開無效授權流程。",
       statusLabel: "受控開通",
     });
+  });
+
+  it("uses product-facing copy instead of developer disabled wording on the connect page", () => {
+    const source = readFileSync("src/app/channels/connect/page.tsx", "utf8");
+
+    expect(source).toContain("受控開通入口");
+    expect(source).not.toContain("disabled 入口");
   });
 });
