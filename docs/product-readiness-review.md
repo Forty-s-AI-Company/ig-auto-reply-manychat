@@ -1,3 +1,18 @@
+# 2026-07-01 - Referrals nav label IA polish
+
+Status: improved for navigation clarity; public paid launch remains Hold.
+
+What changed:
+
+- Admin desktop and mobile navigation now use `推薦活動`.
+- The label matches the `/referrals` page title and reads more like a real product surface than the short `推薦` label.
+- Mobile admin smoke covers the label.
+
+Launch impact:
+
+- This is IA / UI copy polish only.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Inbox custom reminder controlled-opening copy
 
 Status: improved for Inbox disabled UX clarity; public paid launch remains Hold.

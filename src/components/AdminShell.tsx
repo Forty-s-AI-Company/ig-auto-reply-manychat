@@ -23,7 +23,7 @@ const basePrimaryNavItems = [
   { label: "自動化", href: "/automations", icon: Sparkles, iconName: "sparkles" },
   { label: "序列", href: "/sequences", icon: Clock, iconName: "clock" },
   { label: "分析", href: "/analytics", icon: Sparkles, iconName: "barChart3" },
-  { label: "推薦", href: "/referrals", icon: Gift, iconName: "gift" },
+  { label: "推薦活動", href: "/referrals", icon: Gift, iconName: "gift" },
   { label: "設定", href: "/channels", icon: Settings, iconName: "settings" },
 ] as const;
 

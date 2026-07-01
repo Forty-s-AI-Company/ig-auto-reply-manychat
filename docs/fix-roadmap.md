@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Referrals nav label IA polish
+
+Current status:
+
+- `[x]` Desktop and mobile admin nav now label the referrals surface as `推薦活動`.
+- `[x]` The nav label matches the page title and avoids the vague one-word `推薦`.
+- `[x]` Mobile admin smoke covers the `推薦活動` label.
+
+Remaining:
+
+- `[ ]` PR CI should rerun mobile admin smoke.
+- `[ ]` Continue broader IA review for low-frequency settings after this naming pass.
+
 # Latest - 2026-07-01 Inbox custom reminder controlled-opening copy
 
 Current status:
