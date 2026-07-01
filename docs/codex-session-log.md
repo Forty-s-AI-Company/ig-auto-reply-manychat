@@ -1,3 +1,32 @@
+# 2026-07-01 - Segments light-theme polish
+
+Task:
+
+- Continue product UI consistency after Instagram default reply light-theme polish.
+- Focus on `/segments`, which still used dark internal-tool cards and form controls inside the light admin shell.
+
+Changes:
+
+- Reworked `SegmentsClient` list cards, summary card, empty state, and editor panel to use the shared light dashboard language.
+- Added clearer form names, autocomplete policy, focus-visible states, and live-region error feedback.
+- Added a focused regression test to prevent Segments from returning to dark internal-tool classes.
+
+Validation:
+
+- `npx eslint src/components/SegmentsClient.tsx tests/segments-light-theme.test.ts`: passed.
+- `npx vitest run tests/segments-light-theme.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+
+Safety:
+
+- UI styling / accessibility semantics and source-level test only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+- No Meta App Review or PayUNI production action.
+
 # 2026-07-01 - Instagram default reply light-theme polish
 
 Task:

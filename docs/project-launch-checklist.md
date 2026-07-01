@@ -1,3 +1,10 @@
+# 2026-07-01 - Segments light-theme polish
+
+- `[x]` 分眾名單頁已改成亮色 SaaS 後台風格。
+- `[x]` 分眾列表、空狀態與編輯表單不再像深色內部工具。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Instagram default reply light-theme polish
 
 - `[x]` Instagram 預設回覆頁已改成亮色 SaaS 後台風格。
