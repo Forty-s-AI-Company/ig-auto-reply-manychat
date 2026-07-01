@@ -1,3 +1,26 @@
+# 2026-07-02 - Segments empty-name disabled UX
+
+Task:
+
+- Make the Segments create/update action explicit when the segment name has been cleared.
+
+Changes:
+
+- Disabled the Segments save button when the segment name is empty.
+- Added a title and inline reason so the button does not feel broken.
+- Extended the Segments source regression coverage for the disabled save state.
+
+Validation:
+
+- `npx vitest run tests/segments-light-theme.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves Segments UX without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Daily AI model cache refresh
 
 Task:

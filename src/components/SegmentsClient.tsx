@@ -81,6 +81,7 @@ export function SegmentsClient({
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [error, setError] = useState("");
   const isEditing = Boolean(draft.id);
+  const canSave = Boolean(draft.name.trim());
 
   const totalContacts = useMemo(
     () => segments.reduce((sum, segment) => sum + (segment.contactCount || 0), 0),
@@ -280,10 +281,19 @@ export function SegmentsClient({
             <button
               type="button"
               onClick={save}
-              className="w-full rounded-md bg-[#0057d9] px-4 py-2 text-sm font-medium text-white hover:bg-[#0047b3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              disabled={!canSave}
+              title={canSave ? undefined : "請先輸入分群名稱。"}
+              aria-describedby={canSave ? undefined : "segment-save-disabled-reason"}
+              data-testid="segments-save-button"
+              className="w-full rounded-md bg-[#0057d9] px-4 py-2 text-sm font-medium text-white hover:bg-[#0047b3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#98a2b3] disabled:hover:bg-[#98a2b3]"
             >
               {isEditing ? "更新分群" : "建立分群"}
             </button>
+            {!canSave ? (
+              <p id="segment-save-disabled-reason" className="text-xs leading-5 text-[#667085]">
+                請先輸入分群名稱，才能儲存這組篩選條件。
+              </p>
+            ) : null}
           </div>
         </aside>
       </section>
