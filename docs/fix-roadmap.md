@@ -1,3 +1,17 @@
+# Latest - 2026-07-02 Admin invoice refund operator UI
+
+Current status:
+
+- `[x]` Admin-only invoice refund reconciliation route now has an internal `/admin/invoices` operator surface.
+- `[x]` Refund marking is limited to paid invoices and requires an explicit browser confirmation.
+- `[x]` The operator page states that this does not automatically trigger PayUNI refunds.
+- `[x]` Admin profile menu and payout management link to the refund handling surface.
+- `[x]` Source-level regression covers controlled copy, localized payment status, and the admin entry point.
+
+Remaining:
+
+- `[ ]` Actual PayUNI refund callback / provider-side refund automation remains intentionally unimplemented until production merchant operations are approved.
+
 # Latest - 2026-07-02 Billing invoice status copy polish
 
 Current status:
