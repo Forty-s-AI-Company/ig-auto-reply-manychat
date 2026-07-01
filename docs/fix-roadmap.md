@@ -1,3 +1,8 @@
+# 2026-07-01 - Simple-release analytics smoke stability follow-up
+
+- [x] CI flake source identified: mobile simple-release Analytics smoke can hit a Next dev manifest race before nalytics-state-banner is rendered.
+- [x] Analytics simple-release smoke now retries navigation once before failing the assertion.
+- [ ] Follow-up PR CI needs to confirm the simple-release smoke is green again on GitHub Actions.
 # Latest - 2026-07-01 Signup light-theme and form UX polish
 
 Current status:

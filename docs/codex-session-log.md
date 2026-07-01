@@ -1,3 +1,8 @@
+# 2026-07-01 - Simple-release analytics smoke stability follow-up
+
+- Master CI after PR #86 exposed a mobile simple-release smoke flake on /analytics where Next dev briefly missed .next/dev/server/app/analytics/page/build-manifest.json.
+- 	ests/e2e/simple-release.spec.ts now retries the Analytics navigation once before asserting the controlled simple-release broadcast banner.
+- This is a test-runner stability change only; no product logic, production DB, migration, Production deployment, Meta App Review, or PayUNI production change.
 # 2026-07-01 - Segments light-theme polish
 
 Task:
