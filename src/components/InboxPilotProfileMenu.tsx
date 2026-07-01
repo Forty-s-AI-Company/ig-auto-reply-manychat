@@ -98,13 +98,17 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
                 onChange={(event) => setLanguage(event.target.value)}
                 className="h-9 flex-1 rounded-md border border-[#d7dbe0] bg-white px-3 text-[#111827]"
                 aria-label="選擇介面語言"
+                aria-describedby="profile-language-help"
               >
                 <option value="zh-TW">繁體中文</option>
                 <option value="en" disabled>
-                  English
+                  English（受控開通）
                 </option>
               </select>
             </label>
+            <p id="profile-language-help" className="mt-2 text-xs leading-5 text-[#667085]" data-testid="profile-language-help">
+              目前後台固定使用繁體中文；英文介面會在翻譯、客服與審核文案整理完成後受控開通。
+            </p>
           </div>
 
           <div className="border-t border-[#edf0f2] py-2">

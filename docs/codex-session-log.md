@@ -1,3 +1,27 @@
+# 2026-07-01 - Profile menu language disabled UX clarity
+
+Task:
+
+- Continue safe product-completeness sweeps after PR #67.
+- Focus on the profile menu language selector, where `English` was visible but disabled without a clear product reason.
+
+Changes:
+
+- Updated the disabled English option to `English（受控開通）`.
+- Added helper copy explaining that the dashboard currently stays in Traditional Chinese until translation, support, and review copy are ready.
+- Extended mobile admin smoke coverage for the language selector and helper text.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI copy and smoke coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Automations editor more-actions disabled copy polish
 
 Task:
