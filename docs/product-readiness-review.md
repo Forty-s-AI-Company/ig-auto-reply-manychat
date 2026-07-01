@@ -1,3 +1,17 @@
+# 2026-07-01 - Marketing info page light SaaS polish
+
+Status: improved for public support / info-page consistency; public paid launch remains Hold.
+
+What changed:
+
+- Templates, Help Center, API docs, and Status now inherit a quieter light SaaS template instead of a high-contrast black / yellow sales-page treatment.
+- Shared info-page CTAs have visible focus states, and long route/API list items wrap safely.
+
+Readiness implication:
+
+- Low-frequency public pages now feel closer to the rest of InboxPilot rather than a separate prototype style.
+- This does not change product capabilities, payment behavior, Meta review, production data, or deployment gates.
+
 # 2026-07-01 - Sequence form mobile disabled-state stabilization
 
 Status: improved for mobile smoke reliability; public paid launch remains Hold.
