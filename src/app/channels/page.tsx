@@ -275,9 +275,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
 
           <section className="grid gap-3 lg:grid-cols-2">
             <SettingPanel id="notifications" icon={<Bell className="h-5 w-5" />} title="通知設定">
-              Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率尚未開放前，先維持平台內提醒。
+              Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率完成權限與退訂規則後再開放。
               <div>
-                <DisabledFeatureButton testId="channels-notifications-disabled">Email 通知設定整理中</DisabledFeatureButton>
+                <DisabledFeatureButton testId="channels-notifications-disabled">Email 通知受控開通</DisabledFeatureButton>
               </div>
             </SettingPanel>
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
@@ -286,13 +286,13 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
               設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
               <div>
-                <DisabledFeatureButton testId="channels-logs-disabled">稽核紀錄整理中</DisabledFeatureButton>
+                <DisabledFeatureButton testId="channels-logs-disabled">稽核紀錄受控開通</DisabledFeatureButton>
               </div>
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
               目前介面固定使用繁體中文與 InboxPilot 淺色版面；主題與語言切換會在設定穩定後開放。
               <div>
-                <DisabledFeatureButton testId="channels-display-disabled">主題與語言切換整理中</DisabledFeatureButton>
+                <DisabledFeatureButton testId="channels-display-disabled">主題與語言受控開通</DisabledFeatureButton>
               </div>
             </SettingPanel>
           </section>
@@ -328,7 +328,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-[#b54708]">
                         {entry.uiState.disabledReason}
                       </div>
-                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : entry.uiState.statusLabel || "尚未開放"}</DisabledFeatureButton>
+                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : entry.uiState.statusLabel || "受控開通"}</DisabledFeatureButton>
                     </>
                   )}
                 </div>
@@ -405,7 +405,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
               <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
                 序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
                 <div>
-                  <DisabledFeatureButton testId="channels-sequence-settings-disabled">序列設定整理中</DisabledFeatureButton>
+                  <DisabledFeatureButton testId="channels-sequence-settings-disabled">序列設定受控開通</DisabledFeatureButton>
                 </div>
               </SettingPanel>
             </div>
@@ -421,7 +421,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
               Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
               <div>
-                <DisabledFeatureButton testId="channels-conversion-events-disabled">轉換事件整理中</DisabledFeatureButton>
+                <DisabledFeatureButton testId="channels-conversion-events-disabled">轉換事件受控開通</DisabledFeatureButton>
               </div>
             </SettingPanel>
           </section>
@@ -457,7 +457,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <p className="mt-1 text-sm leading-6 text-[#667085]">
               API、應用程式、第三方整合、付款整合、模板與追蹤像素統一放在同一組，避免低頻工具擠在左側主選單。
             </p>
-            <DisabledFeatureButton>此區功能整理中</DisabledFeatureButton>
+            <DisabledFeatureButton>第三方整合受控開通</DisabledFeatureButton>
           </section>
         </div>
       </div>

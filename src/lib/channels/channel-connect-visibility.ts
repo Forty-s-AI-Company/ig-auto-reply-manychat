@@ -48,8 +48,8 @@ export function getChannelConnectOptionState(optionId: ChannelConnectOptionId, c
     return {
       visible: true,
       enabled: false,
-      disabledReason: "這個平台尚未進入正式可用範圍，先保留清楚的 disabled 入口。",
-      statusLabel: "尚未開放",
+      disabledReason: "這個平台還沒進入正式可用範圍，先保留清楚的受控開通入口，不會打開無效授權流程。",
+      statusLabel: "受控開通",
     };
   }
 
