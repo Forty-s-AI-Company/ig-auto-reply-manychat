@@ -1416,6 +1416,7 @@ function ContactPanel({
     Object.fromEntries((selected.contact.fieldValues || []).map((item) => [item.definition.id, item.value])),
   );
   const consentState = formatConsentStatus(selected.contact.consentStatus);
+  const canCreateCustomField = Boolean(newFieldLabel.trim());
 
   async function createField() {
     const label = newFieldLabel.trim();
@@ -1676,16 +1677,26 @@ function ContactPanel({
               value={newFieldLabel}
               onChange={(event) => setNewFieldLabel(event.target.value)}
               placeholder="新增欄位，例如：課程興趣"
+              aria-label="新增自訂欄位名稱"
+              data-testid="inbox-new-field-label"
               className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6]"
             />
             <button
               type="button"
               onClick={createField}
-              className="rounded-md bg-[#006fe6] px-2 py-1.5 text-xs font-medium text-white"
+              disabled={!canCreateCustomField}
+              title={canCreateCustomField ? undefined : "請先輸入欄位名稱。"}
+              data-testid="inbox-create-field-button"
+              className="rounded-md bg-[#006fe6] px-2 py-1.5 text-xs font-medium text-white disabled:cursor-not-allowed disabled:bg-[#cfe2ff]"
             >
               新增
             </button>
           </div>
+          {!canCreateCustomField ? (
+            <p className="text-xs leading-5 text-[#98a2b3]" data-testid="inbox-create-field-disabled-reason">
+              請先輸入欄位名稱，才會建立新的自訂欄位。
+            </p>
+          ) : null}
         </div>
       </PanelSection>
     </div>

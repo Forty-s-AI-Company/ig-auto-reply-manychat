@@ -12,6 +12,18 @@ Remaining:
 
 - `[ ]` Keep monitoring whether local CLI providers are intentionally enabled before expecting `codex_cli` / `antigravity_cli` counts in shared refresh output.
 
+# Latest - 2026-07-02 Inbox custom field empty-create disabled UX
+
+Current status:
+
+- `[x]` Inbox contact-panel custom field creation now disables the `新增` action until a field name is entered.
+- `[x]` Empty custom-field creation now shows a clear inline reason instead of silently doing nothing.
+- `[x]` Authenticated Inbox smoke covers the disabled state.
+
+Remaining:
+
+- `[ ]` Continue Inbox QA for higher-risk custom field editing, deletion, and audit requirements before expanding the field system.
+
 # Latest - 2026-07-02 Official v3 footer placeholder link cleanup
 
 Current status:

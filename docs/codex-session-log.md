@@ -20,6 +20,29 @@ Launch impact:
 
 - Cache refresh only. No schema, production DB, deployment, Meta App Review, PayUNI production, OAuth, webhook, or payment behavior changed.
 
+# 2026-07-02 - Inbox custom field empty-create disabled UX
+
+Task:
+
+- Make the Inbox contact-panel custom field creation control explicit when no field name is entered.
+
+Changes:
+
+- Disabled the custom-field `新增` button until a field label is present.
+- Added a title and inline reason so empty clicks no longer look like a broken control.
+- Extended the authenticated Inbox smoke to cover the disabled state.
+
+Validation:
+
+- `npm run e2e:admin:ensure && npm run test:e2e:inbox` passed: 2 passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves Inbox contact-panel polish without changing schema, production DB, deployment, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Official v3 footer placeholder link cleanup
 
 Task:
