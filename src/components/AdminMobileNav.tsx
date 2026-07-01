@@ -61,7 +61,7 @@ const baseNavItems = [
   { label: "自動化", href: "/automations", icon: Sparkles },
   { label: "序列", href: "/sequences", icon: Clock },
   { label: "分析", href: "/analytics", icon: BarChart3 },
-  { label: "推薦", href: "/referrals", icon: Gift },
+  { label: "推薦活動", href: "/referrals", icon: Gift },
   { label: "設定", href: "/channels", icon: Settings },
 ];
 const simpleNavHrefs = new Set(["/dashboard", "/inbox", "/contacts", "/channels", "/analytics", "/automations", "/referrals"]);

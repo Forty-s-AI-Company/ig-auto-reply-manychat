@@ -6781,6 +6781,29 @@ Launch impact:
 
 - UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Referrals nav label IA polish
+
+Task:
+
+- Continue IA / UI polish after reviewing the admin shell and profile menu navigation.
+
+Changes:
+
+- Renamed the admin desktop and mobile nav label from `推薦` to `推薦活動`.
+- Added mobile admin smoke coverage for the clearer nav label.
+
+Validation:
+
+- `npx eslint src/components/AdminShell.tsx src/components/AdminMobileNav.tsx tests/e2e/public-and-auth.spec.ts`: passed.
+- `npm run test:e2e:auth`: public smoke passed locally; authenticated smoke is guarded locally and runs in CI with seeded auth.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Windows Vitest batch instability was isolated by the runner and affected files passed individually; existing Meta webhook invalid-signature audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing Windows Prisma engine lock fallback reused the generated client.
+
+Launch impact:
+
+- Navigation copy only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Channels disabled copy clarity polish
 
 Task:

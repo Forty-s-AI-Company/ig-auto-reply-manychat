@@ -238,6 +238,7 @@ test.describe("authenticated route smoke", () => {
     await page.getByRole("button", { name: "開啟選單" }).click();
     await expect(inboxMenuLink).toBeVisible();
     await expect(page.getByTestId("admin-mobile-nav-link-channels")).toContainText("設定");
+    await expect(page.getByTestId("admin-mobile-nav-link-referrals")).toContainText("推薦活動");
     await expect(page.getByTestId("admin-mobile-nav-link-billing")).toHaveCount(0);
     await page.getByRole("button", { name: "我的個人檔案" }).click();
     await expect(page.locator("body")).toContainText("目前方案");
