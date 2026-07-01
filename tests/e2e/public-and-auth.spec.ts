@@ -180,8 +180,14 @@ test.describe("authenticated route smoke", () => {
 
   test("shows Channels planned settings as explicit disabled controls", async ({ page }) => {
     await page.goto("/channels", { waitUntil: "domcontentloaded" });
+    await expect(page.getByTestId("channels-notifications-disabled")).toBeDisabled();
+    await expect(page.getByTestId("channels-notifications-disabled")).toContainText("Email 通知設定整理中");
+    await expect(page.getByTestId("channels-display-disabled")).toBeDisabled();
+    await expect(page.getByTestId("channels-display-disabled")).toContainText("主題與語言切換整理中");
     await expect(page.getByTestId("channels-logs-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-logs-disabled")).toContainText("稽核紀錄整理中");
+    await expect(page.locator("body")).toContainText("AI 設定");
+    await expect(page.locator("body")).toContainText(/前往 AI 設定|完整版測試站可設定/);
     await expect(page.getByTestId("channels-sequence-settings-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-sequence-settings-disabled")).toContainText("序列設定整理中");
     await expect(page.getByTestId("channels-conversion-events-disabled")).toBeDisabled();
@@ -217,6 +223,7 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("目前方案");
     await expect(page.locator("body")).toContainText("方案與用量");
     await expect(page.locator("body")).toContainText("說明中心");
+    await expect(page.getByRole("link", { name: "AI 設定" })).toHaveAttribute("href", "/channels#ai-settings");
     await expect(page.locator("body")).not.toContainText("進階功能");
     await expect(page.locator("body")).not.toContainText("排隊中");
     await page.getByRole("button", { name: "關閉選單", exact: true }).click();

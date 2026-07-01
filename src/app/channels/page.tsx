@@ -6,7 +6,6 @@ import {
   Camera,
   CreditCard,
   Inbox,
-  KeyRound,
   MessageCircle,
   Plug,
   Settings,
@@ -85,6 +84,7 @@ const settingsGroups = [
   {
     title: "擴充整合",
     items: [
+      { label: "AI 設定", href: "#ai-settings" },
       { label: "API 存取", href: "#extensions" },
       { label: "應用程式", href: "#extensions" },
       { label: "第三方整合", href: "#extensions" },
@@ -275,7 +275,10 @@ export default async function ChannelsPage({ searchParams }: Props) {
 
           <section className="grid gap-3 lg:grid-cols-2">
             <SettingPanel id="notifications" icon={<Bell className="h-5 w-5" />} title="通知設定">
-              Inbox 新訊息、指派、提醒與系統通知集中管理。瀏覽器音效與 Email 通知目前保留設定入口。
+              Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率尚未開放前，先維持平台內提醒。
+              <div>
+                <DisabledFeatureButton testId="channels-notifications-disabled">Email 通知設定整理中</DisabledFeatureButton>
+              </div>
             </SettingPanel>
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
               目前共有 {teamCount} 位成員。Inbox 已支援將對話指派給團隊成員。
@@ -287,7 +290,10 @@ export default async function ChannelsPage({ searchParams }: Props) {
               </div>
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
-              目前介面固定使用繁體中文與 InboxPilot 淺色版面。
+              目前介面固定使用繁體中文與 InboxPilot 淺色版面；主題與語言切換會在設定穩定後開放。
+              <div>
+                <DisabledFeatureButton testId="channels-display-disabled">主題與語言切換整理中</DisabledFeatureButton>
+              </div>
             </SettingPanel>
           </section>
 
@@ -429,10 +435,16 @@ export default async function ChannelsPage({ searchParams }: Props) {
                 </Link>
               </div>
             </SettingPanel>
-            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="規劃中">
-              API、應用程式、第三方整合、付款整合、已安裝模板、追蹤像素先集中整理需求，正式開放前不提供可點擊入口。
+            <SettingPanel id="ai-settings" icon={<Bot className="h-5 w-5" />} title="AI 設定" badge={simpleRelease ? "測試站開放" : undefined}>
+              AI 供應商、模型、API Key 與本機 CLI 橋接集中在 AI 設定頁管理。
               <div className="mt-3">
-                <DisabledFeatureButton>此區功能整理中</DisabledFeatureButton>
+                {simpleRelease ? (
+                  <DisabledFeatureButton testId="channels-ai-settings-disabled">完整版測試站可設定</DisabledFeatureButton>
+                ) : (
+                  <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/ai-settings">
+                    前往 AI 設定
+                  </Link>
+                )}
               </div>
             </SettingPanel>
           </section>

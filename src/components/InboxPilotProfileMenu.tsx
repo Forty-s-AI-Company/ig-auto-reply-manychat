@@ -84,7 +84,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
           <div className="border-t border-[#edf0f2] py-2">
             <p className="px-4 py-2 text-xs font-medium text-[#98a2b3]">設定與支援</p>
             <MenuLink href="/channels#notifications" icon={<Bell className="h-4 w-4" />} label="通知設定" />
-            <MenuLink href="/ai-settings" icon={<Bot className="h-4 w-4" />} label="AI 設定" />
+            <MenuLink href="/channels#ai-settings" icon={<Bot className="h-4 w-4" />} label="AI 設定" />
             <MenuLink href="/channels#extensions" icon={<KeyRound className="h-4 w-4" />} label="API 與應用程式" />
             {isAdmin ? <MenuLink href="/admin/audit" icon={<Shield className="h-4 w-4" />} label="登入與稽核紀錄" /> : null}
             <MenuLink href="/help-center" icon={<CircleHelp className="h-4 w-4" />} label="說明中心" />

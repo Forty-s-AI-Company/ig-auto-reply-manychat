@@ -2369,5 +2369,19 @@ Current status:
 
 Remaining:
 
-- `[ ]` 後續可再做 Settings 頁第二輪，把通知、AI、API、稽核改成真正可編輯或更清楚的 disabled UX，而不只是入口重新歸位。
+- `[x]` Settings 頁第二輪已先把通知、AI、顯示設定改成更清楚的可用 / 受控開通 UX。
 - `[ ]` 若要把 `/channels` route 正式改名為 `/settings`，需另外做 redirect / route alias / SEO / tests，不在本輪處理。
+
+## Latest - 2026-07-01 Settings profile menu second pass
+
+Current status:
+
+- `[x]` Profile menu 的 `AI 設定` 不再直接撞 simple release 的 full-only `/ai-settings` route，改先導到 `/channels#ai-settings`。
+- `[x]` `/channels#ai-settings` 在 simple release 顯示 `完整版測試站可設定` disabled UX，在 full release 顯示前往 AI 設定頁的連結。
+- `[x]` 通知設定與顯示設定補上明確 disabled controls，不再只是靜態文字。
+- `[x]` Playwright authenticated smoke 覆蓋 Settings disabled controls 與 profile menu AI anchor。
+
+Remaining:
+
+- `[ ]` 後續可把通知頻率、瀏覽器提醒、語言 / 主題選擇做成真正可編輯設定。
+- `[ ]` API / 第三方整合仍是受控開通區塊，正式開放前需要另外補 API key 管理、權限與 audit。
