@@ -1,3 +1,10 @@
+# 2026-07-01 - Sequence form mobile disabled-state stabilization
+
+- `[x]` Sequence name input now updates invalid-name state through `onInput`, improving mobile smoke stability.
+- `[x]` Blank sequence names keep the save action disabled and expose the existing `請先填寫序列名稱。` guidance.
+- `[x]` Source-level regression test covers the sequence save button state wiring.
+- `[ ]` Confirm GitHub full-release mobile smoke returns green after this stabilization PR merges.
+
 # 2026-07-01 - Public pricing page polish
 
 - `[x]` `/pricing` hero and metadata now use `方案與價格` instead of English `Pricing` wording.

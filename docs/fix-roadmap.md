@@ -2622,6 +2622,18 @@ Remaining:
 - `[ ]` 後續可把通知頻率、瀏覽器提醒、語言 / 主題選擇做成真正可編輯設定。
 - `[ ]` API / 第三方整合仍是受控開通區塊，正式開放前需要另外補 API key 管理、權限與 audit。
 
+## Latest - 2026-07-01 Sequence form mobile disabled-state stabilization
+
+Current status:
+
+- `[x]` Sequence save state now derives from a normalized trimmed name.
+- `[x]` Sequence name input now uses `onInput` in addition to controlled state so mobile smoke can reliably observe the disabled save state after clearing the field.
+- `[x]` Source-level regression coverage guards the sequence save button / invalid-name wiring.
+
+Remaining:
+
+- `[ ]` Confirm GitHub full-release mobile smoke returns green after this stabilization PR merges.
+
 ## Latest - 2026-07-01 Public pricing page polish
 
 Current status:

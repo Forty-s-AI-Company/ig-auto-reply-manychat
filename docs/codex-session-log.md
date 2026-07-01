@@ -7268,6 +7268,26 @@ Validation:
 Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+# 2026-07-01 - Sequence form mobile disabled-state stabilization
+
+Task:
+
+- Fix the master CI full-release mobile smoke failure where clearing the sequence name did not consistently disable the save button.
+
+Changes:
+
+- `SequencesClient` now derives save state from a normalized `trimmedName`.
+- The sequence name input now includes `name`, `required`, `autocomplete`, `aria-invalid`, and an `onInput` handler so mobile browsers update the disabled state reliably after clearing the field.
+- Added `tests/sequences-form-state.test.ts` to guard the sequence save button state wiring.
+
+Validation:
+
+- Focused validation will run before PR delivery.
+
+Launch impact:
+
+- UI state stabilization only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Public pricing page polish
 
 Task:

@@ -1,3 +1,17 @@
+# 2026-07-01 - Sequence form mobile disabled-state stabilization
+
+Status: improved for mobile smoke reliability; public paid launch remains Hold.
+
+What changed:
+
+- Sequence save-button state now derives from a normalized trimmed name.
+- The sequence name input includes additional form semantics and an `onInput` state sync path so clearing the field reliably disables the save action in mobile smoke.
+
+Readiness implication:
+
+- The Sequences page is less likely to look like it allows an invalid blank-name submit on mobile.
+- This does not change sequence API behavior, production data, Meta review, PayUNI production, or deployment gates.
+
 # 2026-07-01 - Public pricing page polish
 
 Status: improved for public visitor-to-trial clarity; public paid launch remains Hold.

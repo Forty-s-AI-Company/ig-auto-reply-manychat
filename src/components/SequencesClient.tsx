@@ -47,6 +47,7 @@ export function SequencesClient({
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || "");
   const [message, setMessage] = useState("");
 
+  const trimmedName = name.trim();
   const selectedSequence = useMemo(
     () => sequences.find((sequence) => sequence.id === selectedSequenceId),
     [selectedSequenceId, sequences],
@@ -55,8 +56,8 @@ export function SequencesClient({
     const delaySeconds = Number(step.delaySeconds);
     return !step.text.trim() || !Number.isFinite(delaySeconds) || delaySeconds < 0;
   });
-  const canSaveSequence = Boolean(name.trim()) && steps.length > 0 && !invalidStep;
-  const saveDisabledReason = !name.trim()
+  const canSaveSequence = Boolean(trimmedName) && steps.length > 0 && !invalidStep;
+  const saveDisabledReason = !trimmedName
     ? "請先填寫序列名稱。"
     : invalidStep
       ? "每個步驟都需要填寫訊息，延遲秒數也不能小於 0。"
@@ -250,8 +251,13 @@ export function SequencesClient({
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">名稱</span>
               <input
+                name="sequenceName"
+                required
+                autoComplete="off"
+                aria-invalid={!trimmedName}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                onInput={(event) => setName(event.currentTarget.value)}
                 className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
                 data-testid="sequence-name-input"
               />
