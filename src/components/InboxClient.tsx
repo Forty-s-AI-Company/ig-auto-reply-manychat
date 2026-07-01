@@ -656,14 +656,10 @@ export function InboxClient({
           <div className="border-t border-[#e4e7ec] px-3 py-4">
             <div className="mb-2 flex items-center justify-between text-xs font-medium text-[#667085]">
               <span>標籤</span>
-              <Link
-                href="/contacts"
-                className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#d7dbe0] text-base leading-none text-[#006fe6] hover:bg-white"
-                aria-label="前往聯絡人管理標籤"
-                title="前往聯絡人管理標籤"
-              >
-                +
-              </Link>
+              <ContactTagCreateButton
+                buttonLabel="建立收件匣標籤"
+                modalDescription="建立後會出現在收件匣左側標籤清單，也能用於聯絡人分類與篩選。"
+              />
             </div>
             <div className="space-y-1 text-sm">
               <InboxNavItem active={category === "favorites"} icon={<Heart className="h-4 w-4" />} label="收藏" count={counts.favorites} onClick={() => selectCategory("favorites")} />

@@ -1,3 +1,10 @@
+# 2026-07-01 - Inbox sidebar tag creation affordance
+
+- `[x]` Inbox sidebar tag `+` opens the real tag creation dialog.
+- `[x]` Shared tag creation modal includes semantic form attributes and clearer saving copy.
+- `[x]` Source-level and authenticated smoke coverage were added for the Inbox tag creation affordance.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 - `[x]` Social connect and OAuth success pages now use `設定` / `社群帳號連接` wording instead of mixed `Channels` / `Social Accounts`.
