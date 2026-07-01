@@ -19,7 +19,7 @@ export function RefreshInstagramProfileButton({ channelId, hasStoredToken = true
   async function refreshProfile() {
     if (isRefreshing || disabledReason) return;
     setIsRefreshing(true);
-    setMessage("正在重新讀取帳號名稱與頭像...");
+    setMessage("正在重新讀取帳號名稱與頭像…");
     try {
       const response = await fetch(`/api/channels/${channelId}/instagram-profile/refresh`, {
         method: "POST",

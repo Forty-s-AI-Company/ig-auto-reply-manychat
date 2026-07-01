@@ -21,7 +21,7 @@ export function OAuthPopupConnectButton({
   href,
   children,
   className,
-  pendingLabel = "連接中...",
+  pendingLabel = "連接中…",
   popupWidth = 540,
   popupHeight = 760,
   onSuccess,

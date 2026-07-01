@@ -123,7 +123,7 @@ export function InstagramDefaultReplyClient({
             className="inline-flex items-center gap-2 rounded-md bg-cyan-400 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Save className="h-4 w-4" />
-            {saving ? "儲存中..." : "儲存"}
+            {saving ? "儲存中…" : "儲存"}
           </button>
         </div>
       </div>

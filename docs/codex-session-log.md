@@ -6709,6 +6709,30 @@ Launch impact:
 
 - Product copy / disabled UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Loading state copy polish
+
+Task:
+
+- Continue the product-completeness loop after Channels disabled copy clarity, focusing on user-visible loading / pending states that still looked like raw engineering strings.
+
+Changes:
+
+- Global busy indicator now exposes `role=status` / `aria-live=polite` and uses polished ellipsis copy.
+- OAuth popup bridge now exposes live status copy and avoids `...` placeholder styling.
+- OAuth connect, Telegram token validation, account resync, AI settings, Instagram default reply, Instagram channel actions, profile refresh, and automation caption truncation now use consistent user-facing ellipsis copy.
+
+Validation:
+
+- `npx eslint src/components/GlobalBusyIndicator.tsx src/components/oauth/OAuthPopupBridge.tsx src/components/oauth/OAuthPopupConnectButton.tsx src/components/oauth/TokenProviderForm.tsx src/components/InstagramDefaultReplyClient.tsx src/components/InstagramChannelActions.tsx src/components/oauth/ResyncConnectedAccountButton.tsx src/components/RefreshInstagramProfileButton.tsx src/components/AutomationBuilderClient.tsx src/components/AiSettingsClient.tsx`: passed.
+- `rg` confirmed no remaining user-facing `...` loading / pending strings in the touched component scope.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Windows Vitest batch access-violation diagnostic still reruns affected files individually and confirms they pass; existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+
+Launch impact:
+
+- UI copy / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Settings profile menu second pass
 
 Task:
