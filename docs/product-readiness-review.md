@@ -1,3 +1,17 @@
+# 2026-07-02 - Referral link copy action
+
+Status: improved for referral sharing UX; public paid launch remains Hold.
+
+What changed:
+
+- Referral URL is no longer only static text; users now have a visible copy action with success and fallback messaging.
+- Authenticated smoke checks that the referral copy action remains visible.
+
+Readiness implication:
+
+- Referral credit v1 is easier to share and test without adding click-tracking schema or production data changes.
+- Full click tracking remains deferred until event storage, de-duplication, anti-fraud, and privacy rules are designed.
+
 # 2026-07-02 - Affiliate controlled cash copy polish
 
 Status: improved for product clarity; public paid launch remains Hold.

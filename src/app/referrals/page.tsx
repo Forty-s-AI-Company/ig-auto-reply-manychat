@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AdminShell } from "@/components/AdminShell";
+import { ReferralLinkCopyButton } from "@/components/ReferralLinkCopyButton";
 import { requireUser } from "@/lib/auth";
 import { getReferralDashboard } from "@/lib/billing/referral-service";
 import { formatTwd } from "@/lib/billing";
@@ -35,12 +36,15 @@ export default async function ReferralsPage() {
             </span>
           </div>
           <p className="mt-4 text-3xl font-semibold text-[var(--text-primary)]">{dashboard.code}</p>
-          <p
-            className="mt-3 break-all rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm font-medium text-[var(--teal-dark)]"
-            data-testid="referrals-url"
-          >
-            {dashboard.referralUrl}
-          </p>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <p
+              className="min-w-0 flex-1 break-all rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm font-medium text-[var(--teal-dark)]"
+              data-testid="referrals-url"
+            >
+              {dashboard.referralUrl}
+            </p>
+            <ReferralLinkCopyButton referralUrl={dashboard.referralUrl} />
+          </div>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
             {simpleRelease
               ? "目前推薦活動以方案折抵為主：首筆有效付費會先進入待確認，超過退款觀察期才會轉成可用折抵金。"

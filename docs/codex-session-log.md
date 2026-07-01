@@ -1,3 +1,28 @@
+# 2026-07-02 - Referral link copy action
+
+Task:
+
+- Make the referral link on `/referrals` directly copyable instead of leaving users to manually select static text.
+
+Changes:
+
+- Added a client-side `ReferralLinkCopyButton` with success and fallback error messages.
+- Wired the copy action into the referral hero card next to the referral URL.
+- Added regression coverage so the referral page keeps the copy action visible.
+
+Validation:
+
+- `npx vitest run tests/referral-affiliate-mvp-ui.test.ts --reporter=dot` passed.
+- `npm run e2e:admin:ensure` passed.
+- `npm run test:e2e:auth` passed after stabilizing existing public landing / sequence form smoke timing.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed; one Windows Vitest multi-file batch crashed with `3221225477`, then every file in that batch passed on diagnostic one-by-one rerun.
+
+Launch impact:
+
+- Improves referral sharing UX without changing schema, production DB, payment behavior, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Contact detail mobile tag add stability
 
 Task:

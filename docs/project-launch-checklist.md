@@ -1,3 +1,9 @@
+# 2026-07-02 - Referral link copy action
+
+- `[x]` Referral page now provides a visible copy action for the user's referral URL.
+- `[x]` Copy success and clipboard fallback states are user-readable.
+- `[ ]` Click tracking remains excluded from launch until event storage, de-duplication, fraud, and privacy rules are approved.
+
 # 2026-07-02 - Affiliate controlled cash copy polish
 
 - `[x]` Affiliate public copy no longer suggests self-service cash withdrawal is available.
