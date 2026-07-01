@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Channels inline error feedback polish
+
+Current status:
+
+- `[x]` Channel disconnect failures no longer use a native browser `alert()`.
+- `[x]` OAuth popup failures no longer use a native browser `window.alert()`.
+- `[x]` Recoverable channel errors now render inline, user-readable feedback with polite live-region semantics.
+- `[x]` Focused source-level guard prevents these client channel components from regressing to native alert dialogs.
+
+Remaining:
+
+- `[ ]` PR CI should rerun the full smoke suite.
+- `[ ]` Continue product-completeness sweeps for any remaining visible-but-unusable controls in Inbox, Channels, Contacts, Automations, and Analytics.
+
 # Latest - 2026-07-01 Referrals nav label IA polish
 
 Current status:
