@@ -7086,6 +7086,28 @@ Launch impact:
 
 - Product copy / localization polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Signup light-theme and form UX polish
+
+Task:
+
+- Continue product UI completeness after Mock Tester polish, focusing on `/signup` where the public auth surface still used dark form styling while `/login` had already moved to the light system.
+
+Changes:
+
+- Signup page background now matches the light login page.
+- `SignupForm` now uses light cards, visible focus states, stable field names, correct autocomplete values, loading state, and inline live error feedback.
+- `tests/signup-light-theme.test.ts` guards against dark signup class regressions and missing accessible form semantics.
+
+Validation:
+
+- `npx eslint src/components/SignupForm.tsx src/app/signup/page.tsx tests/signup-light-theme.test.ts`: passed.
+- `npx vitest run tests/signup-light-theme.test.ts --reporter=dot`: passed.
+- `npm run lint`, `npm test`, and `npm run build`: passed.
+
+Launch impact:
+
+- Public auth UI / UX polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Mock tester light-theme and feedback polish
 
 Task:
