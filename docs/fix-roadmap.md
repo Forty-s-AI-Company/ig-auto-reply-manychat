@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Wallet light-theme polish
+
+Current status:
+
+- `[x]` 折抵金錢包頁不再使用深色內部工具卡片。
+- `[x]` 摘要卡、流水帳表格與空狀態已改成亮色 dashboard 視覺語言。
+- `[x]` `Pending`、raw type / source / status 已改成使用者可讀的繁體中文標籤。
+- `[x]` Source-level regression test 防止錢包頁回到暗色樣式與非語意流水列表。
+
+Remaining:
+
+- `[ ]` 繼續掃描聯盟與 admin-only 頁面是否仍有深色內部工具樣式。
+- `[ ]` 若後續要開放提領或折抵操作，需要另做 idempotency、權限與付款/帳單測試。
+
 # Latest - 2026-07-01 Segments light-theme polish
 
 Current status:

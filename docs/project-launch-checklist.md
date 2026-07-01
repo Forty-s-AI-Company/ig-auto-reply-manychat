@@ -1,3 +1,11 @@
+# 2026-07-01 - Wallet light-theme polish
+
+- `[x]` 折抵金錢包頁已改成亮色 SaaS 後台風格。
+- `[x]` 摘要卡、流水帳表格與空狀態不再像深色內部工具。
+- `[x]` `Pending` 與 raw ledger labels 已改成使用者可讀的繁體中文標籤。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Segments light-theme polish
 
 - `[x]` 分眾名單頁已改成亮色 SaaS 後台風格。

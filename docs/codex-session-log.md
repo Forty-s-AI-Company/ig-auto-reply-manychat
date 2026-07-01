@@ -7086,6 +7086,28 @@ Launch impact:
 
 - Product copy / localization polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Wallet light-theme polish
+
+Task:
+
+- Continue product UI completeness after Segments light-theme polish, focusing on `/wallet` where summary cards and the ledger still used dark internal-tool styling.
+
+Changes:
+
+- Wallet summary cards now use light dashboard cards with clearer descriptions.
+- Wallet ledger now uses a semantic table, horizontal overflow protection, localized type / source / status labels, `Intl.DateTimeFormat`, and an empty state.
+- `tests/wallet-light-theme.test.ts` guards against dark wallet class regressions and raw `Pending` ledger copy.
+
+Validation:
+
+- `npx eslint src/app/wallet/page.tsx tests/wallet-light-theme.test.ts`: passed.
+- `npx vitest run tests/wallet-light-theme.test.ts --reporter=dot`: passed.
+- `npm run lint`, `npm test`, and `npm run build`: passed.
+
+Launch impact:
+
+- UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Instagram channel action light-theme polish
 
 Task:
