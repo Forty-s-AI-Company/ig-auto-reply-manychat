@@ -19,9 +19,13 @@ describe("channel client feedback", () => {
   });
 
   it("keeps Instagram channel action controls aligned with the light settings UI", () => {
+    const disconnect = readFileSync("src/components/DisconnectChannelButton.tsx", "utf8");
     const profileRefresh = readFileSync("src/components/RefreshInstagramProfileButton.tsx", "utf8");
     const instagramActions = readFileSync("src/components/InstagramChannelActions.tsx", "utf8");
 
+    expect(disconnect).toContain('bg-white');
+    expect(disconnect).toContain('text-[#b42318]');
+    expect(disconnect).not.toMatch(/red-900|red-950|text-red-300/);
     expect(profileRefresh).toContain('bg-white');
     expect(profileRefresh).toContain('text-[#b54708]');
     expect(profileRefresh).not.toMatch(/text-amber-100|bg-amber-900/);

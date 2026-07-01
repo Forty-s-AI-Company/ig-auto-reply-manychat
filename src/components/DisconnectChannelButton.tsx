@@ -43,12 +43,12 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
         disabled={isDeleting}
         aria-label={`解除綁定 ${channelName}`}
         title="解除綁定"
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-red-900/70 text-red-300 transition hover:border-red-700 hover:bg-red-950/50 disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#fecdca] bg-white text-[#b42318] transition hover:border-[#fda29b] hover:bg-[#fef3f2] disabled:cursor-not-allowed disabled:border-[#d7dbe0] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]"
       >
         <Trash2 className="h-4 w-4" aria-hidden="true" />
       </button>
       {errorMessage ? (
-        <span className="max-w-52 text-right text-[11px] leading-4 text-red-300" role="status" aria-live="polite">
+        <span className="max-w-52 text-right text-[11px] leading-4 text-red-700" role="status" aria-live="polite">
           {errorMessage}
         </span>
       ) : null}

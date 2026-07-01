@@ -7071,3 +7071,25 @@ Validation:
 Launch impact:
 
 - Product copy polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Disconnect channel button light-theme polish
+
+Task:
+
+- Continue Channels card UI polish after action copy cleanup, focusing on the disconnect channel icon button that still used dark danger styling inside a light settings card.
+
+Changes:
+
+- `DisconnectChannelButton` now uses a light-theme white / red danger icon button.
+- Inline disconnect errors now use a readable deep red color on white cards.
+- `tests/channel-client-feedback.test.ts` now guards against dark danger class regressions.
+
+Validation:
+
+- `npx eslint src/components/DisconnectChannelButton.tsx tests/channel-client-feedback.test.ts`: passed.
+- `npx vitest run tests/channel-client-feedback.test.ts`: passed.
+- `rg` confirmed the touched disconnect button source no longer contains the guarded dark danger classes.
+
+Launch impact:
+
+- UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
