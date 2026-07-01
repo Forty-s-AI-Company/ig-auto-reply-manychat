@@ -6707,3 +6707,29 @@ Changes:
 Launch impact:
 
 - Product UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Inbox filter clarity polish
+
+Task:
+
+- Continue the product-completeness loop after PR #64, focusing on Inbox controls that were usable but still felt under-explained on mobile and empty states.
+
+Changes:
+
+- Inbox mobile search now has an explicit accessible label, autocomplete policy, and clearer placeholder copy.
+- Inbox filter popover now exposes dialog semantics, a close control, explanatory helper copy, and an active-filter summary.
+- Empty conversation results now explain which filters are currently applied before offering reset.
+- Authenticated Inbox smoke now covers the filter dialog semantics, active summary, mobile search metadata, and empty-filter summary.
+
+Validation:
+
+- `npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Windows Vitest batch access-violation diagnostic still reruns affected files individually and confirms they pass; existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+- `npm run test:e2e:auth`: public smoke passed; authenticated smoke skipped locally by guard.
+- `npm run test:e2e:inbox`: skipped locally by authenticated smoke guard.
+
+Launch impact:
+
+- Product UI / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

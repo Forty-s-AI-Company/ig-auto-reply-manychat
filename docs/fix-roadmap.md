@@ -2400,3 +2400,17 @@ Remaining:
 
 - `[ ]` 後續可把通知頻率、瀏覽器提醒、語言 / 主題選擇做成真正可編輯設定。
 - `[ ]` API / 第三方整合仍是受控開通區塊，正式開放前需要另外補 API key 管理、權限與 audit。
+
+## Latest - 2026-07-01 Inbox filter clarity polish
+
+Current status:
+
+- `[x]` Inbox mobile search 補上明確 label、autocomplete 與更清楚的 placeholder。
+- `[x]` Inbox 篩選浮層補上 dialog 語意、關閉控制、說明文字與目前套用條件摘要。
+- `[x]` Inbox 無結果空狀態會列出目前套用的篩選條件，避免使用者誤以為對話不見或功能壞掉。
+- `[x]` Authenticated Inbox smoke 覆蓋上述搜尋、篩選與空狀態語意。
+
+Remaining:
+
+- `[ ]` 持續盤點 Inbox / Contacts / Channels / Automations / Analytics 是否仍有實際可點但未完成的控制項。
+- `[ ]` 若後續要把自訂提醒、匯出、封鎖、更多對話操作做成可用功能，需補權限、audit 與資料保護設計。

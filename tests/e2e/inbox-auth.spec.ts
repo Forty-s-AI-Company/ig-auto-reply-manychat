@@ -46,6 +46,11 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.locator("body")).not.toContainText("E2E 第二 IG 帳號聯絡人");
 
     const searchInput = isMobileProject ? page.getByTestId("inbox-mobile-search") : page.getByPlaceholder("搜尋收件匣對話");
+    if (isMobileProject) {
+      await expect(searchInput).toHaveAttribute("aria-label", "搜尋收件匣對話");
+      await expect(searchInput).toHaveAttribute("autocomplete", "off");
+      await expect(searchInput).toHaveAttribute("placeholder", "搜尋姓名、帳號或訊息…");
+    }
     await searchInput.fill("未讀篩選");
     await expect(page.locator("body")).toContainText("E2E Inbox 未讀篩選對話");
     await expect(page.locator("body")).not.toContainText("E2E Inbox 主要對話");
@@ -56,6 +61,9 @@ test.describe("inbox authenticated smoke", () => {
       await page.getByRole("button", { name: "篩選", exact: true }).click();
     }
     await expect(page.getByTestId("inbox-filter-panel")).toBeVisible();
+    await expect(page.getByTestId("inbox-filter-panel")).toHaveAttribute("role", "dialog");
+    await expect(page.getByTestId("inbox-filter-panel")).toHaveAttribute("aria-label", "收件匣篩選");
+    await expect(page.getByTestId("inbox-active-filter-summary")).toContainText("搜尋「未讀篩選」");
     await page.getByTestId("inbox-filter-unread").check();
     await expect(page.locator("body")).toContainText("E2E Inbox 未讀篩選對話");
 
@@ -135,6 +143,7 @@ test.describe("inbox authenticated smoke", () => {
     }
     await searchInput.fill("完全不存在的 Inbox 搜尋字串");
     await expect(page.locator("body")).toContainText("目前沒有符合條件的對話");
+    await expect(page.getByTestId("inbox-empty-filter-summary")).toContainText("搜尋「完全不存在的 Inbox 搜尋字串」");
     await page.getByTestId("inbox-empty-reset-filters").click();
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
     await page.getByTestId("inbox-filter-tag").selectOption("all");
