@@ -101,7 +101,7 @@ export default async function ChannelConnectionPage() {
         {disabledChannels.length > 0 ? (
           <section className="space-y-3">
             <SectionHeading
-              title="規劃中與暫停中"
+              title="規劃中與受控開通"
               description="這些平台保留成清楚的 disabled 入口，但不會打開授權流程，避免看起來像壞掉的按鈕。"
             />
             <div className="space-y-3">
@@ -123,7 +123,7 @@ export default async function ChannelConnectionPage() {
                       aria-disabled="true"
                       className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
                     >
-                      {channel.id === "mock" ? "僅限本機 / QA 使用" : "尚未開放"}
+                      {channel.id === "mock" ? "僅限本機 / QA 使用" : channel.uiState.statusLabel || "受控開通"}
                     </button>
                   </div>
                 </div>

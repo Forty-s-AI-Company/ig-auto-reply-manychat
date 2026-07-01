@@ -6682,6 +6682,33 @@ Launch impact:
 
 - Product UI / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+# 2026-07-01 - Channels disabled copy clarity polish
+
+Task:
+
+- Continue the product-completeness loop after Inbox filter clarity, focusing on Channels / Connect controls that still used placeholder-like disabled copy.
+
+Changes:
+
+- Channel visibility policy now labels not-yet-supported platforms as `受控開通` instead of `尚未開放`.
+- `/channels/connect` disabled platform buttons now reuse the policy status label instead of a hard-coded placeholder label.
+- `/channels` settings disabled controls now use clearer controlled-opening labels for notifications, audit logs, display settings, sequences, conversion events, and third-party integrations.
+- Unit and Playwright smoke expectations were updated to prevent regressions to placeholder wording.
+
+Validation:
+
+- `npx eslint src/app/channels/page.tsx src/app/channels/connect/page.tsx src/lib/channels/channel-connect-visibility.ts tests/channels-connect-visibility.test.ts tests/e2e/public-and-auth.spec.ts`: passed.
+- `npx vitest run tests/channels-connect-visibility.test.ts`: passed.
+- `rg` confirmed no remaining `尚未開放` / placeholder-like disabled copy in the touched Channels / Connect policy scope.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+- `npm run test:e2e:auth`: public smoke passed; authenticated smoke skipped locally by guard.
+
+Launch impact:
+
+- Product copy / disabled UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 ## 2026-07-01 - Settings profile menu second pass
 
 Task:

@@ -2414,3 +2414,16 @@ Remaining:
 
 - `[ ]` 持續盤點 Inbox / Contacts / Channels / Automations / Analytics 是否仍有實際可點但未完成的控制項。
 - `[ ]` 若後續要把自訂提醒、匯出、封鎖、更多對話操作做成可用功能，需補權限、audit 與資料保護設計。
+
+## Latest - 2026-07-01 Channels disabled copy clarity polish
+
+Current status:
+
+- `[x]` Channels / Connect 不再用 `尚未開放` 作為 disabled 入口主文案，改成 `受控開通`。
+- `[x]` 設定頁內的通知、稽核、顯示、序列、轉換事件、第三方整合 disabled controls 改成正式產品語意。
+- `[x]` Channel visibility unit test 與 authenticated route smoke 已同步期待新文案。
+
+Remaining:
+
+- `[ ]` 若要把 TikTok / WhatsApp / Telegram 變成真正可用，需另開平台串接主題，補 OAuth / webhook / token / tenant isolation / QA。
+- `[ ]` 若要開放 Email 通知、顯示語言、轉換事件，需要補 API、資料模型或設定儲存策略，不能只打開 UI。
