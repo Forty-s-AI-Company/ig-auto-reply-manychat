@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Contact detail mobile tag add stability
+
+Current status:
+
+- `[x]` Contacts detail tag add now falls back to the live select value if React state has not synced yet.
+- `[x]` Mobile Contacts detail smoke no longer gets stuck on a disabled add-tag button after selecting a tag.
+- `[x]` Empty add attempts show a clear validation message instead of silently doing nothing.
+
+Remaining:
+
+- `[ ]` Continue product QA for Contacts / Inbox after master CI is green again.
+
 # Latest - 2026-07-02 Affiliate controlled cash copy polish
 
 Current status:
