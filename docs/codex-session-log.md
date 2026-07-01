@@ -1,3 +1,45 @@
+# 2026-07-02 - Daily AI model cache refresh
+
+Task:
+
+- Run the daily AI model cache refresh automation.
+
+Result:
+
+- `npm run ai-models:refresh` completed successfully.
+- `failed-workspace` refreshed `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- `available-refund-workspace` refreshed `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- No provider failure was reported.
+- `codex_cli` and `antigravity_cli` were not present in the refresh payload, matching the existing local CLI opt-in behavior when `AI_ENABLE_LOCAL_CLI` is not enabled.
+
+Validation:
+
+- `npm run ai-models:refresh`: passed.
+
+Launch impact:
+
+- Cache refresh only. No schema, production DB, deployment, Meta App Review, PayUNI production, OAuth, webhook, or payment behavior changed.
+
+# 2026-07-02 - Official v3 footer placeholder link cleanup
+
+Task:
+
+- Remove placeholder footer links from the public `/official/v3` landing page.
+
+Changes:
+
+- Replaced the V3 footer `href="#"` links with real public routes for privacy policy, terms of service, and contact.
+- Added source-level regression coverage so the V3 footer cannot silently return to placeholder links.
+
+Validation:
+
+- `npx vitest run tests/official-v3-footer-links.test.ts --reporter=dot` passed.
+- Full validation is pending for the PR branch.
+
+Launch impact:
+
+- Improves public landing page polish without changing schema, production DB, deployment, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Sequences mobile form state stability
 
 Task:
