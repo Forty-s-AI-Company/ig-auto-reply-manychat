@@ -1,3 +1,28 @@
+# 2026-07-01 - Automations disabled UX stability polish
+
+Task:
+
+- Continue product completeness work on a non-blocked area while PR #93 / #94 wait for Vercel Preview rate-limit recovery.
+- Focus on Automations disabled controls after a duplicate CI smoke run showed a transient missing-selector failure.
+
+Changes:
+
+- Basic Automations disabled CTAs now consistently say `受控開通`, including the new-follower automation.
+- Disabled Basic Automations buttons now include `cursor-not-allowed` and `aria-describedby` so the visible disabled control is tied to its reason text.
+- Authenticated smoke now waits for the `基礎流程` view before checking Basic Automations disabled controls.
+
+Validation:
+
+- `npx eslint src/components/AutomationBuilderClient.tsx tests/e2e/public-and-auth.spec.ts`: passed.
+- `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "Automations scope clarity"`: skipped locally by authenticated smoke guard.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Windows Vitest batch access-violation diagnostics reran affected files individually and confirmed they pass.
+- `npm run build`: passed. Existing Prisma engine lock fallback reused the generated client and exited successfully.
+
+Launch impact:
+
+- UI / smoke stability only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Task:

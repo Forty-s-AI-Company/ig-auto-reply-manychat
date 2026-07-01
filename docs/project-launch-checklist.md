@@ -1,3 +1,11 @@
+# 2026-07-01 - Automations disabled UX stability polish
+
+- `[x]` 基礎流程未開通項目統一顯示 `受控開通`，不再混用 `暫不可用` 作為 CTA。
+- `[x]` 停用按鈕補上明確游標狀態與 `aria-describedby` 說明關聯。
+- `[x]` Auth smoke 已先等待 `基礎流程` view 完成切換，再檢查 disabled controls。
+- `[ ]` PR CI / Vercel Preview 通過後再 merge；Vercel 目前可能受 build-rate-limit 影響。
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 - `[x]` Social connect and OAuth success pages now use `設定` / `社群帳號連接` wording instead of mixed `Channels` / `Social Accounts`.

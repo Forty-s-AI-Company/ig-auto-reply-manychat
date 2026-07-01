@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Automations disabled UX stability polish
+
+Current status:
+
+- `[x]` 基礎流程的停用入口統一顯示 `受控開通`，不再出現像功能壞掉的 `暫不可用` CTA。
+- `[x]` 停用按鈕補上 `cursor-not-allowed` 與 `aria-describedby`，讓互動狀態與說明更清楚。
+- `[x]` Auth smoke 在切到 `基礎流程` 後會先等內容切換完成，再檢查 disabled controls，降低 CI flake。
+
+Remaining:
+
+- `[ ]` PR CI / Vercel Preview 通過後再 merge；目前 Vercel Preview 可能仍受專案 build-rate-limit 影響。
+- `[ ]` 繼續掃描 Inbox、Contacts、Analytics 是否仍有看得到但不能用的入口。
+
 # Latest - 2026-07-01 Social connect settings terminology polish
 
 Current status:
