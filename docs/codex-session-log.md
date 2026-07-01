@@ -7268,6 +7268,28 @@ Validation:
 Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+# 2026-07-01 - Marketing info page light SaaS polish
+
+Task:
+
+- Continue product UI completeness after pricing / sequence stabilization, focusing on the shared public info-page template used by Templates, Help Center, API docs, and Status.
+
+Changes:
+
+- `MarketingInfoPage` no longer uses the old black / yellow sales-page treatment.
+- Shared public info pages now use the same light SaaS surface language as pricing and the authenticated shell.
+- Header links and CTAs now include visible focus states.
+- Decorative icons are marked `aria-hidden`, and long API / route items are protected with wrapping.
+- Added `tests/marketing-info-page-polish.test.ts` to guard against the old black / yellow oversized-card treatment returning.
+
+Validation:
+
+- Focused validation will run before PR delivery.
+
+Launch impact:
+
+- Public support / info UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Sequence form mobile disabled-state stabilization
 
 Task:

@@ -2622,6 +2622,19 @@ Remaining:
 - `[ ]` 後續可把通知頻率、瀏覽器提醒、語言 / 主題選擇做成真正可編輯設定。
 - `[ ]` API / 第三方整合仍是受控開通區塊，正式開放前需要另外補 API key 管理、權限與 audit。
 
+## Latest - 2026-07-01 Marketing info page light SaaS polish
+
+Current status:
+
+- `[x]` Shared Templates / Help Center / API docs / Status page template now uses the light SaaS surface language instead of the old black-yellow sales-page treatment.
+- `[x]` Public info-page CTAs now include visible focus states.
+- `[x]` Long API / route list items wrap safely on narrow screens.
+- `[x]` Source-level regression coverage prevents the oversized black-yellow treatment from returning.
+
+Remaining:
+
+- `[ ]` Run a future browser QA pass across `/templates`, `/help-center`, `/api-docs`, and `/status` to confirm visual consistency on mobile and desktop.
+
 ## Latest - 2026-07-01 Sequence form mobile disabled-state stabilization
 
 Current status:

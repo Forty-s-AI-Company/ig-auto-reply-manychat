@@ -1,3 +1,11 @@
+# 2026-07-01 - Marketing info page light SaaS polish
+
+- `[x]` Templates / Help Center / API docs / Status now share the light SaaS info-page template.
+- `[x]` Public info-page CTAs include visible focus states.
+- `[x]` Long API / route items wrap safely on mobile.
+- `[x]` Source-level regression test guards against the old black-yellow oversized-card style.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Sequence form mobile disabled-state stabilization
 
 - `[x]` Sequence name input now updates invalid-name state through `onInput`, improving mobile smoke stability.
