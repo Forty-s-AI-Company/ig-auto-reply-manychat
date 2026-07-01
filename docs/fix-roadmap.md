@@ -2750,3 +2750,16 @@ Current status:
 Remaining:
 
 - `[ ]` 解除綁定仍使用原生 confirm；這是破壞性動作可接受的最小安全確認，若要更精緻可另做 Dialog，但需避免降低誤刪保護。
+
+## Latest - 2026-07-01 Profile menu IA fallback wording polish
+
+Current status:
+
+- `[x]` IG 帳號 metadata 不完整時，帳號下拉提示改為到 `設定` 重新讀取，不再回到舊的 `渠道` 語意。
+- `[x]` Inbox simple-release 序列 disabled tooltip 改為 `Instagram 設定`，避免和主選單 `設定` 命名衝突。
+- `[x]` 個人檔案選單補上鍵盤焦點、menu panel 關聯與語言 select name。
+- `[x]` Source guard test 覆蓋 profile menu IA 與 settings wording。
+
+Remaining:
+
+- `[ ]` 後續若要真正新增 `/settings` route alias，需要另開路由相容性與 redirect / active nav 主題，避免影響既有 `/channels` 深連結。

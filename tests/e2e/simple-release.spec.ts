@@ -118,7 +118,7 @@ test.describe("simple release smoke", () => {
     await expect(page.getByTestId("inbox-sequence-subscribe-disabled")).toBeDisabled();
     await expect(page.getByTestId("inbox-sequence-subscribe-disabled")).toHaveAttribute(
       "title",
-      "序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。",
+      "序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、Instagram 設定、分析與自動化核心流程。",
     );
     await expect(page.locator("body")).toContainText("序列只在完整版本開放，這裡先保留清楚說明，不再假裝可直接訂閱。");
   });

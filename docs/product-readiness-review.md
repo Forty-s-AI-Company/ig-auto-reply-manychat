@@ -1463,3 +1463,16 @@ Readiness implication:
 
 - The Instagram account management card is visually more consistent with the rest of the settings page.
 - No delete behavior, auth, tenant scope, or data mutation semantics were changed.
+
+## 2026-07-01 - Profile menu IA fallback wording polish
+
+Status:
+
+- Remaining ID-only Instagram metadata fallback copy now points users to `設定` instead of the old `渠道` label.
+- Inbox simple-release sequence gating copy now describes `Instagram 設定` as part of the focused release surface.
+- Profile menu controls now have stronger keyboard focus visibility and a clearer menu-panel relationship.
+
+Readiness implication:
+
+- The authenticated shell language is more consistent with the mainstream SaaS navigation model already adopted in the sidebar and profile menu.
+- No route, auth, tenant scope, database, Meta OAuth, or PayUNI behavior changed.

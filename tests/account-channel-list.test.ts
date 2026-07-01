@@ -29,7 +29,7 @@ describe("buildAccountDropdownChannels", () => {
         expect.objectContaining({
           id: "channel-with-id-only",
           displayName: "Instagram 帳號 26934693839519360",
-          subtitle: "尚未取得帳號名稱與頭像，可到「渠道」重新讀取",
+          subtitle: "尚未取得帳號名稱與頭像，可到「設定」重新讀取",
           username: "",
           avatarFallback: "IG",
           metadataStatus: "partial",

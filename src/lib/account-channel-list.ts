@@ -38,8 +38,8 @@ export function buildAccountDropdownChannels(channels: InstagramChannelInput[]):
         subtitle: username
           ? `@${username}`
           : instagramId
-            ? "尚未取得帳號名稱與頭像，可到「渠道」重新讀取"
-            : "尚未取得帳號資料，可到「渠道」重新讀取",
+            ? "尚未取得帳號名稱與頭像，可到「設定」重新讀取"
+            : "尚未取得帳號資料，可到「設定」重新讀取",
         username,
         avatarUrl: config.instagramProfilePictureUrl || "",
         avatarFallback: username ? username.slice(0, 2).toUpperCase() : "IG",
