@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Profile menu language disabled UX clarity
+
+Current status:
+
+- `[x]` Profile menu language selector no longer shows disabled `English` without context.
+- `[x]` The English option now reads `English（受控開通）`.
+- `[x]` Helper copy explains that English will open after translation, support, and review copy are ready.
+- `[x]` Mobile admin smoke covers the language selector and helper text.
+
+Remaining:
+
+- `[ ]` PR CI should run the mobile smoke assertion with the seeded test app.
+- `[ ]` Continue safe product-completeness sweeps only if another visible-but-unusable control appears.
+
 # Latest - 2026-07-01 Contacts / Automations form accessibility polish
 
 Current status:

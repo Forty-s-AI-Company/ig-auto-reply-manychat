@@ -1,3 +1,18 @@
+# 2026-07-01 - Profile menu language disabled UX clarity
+
+Status: improved for profile menu clarity; public paid launch remains Hold.
+
+What changed:
+
+- Profile menu language selector now labels the disabled English option as `English（受控開通）`.
+- Helper copy explains that the dashboard remains Traditional Chinese until translation, support, and review copy are ready.
+- Mobile admin smoke covers the language selector and helper text.
+
+Launch impact:
+
+- This removes another small visible-but-unusable feeling from the profile menu.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Contacts / Automations form accessibility polish
 
 Status: improved for product polish and accessibility; public paid launch remains Hold.

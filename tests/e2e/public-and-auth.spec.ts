@@ -228,6 +228,9 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("方案與用量");
     await expect(page.locator("body")).toContainText("說明中心");
     await expect(page.getByRole("link", { name: "AI 設定" })).toHaveAttribute("href", "/channels#ai-settings");
+    await expect(page.getByLabel("選擇介面語言")).toHaveValue("zh-TW");
+    await expect(page.getByLabel("選擇介面語言")).toContainText("English（受控開通）");
+    await expect(page.getByTestId("profile-language-help")).toContainText("英文介面會在翻譯、客服與審核文案整理完成後受控開通");
     await expect(page.locator("body")).not.toContainText("進階功能");
     await expect(page.locator("body")).not.toContainText("排隊中");
     await page.getByRole("button", { name: "關閉選單", exact: true }).click();
