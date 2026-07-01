@@ -66,6 +66,7 @@ export function JsonCrudClient({
   const [editingJson, setEditingJson] = useState("");
   const [preview, setPreview] = useState<BroadcastPreview | null>(null);
   const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState("");
 
   async function reload() {
     const response = await fetch(endpoint);
@@ -74,6 +75,7 @@ export function JsonCrudClient({
 
   async function createItem() {
     setError("");
+    setFeedback("");
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -82,6 +84,7 @@ export function JsonCrudClient({
       });
       if (!response.ok) throw new Error((await response.json()).error || "新增失敗。");
       setDraft(JSON.stringify(createTemplate, null, 2));
+      setFeedback("已新增資料。");
       await reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "新增失敗。");
@@ -91,6 +94,7 @@ export function JsonCrudClient({
   async function updateItem() {
     if (!editingId) return;
     setError("");
+    setFeedback("");
     try {
       const response = await fetch(`${endpoint}/${editingId}`, {
         method: updateMethod,
@@ -100,6 +104,7 @@ export function JsonCrudClient({
       if (!response.ok) throw new Error((await response.json()).error || "更新失敗。");
       setEditingId("");
       setEditingJson("");
+      setFeedback("已儲存變更。");
       await reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "更新失敗。");
@@ -113,24 +118,29 @@ export function JsonCrudClient({
   }
 
   async function queue(id: string) {
+    setError("");
+    setFeedback("");
     const response = await fetch(`${endpoint}/${id}/queue`, { method: "POST" });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      alert(data.error || "加入佇列失敗。");
+      setError(typeof data.error === "string" ? data.error : "加入佇列失敗。");
       return;
     }
-    alert(`已加入 ${data.queued} 位收件人到佇列。`);
+    setFeedback(`已加入 ${data.queued ?? 0} 位收件人到佇列。`);
     await reload();
   }
 
   async function previewItem(id: string) {
+    setError("");
+    setFeedback("");
     const response = await fetch(`${endpoint}/${id}/preview`);
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      alert(data.error || "讀取預覽失敗。");
+      setError(typeof data.error === "string" ? data.error : "讀取預覽失敗。");
       return;
     }
     setPreview(isBroadcastPreview(data) ? data : null);
+    setFeedback("已讀取廣播預覽。");
   }
 
   return (
@@ -140,7 +150,16 @@ export function JsonCrudClient({
         <p className="text-sm text-zinc-400">{description}</p>
       </div>
 
-      {error ? <p className="rounded-md bg-red-950 px-3 py-2 text-sm text-red-200">{error}</p> : null}
+      {error ? (
+        <p className="rounded-md bg-red-950 px-3 py-2 text-sm text-red-200" role="status" aria-live="polite">
+          {error}
+        </p>
+      ) : null}
+      {feedback ? (
+        <p className="rounded-md bg-cyan-950/40 px-3 py-2 text-sm text-cyan-100" role="status" aria-live="polite">
+          {feedback}
+        </p>
+      ) : null}
 
       <section className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
         <h3 className="mb-2 font-medium">新增資料</h3>
