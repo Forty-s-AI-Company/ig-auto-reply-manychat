@@ -6654,3 +6654,29 @@ Validation:
 Launch impact:
 
 - Product IA / UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-07-01 - Settings profile menu second pass
+
+Task:
+
+- 接續產品 IA 調整，收斂 profile menu 與 `/channels` 設定頁中仍像半成品的設定入口。
+
+Audit:
+
+- Profile menu 的 `AI 設定` 直接連到 `/ai-settings`，在 simple release 會被 full-only gate 擋回 dashboard，體感像壞掉。
+- `/channels#notifications` 與 `/channels#display` 只有文字說明，沒有明確可用 / 受控開通狀態。
+- `/channels` 已經承擔設定頁角色，因此低頻設定入口應優先落到該頁對應區塊，而不是讓使用者撞到 gated route。
+
+Changes:
+
+- Profile menu 的 `AI 設定` 改連到 `/channels#ai-settings`，先進設定頁的 AI 區塊說明。
+- `/channels` 新增 AI 設定區塊：
+  - simple release 顯示 `完整版測試站可設定` disabled UX。
+  - full release 顯示 `前往 AI 設定` 連結。
+- 通知設定補上 `Email 通知設定整理中` disabled control。
+- 顯示設定補上 `主題與語言切換整理中` disabled control。
+- Authenticated route smoke 增加設定頁 disabled controls 與 profile menu AI anchor 覆蓋。
+
+Launch impact:
+
+- Product UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

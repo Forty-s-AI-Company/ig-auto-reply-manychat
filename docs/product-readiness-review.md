@@ -1084,3 +1084,17 @@ Readiness implication:
 - The authenticated shell now feels closer to a mainstream SaaS product and less like an internal route list.
 - This does not change launch gates: Meta App Review, PayUNI production go-live, and production deployment remain manual.
 - A future route-level `/settings` alias can be considered, but this round intentionally kept existing routes stable.
+
+## 2026-07-01 - Settings profile menu second pass
+
+Status:
+
+- Profile menu `AI 設定` now lands on the settings page AI section first, avoiding the simple-release gated `/ai-settings` route as a first click.
+- The settings page now distinguishes between configurable full-release AI settings and simple-release controlled availability.
+- Notification and display settings now show explicit disabled controls instead of looking like unfinished static copy.
+- Playwright smoke coverage was updated for the profile menu AI anchor and the settings disabled controls.
+
+Readiness implication:
+
+- Settings/profile navigation is clearer and less likely to feel broken in the simple release.
+- Launch gates are unchanged: Meta App Review, PayUNI production go-live, and production deployment remain manual.
