@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Profile logout failure feedback
+
+Current status:
+
+- `[x]` Profile-menu logout now disables while the request is in progress.
+- `[x]` API and network logout failures now show user-readable inline feedback.
+- `[x]` Source regression coverage guards the recoverable logout state.
+
+Remaining:
+
+- `[ ]` Consider a shared toast pattern for account/session actions once broader account settings QA resumes.
+
 # Latest - 2026-07-02 Shared CRUD and Automation delete failure feedback
 
 Current status:

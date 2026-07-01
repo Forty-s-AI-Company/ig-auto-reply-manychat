@@ -23,6 +23,13 @@ describe("profile menu and settings IA copy", () => {
     expect(profileMenuSource).toContain("focus-visible:ring");
   });
 
+  it("keeps logout recoverable when the API request fails", () => {
+    expect(profileMenuSource).toContain("登出失敗，請稍後再試。");
+    expect(profileMenuSource).toContain("登出失敗，請確認網路連線後再試一次。");
+    expect(profileMenuSource).toContain("disabled={loggingOut}");
+    expect(profileMenuSource).toContain('aria-live="polite"');
+  });
+
   it("uses settings language for account metadata recovery and simple-release feature gates", () => {
     expect(accountChannelListSource).toContain("可到「設定」重新讀取");
     expect(accountChannelListSource).not.toContain("可到「渠道」重新讀取");

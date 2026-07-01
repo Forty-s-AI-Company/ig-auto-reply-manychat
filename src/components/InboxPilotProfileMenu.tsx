@@ -16,6 +16,8 @@ type InboxPilotProfileMenuProps = {
 export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Trial", planKey = "trial", isAdmin = false }: InboxPilotProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState("zh-TW");
+  const [logoutError, setLogoutError] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,8 +29,21 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
   }, []);
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
+    setLogoutError("");
+    setLoggingOut(true);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setLogoutError(typeof data.error === "string" ? data.error : "登出失敗，請稍後再試。");
+        setLoggingOut(false);
+        return;
+      }
+      window.location.href = "/login";
+    } catch {
+      setLogoutError("登出失敗，請確認網路連線後再試一次。");
+      setLoggingOut(false);
+    }
   }
 
   const displayName = name || "管理員";
@@ -116,13 +131,19 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
           </div>
 
           <div className="border-t border-[#edf0f2] py-2">
+            {logoutError ? (
+              <p className="mx-4 mb-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+                {logoutError}
+              </p>
+            ) : null}
             <button
               type="button"
               onClick={logout}
-              className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-inset"
+              disabled={loggingOut}
+              className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-inset disabled:cursor-wait disabled:text-[#98a2b3]"
             >
               <LogOut className="h-4 w-4" aria-hidden="true" />
-              登出
+              {loggingOut ? "登出中…" : "登出"}
             </button>
           </div>
         </div>

@@ -1,3 +1,26 @@
+# 2026-07-02 - Profile logout failure feedback
+
+Task:
+
+- Make the profile-menu logout action recoverable when the logout API request fails.
+
+Changes:
+
+- Added logout loading state and disabled feedback while the request is in progress.
+- Added user-readable logout failure messages for API and network failures.
+- Extended profile menu source regression coverage for the recoverable logout state.
+
+Validation:
+
+- `npx vitest run tests/profile-menu-ia.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves a high-frequency account action without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Shared CRUD and Automation delete failure feedback
 
 Task:
