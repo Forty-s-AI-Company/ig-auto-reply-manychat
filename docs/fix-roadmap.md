@@ -2763,3 +2763,65 @@ Current status:
 Remaining:
 
 - `[ ]` 後續若要真正新增 `/settings` route alias，需要另開路由相容性與 redirect / active nav 主題，避免影響既有 `/channels` 深連結。
+
+## Latest - 2026-07-01 Preview deploy batching rule
+
+Current status:
+
+- `[x]` 專案文件已補上 Vercel Preview / build 額度提醒。
+- `[x]` 小型 UI / 文案 / disabled UX 修正應先累積成同一主題閉環，再送 Preview。
+
+Remaining:
+
+- `[ ]` 如果後續真的需要更細的部署節流機制，可以再另做 runner / delivery gate，而不是把這件事藏在腦內忘掉。
+
+## Latest - 2026-07-01 Local dev/test DB login split
+
+Current status:
+
+- `[x]` 已確認 `npm run dev` 使用 `DATABASE_URL`，不是 `TEST_DATABASE_URL`。
+- `[x]` 已確認本專案 local Supabase config 的 DB port 是 `55322`，但目前 `.env.local` 的 dev DB 指向 `54322`，屬於另一個本機 Supabase project。
+- `[x]` 已確認目前 dev DB 原本缺少 admin 帳號，並已用 `npm run admin:ensure` 補齊。
+- `[x]` 已確認 `localhost:3041` login page 與 login API 可用。
+- `[x]` 已補上本機 dev/test DB 分工文件，避免之後把 `DATABASE_URL` 與 `TEST_DATABASE_URL` 混在一起。
+
+Remaining:
+
+- `[ ]` 若要完全切回本專案 `55322` local Supabase DB，需要先建立 schema；本輪因限制不跑 migration / `db push`，所以沒有初始化該空 DB。
+- `[ ]` 後續可另做本機 setup hardening：加入 redacted env doctor，直接提示 dev DB / test DB port 是否與 `supabase/config.toml` 一致。
+
+## Latest - 2026-07-01 Local Supabase 55322 normalization SOP
+
+Current status:
+
+- `[x]` 已確認 `54322` 是另一個 local Supabase project，且目前 `.env.local` 的 dev / test URL 都還指向這顆 DB。
+- `[x]` 已確認 `55322` 是本專案 `supabase/config.toml` 指定的 local Supabase DB。
+- `[x]` 已將 `.env.local` 的 dev / test DB 指向切回 `127.0.0.1:55322`。
+- `[x]` 已在 `55322` 完成本機 schema 初始化。
+- `[x]` 已完成 admin seed 與 demo seed。
+- `[x]` 已重啟 `localhost:3041` dev server，並確認 login page / login API 可用。
+- `[x]` 已補上文件 SOP，說明切回 `55322` 時哪些步驟會建立 schema、哪些只會 seed admin、哪些會影響 Playwright 與 `TEST_DATABASE_URL`。
+
+Remaining:
+
+- `[ ]` `package.json` 目前把 `prisma:migrate` 指向 `db push`，名稱與實際行為不一致；後續可另做命名 / setup clarity 整理。
+- `[x]` `prisma/seed.ts` 與 `scripts/ensure-e2e-admin.ts` 已改用專案共用 `loadProjectEnv()`，避免 `.env` 空值蓋住 `.env.local`。
+- `[x]` `npm test` 已確認能在 `TEST_DATABASE_URL=127.0.0.1:55322` 上建立臨時 schema 並通過。
+- `[x]` `npm run e2e:admin:ensure` 已確認能在 `55322` 建立 E2E fixtures。
+- `[x]` Authenticated Playwright smoke 已確認 desktop / mobile 可登入並讀取 seeded routes。
+- `[ ]` `npm test` 會先 `prisma db push`，後續可考慮再補文件或 guard，避免誤把它當成純 read-only 測試。
+
+## Latest - 2026-07-01 Local test runner and Playwright DB verification
+
+Current status:
+
+- `[x]` `.env.local` 的 dev/test DB 都指向本專案 local Supabase `127.0.0.1:55322`。
+- `[x]` `npm test` 通過，確認 Windows runner 與臨時 schema 流程目前穩定。
+- `[x]` `npm run e2e:admin:ensure` 通過，確認 E2E admin / channel / contact / conversation fixtures 可建立。
+- `[x]` `npm run test:e2e:inbox` 通過，確認 Inbox authenticated smoke 可在 desktop / mobile 使用 seeded data。
+- `[x]` `npm run test:e2e:auth` 通過，確認 authenticated route smoke 可用。
+
+Remaining:
+
+- `[ ]` 後續產品功能修復可直接使用本機 `55322` 作為 dev/test baseline。
+- `[ ]` 若要更嚴格隔離 dev 與 test，可另建立獨立 test DB port，避免 E2E fixtures 留在 dev DB。

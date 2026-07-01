@@ -7376,3 +7376,143 @@ Validation:
 Launch impact:
 
 - UI/IA polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Preview deploy batching rule
+
+Task:
+
+- Add a project rule reminding contributors that Vercel Preview has deployment/build quotas and that small UI / copy / disabled-UX changes should be batched into a single theme before triggering another Preview.
+
+Changes:
+
+- `AI_TEAM/README.md` now documents the Preview quota hygiene rule.
+- `docs/project-launch-checklist.md` now records the deploy-batching rule as part of launch hygiene.
+
+Validation:
+
+- Documentation-only change; no runtime validation required.
+
+Launch impact:
+
+- No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Local dev/test DB login split
+
+Task:
+
+- Diagnose why `localhost:3041` login failed with the credentials from `.env.local`, and clarify the local dev DB versus test DB wiring.
+
+Findings:
+
+- `npm run dev` uses `DATABASE_URL` / `DIRECT_URL`.
+- `scripts/run-tests.mjs` prefers `TEST_DATABASE_URL` / `TEST_DIRECT_URL`, then falls back to `DATABASE_URL`.
+- `scripts/ensure-admin.ts` seeds the dev DB selected by `DATABASE_URL`.
+- `scripts/ensure-e2e-admin.ts` requires `TEST_DATABASE_URL` and refuses the production Supabase project ref.
+- `supabase/config.toml` identifies this repository's local Supabase DB as port `55322`, while the current `.env.local` was pointing `DATABASE_URL` to port `54322`, which belongs to another local Supabase project.
+- The admin account was missing from the DB currently selected by `.env.local`.
+
+Changes:
+
+- Updated local-only `.env.local` so `APP_URL` points to `http://localhost:3041`.
+- Added local-only `TEST_DATABASE_URL` / `TEST_DIRECT_URL` entries to prevent the test runner from having an undefined test DB.
+- Ran `npm run admin:ensure` against the currently selected local dev DB to create the admin user and default workspace.
+- Documented the dev/test DB split in `docs/installation.md`.
+
+Validation:
+
+- Confirmed the selected local dev DB now contains the admin user.
+- Confirmed `http://localhost:3041/login` returns `200`.
+- Confirmed `POST http://localhost:3041/api/auth/login` returns `200` and sets a session cookie.
+
+Launch impact:
+
+- Local development setup only. No production DB, migration, `db push`, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Local Supabase 55322 normalization SOP
+
+Task:
+
+- Evaluate how to normalize local development back to the repository-owned Supabase DB on port `55322`, without running `db push`, migrations, or any production-facing change.
+
+Findings:
+
+- `54322` currently works for local login because it already contains schema and seeded app data, but it belongs to a different local Supabase project.
+- `55322` is the DB defined by this repository's `supabase/config.toml`, and `supabase status` confirms it is the correct local project.
+- `55322` currently has no application tables, so switching `.env.local` to it without schema initialization would break local login and tests.
+- `npm run prisma:migrate` is not a traditional migration in this repo; it shells into `prisma db push`.
+- `npm test` is not read-only either; `scripts/run-tests.mjs` runs `prisma db push --skip-generate` against the selected test DB/schema before Vitest.
+
+Changes:
+
+- Added a normalization SOP to `docs/installation.md` that explains:
+  - how to switch `DATABASE_URL` / `TEST_DATABASE_URL` to `55322`
+  - which commands create schema
+  - which commands seed admin versus full demo / E2E fixtures
+  - how Playwright and integration tests depend on `TEST_DATABASE_URL`
+  - the main risks of switching too early
+- Updated `docs/fix-roadmap.md` with the `55322` normalization status and remaining follow-up work.
+
+Validation:
+
+- Documentation-only change. No schema initialization, `db push`, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+Launch impact:
+
+- None for production. This only clarifies local development and test DB handling.
+
+# 2026-07-01 - Local Supabase 55322 schema initialization
+
+Task:
+
+- Complete local DB normalization by moving `.env.local` dev / test URLs from the other local Supabase project on `54322` back to this repository's local Supabase DB on `55322`.
+
+Changes:
+
+- Updated local-only `.env.local` so `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, and `TEST_DIRECT_URL` all point to local `127.0.0.1:55322`.
+- Confirmed the target DB is local `55322` before schema initialization.
+- Ran local schema initialization via `npm run prisma:migrate`, which maps to Prisma `db push` in this repository.
+- Ran `npm run admin:ensure` to seed the admin and default workspace.
+- Ran `prisma:seed` with `DOTENV_CONFIG_PATH=.env.local` so the seed script reads local env values.
+- Regenerated Prisma Client after stopping the previous dev server that held the Windows query engine file.
+- Restarted the local dev server on `localhost:3041`.
+- Updated `docs/installation.md` and `docs/fix-roadmap.md` with the completed `55322` state and the `.env.local` seed note.
+
+Validation:
+
+- Confirmed local `55322` now has `Automation`, `Channel`, `Contact`, `Conversation`, `Tag`, `User`, and `Workspace` tables.
+- Confirmed the admin user exists in the `55322` dev DB.
+- Confirmed `http://localhost:3041/login` returns `200`.
+- Confirmed `POST http://localhost:3041/api/auth/login` returns `200` and sets a session cookie.
+
+Launch impact:
+
+- Local development DB only. No production DB, staging DB, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Local test runner and Playwright DB verification
+
+Task:
+
+- Verify that the local test runner and authenticated Playwright smoke can use the normalized local Supabase DB on `127.0.0.1:55322`.
+
+Findings:
+
+- `.env.local` now points `DATABASE_URL`, `DIRECT_URL`, `TEST_DATABASE_URL`, and `TEST_DIRECT_URL` to local `127.0.0.1:55322`.
+- `npm test` successfully created a temporary Prisma schema on `TEST_DATABASE_URL` and removed it after the run.
+- `scripts/ensure-e2e-admin.ts` previously loaded `.env` before `.env.local` without override, so empty values from `.env` blocked the local admin credentials.
+- `prisma/seed.ts` previously used `dotenv/config`, which did not match the project-wide `.env.local` priority used by `scripts/load-env.mjs`.
+
+Changes:
+
+- Updated `scripts/ensure-e2e-admin.ts` to use `loadProjectEnv()`.
+- Updated `prisma/seed.ts` to use `loadProjectEnv()`.
+
+Validation:
+
+- `npm test`: passed, 66 test files / 207 tests across 11 batches.
+- `npm run e2e:admin:ensure`: passed and seeded local E2E fixtures.
+- `npm run test:e2e:inbox`: passed on desktop and mobile Chrome.
+- `npm run test:e2e:auth`: passed 23 tests with 1 expected skipped desktop-only mobile-menu case.
+
+Launch impact:
+
+- Local test infrastructure only. No production DB, staging DB, Production deployment, Meta App Review, or PayUNI production change was performed.

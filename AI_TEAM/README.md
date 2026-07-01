@@ -28,6 +28,7 @@ AI_TEAM 是 InboxPilot 的本機無人值守開發控制層。
 - 不切 PayUNI production
 - 不輸出 secret
 - runtime 輸出不提交 git
+- Vercel Preview 有部署與建置額度，日常修小按鈕、文案或單點 UI 改動時，優先累積到同一主題的完整閉環再送 Preview；只有大功能、完整驗證或需要交付時才推進部署，避免太頻繁耗掉 preview/build quota。
 
 ## Local Skill Layer
 
