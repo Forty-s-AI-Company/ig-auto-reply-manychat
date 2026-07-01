@@ -1,3 +1,18 @@
+# 2026-07-01 - Automations disabled UX stability polish
+
+Status: improved for product clarity and smoke stability; public paid launch remains Hold.
+
+What changed:
+
+- 基礎流程中的未開通項目統一使用 `受控開通` 作為 disabled CTA，不再讓使用者以為按鈕只是壞掉或暫時無反應。
+- Disabled controls now expose a nearby reason via `aria-describedby`, while preserving clear title copy for pointer users.
+- The authenticated smoke now waits for the Basic Automations view before asserting disabled controls, reducing a duplicate CI flake.
+
+Readiness implication:
+
+- Automations is clearer as a partially controlled product area: supported default reply remains actionable, unsupported Instagram-trigger features are explicitly gated.
+- This does not change automation execution, Meta permissions, production data, production deployment, or migration gates.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Status: improved for product IA consistency; public paid launch remains Hold.

@@ -151,10 +151,13 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("title", /受控開通/);
     await expect(page.getByTestId("automation-trash-disabled")).not.toHaveAttribute("title", /沒接好/);
     await page.getByTestId("automation-tab-basic").click();
+    await expect(page.getByTestId("automation-active-tab-title")).toHaveText("基礎流程");
     await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-new-follower")).toContainText("受控開通");
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-new-follower")).toHaveAttribute("aria-describedby", "automation-basic-disabled-new-follower-reason");
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toContainText("受控開通");
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toContainText("受控開通");
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toContainText("受控開通");

@@ -766,8 +766,8 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "新追蹤者歡迎訊息",
     description: "用戶第一次追蹤後，送出一次性的歡迎私訊。此功能需 Meta 官方 API 支援。",
     status: "暫不可用",
-    action: "暫不可用",
-    disabledReason: "此功能需要 Meta 官方 API 與事件支援，現在先保留說明，不做假按鈕。",
+    action: "受控開通",
+    disabledReason: "此功能需要 Meta 官方 API 與事件支援，現在先保留受控開通說明，不做假按鈕。",
     testId: "automation-basic-disabled-new-follower",
   },
   {
@@ -1862,7 +1862,7 @@ function FlowBuilderInner({
                     <ChevronLeft className="h-5 w-5 rotate-180 text-[var(--ip-muted-2)]" />
                   </>
                 ) : null}
-                <span>{pageTitle}</span>
+                <span data-testid="automation-active-tab-title">{pageTitle}</span>
               </div>
 
               {error ? <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
@@ -2024,7 +2024,11 @@ function FlowBuilderInner({
                       <h3 className="text-base font-bold text-[var(--ip-text)]">{basic.title}</h3>
                     </div>
                     <p className="mt-2 max-w-4xl text-sm leading-6 text-[var(--ip-muted)]">{basic.description}</p>
-                    {basic.disabledReason ? <p className="mt-2 text-xs leading-5 text-[#667085]">{basic.disabledReason}</p> : null}
+                    {basic.disabledReason ? (
+                      <p id={`${basic.testId || basic.title}-reason`} className="mt-2 text-xs leading-5 text-[#667085]">
+                        {basic.disabledReason}
+                      </p>
+                    ) : null}
                   </div>
                   {basic.href ? (
                     <a href={basic.href} className="ip-button-primary inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold">
@@ -2036,8 +2040,9 @@ function FlowBuilderInner({
                       disabled
                       title={basic.disabledReason}
                       aria-disabled="true"
+                      aria-describedby={basic.testId ? `${basic.testId}-reason` : undefined}
                       data-testid={basic.testId}
-                      className="inline-flex h-10 items-center justify-center rounded-md border border-dashed border-[var(--ip-border)] px-4 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
+                      className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[var(--ip-border)] px-4 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
                     >
                       {basic.action}
                     </button>
