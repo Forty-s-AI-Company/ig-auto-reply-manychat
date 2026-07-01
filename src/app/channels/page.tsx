@@ -50,7 +50,7 @@ const settingsGroups = [
     ],
   },
   {
-    title: "帳務",
+    title: "方案與用量",
     items: [
       { label: "訂閱方案", href: "#billing" },
       { label: "發票紀錄", href: "#billing" },
@@ -65,7 +65,7 @@ const settingsGroups = [
     ],
   },
   {
-    title: "連線渠道",
+    title: "平台連線",
     items: [
       { label: "Instagram", href: "#instagram" },
       { label: "其他平台", href: "#platform-connect" },
@@ -243,9 +243,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[#d7dbe0] pb-5">
             <div>
               <p className="text-sm font-medium text-[#006fe6]">設定</p>
-              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">帳號、渠道與自動化設定</h1>
+              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">工作區、Instagram 與自動化設定</h1>
               <p className="mt-2 max-w-3xl text-sm text-[#667085]">
-                管理工作區、通知、收件匣行為、平台連線、帳務與整合。低頻設定集中在這裡，主選單保留日常操作。
+                管理工作區、通知、收件匣行為、平台連線、方案與整合。低頻設定集中在這裡，主選單保留日常操作。
               </p>
             </div>
             <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
@@ -421,11 +421,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
           </section>
 
           <section id="billing" className="grid gap-3 md:grid-cols-2">
-            <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="帳務">
-              方案、發票與付款方式集中在帳務頁管理。
+            <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="方案與用量">
+              方案、發票與付款方式集中在方案頁管理。
               <div className="mt-3">
                 <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/billing">
-                  前往帳務頁
+                  前往方案頁
                 </Link>
               </div>
             </SettingPanel>

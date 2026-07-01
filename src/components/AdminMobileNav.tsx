@@ -3,20 +3,15 @@
 import Link from "next/link";
 import {
   BarChart3,
-  Bot,
-  CircleHelp,
   Clock,
-  CreditCard,
   Gift,
   Home,
   Inbox,
   Megaphone,
   Menu,
   Settings,
-  Shield,
   Sparkles,
   Users,
-  Wallet,
   X,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -54,6 +49,8 @@ type AdminMobileNavProps = {
     email?: string | null;
     avatarUrl?: string | null;
   } | null;
+  planName?: string;
+  planKey?: string;
 };
 
 const baseNavItems = [
@@ -63,12 +60,9 @@ const baseNavItems = [
   { label: "廣播活動", href: "/broadcasts", icon: Megaphone },
   { label: "自動化", href: "/automations", icon: Sparkles },
   { label: "序列", href: "/sequences", icon: Clock },
-  { label: "AI", href: "/ai-settings", icon: Bot },
   { label: "分析", href: "/analytics", icon: BarChart3 },
-  { label: "帳單", href: "/billing", icon: CreditCard },
   { label: "推薦", href: "/referrals", icon: Gift },
-  { label: "錢包", href: "/wallet", icon: Wallet },
-  { label: "渠道", href: "/channels", icon: Settings },
+  { label: "設定", href: "/channels", icon: Settings },
 ];
 const simpleNavHrefs = new Set(["/dashboard", "/inbox", "/contacts", "/channels", "/analytics", "/automations", "/referrals"]);
 
@@ -80,13 +74,13 @@ export function AdminMobileNav({
   isAdmin = false,
   releaseChannel = "full",
   user,
+  planName,
+  planKey,
 }: AdminMobileNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const visibleBaseNavItems = releaseChannel === "simple" ? baseNavItems.filter((item) => simpleNavHrefs.has(item.href)) : baseNavItems;
-  const navItems = isAdmin && releaseChannel === "full"
-    ? [...visibleBaseNavItems, { label: "稽核紀錄", href: "/admin/audit", icon: Shield }]
-    : visibleBaseNavItems;
+  const navItems = visibleBaseNavItems;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -166,7 +160,7 @@ export function AdminMobileNav({
                       active ? "bg-white/10 text-white" : "text-[#b8dadd] hover:bg-white/8 hover:text-white"
                     }`}
                   >
-                    <Icon className={`h-5 w-5 shrink-0 ${active ? "text-[var(--primary)]" : "text-[#81b6ba]"}`} />
+                    <Icon className={`h-5 w-5 shrink-0 ${active ? "text-[var(--primary)]" : "text-[#81b6ba]"}`} aria-hidden="true" />
                     {item.label}
                   </Link>
                 );
@@ -174,15 +168,14 @@ export function AdminMobileNav({
             </nav>
 
             <div className="ip-sidebar-content border-t border-white/10 bg-[var(--sidebar-bg-dark)]/30 px-2 py-3">
-              <InboxPilotProfileMenu name={user?.name} email={user?.email} avatarUrl={user?.avatarUrl} />
-              <Link
-                href="/help-center"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
-              >
-                <CircleHelp className="h-5 w-5 shrink-0 text-[#81b6ba]" />
-                說明中心
-              </Link>
+              <InboxPilotProfileMenu
+                name={user?.name}
+                email={user?.email}
+                avatarUrl={user?.avatarUrl}
+                planName={planName}
+                planKey={planKey}
+                isAdmin={isAdmin}
+              />
             </div>
             <svg
               className="sidebar-lines"

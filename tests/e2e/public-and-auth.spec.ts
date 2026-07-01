@@ -16,7 +16,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   { path: "/dashboard", heading: /首頁|儀表板/, bodyText: /營運總覽|查看收件匣|快速建立自動化/ },
   { path: "/inbox", heading: /收件匣/, bodyText: /收件匣|對話|訊息/ },
   { path: "/contacts", heading: /聯絡人/, bodyText: /全部聯絡人|目前沒有符合條件的聯絡人|搜尋姓名/ },
-  { path: "/channels", heading: /帳號、渠道與自動化設定|設定/, bodyText: /新增平台帳號|Instagram|帳號、渠道與自動化設定/ },
+  { path: "/channels", heading: /工作區、Instagram 與自動化設定|設定/, bodyText: /新增平台帳號|Instagram|工作區、Instagram 與自動化設定/ },
   {
     path: "/channels/connect/instagram",
     finalUrl: /\/channels\/connect\/social(?:[?#].*)?$/,
@@ -26,7 +26,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   { path: "/analytics", heading: /分析/, bodyText: /訊息、受眾與廣播表現|資料範圍|聯絡人|總訊息/ },
   { path: "/automations", heading: /自動化/, bodyText: /自動化|流程|資料夾|新增/ },
   { path: "/referrals", heading: /推薦活動/, bodyText: /你的推薦碼|推薦紀錄|推薦/ },
-  { path: "/billing", heading: /付款與用量/, bodyText: /目前方案|PayUNI|發票紀錄|受控開通|測試站/ },
+  { path: "/billing", heading: /方案與用量/, bodyText: /目前方案|PayUNI|發票紀錄|受控開通|測試站/ },
 ];
 
 function routeUrlPattern(path: string) {
@@ -190,7 +190,7 @@ test.describe("authenticated route smoke", () => {
 
   test("shows billing sandbox gate guidance", async ({ page }) => {
     await page.goto("/billing", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: /付款與用量/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /方案與用量/ })).toBeVisible();
     await expect(page.locator("body")).toContainText(/PayUNI 測試站|PayUNI 正式站/);
     await expect(page.locator("body")).toContainText(/受控開通|正式站尚未開通自動扣款|目前付款會先走 sandbox/);
   });
@@ -211,6 +211,14 @@ test.describe("authenticated route smoke", () => {
 
     await page.getByRole("button", { name: "開啟選單" }).click();
     await expect(inboxMenuLink).toBeVisible();
+    await expect(page.getByTestId("admin-mobile-nav-link-channels")).toContainText("設定");
+    await expect(page.getByTestId("admin-mobile-nav-link-billing")).toHaveCount(0);
+    await page.getByRole("button", { name: "我的個人檔案" }).click();
+    await expect(page.locator("body")).toContainText("目前方案");
+    await expect(page.locator("body")).toContainText("方案與用量");
+    await expect(page.locator("body")).toContainText("說明中心");
+    await expect(page.locator("body")).not.toContainText("進階功能");
+    await expect(page.locator("body")).not.toContainText("排隊中");
     await page.getByRole("button", { name: "關閉選單", exact: true }).click();
     await expect(inboxMenuLink).toBeHidden();
   });

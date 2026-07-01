@@ -1068,3 +1068,19 @@ Readiness implication:
 - This removes a misleading Inbox control that looked like tag creation but only applied existing tags.
 - Inbox is closer to a usable daily operator surface.
 - Navigation IA remains a P1 product polish item: billing/plan, channels/settings, AI settings, audit, and help entry placement should be consolidated in a dedicated IA pass.
+
+## 2026-07-01 - Product navigation IA polish
+
+Status:
+
+- The main sidebar now focuses on daily operator workflows instead of listing every backend route.
+- Billing has been renamed to `方案與用量` in the authenticated shell and route smoke coverage.
+- The former `渠道` navigation item now reads as `設定`, matching the page's actual role as workspace, Instagram, automation, billing, and integration settings.
+- The profile menu now shows the current plan and a plan CTA, then groups account, settings, support, AI, API, and audit links in a more conventional SaaS pattern.
+- Misleading profile menu entries such as `進階功能`, `新增登入方式`, `Email 通知設定`, and `排隊中` have been removed.
+
+Readiness implication:
+
+- The authenticated shell now feels closer to a mainstream SaaS product and less like an internal route list.
+- This does not change launch gates: Meta App Review, PayUNI production go-live, and production deployment remain manual.
+- A future route-level `/settings` alias can be considered, but this round intentionally kept existing routes stable.

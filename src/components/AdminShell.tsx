@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bot, CircleHelp, Clock, CreditCard, Gift, Home, Inbox, Settings, Shield, Sparkles, Users, Wallet } from "lucide-react";
+import { Clock, Gift, Home, Inbox, Settings, Sparkles, Users } from "lucide-react";
 import { cookies } from "next/headers";
 import { AdminMobileNav } from "@/components/AdminMobileNav";
 import { AdminSidebarLink } from "@/components/AdminSidebarLink";
@@ -9,6 +9,7 @@ import { InboxPilotProfileMenu } from "@/components/InboxPilotProfileMenu";
 import { ALL_IG_ACCOUNTS, IG_ACCOUNT_SCOPE_COOKIE } from "@/lib/account-scope";
 import { buildAccountDropdownChannels } from "@/lib/account-channel-list";
 import { getCurrentUser } from "@/lib/auth";
+import { getWorkspaceEntitlement } from "@/lib/billing/entitlements";
 import { getDb } from "@/lib/db";
 import { getCurrentReleaseChannel } from "@/lib/release-mode";
 import { getServerCache } from "@/lib/server-cache";
@@ -21,16 +22,12 @@ const basePrimaryNavItems = [
   { label: "廣播活動", href: "/broadcasts", icon: Sparkles, iconName: "megaphone" },
   { label: "自動化", href: "/automations", icon: Sparkles, iconName: "sparkles" },
   { label: "序列", href: "/sequences", icon: Clock, iconName: "clock" },
-  { label: "AI", href: "/ai-settings", icon: Bot, iconName: "bot" },
   { label: "分析", href: "/analytics", icon: Sparkles, iconName: "barChart3" },
-  { label: "帳單", href: "/billing", icon: CreditCard, iconName: "creditCard" },
   { label: "推薦", href: "/referrals", icon: Gift, iconName: "gift" },
-  { label: "錢包", href: "/wallet", icon: Wallet, iconName: "wallet" },
-  { label: "渠道", href: "/channels", icon: Settings, iconName: "settings" },
+  { label: "設定", href: "/channels", icon: Settings, iconName: "settings" },
 ] as const;
 
 const simplePrimaryNavHrefs = new Set(["/dashboard", "/inbox", "/contacts", "/channels", "/analytics", "/automations", "/referrals"]);
-const adminNavItem = { label: "稽核紀錄", href: "/admin/audit", icon: Shield, iconName: "shield" } as const;
 const ADMIN_SHELL_CACHE_TTL_MS = 5_000;
 
 export async function AdminShell({
@@ -50,7 +47,7 @@ export async function AdminShell({
   const releaseChannel = await getCurrentReleaseChannel();
   const visibleBaseNavItems =
     releaseChannel === "simple" ? basePrimaryNavItems.filter((item) => simplePrimaryNavHrefs.has(item.href)) : basePrimaryNavItems;
-  const primaryNavItems = isAdmin && releaseChannel === "full" ? [...visibleBaseNavItems, adminNavItem] : visibleBaseNavItems;
+  const primaryNavItems = visibleBaseNavItems;
   const cookieStore = await cookies();
   const instagramChannels = await getServerCache(`admin-shell:instagram-channels:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () =>
     getDb().channel.findMany({
@@ -59,9 +56,12 @@ export async function AdminShell({
       select: { id: true, name: true, configJson: true },
     }),
   );
-  const workspaces = user
-    ? await getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
-    : [workspace];
+  const [workspaces, entitlement] = await Promise.all([
+    user
+      ? getServerCache(`admin-shell:user-workspaces:${user.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getUserWorkspaces(user.id))
+      : Promise.resolve([workspace]),
+    getServerCache(`admin-shell:entitlement:${workspace.id}`, ADMIN_SHELL_CACHE_TTL_MS, () => getWorkspaceEntitlement(workspace.id)),
+  ]);
   const accountChannels = buildAccountDropdownChannels(instagramChannels);
   const serializedWorkspaces = JSON.parse(JSON.stringify(workspaces));
   const serializedAccountChannels = JSON.parse(JSON.stringify(accountChannels));
@@ -104,14 +104,14 @@ export async function AdminShell({
           </nav>
 
           <div className="mt-auto border-t border-white/10 bg-[var(--sidebar-bg-dark)]/30 px-2 py-3">
-            <InboxPilotProfileMenu name={user?.name} email={user?.email} avatarUrl={user?.avatarUrl} />
-            <Link
-              href="/help-center"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
-            >
-              <CircleHelp className="h-5 w-5 text-[#81b6ba]" />
-              說明中心
-            </Link>
+            <InboxPilotProfileMenu
+              name={user?.name}
+              email={user?.email}
+              avatarUrl={user?.avatarUrl}
+              planName={entitlement.planName}
+              planKey={entitlement.planKey}
+              isAdmin={isAdmin}
+            />
           </div>
         </div>
         <svg
@@ -139,6 +139,8 @@ export async function AdminShell({
                 isAdmin={isAdmin}
                 releaseChannel={releaseChannel}
                 user={mobileUser}
+                planName={entitlement.planName}
+                planKey={entitlement.planKey}
               />
               <h1 className="truncate text-[24px] font-semibold text-[var(--ip-text)]">{title}</h1>
             </div>

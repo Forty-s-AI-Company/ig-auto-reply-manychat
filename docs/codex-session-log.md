@@ -6622,3 +6622,35 @@ Validation:
 Launch impact:
 
 - Product UX improvement only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+## 2026-07-01 - Product navigation IA polish
+
+Task:
+
+- 依照主流 SaaS / ManyChat 類產品的資訊架構，整理左側主選單與「我的個人檔案」展開選單。
+
+Audit:
+
+- 左側主選單原本同時放入日常工作流、方案、錢包、AI、設定、稽核等低頻入口，導致資訊層級像 route 清單，不像產品導覽。
+- `帳單` 用語偏財務後台，對 SaaS 使用者更合理的是 `方案與用量`。
+- `渠道` 作為主選單名稱不夠主流，實際頁面已承擔工作區、平台連線、自動化與整合設定，應以 `設定` 呈現。
+- Profile menu 原本有 `進階功能`、`新增登入方式`、`Email 通知設定`、`訊息報表 -> /broadcasts` 等容易誤導或看起來半實作的入口。
+
+Changes:
+
+- 左側主選單保留日常使用入口：首頁、收件匣、聯絡人、廣播活動、自動化、序列、分析、推薦、設定。
+- 移除左側主選單的低頻入口：AI、帳單、錢包、稽核紀錄。
+- `渠道` 導覽改名為 `設定`，仍指向既有 `/channels` 設定頁，不改路由。
+- Billing 頁標題改為 `方案與用量`。
+- Profile menu 新增目前方案摘要與升級 / 管理方案 CTA。
+- Profile menu 改成 `帳號與工作區`、`設定與支援` 分組，集中：設定、方案與用量、分析報表、通知設定、AI 設定、API 與應用程式、登入與稽核紀錄、說明中心。
+- 移除 `進階功能`、`新增登入方式`、`Email 通知設定`、`排隊中` 等讓人以為卡住的入口。
+- Mobile admin smoke 增加導覽 IA 覆蓋。
+
+Validation:
+
+- `npx eslint src/components/AdminShell.tsx src/components/AdminMobileNav.tsx src/components/AdminSidebarLink.tsx src/components/InboxPilotProfileMenu.tsx src/app/billing/page.tsx src/app/channels/page.tsx tests/e2e/public-and-auth.spec.ts`: passed.
+
+Launch impact:
+
+- Product IA / UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
