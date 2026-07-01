@@ -21,17 +21,6 @@ function affiliateStatusLabel(status?: string | null) {
   );
 }
 
-function affiliateLevelLabel(level?: string | null) {
-  return (
-    {
-      partner: "Partner",
-      silver: "Silver",
-      gold: "Gold",
-      agency: "Agency",
-    }[level || ""] || "-"
-  );
-}
-
 function commissionStatusLabel(status: string) {
   return (
     {
@@ -39,7 +28,8 @@ function commissionStatusLabel(status: string) {
       available: "可提領",
       payout_requested: "提領申請中",
       paid: "已付款",
-      clawed_back: "已沖回",
+      clawback: "已沖回",
+      cancelled: "已取消",
     }[status] || status
   );
 }
@@ -55,19 +45,24 @@ export default async function AffiliatePage() {
     : "現金分潤目前只開放 Creator 以上付費方案；Starter 仍可使用推薦活動與折抵金。";
   const summaryCards = [
     {
+      label: "等待確認",
+      value: formatTwd(dashboard.summary.pendingAmount),
+      description: "仍在退款 / 爭議等待期內，暫不可提領。",
+    },
+    {
       label: "可提領佣金",
       value: formatTwd(dashboard.availableBalance),
       description: "已過等待期、可申請批次匯款的金額。",
     },
     {
-      label: "最低提領",
-      value: formatTwd(dashboard.minimumPayoutAmount),
-      description: "達到門檻後才會進入人工提領流程。",
+      label: "提領申請中",
+      value: formatTwd(dashboard.summary.payoutRequestedAmount),
+      description: "已鎖定並等待營運審核 / 匯款批次。",
     },
     {
-      label: "等級",
-      value: affiliateLevelLabel(dashboard.profile?.level),
-      description: "等級會影響分潤比例與營運審核優先順序。",
+      label: "已付款",
+      value: formatTwd(dashboard.summary.paidAmount),
+      description: "已由營運端標記完成付款的佣金。",
     },
   ];
 
@@ -85,7 +80,7 @@ export default async function AffiliatePage() {
             </span>
           </div>
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
-            Starter 只能拿折抵金；Creator 以上審核通過後可累積現金分潤並申請批次匯款。
+            Starter 只能拿折抵金；Creator 以上審核通過後可累積現金分潤。佣金會經過等待期、退款 / 爭議檢查與人工審核，才會進入批次匯款。
           </p>
           <form action="/api/affiliate/apply" method="post" className="mt-4">
             <button
@@ -107,6 +102,49 @@ export default async function AffiliatePage() {
               <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{card.description}</p>
             </article>
           ))}
+        </section>
+
+        <section className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
+          <article className="ip-dashboard-card p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">提領狀態</h2>
+              <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)]">
+                最低 {formatTwd(dashboard.minimumPayoutAmount)}
+              </span>
+            </div>
+            {dashboard.cashPayoutReady ? (
+              <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
+                已達提領門檻。正式提領仍由營運端建立或審核 payout request，避免付款資料、稅務資料或退款爭議未完成時誤匯款。
+              </p>
+            ) : (
+              <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900">
+                <p className="font-semibold">暫時不能申請提領</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {dashboard.payoutBlockedReasons.length > 0 ? (
+                    dashboard.payoutBlockedReasons.map((reason) => <li key={reason}>{reason}</li>)
+                  ) : (
+                    <li>提領流程仍需營運端完成對帳與付款批次。</li>
+                  )}
+                </ul>
+              </div>
+            )}
+            <button
+              type="button"
+              disabled
+              className="mt-4 inline-flex h-10 cursor-not-allowed items-center rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 text-sm font-semibold text-[var(--text-muted)]"
+            >
+              申請提領（營運審核開通）
+            </button>
+          </article>
+
+          <article className="ip-dashboard-card p-5">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">分潤安全規則</h2>
+            <div className="mt-3 grid gap-2 text-sm leading-6 text-[var(--text-secondary)]">
+              <p>同一個 workspace、自己的推薦碼、重複歸因不會產生有效推薦。</p>
+              <p>佣金以實收金額扣除折抵與折扣後計算，並保留等待期處理退款、爭議與人工稽核。</p>
+              <p>點擊追蹤與自助提領屬於下一階段能力；正式啟用前不顯示假數據，也不自動匯款。</p>
+            </div>
+          </article>
         </section>
 
         <section className="ip-dashboard-card overflow-hidden">

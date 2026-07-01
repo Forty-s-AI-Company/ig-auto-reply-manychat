@@ -1,3 +1,19 @@
+# Latest - 2026-07-01 Affiliate / Referral MVP closeout
+
+Current status:
+
+- `[x]` 推薦活動與聯盟分潤已拆清楚：推薦活動是試用 / 折抵，聯盟分潤是 Creator+ 審核後的現金佣金。
+- `[x]` 推薦頁只顯示目前可驗證的註冊、啟用、付費轉換與折抵金，不再暗示尚未建模的點擊數。
+- `[x]` 聯盟頁補上等待確認、可提領、提領申請中、已付款等 MVP 指標與提領 blocker。
+- `[x]` 管理端提領申請有核准 / 退回操作入口，並說明核准不等於自動匯款。
+- `[x]` `POST /api/affiliate/apply` 已補 same-origin 與 rate limit。
+
+Remaining:
+
+- `[ ]` Click tracking 仍需專用事件表、去重與防作弊規則，尚未開放為真 KPI。
+- `[ ]` 自助提領仍需 payout profile 表單、稅務 / 銀行資料審核、退款 / clawback SOP 與對帳流程。
+- `[ ]` Public affiliate cash payout launch 仍需法務條款、防舞弊、營運與 PayUNI production gate 人工簽核。
+
 # Latest - 2026-07-01 Social connect settings terminology polish
 
 Current status:

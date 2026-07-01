@@ -1,3 +1,13 @@
+# 2026-07-01 - Affiliate / Referral MVP closeout
+
+- `[x]` Referral and affiliate cash commission UX boundaries are clearer.
+- `[x]` Referral metrics avoid fake click counts and only show currently verifiable lifecycle states.
+- `[x]` Affiliate payout UX is gated with explicit blocker reasons rather than a fake self-service payout button.
+- `[x]` Admin payout review can approve / reject requests through existing protected routes.
+- `[ ]` Affiliate cash payout public go-live still requires terms, fraud / self-referral policy review, refund / clawback policy, payout reconciliation SOP, and final operator approval.
+- `[ ]` Click tracking still requires a dedicated event model and de-duplication rules before it can be shown as a real KPI.
+- `[ ]` Public paid launch still requires Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 - `[x]` Social connect and OAuth success pages now use `設定` / `社群帳號連接` wording instead of mixed `Channels` / `Social Accounts`.

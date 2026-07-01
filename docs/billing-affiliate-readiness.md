@@ -1,5 +1,21 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-01 - Affiliate / Referral MVP closeout
+
+- `[x]` Referral page now separates general referral rewards from reviewed affiliate cash commissions.
+- `[x]` Referral metrics now show only verifiable states: signup attribution, activation, paid conversion, and confirmed credits.
+- `[x]` Click tracking is explicitly marked as controlled-opening instead of showing fake numbers before a click-event table and de-duplication rules exist.
+- `[x]` Affiliate page now shows pending / available / payout-requested / paid commission buckets and clear payout blockers.
+- `[x]` Self-service payout remains disabled until payout profile, reconciliation, tax / bank review, and operator approval are complete.
+- `[x]` Admin payout requests now expose approve / reject controls and clarify that approval does not automatically transfer money.
+- `[x]` Affiliate application API now has same-origin and rate-limit protection.
+
+Affiliate launch implication:
+
+- The affiliate surface is now a safer MVP for pre-launch validation.
+- Public cash payout remains Hold until affiliate terms, fraud review, refund / clawback policy, payout reconciliation, and final operations approval are signed off.
+- No production DB action, production deployment, PayUNI production switch, or Meta App Review action was performed.
+
 # 2026-07-01 - Referrals light theme polish
 
 - `[x]` Referrals page now uses the same light admin workspace styling as Dashboard, Billing, Analytics, and Channels.
