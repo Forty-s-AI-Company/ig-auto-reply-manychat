@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Social connect settings terminology polish
+
+Current status:
+
+- `[x]` Social connect and OAuth success pages no longer show mixed `Channels` / `Social Accounts` wording in primary user-facing actions.
+- `[x]` Connected-account counts and sync sections use user-facing Instagram account language instead of internal `ConnectedAccount` / `channel` terms.
+- `[x]` Profile empty platform state points to Instagram account setup instead of Facebook Messenger.
+- `[x]` Focused regression coverage guards these labels.
+
+Remaining:
+
+- `[ ]` Continue product-completeness sweeps for remaining visible-but-unusable controls in Inbox, Contacts, Automations, and Analytics.
+
 # Latest - 2026-07-01 Admin affiliate / payout light-theme polish
 
 Current status:

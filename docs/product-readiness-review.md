@@ -1,3 +1,18 @@
+# 2026-07-01 - Social connect settings terminology polish
+
+Status: improved for product IA consistency; public paid launch remains Hold.
+
+What changed:
+
+- Instagram connection pages now consistently send users back to `設定` rather than the old `Channels` wording.
+- Social connection copy no longer exposes internal model names such as connected accounts or channels in the primary user-facing summary.
+- Profile empty state now matches the current Instagram-first release scope.
+
+Readiness implication:
+
+- The channel/settings area feels less like an internal implementation surface and more like a mainstream SaaS settings flow.
+- This does not change OAuth behavior, token handling, product capability, production data, Meta review, PayUNI production, or deployment gates.
+
 # 2026-07-01 - Marketing info page light SaaS polish
 
 Status: improved for public support / info-page consistency; public paid launch remains Hold.

@@ -32,8 +32,8 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
 
   return (
     <ChannelConnectionShell
-      title="連接 Social Accounts"
-      description="使用你的社群帳號連接到自動回覆平台。"
+      title="連接社群帳號"
+      description="使用你的 Instagram 帳號連接到自動回覆平台。"
       backHref="/channels/connect/social"
       backLabel="選擇其他平台"
       visual={<InstagramVisual />}
@@ -76,7 +76,7 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
           </div>
         ) : null}
         <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-          如果這不是你要綁定的帳號，請先到 Channels 解除綁定，再重新回到 Social Accounts 連接正確帳號。
+          如果這不是你要綁定的帳號，請先到設定解除綁定，再重新回到社群帳號連接頁連接正確帳號。
         </div>
         <OAuthPopupSuccess />
         <div className="mt-8 grid gap-3">
@@ -84,13 +84,13 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
             href="/channels#instagram"
             className="flex h-11 w-full items-center justify-center rounded-md border border-[#d0d5dd] bg-white px-4 text-sm font-bold text-[#17191c] hover:bg-[#f9fafb]"
           >
-            前往 Channels 檢查綁定
+            前往設定檢查綁定
           </Link>
           <Link
             href="/channels/connect/social"
             className="flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-bold text-white hover:bg-[#005fd0]"
           >
-            回到 Social Accounts
+            回到社群帳號連接
           </Link>
         </div>
       </div>

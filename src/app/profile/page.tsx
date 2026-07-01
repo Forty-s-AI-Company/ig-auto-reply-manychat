@@ -103,7 +103,7 @@ export default async function ProfilePage() {
             ))}
             {channels.length === 0 ? (
               <div className="rounded-lg border border-dashed border-[#d7dbe0] px-4 py-6 text-sm text-[#667085]">
-                尚未連結平台帳號。請先新增 Instagram 或 Facebook Messenger。
+                尚未連結平台帳號。請先新增 Instagram 帳號。
               </div>
             ) : null}
           </div>
