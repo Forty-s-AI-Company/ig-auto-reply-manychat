@@ -50,7 +50,8 @@ export const MAX_TRIAL_DAYS = 20;
 export const TRIAL_EVENTS_PER_REFERRAL = 300;
 export const MAX_TRIAL_EVENTS = 7000;
 export const REFERRAL_CREDIT_RATE_PERCENT = 30;
-export const REFERRAL_CREDIT_EXPIRES_DAYS = 180;
+export const REFERRAL_CREDIT_PENDING_DAYS = 7;
+export const REFERRAL_CREDIT_EXPIRES_DAYS = 30;
 export const AFFILIATE_HOLD_DAYS = 30;
 export const MIN_PAYOUT_AMOUNT_TWD = 1000;
 export const MAX_COMMISSION_RATE_PER_ORDER_PERCENT = 40;
@@ -99,7 +100,7 @@ export const billingPlans: readonly BillingPlan[] = [
   {
     key: "creator",
     name: "Creator",
-    description: "給創作者與小型團隊，支援更完整的自動化與分潤申請。",
+    description: "給創作者與小型團隊，支援更完整的自動化與推薦折抵追蹤。",
     priceMonthly: 599,
     priceYearly: 5990,
     activeContactsLimit: 3000,
@@ -114,12 +115,12 @@ export const billingPlans: readonly BillingPlan[] = [
     apiAccess: false,
     prioritySupport: false,
     affiliateCashPayoutEligible: true,
-    features: ["3,000 active contacts", "30,000 message events", "自動化與關鍵字不限", "可申請聯盟夥伴"],
+    features: ["3,000 active contacts", "30,000 message events", "自動化與關鍵字不限", "推薦折抵成效面板"],
   },
   {
     key: "pro",
     name: "Pro",
-    description: "給成熟品牌與高頻互動帳號。",
+    description: "給成熟品牌與高頻互動帳號，適合把推薦折抵當成成長工具。",
     priceMonthly: 1199,
     priceYearly: 11990,
     activeContactsLimit: 10000,
@@ -139,7 +140,7 @@ export const billingPlans: readonly BillingPlan[] = [
   {
     key: "business",
     name: "Business",
-    description: "給多成員營運團隊與顧問服務商。",
+    description: "給多成員營運團隊與顧問服務商，支援更完整的用量與折抵管理。",
     priceMonthly: 2399,
     priceYearly: 23990,
     activeContactsLimit: 30000,

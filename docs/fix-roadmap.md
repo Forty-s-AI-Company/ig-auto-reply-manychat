@@ -1,3 +1,18 @@
+# Latest - 2026-07-02 Referral credit v1 direction
+
+Current status:
+
+- `[x]` 推薦折抵已正式收斂成公開產品主線，現金分潤暫時降級為受控能力。
+- `[x]` 推薦折抵現在先進 `pending`，7 天後才會變成 `available`。
+- `[x]` 可用折抵的產品規則已改成 30 天內使用，逾期失效。
+- `[x]` `/referrals`、`/wallet`、`/billing`、`/pricing`、`/affiliate` 文案已對齊新制度。
+- `[x]` focused tests、`npm test`、`npm run build`、`npm run test:e2e:auth` 已通過。
+
+Remaining:
+
+- `[ ]` 退款後自動取消 pending 折抵、或對已使用折抵做真正的 refund clawback，還缺一個實際 refund event hook。
+- `[ ]` 如果後續真的要重新開放現金分潤，仍需法務條款、反作弊、對帳與付款 SOP 收斂。
+
 # Latest - 2026-07-01 Affiliate / Referral MVP closeout
 
 Current status:

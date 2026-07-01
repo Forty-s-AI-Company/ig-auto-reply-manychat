@@ -4,6 +4,7 @@ import { ManualActionNotice } from "@/components/ManualActionNotice";
 import { billingAddons, billingPlans, formatTwd } from "@/lib/billing";
 import { getWorkspaceEntitlement } from "@/lib/billing/entitlements";
 import { listInvoices } from "@/lib/billing/invoice-service";
+import { getWalletSummary } from "@/lib/billing/wallet-service";
 import { requireUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getPayuniGatewayStatus } from "@/lib/payuni";
@@ -37,15 +38,16 @@ function ProgressBar({ label, used, limit }: { label: string; used: number; limi
 }
 
 export default async function BillingPage({ searchParams }: { searchParams?: Promise<{ payment?: string; payuni?: string }> }) {
-  await requireUser();
+  const user = await requireUser();
   const params = await searchParams;
   const workspaceId = await getCurrentWorkspaceId();
   const payuniStatus = getPayuniGatewayStatus();
-  const [entitlement, invoices, recentOrders, subscriptions] = await Promise.all([
+  const [entitlement, invoices, recentOrders, subscriptions, walletSummary] = await Promise.all([
     getWorkspaceEntitlement(workspaceId),
     listInvoices(workspaceId),
     getDb().paymentOrder.findMany({ where: { workspaceId }, orderBy: { createdAt: "desc" }, take: 5 }),
     getDb().subscription.findMany({ where: { workspaceId }, orderBy: { updatedAt: "desc" }, take: 3 }),
+    getWalletSummary(user.id),
   ]);
   const activeSubscription = subscriptions.find((subscription) => ["active", "trialing"].includes(subscription.status));
 
@@ -100,6 +102,13 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
           <p className="mt-4 rounded-md border border-dashed border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
             {payuniStatus.detail}
           </p>
+          <div className="mt-4 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
+            <p className="font-semibold text-[var(--text-primary)]">推薦折抵制度 v1</p>
+            <p className="mt-1">
+              目前可用折抵 {formatTwd(walletSummary.availableCredits)}，待確認折抵 {formatTwd(walletSummary.pendingCredits)}。
+              折抵只能用在方案費，單筆帳單最低可折到 0 元；首筆有效付費需先經過 7 天退款觀察期，轉成可用後 30 天內未使用會失效。
+            </p>
+          </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <ProgressBar label="活躍聯絡人" used={entitlement.usage.activeContacts} limit={entitlement.limits.activeContacts} />
             <ProgressBar label="訊息事件" used={entitlement.usage.messageEvents} limit={entitlement.limits.messageEvents} />

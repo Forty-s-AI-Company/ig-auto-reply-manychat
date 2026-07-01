@@ -24,6 +24,8 @@ function ledgerSourceLabel(source: string) {
     {
       referral_credit: "推薦折抵金",
       invoice_credit: "帳單折抵",
+      expiry: "折抵到期失效",
+      clawback: "退款 / 稽核沖回",
     }[source] || source
   );
 }
@@ -34,6 +36,8 @@ function ledgerStatusLabel(status: string) {
       available: "可使用",
       pending: "待確認",
       used: "已折抵",
+      expired: "已失效",
+      cancelled: "已取消",
       payout_requested: "提領申請中",
       paid: "已提領",
     }[status] || status
@@ -52,7 +56,7 @@ export default async function WalletPage() {
     {
       label: "待確認折抵金",
       value: summary.pendingCredits,
-      description: "等待付款或推薦狀態確認後入帳。",
+      description: "首筆有效付費後先觀察 7 天，超過退款期才可使用。",
     },
     {
       label: "已使用折抵金",
@@ -76,7 +80,14 @@ export default async function WalletPage() {
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-3">
             <h2 className="font-semibold text-[var(--text-primary)]">折抵金流水</h2>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆折抵金入帳、折抵與提領狀態。</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆折抵金入帳、待確認、到期失效、退款沖回與帳單折抵紀錄。</p>
+            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+              推薦折抵只能折抵方案費，單筆帳單最低可折到 0 元；轉成可用後 30 天內未使用會自動失效。
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--text-muted)]">
+              <span>下一筆可用時間：{summary.nextAvailableAt ? formatLedgerDate(summary.nextAvailableAt) : "目前沒有待確認折抵"}</span>
+              <span>下一筆到期時間：{summary.nextExpiryAt ? formatLedgerDate(summary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</span>
+            </div>
           </div>
           {ledger.length > 0 ? (
             <div className="overflow-x-auto">

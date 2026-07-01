@@ -1,4 +1,12 @@
-# 2026-07-01 - Affiliate / Referral MVP closeout
+# 2026-07-02 - Referral credit v1 launch direction
+
+- `[x]` Public referral incentive has been narrowed to non-cash plan credits.
+- `[x]` Product copy now explains `pending -> available -> expired / cancelled / clawback` instead of implying instant cashback.
+- `[x]` Billing and Wallet now tell users that credits only offset plan fees and can reduce a bill to zero.
+- `[x]` Affiliate cash payout UI is treated as controlled-opening only, not as a public launch promise.
+- `[ ]` Refund-triggered automatic cancel / clawback still needs a real refund event hook.
+- `[ ]` Cash affiliate payout remains Hold until legal, fraud, reconciliation, and ops approval are complete.
+- `[ ]` Public paid launch still requires Meta App Review, PayUNI production go-live, and final launch approval.
 
 - `[x]` Referral and affiliate cash commission UX boundaries are clearer.
 - `[x]` Referral metrics avoid fake click counts and only show currently verifiable lifecycle states.

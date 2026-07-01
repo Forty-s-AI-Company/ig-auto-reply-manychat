@@ -43,50 +43,56 @@ export default async function ReferralsPage() {
           </p>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
             {simpleRelease
-              ? "目前推薦活動只記錄邀請連結、推薦名單與試用加值；現金分潤會在聯盟審核流程完整後受控開放。"
-              : "有效推薦會讓雙方各 +1 天試用；Creator 以上使用者可另外申請聯盟夥伴，審核通過後才會累積現金分潤。"}
+              ? "目前推薦活動以方案折抵為主：首筆有效付費會先進入待確認，超過退款觀察期才會轉成可用折抵金。"
+              : "有效推薦會讓雙方各 +1 天試用；首筆有效付費會先進入待確認折抵金，超過退款觀察期後才可折抵後續方案費。"}
           </p>
         </section>
 
-        <section className={`grid gap-4 ${simpleRelease ? "md:grid-cols-2" : "md:grid-cols-4"}`}>
+        <section className="grid gap-4 md:grid-cols-4">
           <ReferralMetric label="追蹤註冊" value={dashboard.metrics.signupsTracked} description="已帶入推薦碼完成註冊的使用者。" />
           <ReferralMetric label="完成啟用" value={dashboard.metrics.activatedCount} description="已完成 Email、IG 與自動化條件的推薦。" />
-          <ReferralMetric label="付費轉換" value={dashboard.metrics.paidConversions} description="已完成第一筆付款並可進入折抵 / 分潤判斷。" />
-          {simpleRelease ? null : (
-            <ReferralMetric label="折抵金" value={formatTwd(dashboard.creditsEarned)} description="已確認可用於帳單折抵的推薦金額。" />
-          )}
+          <ReferralMetric label="待確認折抵" value={formatTwd(dashboard.walletSummary.pendingCredits)} description="首筆付費後先進入 7 天退款觀察期。" />
+          <ReferralMetric label="可用折抵" value={formatTwd(dashboard.walletSummary.availableCredits)} description="可直接折抵後續方案費，單筆帳單最低可折到 0 元。" />
         </section>
 
         <section className="grid gap-4 lg:grid-cols-2">
           <article className="ip-dashboard-card p-5">
-            <h2 className="text-base font-semibold text-[var(--text-primary)]">推薦活動與聯盟分潤的差異</h2>
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">推薦折抵制度 v1</h2>
             <div className="mt-4 grid gap-3 text-sm leading-6 text-[var(--text-secondary)]">
               <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3">
-                <p className="font-semibold text-[var(--text-primary)]">推薦活動</p>
-                <p className="mt-1">所有使用者都可使用推薦碼，主要獎勵是試用天數、trial events 與帳單折抵。</p>
+                <p className="font-semibold text-[var(--text-primary)]">折抵怎麼生效</p>
+                <p className="mt-1">推薦人完成第一筆有效付費後，折抵金會先進 pending；超過退款觀察期才會轉成 available。</p>
               </div>
               <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3">
-                <p className="font-semibold text-[var(--text-primary)]">聯盟分潤</p>
-                <p className="mt-1">Creator 以上方案需申請並通過審核，才會依付費轉換產生現金佣金。</p>
-                {!simpleRelease ? (
-                  <Link className="mt-2 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/affiliate">
-                    前往聯盟分潤
-                  </Link>
-                ) : null}
+                <p className="font-semibold text-[var(--text-primary)]">折抵規則</p>
+                <p className="mt-1">折抵只能用在方案費，單筆帳單最多折到 0 元；不可提現、不可轉讓，轉成可用後 30 天內要使用。</p>
+              </div>
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                <p className="font-semibold text-amber-900">退款與失效</p>
+                <p className="mt-1 text-amber-900">退款觀察期內退款會直接取消待確認折抵；若後續有退款或人工判定異常，已用折抵會改以沖回或失效處理。</p>
               </div>
             </div>
           </article>
 
           <article className="ip-dashboard-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">點擊追蹤</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">折抵與追蹤邊界</h2>
               <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">
                 受控開通
               </span>
             </div>
             <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
-              目前不顯示假點擊數。點擊追蹤需要獨立事件表、去重規則與防作弊策略；在這些資料模型正式部署前，這裡只顯示已可驗證的註冊、啟用與付費轉換。
+              目前不顯示假點擊數，也不把現金提領包裝成已可用功能。這個頁面只顯示已可驗證的註冊、啟用、待確認折抵與可用折抵。
             </p>
+            <div className="mt-4 rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3 text-sm leading-6 text-[var(--text-secondary)]">
+              <p>下一筆可用折抵時間：{dashboard.walletSummary.nextAvailableAt ? dashboard.walletSummary.nextAvailableAt.toLocaleDateString("zh-TW") : "目前沒有待確認折抵"}</p>
+              <p className="mt-1">下一筆到期時間：{dashboard.walletSummary.nextExpiryAt ? dashboard.walletSummary.nextExpiryAt.toLocaleDateString("zh-TW") : "目前沒有可用折抵即將到期"}</p>
+            </div>
+            {!simpleRelease ? (
+              <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
+                前往折抵金錢包
+              </Link>
+            ) : null}
           </article>
         </section>
 
