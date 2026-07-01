@@ -2586,3 +2586,15 @@ Current status:
 Remaining:
 
 - `[ ]` 後續可再用 in-app browser 針對 Channels / Connect 頁做完整視覺 QA，確認文案在手機與桌面版都不擠壓。
+
+## Latest - 2026-07-01 Disconnect channel button light-theme polish
+
+Current status:
+
+- `[x]` Channels 頁解除綁定按鈕不再使用深色 danger 樣式，改成亮色頁面可讀的白底紅色 icon button。
+- `[x]` 解除綁定錯誤訊息改成白底上可讀的深紅文字。
+- `[x]` Source guard test 擋住 dark danger class 回歸。
+
+Remaining:
+
+- `[ ]` 解除綁定仍使用原生 confirm；這是破壞性動作可接受的最小安全確認，若要更精緻可另做 Dialog，但需避免降低誤刪保護。

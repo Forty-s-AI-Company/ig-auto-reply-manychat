@@ -1286,3 +1286,16 @@ Readiness implication:
 
 - Channels / Connect now feels less like an engineering preview and more like a controlled product settings surface.
 - No functional gate, token, webhook, Meta App Review, or database behavior was changed.
+
+## 2026-07-01 - Disconnect channel button light-theme polish
+
+Status:
+
+- Channels page disconnect button now uses a light-theme danger treatment instead of dark internal-tool red styling.
+- Inline disconnect error copy is more readable on the white card surface.
+- Source-level tests prevent this control from returning to dark danger classes.
+
+Readiness implication:
+
+- The Instagram account management card is visually more consistent with the rest of the settings page.
+- No delete behavior, auth, tenant scope, or data mutation semantics were changed.
