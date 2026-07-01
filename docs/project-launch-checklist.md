@@ -1,3 +1,9 @@
+# 2026-07-02 - Channels Instagram action disabled-reason clarity
+
+- `[x]` Instagram action controls now show per-action disabled reasons for missing token / unsupported login mode cases.
+- `[x]` Media, comments, and token actions have stable smoke-test selectors.
+- `[ ]` Real Meta action success still depends on granted permissions, healthy channel token state, and Meta App Review scope.
+
 # 2026-07-02 - Referral link copy action
 
 - `[x]` Referral page now provides a visible copy action for the user's referral URL.

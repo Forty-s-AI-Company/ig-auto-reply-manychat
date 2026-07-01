@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 
 type SequenceStep = {
   id: string;
@@ -117,6 +118,10 @@ export function SequencesClient({
     setName("新名單培養序列");
     setEnabled(true);
     setSteps([emptyStep]);
+  }
+
+  function syncNameFromInput(event: FormEvent<HTMLInputElement>) {
+    setName(event.currentTarget.value);
   }
 
   async function createSequence() {
@@ -256,8 +261,10 @@ export function SequencesClient({
                 autoComplete="off"
                 aria-invalid={!trimmedName}
                 value={name}
-                onChange={(event) => setName(event.target.value)}
-                onInput={(event) => setName(event.currentTarget.value)}
+                onChange={syncNameFromInput}
+                onChangeCapture={syncNameFromInput}
+                onInput={syncNameFromInput}
+                onInputCapture={syncNameFromInput}
                 className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
                 data-testid="sequence-name-input"
               />

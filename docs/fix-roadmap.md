@@ -1,3 +1,27 @@
+# Latest - 2026-07-02 Sequences mobile form state stability
+
+Current status:
+
+- `[x]` Sequence name input now syncs through shared input/change handlers.
+- `[x]` Mobile full-release auth smoke no longer leaves the save button enabled after clearing the sequence name locally.
+- `[x]` Source regression coverage guards the capture and bubble handler wiring.
+
+Remaining:
+
+- `[ ]` Continue monitoring GitHub full-release-auth-smoke after PR #106 updates; only fix further if the same CI path fails again.
+
+# Latest - 2026-07-02 Channels Instagram action disabled-reason clarity
+
+Current status:
+
+- `[x]` Instagram media / comments / token action buttons now have stable test ids.
+- `[x]` Disabled actions now show per-action reasons inline instead of relying only on hover titles.
+- `[x]` Source regression coverage guards the disabled-reason UI.
+
+Remaining:
+
+- `[ ]` Real Meta capability still depends on the connected account's granted permissions, token state, and App Review scope.
+
 # Latest - 2026-07-02 Referral link copy action
 
 Current status:
