@@ -6731,6 +6731,31 @@ Launch impact:
 
 - Product UI / accessibility polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Automations mobile smoke stability
+
+Task:
+
+- Fix the master CI `full-release-auth-smoke` failure after PR #69 by stabilizing the Automations mobile smoke navigation.
+
+Root cause:
+
+- The mobile smoke clicked the visible `基礎流程` label, then waited for disabled controls that did not appear in the mobile run.
+- The product UI already had the disabled controls, but the test had no stable automation-tab hook and could miss the intended category switch.
+
+Changes:
+
+- Added stable `data-testid` hooks to Automations category tabs.
+- Updated authenticated route smoke to click `automation-tab-basic` before checking the basic-flow disabled controls.
+
+Validation:
+
+- `npx eslint src/components/AutomationBuilderClient.tsx tests/e2e/public-and-auth.spec.ts`: passed.
+- `npm run test:e2e:auth`: public smoke passed locally; authenticated smoke remains guarded locally and runs in CI with seeded auth.
+
+Launch impact:
+
+- CI stability / verification only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Channels disabled copy clarity polish
 
 Task:
