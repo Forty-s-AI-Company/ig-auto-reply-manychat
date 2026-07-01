@@ -1,3 +1,18 @@
+# 2026-07-01 - Sequences submit disabled UX clarity
+
+Status: improved for full-release sequence UX; public paid launch remains Hold.
+
+What changed:
+
+- Sequence save now disables itself with clear guidance when the name or step content is incomplete.
+- Sequence subscribe now disables itself with clear guidance when no sequence or contact is selected.
+- Authenticated route smoke now includes `/sequences` and verifies the disabled states.
+
+Launch impact:
+
+- The full-release sequence page is less likely to feel like a broken form during staging review.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Profile menu language disabled UX clarity
 
 Status: improved for profile menu clarity; public paid launch remains Hold.

@@ -25,6 +25,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   },
   { path: "/analytics", heading: /分析/, bodyText: /訊息、受眾與廣播表現|資料範圍|聯絡人|總訊息/ },
   { path: "/automations", heading: /自動化/, bodyText: /自動化|流程|資料夾|新增/ },
+  { path: "/sequences", heading: /序列/, bodyText: /序列列表|建立序列|訂閱聯絡人/ },
   { path: "/referrals", heading: /推薦活動/, bodyText: /你的推薦碼|推薦紀錄|推薦/ },
   { path: "/billing", heading: /方案與用量/, bodyText: /目前方案|PayUNI|發票紀錄|受控開通|測試站/ },
 ];
@@ -180,6 +181,21 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText(/目前看整個工作區的資料|目前只看「.+」的資料/);
     await expect(page.locator("body")).toContainText(/尚未有發送紀錄|成功 \d+ \/ 失敗 \d+/);
     await expect(page.locator("body")).toContainText(/尚未建立流程|啟用 \d+ \/ 全部 \d+/);
+  });
+
+  test("shows Sequences disabled states instead of broken submit controls", async ({ page }) => {
+    await page.goto("/sequences", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "序列", exact: true })).toBeVisible();
+
+    await page.getByTestId("sequence-name-input").fill("");
+    await expect(page.getByTestId("sequence-save-button")).toBeDisabled();
+    await expect(page.getByTestId("sequence-save-button")).toHaveAttribute("title", "請先填寫序列名稱。");
+    await expect(page.locator("body")).toContainText("請先填寫序列名稱。");
+
+    await page.getByTestId("sequence-subscribe-sequence-select").selectOption("");
+    await expect(page.getByTestId("sequence-subscribe-button")).toBeDisabled();
+    await expect(page.getByTestId("sequence-subscribe-button")).toHaveAttribute("title", "請先選擇要訂閱的序列。");
+    await expect(page.locator("body")).toContainText("請先選擇要訂閱的序列。");
   });
 
   test("shows Channels planned settings as explicit disabled controls", async ({ page }) => {

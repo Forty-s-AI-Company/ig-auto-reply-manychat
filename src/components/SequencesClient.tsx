@@ -51,6 +51,21 @@ export function SequencesClient({
     () => sequences.find((sequence) => sequence.id === selectedSequenceId),
     [selectedSequenceId, sequences],
   );
+  const invalidStep = steps.find((step) => {
+    const delaySeconds = Number(step.delaySeconds);
+    return !step.text.trim() || !Number.isFinite(delaySeconds) || delaySeconds < 0;
+  });
+  const canSaveSequence = Boolean(name.trim()) && steps.length > 0 && !invalidStep;
+  const saveDisabledReason = !name.trim()
+    ? "請先填寫序列名稱。"
+    : invalidStep
+      ? "每個步驟都需要填寫訊息，延遲秒數也不能小於 0。"
+      : "";
+  const subscribeDisabledReason = !selectedSequenceId
+    ? "請先選擇要訂閱的序列。"
+    : !selectedContactId
+      ? "請先選擇要加入序列的聯絡人。"
+      : "";
 
   async function reload() {
     const response = await fetch("/api/sequences");
@@ -104,6 +119,10 @@ export function SequencesClient({
   }
 
   async function createSequence() {
+    if (!canSaveSequence) {
+      setMessage(saveDisabledReason || "請先完成序列內容。");
+      return;
+    }
     setMessage("");
     const payload = {
       name: name.trim(),
@@ -142,8 +161,8 @@ export function SequencesClient({
   }
 
   async function subscribe() {
-    if (!selectedSequenceId || !selectedContactId) {
-      setMessage("請先選擇序列與聯絡人。");
+    if (subscribeDisabledReason) {
+      setMessage(subscribeDisabledReason);
       return;
     }
     const response = await fetch(`/api/sequences/${selectedSequenceId}/subscribe`, {
@@ -212,7 +231,11 @@ export function SequencesClient({
       </section>
 
       <aside className="space-y-4">
-        {message ? <p className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#344054]">{message}</p> : null}
+        {message ? (
+          <p className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#344054]" role="status" aria-live="polite">
+            {message}
+          </p>
+        ) : null}
 
         <section className="rounded-lg border border-[#d7dbe0] bg-white p-4">
           <div className="flex items-center justify-between gap-3">
@@ -226,7 +249,12 @@ export function SequencesClient({
           <div className="mt-4 space-y-3">
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">名稱</span>
-              <input value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2" />
+              <input
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                data-testid="sequence-name-input"
+              />
             </label>
             <label className="flex items-center gap-2 text-sm text-[#344054]">
               <input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
@@ -265,9 +293,17 @@ export function SequencesClient({
             <button type="button" onClick={addStep} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054]">
               新增步驟
             </button>
-            <button type="button" onClick={createSequence} className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white">
+            <button
+              type="button"
+              onClick={createSequence}
+              disabled={!canSaveSequence}
+              title={saveDisabledReason || undefined}
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+              data-testid="sequence-save-button"
+            >
               {editingSequenceId ? "更新序列" : "建立序列"}
             </button>
+            {!canSaveSequence ? <p className="text-xs leading-5 text-[#667085]">{saveDisabledReason}</p> : null}
           </div>
         </section>
 
@@ -276,7 +312,12 @@ export function SequencesClient({
           <div className="mt-4 space-y-3">
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">序列</span>
-              <select value={selectedSequenceId} onChange={(event) => setSelectedSequenceId(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2">
+              <select
+                value={selectedSequenceId}
+                onChange={(event) => setSelectedSequenceId(event.target.value)}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                data-testid="sequence-subscribe-sequence-select"
+              >
                 <option value="">選擇序列</option>
                 {sequences.map((sequence) => (
                   <option key={sequence.id} value={sequence.id}>{sequence.name}</option>
@@ -285,16 +326,29 @@ export function SequencesClient({
             </label>
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">聯絡人</span>
-              <select value={selectedContactId} onChange={(event) => setSelectedContactId(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2">
+              <select
+                value={selectedContactId}
+                onChange={(event) => setSelectedContactId(event.target.value)}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                data-testid="sequence-subscribe-contact-select"
+              >
                 <option value="">選擇聯絡人</option>
                 {contacts.map((contact) => (
                   <option key={contact.id} value={contact.id}>{contact.displayName || contact.externalId}</option>
                 ))}
               </select>
             </label>
-            <button type="button" onClick={subscribe} className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white">
+            <button
+              type="button"
+              onClick={subscribe}
+              disabled={Boolean(subscribeDisabledReason)}
+              title={subscribeDisabledReason || undefined}
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+              data-testid="sequence-subscribe-button"
+            >
               加入序列
             </button>
+            {subscribeDisabledReason ? <p className="text-xs leading-5 text-[#667085]">{subscribeDisabledReason}</p> : null}
             {selectedSequence ? (
               <p className="text-xs leading-5 text-[#667085]">
                 目前選取：{selectedSequence.name}。加入後，worker 會依每個步驟的延遲時間建立排程訊息。

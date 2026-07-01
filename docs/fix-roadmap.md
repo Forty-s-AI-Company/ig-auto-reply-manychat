@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Sequences submit disabled UX clarity
+
+Current status:
+
+- `[x]` Full-release Sequences page now disables save when the name or step content is incomplete.
+- `[x]` Subscribe control is disabled when no sequence or contact is selected.
+- `[x]` Disabled controls include clear title/help copy instead of requiring a failed click.
+- `[x]` Authenticated route smoke includes `/sequences` and the disabled-control states.
+
+Remaining:
+
+- `[ ]` CI authenticated Playwright smoke should run the new seeded `/sequences` assertions.
+- `[ ]` Later product work can improve sequence scheduling observability, but this pass avoids fake-submit UX.
+
 # Latest - 2026-07-01 Profile menu language disabled UX clarity
 
 Current status:
