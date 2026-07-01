@@ -6756,6 +6756,31 @@ Launch impact:
 
 - CI stability / verification only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
 
+## 2026-07-01 - Inbox custom reminder controlled-opening copy
+
+Task:
+
+- Continue product-completeness polish by removing prototype-feeling `準備中` copy from the Inbox custom reminder control.
+
+Changes:
+
+- Changed Inbox custom reminder label to `自訂日期與時間（受控開通）`.
+- Added title and aria-label copy explaining the controlled-opening status.
+- Updated the click notice to explain schedule rules, timezone handling, and notification audit prerequisites.
+- Extended Inbox authenticated smoke to cover the label, title, and notice copy.
+
+Validation:
+
+- `npx eslint src/components/InboxClient.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run test:e2e:inbox`: skipped locally by the authenticated smoke guard; CI runs it with seeded auth.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Meta webhook invalid-signature audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing Windows Prisma engine lock fallback reused the generated client.
+
+Launch impact:
+
+- UX clarity only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Channels disabled copy clarity polish
 
 Task:

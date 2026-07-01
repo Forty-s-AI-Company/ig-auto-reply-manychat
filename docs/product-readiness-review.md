@@ -1,3 +1,18 @@
+# 2026-07-01 - Inbox custom reminder controlled-opening copy
+
+Status: improved for Inbox disabled UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Inbox custom reminder now reads `自訂日期與時間（受控開通）` instead of `準備中`.
+- Clicking it explains that exact-date reminders require scheduling rules, timezone handling, and notification audit design.
+- Authenticated Inbox smoke covers the label, title, and notice.
+
+Launch impact:
+
+- Inbox reminder UX is clearer for a paid beta user.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Automations mobile smoke stability
 
 Status: verification stability improved; public paid launch remains Hold.
