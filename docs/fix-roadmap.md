@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Segments light-theme polish
+
+Current status:
+
+- `[x]` 分眾名單頁不再使用深色內部工具卡片。
+- `[x]` 分眾列表、統計卡、空狀態與編輯表單已改成亮色 dashboard 視覺語言。
+- `[x]` 表單 name、autocomplete、focus-visible state 與錯誤 live region 已補齊。
+- `[x]` Source-level regression test 防止分眾頁回到暗色樣式。
+
+Remaining:
+
+- `[ ]` 若後續要讓分眾支援更進階條件，需要另做條件 builder、預覽計數與 tenant isolation 測試。
+- `[ ]` 繼續掃描錢包、聯盟與 admin-only 頁面是否仍有深色內部工具樣式。
+
 # Latest - 2026-07-01 Instagram default reply light-theme polish
 
 Current status:
