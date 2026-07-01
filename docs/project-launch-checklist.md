@@ -1,3 +1,10 @@
+# 2026-07-01 - Automations editor more-actions disabled copy polish
+
+- `[x]` Automations editor `更多操作` disabled title no longer uses implementation-flavored `沒有接好` copy.
+- `[x]` The title now explains copy, archive, export, and audit-log requirements before opening the feature.
+- `[x]` Authenticated smoke covers this disabled copy.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Automations trash disabled copy polish
 
 - `[x]` Automations `回收桶` disabled title no longer uses implementation-flavored `沒接好` copy.

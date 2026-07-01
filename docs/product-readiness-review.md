@@ -1,3 +1,18 @@
+# 2026-07-01 - Automations editor more-actions disabled copy polish
+
+Status: improved for Automations editor disabled UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Automations editor `更多操作` was already disabled, but its title still used implementation-flavored `目前還沒有接好` copy.
+- The title now explains that more actions are controlled-opening work requiring copy, archive, export, and audit-log design.
+- Authenticated smoke covers the disabled title.
+
+Launch impact:
+
+- Automations editor has one fewer placeholder-feeling icon control.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Automations trash disabled copy polish
 
 Status: improved for Automations disabled UX clarity; public paid launch remains Hold.

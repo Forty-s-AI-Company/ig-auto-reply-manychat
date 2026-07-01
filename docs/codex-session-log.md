@@ -1,3 +1,26 @@
+# 2026-07-01 - Automations editor more-actions disabled copy polish
+
+Task:
+
+- Continue the safe visible-but-unusable sweep after PR #59.
+- Focus on the Automations editor icon-only `更多操作` disabled button, whose title still used implementation-flavored `目前還沒有接好` copy.
+
+Changes:
+
+- Updated the editor more-actions disabled title to describe it as a controlled-opening feature requiring copy, archive, export, and audit-log design.
+- Added a stable `data-testid` and authenticated smoke coverage for the disabled title.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI copy and smoke coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Automations trash disabled copy polish
 
 Task:
