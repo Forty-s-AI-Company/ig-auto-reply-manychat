@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Account dropdown scope switch failure feedback
+
+Current status:
+
+- `[x]` Sidebar Instagram account dropdown now shows user-readable feedback when scope switching fails.
+- `[x]` Network failures and API failures have separate fallback messages.
+- `[x]` Source regression coverage guards the feedback path.
+
+Remaining:
+
+- `[ ]` Add browser-level regression around failed account-scope switching if a stable mock route is introduced.
+
 # Latest - 2026-07-02 Profile logout failure feedback
 
 Current status:
