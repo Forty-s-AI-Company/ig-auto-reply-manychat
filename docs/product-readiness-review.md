@@ -1,3 +1,17 @@
+# 2026-07-01 - Automations mobile smoke stability
+
+Status: verification stability improved; public paid launch remains Hold.
+
+What changed:
+
+- Automations category tabs now have stable test hooks.
+- The authenticated route smoke switches to `基礎流程` through the stable tab hook instead of relying on visible label matching.
+
+Launch impact:
+
+- This reduces CI noise around the Automations disabled UX checks.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Sequences submit disabled UX clarity
 
 Status: improved for full-release sequence UX; public paid launch remains Hold.

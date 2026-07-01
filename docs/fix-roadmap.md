@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Automations mobile smoke stability
+
+Current status:
+
+- `[x]` Automations category tabs now expose stable `data-testid` hooks.
+- `[x]` Authenticated route smoke no longer relies on the Chinese tab label to switch into `基礎流程`.
+- `[x]` The mobile smoke can verify the basic automation disabled controls without mistaking the tab click target.
+
+Remaining:
+
+- `[ ]` PR CI should rerun seeded full-release auth smoke and confirm the master failure is resolved.
+- `[ ]` Continue product-completeness sweeps after CI is green.
+
 # Latest - 2026-07-01 Sequences submit disabled UX clarity
 
 Current status:

@@ -1819,6 +1819,7 @@ function FlowBuilderInner({
                   <button
                     key={tab.id}
                     type="button"
+                    data-testid={`automation-tab-${tab.id}`}
                     onClick={() => {
                       setActiveTab(tab.id);
                       if (tab.id !== "my") {
