@@ -7268,3 +7268,25 @@ Validation:
 Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+# 2026-07-01 - Public pricing page polish
+
+Task:
+
+- Continue product completeness after admin / settings UI polish, focusing on the public `/pricing` page that still mixed English pricing labels with the Chinese SaaS experience.
+
+Changes:
+
+- `/pricing` metadata and hero copy now use `方案與價格` instead of the old English `Pricing` label.
+- Pricing cards now show Chinese usage labels for active contacts, message events, team seats, retention, and affiliate payout availability.
+- Added a compact trust / usage summary row for trial, transparent usage limits, and PayUNI Sandbox status.
+- Pricing CTAs now distinguish the free trial from paid plan selection and include visible focus states.
+- Added `tests/pricing-page-polish.test.ts` to guard against English pricing labels and weak action styling returning.
+
+Validation:
+
+- `npx eslint src/components/PricingPageClient.tsx src/app/pricing/page.tsx tests/pricing-page-polish.test.ts`: passed.
+- `npx vitest run tests/pricing-page-polish.test.ts --reporter=dot`: passed.
+
+Launch impact:
+
+- Public pricing copy / UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

@@ -1,3 +1,11 @@
+# 2026-07-01 - Public pricing page polish
+
+- `[x]` `/pricing` hero and metadata now use `方案與價格` instead of English `Pricing` wording.
+- `[x]` Pricing plan limits now use Chinese labels for active contacts, message events, team seats, retention, and affiliate payout availability.
+- `[x]` Pricing actions include clearer trial / plan-selection copy and visible focus states.
+- `[x]` Focused regression test covers the public pricing copy and light UI affordances.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Admin affiliate / payout light-theme polish
 
 - `[x]` Admin affiliate / payout pages have been aligned with the light dashboard surface.
