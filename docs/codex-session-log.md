@@ -1,3 +1,28 @@
+# 2026-07-01 - Sequences submit disabled UX clarity
+
+Task:
+
+- Continue product-completeness sweeps after profile menu language clarity.
+- Audit the full-release Sequences page for controls that are visible but only fail after clicking.
+
+Changes:
+
+- Disabled the sequence save button when the sequence name is empty or a step is incomplete.
+- Disabled the sequence subscribe button when no sequence or contact is selected.
+- Added explicit title/help copy for both disabled states.
+- Added authenticated route smoke coverage for `/sequences` and the disabled controls.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- Client UX and smoke coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Profile menu language disabled UX clarity
 
 Task:
