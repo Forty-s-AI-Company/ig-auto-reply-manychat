@@ -1,3 +1,26 @@
+# 2026-07-02 - Admin-only referral credit refund route
+
+Task:
+
+- Add a minimal admin-only route that can invoke the referral-credit refund reconciliation service, without connecting PayUNI production refunds or touching production DB.
+
+Changes:
+
+- Added `POST /api/admin/invoices/[id]/refund`.
+- The route uses the existing admin API guard, same-origin protection, and admin rate limit through `requireAdminApiUser(request)`.
+- Successful calls mark the invoice refunded, cancel pending referral credits, create idempotent clawback debits for available credits, and write a safe audit event.
+- Missing invoices return a user-readable 404 message instead of Prisma raw details.
+- Added focused route tests for admin guard, audit metadata, and safe not-found handling.
+
+Validation:
+
+- `npx vitest run tests/admin-invoice-refund-route.test.ts tests/referral-credit-refund-lifecycle.test.ts --reporter=dot`: passed.
+
+Launch impact:
+
+- Internal refund reconciliation is now callable through a protected admin route.
+- This still does not connect PayUNI production refund callbacks, and no production DB, production deployment, PayUNI production switch, Meta App Review action, or secret output occurred.
+
 # 2026-07-02 - Referral credit refund reconciliation
 
 Task:

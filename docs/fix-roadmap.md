@@ -6,12 +6,13 @@ Current status:
 - `[x]` 推薦折抵現在先進 `pending`，7 天後才會變成 `available`。
 - `[x]` 可用折抵的產品規則已改成 30 天內使用，逾期失效。
 - `[x]` 退款 reconciliation service 已可取消 pending 折抵，並針對 available 折抵建立 idempotent clawback debit。
+- `[x]` 已新增 admin-only refund reconciliation route，讓內部操作可受控觸發折抵沖回。
 - `[x]` `/referrals`、`/wallet`、`/billing`、`/pricing`、`/affiliate` 文案已對齊新制度。
 - `[x]` focused tests、`npm test`、`npm run build`、`npm run test:e2e:auth` 已通過。
 
 Remaining:
 
-- `[ ]` 仍需建立實際 PayUNI / operator refund event entrypoint 來呼叫 refund reconciliation service。
+- `[ ]` 仍需把實際 PayUNI refund callback 接到 refund reconciliation service。
 - `[ ]` 如果後續真的要重新開放現金分潤，仍需法務條款、反作弊、對帳與付款 SOP 收斂。
 
 # Latest - 2026-07-01 Affiliate / Referral MVP closeout

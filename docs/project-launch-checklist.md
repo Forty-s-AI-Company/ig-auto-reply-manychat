@@ -2,8 +2,9 @@
 
 - `[x]` Pending referral credits can be cancelled by the refund reconciliation service.
 - `[x]` Available referral credits can be clawed back with an idempotent debit ledger entry.
+- `[x]` Admin-only refund reconciliation route exists for controlled operator handling.
 - `[x]` Focused DB-backed tests cover pending cancellation and available-credit clawback idempotency.
-- `[ ]` Wire a real PayUNI refund callback or operator refund action to the reconciliation service before calling refund handling fully automatic.
+- `[ ]` Wire a real PayUNI refund callback to the reconciliation service before calling refund handling fully automatic.
 - `[ ]` Public paid launch still requires Meta App Review, PayUNI production go-live, and final launch approval.
 
 # 2026-07-02 - Referral credit v1 launch direction
