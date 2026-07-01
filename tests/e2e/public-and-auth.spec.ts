@@ -20,8 +20,8 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   {
     path: "/channels/connect/instagram",
     finalUrl: /\/channels\/connect\/social(?:[?#].*)?$/,
-    heading: /連接 Social Accounts/,
-    bodyText: /Instagram OAuth|已連接帳號|還沒有任何 Social Login 連接/,
+    heading: /連接社群帳號/,
+    bodyText: /Instagram OAuth|已連接帳號|還沒有任何社群登入連接/,
   },
   { path: "/analytics", heading: /分析/, bodyText: /訊息、受眾與廣播表現|資料範圍|聯絡人|總訊息/ },
   { path: "/automations", heading: /自動化/, bodyText: /自動化|流程|資料夾|新增/ },

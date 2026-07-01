@@ -146,10 +146,10 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
 
   return (
     <ChannelConnectionShell
-      title="連接 Social Accounts"
-      description="這一頁是可重用的 OAuth Popup 模組入口。Meta、Telegram 與 Mock provider 都走同一套授權與回傳協定。"
+      title="連接社群帳號"
+      description="從這裡連接 Instagram 帳號，完成授權後會同步到目前工作區的設定。"
       backHref="/channels/connect"
-      backLabel="返回連接渠道"
+      backLabel="返回設定"
       visual={<InstagramVisual />}
     >
       <div className="space-y-6">
@@ -197,29 +197,29 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">
           <h2 className="text-lg font-semibold text-[#17191c]">已連接帳號</h2>
           <p className="mt-2 text-sm text-[#596170]">
-            目前工作區有 {visibleAccounts.length} 個 ConnectedAccount，以及 {channelSummaries.length} 個 Instagram channel。
+            目前工作區有 {visibleAccounts.length} 個社群登入連接，以及 {channelSummaries.length} 個 Instagram 帳號。
           </p>
 
           <div className="mt-4 space-y-3">
             {visibleAccounts.length === 0 ? (
               <>
                 <div className="rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#596170]">
-                  還沒有任何 Social Login 連接。下面任選一個 provider 開始測。
+                  還沒有任何社群登入連接。請從下方選擇可用的登入方式開始授權。
                 </div>
                 {channelSummaries.length > 0 ? (
                   <div className="rounded-md border border-[#d7dbe0] bg-white p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-[#17191c]">目前已綁定的 Instagram channels</p>
+                        <p className="text-sm font-semibold text-[#17191c]">目前已綁定的 Instagram 帳號</p>
                         <p className="mt-1 text-xs text-[#596170]">
-                          這些 channel 已經存在工作區。若懷疑綁錯帳號，可以先解除綁定再重新連接。
+                          這些帳號已經存在工作區。若懷疑綁錯帳號，可以先解除綁定再重新連接。
                         </p>
                       </div>
                       <Link
                         href="/channels#instagram"
                         className="inline-flex items-center gap-1 text-xs font-medium text-[#006fe6] hover:text-[#005fd0]"
                       >
-                        前往 Channels 檢查
+                        前往設定檢查
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Link>
                     </div>
@@ -277,7 +277,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                     <div className="mt-4 rounded-md border border-[#d7dbe0] bg-white p-3">
                       <div className="flex items-center gap-2 text-sm font-medium text-[#17191c]">
                         <Link2 className="h-4 w-4 text-[#006fe6]" />
-                        同步到 Channel
+                        同步到 Instagram 帳號
                       </div>
 
                       {syncedChannels.length > 0 ? (
@@ -287,7 +287,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                               <div>
                                 <p className="text-sm font-medium text-[#17191c]">{channel.name}</p>
                                 <p className="mt-1 text-xs text-[#596170]">
-                                  channelId: {channel.id}
+                                  帳號 ID：{channel.id}
                                   {channel.instagramUsername ? ` · @${channel.instagramUsername}` : ""}
                                 </p>
                               </div>
@@ -305,13 +305,13 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                         </div>
                       ) : (
                         <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-[#b54708]">
-                          <p>目前還沒有找到對應的 channel。這通常代表這筆授權尚未完成同步，或目前 provider 不會直接建立可用 channel。</p>
+                          <p>目前還沒有找到對應的 Instagram 帳號。這通常代表這筆授權尚未完成同步，或目前登入方式不會直接建立可用帳號。</p>
                           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
                             <Link
                               href="/channels#instagram"
                               className="inline-flex items-center gap-1 font-medium text-[#9a3412] hover:text-[#7c2d12]"
                             >
-                              前往 Channels 檢查綁定狀態
+                              前往設定檢查綁定狀態
                               <ExternalLink className="h-3.5 w-3.5" />
                             </Link>
                             <span className="text-[#b54708]">如果是 Meta / Instagram 帳號，請嘗試重新同步或重新連接一次。</span>
@@ -347,7 +347,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                     {isMetaProvider ? (
                       <div className="mt-3 rounded-md bg-[#f8fafc] p-3 text-xs leading-6 text-[#596170]">
                         <p>若目前瀏覽器已登入別的 Meta / Instagram 帳號，請先切換帳號後再授權。</p>
-                        <p>綁錯帳號時，可到 Channels 解除綁定，再回來重新連接。</p>
+                        <p>綁錯帳號時，可到設定解除綁定，再回來重新連接。</p>
                       </div>
                     ) : null}
                     {!uiState.enabled ? (

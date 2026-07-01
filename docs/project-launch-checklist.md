@@ -1,3 +1,11 @@
+# 2026-07-01 - Social connect settings terminology polish
+
+- `[x]` Social connect and OAuth success pages now use `設定` / `社群帳號連接` wording instead of mixed `Channels` / `Social Accounts`.
+- `[x]` Internal channel / connected-account terms have been removed from the primary connection-page user copy.
+- `[x]` Profile empty state now points users to Instagram account setup only.
+- `[x]` Focused source regression covers the terminology cleanup.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Marketing info page light SaaS polish
 
 - `[x]` Templates / Help Center / API docs / Status now share the light SaaS info-page template.

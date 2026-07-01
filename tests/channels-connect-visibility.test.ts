@@ -101,4 +101,27 @@ describe("channel connect visibility", () => {
     expect(source).toContain("受控開通入口");
     expect(source).not.toContain("disabled 入口");
   });
+
+  it("keeps social connect and success pages aligned with settings terminology", () => {
+    const socialSource = readFileSync("src/app/channels/connect/social/page.tsx", "utf8");
+    const successSource = readFileSync("src/app/channels/connect/success/page.tsx", "utf8");
+    const profileSource = readFileSync("src/app/profile/page.tsx", "utf8");
+
+    expect(socialSource).toContain("連接社群帳號");
+    expect(socialSource).toContain("返回設定");
+    expect(socialSource).toContain("前往設定檢查");
+    expect(socialSource).not.toContain("連接 Social Accounts");
+    expect(socialSource).not.toContain("前往 Channels 檢查");
+    expect(socialSource).not.toContain("provider 開始測");
+    expect(socialSource).not.toContain("個 ConnectedAccount");
+    expect(socialSource).not.toContain("個 Instagram channel");
+
+    expect(successSource).toContain("前往設定檢查綁定");
+    expect(successSource).toContain("回到社群帳號連接");
+    expect(successSource).not.toContain("前往 Channels 檢查綁定");
+    expect(successSource).not.toContain("回到 Social Accounts");
+
+    expect(profileSource).toContain("請先新增 Instagram 帳號");
+    expect(profileSource).not.toContain("Facebook Messenger");
+  });
 });

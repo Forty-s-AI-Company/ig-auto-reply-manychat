@@ -1,3 +1,26 @@
+# 2026-07-01 - Social connect settings terminology polish
+
+Task:
+
+- Continue product UI / IA cleanup after public info-page polish, focusing on leftover `Channels` / `Social Accounts` wording in the Instagram connection path.
+
+Changes:
+
+- `/channels/connect/social` now uses `連接社群帳號`, `返回設定`, `前往設定檢查`, and user-facing Instagram account copy instead of developer-facing `ConnectedAccount`, `provider`, or `channel` wording.
+- `/channels/connect/success` now guides users back to `設定` and `社群帳號連接` instead of `Channels` / `Social Accounts`.
+- `/profile` empty platform state now points users to Instagram account connection instead of Facebook Messenger.
+- Extended `tests/channels-connect-visibility.test.ts` to guard the settings terminology and prevent old mixed-language copy from returning.
+
+Validation:
+
+- `npx eslint src/app/channels/connect/social/page.tsx src/app/channels/connect/success/page.tsx src/app/profile/page.tsx tests/channels-connect-visibility.test.ts`: passed.
+- `npx vitest run tests/channels-connect-visibility.test.ts --reporter=dot`: passed.
+- Full validation will run before PR delivery.
+
+Launch impact:
+
+- Copy / IA polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Admin affiliate / payout light-theme polish
 
 Task:
