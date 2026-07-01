@@ -1,3 +1,18 @@
+# 2026-07-01 - Channels inline error feedback polish
+
+Status: improved for Channels / Social connect UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Channel disconnect errors now show inline feedback instead of a native browser alert.
+- OAuth popup callback errors now show inline feedback near the connect button instead of a native browser alert.
+- A focused test guards these channel client components against returning to native alert dialogs.
+
+Launch impact:
+
+- This makes Channels / Social connect feel closer to a finished SaaS interface and reduces the "browser alert = prototype" impression.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Referrals nav label IA polish
 
 Status: improved for navigation clarity; public paid launch remains Hold.

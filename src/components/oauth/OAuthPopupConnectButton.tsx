@@ -28,6 +28,7 @@ export function OAuthPopupConnectButton({
 }: OAuthPopupConnectButtonProps) {
   const popupRef = useRef<Window | null>(null);
   const [pending, setPending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function OAuthPopupConnectButton({
         return;
       }
 
-      window.alert(event.data.message || "社群帳號連接失敗，請稍後再試。");
+      setErrorMessage(event.data.message || "社群帳號連接失敗，請稍後再試。");
     }
 
     window.addEventListener("message", handleMessage);
@@ -65,6 +66,7 @@ export function OAuthPopupConnectButton({
   }
 
   function openPopup() {
+    setErrorMessage("");
     setPending(true);
 
     if (shouldUseRedirectTransport()) {
@@ -98,8 +100,15 @@ export function OAuthPopupConnectButton({
   }
 
   return (
-    <button type="button" onClick={openPopup} disabled={pending} className={className}>
-      {pending ? pendingLabel : children}
-    </button>
+    <span className="inline-flex flex-col items-start gap-2">
+      <button type="button" onClick={openPopup} disabled={pending} className={className}>
+        {pending ? pendingLabel : children}
+      </button>
+      {errorMessage ? (
+        <span className="max-w-sm rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+          {errorMessage}
+        </span>
+      ) : null}
+    </span>
   );
 }

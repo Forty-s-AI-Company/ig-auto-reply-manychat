@@ -1,3 +1,29 @@
+# 2026-07-01 - Channels inline error feedback polish
+
+Task:
+
+- Continue product-completeness sweeps after PR #72.
+- Focus on Channels / Social connect recoverable errors that still used native browser alert dialogs.
+
+Changes:
+
+- Replaced channel disconnect failure `alert()` with inline error feedback below the destructive action button.
+- Replaced OAuth popup failure `window.alert()` with an inline, red feedback block near the connect button.
+- Added a focused Vitest guard to prevent these channel client components from reintroducing native alert dialogs.
+
+Validation:
+
+- `npx eslint src/components/DisconnectChannelButton.tsx src/components/oauth/OAuthPopupConnectButton.tsx tests/channel-client-feedback.test.ts` - passed.
+- `npx vitest run tests/channel-client-feedback.test.ts` - passed.
+- Full lint, unit suite, build, and PR CI are pending in this branch.
+
+Safety:
+
+- Client UX and test coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Sequences submit disabled UX clarity
 
 Task:
