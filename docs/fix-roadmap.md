@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Shared CRUD and Automation delete failure feedback
+
+Current status:
+
+- `[x]` Shared JSON CRUD reload/delete failures now show user-readable fallback messages.
+- `[x]` Automation delete failures now show user-readable fallback messages.
+- `[x]` Source regression coverage guards both failure states.
+
+Remaining:
+
+- `[ ]` Consider replacing remaining native confirm dialogs with project-styled modals in a later UI polish pass.
+
 # Latest - 2026-07-02 Segments and Sequences delete failure feedback
 
 Current status:

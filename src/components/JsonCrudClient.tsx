@@ -70,7 +70,11 @@ export function JsonCrudClient({
 
   async function reload() {
     const response = await fetch(endpoint);
-    if (response.ok) setItems(await response.json());
+    if (response.ok) {
+      setItems(await response.json());
+      return;
+    }
+    setError("重新載入資料失敗，請稍後再試。");
   }
 
   async function createItem() {
@@ -113,7 +117,15 @@ export function JsonCrudClient({
 
   async function deleteItem(id: string) {
     if (!confirm("確定要刪除這筆資料嗎？")) return;
-    await fetch(`${endpoint}/${id}`, { method: "DELETE" });
+    setError("");
+    setFeedback("");
+    const response = await fetch(`${endpoint}/${id}`, { method: "DELETE" });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      setError(typeof data.error === "string" ? data.error : "刪除失敗，請稍後再試。");
+      return;
+    }
+    setFeedback("已刪除資料。");
     await reload();
   }
 

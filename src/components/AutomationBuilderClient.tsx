@@ -1773,9 +1773,21 @@ function FlowBuilderInner({
 
   async function deleteFlow(id: string) {
     if (!confirm("確定要刪除這個自動化嗎？")) return;
-    await fetch(`/api/automations/${id}`, { method: "DELETE" });
-    await reload();
-    if (view === "editor") loadAutomation();
+    setError("");
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/automations/${id}`, { method: "DELETE" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : "刪除自動化失敗，請稍後再試。");
+      }
+      await reload();
+      if (view === "editor") loadAutomation();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "刪除自動化失敗，請稍後再試。");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (view !== "editor") {

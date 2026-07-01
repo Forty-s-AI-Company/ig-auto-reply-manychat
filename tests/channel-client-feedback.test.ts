@@ -18,6 +18,23 @@ describe("channel client feedback", () => {
     }
   });
 
+  it("keeps shared JSON CRUD delete failures visible to users", () => {
+    const source = readFileSync("src/components/JsonCrudClient.tsx", "utf8");
+
+    expect(source).toContain('setError("重新載入資料失敗，請稍後再試。")');
+    expect(source).toContain('setError(typeof data.error === "string" ? data.error : "刪除失敗，請稍後再試。")');
+    expect(source).toContain('setFeedback("已刪除資料。")');
+    expect(source).not.toContain('await fetch(`${endpoint}/${id}`, { method: "DELETE" });\n    await reload();');
+  });
+
+  it("keeps automation delete failures visible to users", () => {
+    const source = readFileSync("src/components/AutomationBuilderClient.tsx", "utf8");
+
+    expect(source).toContain('"刪除自動化失敗，請稍後再試。"');
+    expect(source).toContain('if (!response.ok)');
+    expect(source).not.toContain('await fetch(`/api/automations/${id}`, { method: "DELETE" });\n    await reload();');
+  });
+
   it("keeps Instagram channel action controls aligned with the light settings UI", () => {
     const disconnect = readFileSync("src/components/DisconnectChannelButton.tsx", "utf8");
     const profileRefresh = readFileSync("src/components/RefreshInstagramProfileButton.tsx", "utf8");

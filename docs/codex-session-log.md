@@ -1,3 +1,26 @@
+# 2026-07-02 - Shared CRUD and Automation delete failure feedback
+
+Task:
+
+- Make shared CRUD and Automation destructive actions show clear feedback when delete or reload requests fail.
+
+Changes:
+
+- Added shared JSON CRUD reload/delete failure messages instead of silently reloading after a failed delete.
+- Added Automation delete response handling with user-readable fallback errors.
+- Extended source regression coverage for both delete failure paths.
+
+Validation:
+
+- `npx vitest run tests/channel-client-feedback.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+
+Launch impact:
+
+- Improves visible action reliability without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Segments and Sequences delete failure feedback
 
 Task:
