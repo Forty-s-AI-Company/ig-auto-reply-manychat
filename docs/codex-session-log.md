@@ -1,3 +1,27 @@
+# 2026-07-02 - Sequences mobile form state stability
+
+Task:
+
+- Fix the `full-release-auth-smoke` mobile CI failure where clearing the sequence name left the save button enabled.
+
+Changes:
+
+- Centralized sequence-name input syncing in `SequencesClient`.
+- Wired the name input through both capture and bubble input/change handlers so mobile Chromium cannot leave the DOM value and React state out of sync.
+- Updated the source-level regression test for the stronger form-state wiring.
+
+Validation:
+
+- `npx vitest run tests/sequences-form-state.test.ts --reporter=dot` passed.
+- `npm run e2e:admin:ensure && npm run test:e2e:auth` passed: 27 passed / 1 skipped.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed; one Windows Vitest multi-file batch crashed with `3221225477`, then every file in that batch passed on diagnostic one-by-one rerun.
+
+Launch impact:
+
+- Improves sequence form reliability and CI stability without changing schema, production DB, deployment, Meta review, or PayUNI production mode.
+
 # 2026-07-02 - Channels Instagram action disabled-reason clarity
 
 Task:

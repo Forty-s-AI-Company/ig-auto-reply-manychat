@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Sequences mobile form state stability
+
+Current status:
+
+- `[x]` Sequence name input now syncs through shared input/change handlers.
+- `[x]` Mobile full-release auth smoke no longer leaves the save button enabled after clearing the sequence name locally.
+- `[x]` Source regression coverage guards the capture and bubble handler wiring.
+
+Remaining:
+
+- `[ ]` Continue monitoring GitHub full-release-auth-smoke after PR #106 updates; only fix further if the same CI path fails again.
+
 # Latest - 2026-07-02 Channels Instagram action disabled-reason clarity
 
 Current status:
