@@ -14,19 +14,22 @@ function formatDate(value: Date) {
 
 function formatPayoutStatus(status: string) {
   const labels: Record<string, string> = {
+    requested: "待審核",
     pending: "待審核",
     approved: "已核准",
     rejected: "已退回",
+    batched: "已入批次",
     paid: "已付款",
     failed: "付款失敗",
+    cancelled: "已取消",
   };
 
   return labels[status] ?? status;
 }
 
 function statusClass(status: string) {
-  if (status === "paid" || status === "approved") return "bg-green-50 text-green-700";
-  if (status === "failed" || status === "rejected") return "bg-red-50 text-red-700";
+  if (status === "paid" || status === "approved" || status === "batched") return "bg-green-50 text-green-700";
+  if (status === "failed" || status === "rejected" || status === "cancelled") return "bg-red-50 text-red-700";
   return "bg-amber-50 text-amber-800";
 }
 
@@ -60,7 +63,9 @@ export default async function AdminPayoutsPage() {
       <section className="ip-dashboard-card overflow-hidden">
         <div className="border-b border-[var(--border-soft)] px-4 py-4">
           <h2 className="text-base font-semibold text-[var(--text-primary)]">提領申請</h2>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">審核 Creator / Affiliate 的提領申請與付款狀態。</p>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            審核 Creator / Affiliate 的提領申請與付款狀態。核准只代表進入批次對帳，不會自動匯款。
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -72,6 +77,7 @@ export default async function AdminPayoutsPage() {
                 <th className="px-4 py-3 font-medium">金額</th>
                 <th className="px-4 py-3 font-medium">狀態</th>
                 <th className="px-4 py-3 font-medium">申請日</th>
+                <th className="px-4 py-3 font-medium">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border-soft)]">
@@ -86,11 +92,35 @@ export default async function AdminPayoutsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(request.requestedAt)}</td>
+                  <td className="px-4 py-3">
+                    {request.status === "requested" ? (
+                      <div className="flex flex-wrap gap-2">
+                        <form action={`/api/admin/payouts/${request.id}/approve`} method="post">
+                          <button
+                            type="submit"
+                            className="inline-flex h-8 items-center rounded-md bg-[var(--primary)] px-3 text-xs font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]"
+                          >
+                            核准
+                          </button>
+                        </form>
+                        <form action={`/api/admin/payouts/${request.id}/reject`} method="post">
+                          <button
+                            type="submit"
+                            className="inline-flex h-8 items-center rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 hover:bg-red-100"
+                          >
+                            退回
+                          </button>
+                        </form>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-[var(--text-muted)]">已進入後續流程</span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {requests.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-[var(--text-secondary)]">
+                  <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-secondary)]">
                     目前沒有待處理的提領申請。
                   </td>
                 </tr>

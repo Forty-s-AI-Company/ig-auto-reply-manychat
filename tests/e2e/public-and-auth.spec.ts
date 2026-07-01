@@ -227,6 +227,19 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("referrals-url")).toContainText(/ref=|邀請|http/);
     await expect(page.getByTestId("referrals-records-card")).toBeVisible();
     await expect(page.locator("body")).toContainText(/目前推薦活動只記錄邀請連結|有效推薦會讓雙方/);
+    await expect(page.locator("body")).toContainText("付費轉換");
+    await expect(page.locator("body")).toContainText("推薦活動與聯盟分潤的差異");
+    await expect(page.locator("body")).toContainText("點擊追蹤");
+    await expect(page.locator("body")).toContainText("不顯示假點擊數");
+  });
+
+  test("shows Affiliate payout gates without a fake self-service payout", async ({ page }) => {
+    await page.goto("/affiliate", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "聯盟分潤" })).toBeVisible();
+    await expect(page.locator("body")).toContainText("提領狀態");
+    await expect(page.locator("body")).toContainText("分潤安全規則");
+    await expect(page.getByRole("button", { name: "申請提領（營運審核開通）" })).toBeDisabled();
+    await expect(page.locator("body")).toContainText("不自動匯款");
   });
 
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {

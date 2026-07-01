@@ -89,6 +89,14 @@ export async function getReferralDashboard(userId: string, db: DbOrTx = getDb())
     creditsEarned: walletCredits
       .filter((entry) => entry.type === "credit" && entry.status !== "cancelled")
       .reduce((sum, entry) => sum + entry.amount, 0),
+    metrics: {
+      clickTrackingAvailable: false,
+      signupsTracked: attributions.length,
+      activatedCount: attributions.filter((item) => item.status === "activated" || item.status === "paid").length,
+      paidConversions: attributions.filter((item) => item.status === "paid" || item.firstPaidAt).length,
+      pendingCount: attributions.filter((item) => item.status === "pending").length,
+      invalidCount: attributions.filter((item) => item.status === "invalid").length,
+    },
   };
 }
 

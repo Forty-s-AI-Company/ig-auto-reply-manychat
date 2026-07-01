@@ -1,3 +1,39 @@
+# 2026-07-01 - Affiliate / Referral MVP closeout
+
+Task:
+
+- Bring the previously deferred affiliate / referral cash-commission feature back into the product readiness track without touching production DB, production deployment, PayUNI production, or Meta App Review.
+
+Audit:
+
+- Existing schema already includes referral codes, attributions, rewards, wallet ledger, affiliate profiles, commissions, payout requests, payout batches, and coupons.
+- Referral signup and first-payment attribution already exist through signup and billing payment completion.
+- Gaps were mostly product-surface and operations gaps: no verifiable click metric, unclear referral-vs-affiliate boundary, no payout blocker UX, admin payout table was read-only, and affiliate apply route lacked same-origin / rate-limit protection.
+
+Changes:
+
+- Referral dashboard now derives signup, activation, paid-conversion, pending, invalid, and click-tracking availability metrics from existing data.
+- Referral page now separates general referral rewards from affiliate cash commissions and marks click tracking as controlled-opening instead of showing fake click counts.
+- Affiliate dashboard now returns commission buckets, payout profile completeness, payout readiness, and blocker reasons.
+- Affiliate page now shows payout blockers, anti-fraud / self-referral / refund-waiting explanations, and keeps self-service payout disabled until operations approval.
+- Admin payout requests now expose approve / reject controls using existing admin API routes, with copy clarifying that approval does not automatically transfer money.
+- `POST /api/affiliate/apply` now requires same-origin and rate-limit checks.
+- Added focused tests for affiliate-apply route security and referral / affiliate MVP UX guards.
+
+Validation:
+
+- `npx vitest run tests/affiliate-apply-route.test.ts tests/referral-affiliate-mvp-ui.test.ts`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed, including the known Windows Vitest batch crash fallback where every file passed on individual rerun.
+- `npm run build`: passed. Prisma generate reported a local Windows engine file lock and reused the existing generated client; Next build completed successfully.
+- `npm run test:e2e:auth`: passed, 25 passed / 1 expected skipped mobile-menu case.
+
+Launch impact:
+
+- Affiliate / referral is closer to a verifiable pre-launch MVP.
+- Public cash payout remains Hold until click tracking, payout profile, fraud policy, refund / clawback SOP, payout reconciliation, legal terms, and final operations approval are complete.
+- No production DB, production deployment, PayUNI production switch, Meta App Review action, secret output, migration, or production `db push` was performed.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Task:

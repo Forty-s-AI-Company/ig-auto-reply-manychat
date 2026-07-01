@@ -1,3 +1,19 @@
+# 2026-07-01 - Affiliate application write guard
+
+Scope:
+
+- Added same-origin and rate-limit protection to `POST /api/affiliate/apply`.
+- Kept the change scoped to affiliate application creation; no production DB action, migration, deployment, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- Affiliate application writes now follow the same CSRF-style origin guard and noisy-write throttling pattern as other sensitive user actions.
+- Referral and affiliate UI now avoids fake click counts and makes payout blockers explicit, reducing misleading financial-state exposure.
+
+Residual risk:
+
+- Full affiliate cash payout launch still needs final terms, anti-fraud review, refund / clawback policy, and payout reconciliation SOP approval.
+
 # 2026-06-28 - Inbox conversation write guards and gated UX cleanup
 
 Scope:

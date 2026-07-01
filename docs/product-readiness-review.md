@@ -1,3 +1,19 @@
+# 2026-07-01 - Affiliate / Referral MVP closeout
+
+Status: improved for affiliate readiness; public paid launch remains Hold.
+
+What changed:
+
+- Referral and affiliate are now presented as separate product concepts.
+- Referral page no longer implies unavailable click tracking; it only surfaces signup, activation, paid conversion, and confirmed credit metrics.
+- Affiliate page now explains commission waiting periods, payout blockers, anti-fraud boundaries, and the operator-reviewed payout process.
+- Admin payout review now has basic approve / reject controls, so internal operators are not left with a read-only table.
+
+Readiness implication:
+
+- Affiliate / referral is closer to a verifiable MVP, but public cash-payout launch still requires legal / fraud / operations sign-off.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Status: improved for product IA consistency; public paid launch remains Hold.
