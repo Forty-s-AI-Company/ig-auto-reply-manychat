@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Sequences hydration-safe save guard
+
+Current status:
+
+- `[x]` Sequences save action now stays disabled until the client form has hydrated.
+- `[x]` Empty-name disabled reason remains explicit after hydration.
+- `[x]` Source regression coverage guards the hydration gate and live name-state sync.
+
+Remaining:
+
+- `[ ]` Re-run master full-release-auth-smoke after merging the guard to verify the mobile CI race is gone.
+
 # Latest - 2026-07-02 Segments empty-name disabled UX
 
 Current status:

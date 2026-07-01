@@ -1,3 +1,28 @@
+# 2026-07-02 - Sequences hydration-safe save guard
+
+Task:
+
+- Fix the master CI mobile full-release smoke failure where the Sequences save button could stay enabled after the name input was cleared.
+
+Changes:
+
+- Kept the Sequences save action disabled until the client form has hydrated.
+- Preserved the empty-name disabled reason after hydration.
+- Extended source regression coverage for the hydration guard and live name-state sync.
+
+Validation:
+
+- `npx vitest run tests/sequences-form-state.test.ts --reporter=dot` passed.
+- `npx playwright test tests/e2e/public-and-auth.spec.ts -g "Sequences disabled states"` passed on desktop and mobile Chrome.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed.
+- `npm run e2e:admin:ensure && npm run test:e2e:auth` passed the Sequences desktop/mobile case, but the full local suite still hit an unrelated `/billing` route timeout in the broader authenticated launch-route sweep.
+
+Launch impact:
+
+- Improves Sequences form stability and prevents pre-hydration submit races without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Segments empty-name disabled UX
 
 Task:
