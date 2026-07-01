@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Analytics and OAuth sync user-facing copy polish
+
+Current status:
+
+- `[x]` Analytics empty state no longer tells users to go to `Channels`; it points to `設定`.
+- `[x]` OAuth re-sync button and toast titles use Instagram language instead of `Channel`.
+- `[x]` OAuth re-sync API no longer returns `ConnectedAccount` / `Channel sync failed` as user-facing messages.
+- `[x]` OAuth callback success messages now use Chinese sync copy.
+
+Remaining:
+
+- `[ ]` Continue product-completeness sweeps for remaining visible-but-unusable controls and provider-copy inconsistencies.
+
 # Latest - 2026-07-01 Social connect settings terminology polish
 
 Current status:

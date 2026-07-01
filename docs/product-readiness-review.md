@@ -1,3 +1,18 @@
+# 2026-07-01 - Analytics and OAuth sync user-facing copy polish
+
+Status: improved for product IA and error-message clarity; public paid launch remains Hold.
+
+What changed:
+
+- Analytics no-data state now uses the Settings IA language instead of the old Channels naming.
+- OAuth account re-sync actions and failures now use user-facing Instagram account language rather than internal ConnectedAccount / Channel phrasing.
+- Generic OAuth callback success copy is localized.
+
+Readiness implication:
+
+- Users are less likely to interpret sync and analytics states as unfinished implementation surfaces.
+- This does not change OAuth behavior, token handling, production data, Meta review, PayUNI production, or deployment gates.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Status: improved for product IA consistency; public paid launch remains Hold.

@@ -1,3 +1,27 @@
+# 2026-07-01 - Analytics and OAuth sync user-facing copy polish
+
+Task:
+
+- Continue product-completeness copy cleanup after Social connect terminology polish, focusing on user-visible Analytics empty-state and OAuth account re-sync messages that still used `Channels` / `Channel` / internal account wording.
+
+Changes:
+
+- Analytics no-Instagram empty state now guides users to `設定` instead of `Channels`.
+- OAuth account re-sync API errors now use user-facing `社群帳號連接` / Instagram authorization copy instead of `ConnectedAccount` or `Channel sync failed`.
+- OAuth callback success messages now use Chinese Instagram account sync copy.
+- `ResyncConnectedAccountButton` now says `重新同步 Instagram`, with `Instagram 同步完成 / 失敗` toast titles.
+- Extended focused tests for Analytics and Social connect terminology.
+
+Validation:
+
+- `npx eslint src/lib/analytics-state.ts src/app/api/oauth/accounts/[id]/sync/route.ts src/app/api/oauth/[provider]/callback/route.ts src/components/oauth/ResyncConnectedAccountButton.tsx tests/analytics-state.test.ts tests/channels-connect-visibility.test.ts`: passed.
+- `npx vitest run tests/analytics-state.test.ts tests/channels-connect-visibility.test.ts --reporter=dot`: passed.
+- Full validation will run before PR delivery.
+
+Launch impact:
+
+- Copy / error-message polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Task:

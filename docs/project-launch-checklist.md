@@ -1,3 +1,11 @@
+# 2026-07-01 - Analytics and OAuth sync user-facing copy polish
+
+- `[x]` Analytics no-Instagram guidance points users to Settings terminology.
+- `[x]` OAuth account re-sync user copy no longer exposes ConnectedAccount / Channel sync wording.
+- `[x]` OAuth callback success message is localized.
+- `[x]` Focused source tests cover these copy boundaries.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 - `[x]` Social connect and OAuth success pages now use `設定` / `社群帳號連接` wording instead of mixed `Channels` / `Social Accounts`.

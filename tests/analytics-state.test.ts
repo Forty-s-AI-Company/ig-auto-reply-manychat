@@ -21,6 +21,8 @@ describe("buildAnalyticsState", () => {
     expect(state.bannerTone).toBe("warning");
     expect(state.bannerTitle).toBe("尚未連接 Instagram 帳號");
     expect(state.bannerActionHref).toBe("/channels/connect");
+    expect(state.bannerBody).toContain("設定");
+    expect(state.bannerBody).not.toContain("Channels");
     expect(state.deliveryRateLabel).toBe("尚未有發送紀錄");
     expect(state.automationRateLabel).toBe("尚未建立流程");
   });

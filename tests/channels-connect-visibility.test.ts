@@ -106,6 +106,9 @@ describe("channel connect visibility", () => {
     const socialSource = readFileSync("src/app/channels/connect/social/page.tsx", "utf8");
     const successSource = readFileSync("src/app/channels/connect/success/page.tsx", "utf8");
     const profileSource = readFileSync("src/app/profile/page.tsx", "utf8");
+    const resyncButtonSource = readFileSync("src/components/oauth/ResyncConnectedAccountButton.tsx", "utf8");
+    const oauthSyncRouteSource = readFileSync("src/app/api/oauth/accounts/[id]/sync/route.ts", "utf8");
+    const oauthCallbackRouteSource = readFileSync("src/app/api/oauth/[provider]/callback/route.ts", "utf8");
 
     expect(socialSource).toContain("連接社群帳號");
     expect(socialSource).toContain("返回設定");
@@ -123,5 +126,19 @@ describe("channel connect visibility", () => {
 
     expect(profileSource).toContain("請先新增 Instagram 帳號");
     expect(profileSource).not.toContain("Facebook Messenger");
+
+    expect(resyncButtonSource).toContain("重新同步 Instagram");
+    expect(resyncButtonSource).not.toContain("重新同步 Channel");
+    expect(resyncButtonSource).not.toContain("個 channel");
+
+    expect(oauthSyncRouteSource).toContain("這筆社群帳號連接沒有可用授權");
+    expect(oauthSyncRouteSource).not.toContain("這筆 ConnectedAccount");
+    expect(oauthSyncRouteSource).not.toContain("Connected account not found");
+    expect(oauthSyncRouteSource).not.toContain("Channel sync failed");
+
+    expect(oauthCallbackRouteSource).toContain("已同步");
+    expect(oauthCallbackRouteSource).toContain("已成功連接社群帳號");
+    expect(oauthCallbackRouteSource).not.toContain("Connected successfully");
+    expect(oauthCallbackRouteSource).not.toContain("channel(s)");
   });
 });
