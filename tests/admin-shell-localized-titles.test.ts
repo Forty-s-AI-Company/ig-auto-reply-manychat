@@ -22,7 +22,7 @@ describe("admin shell localized titles", () => {
     expect(segmentsPage).not.toContain('AdminShell title="Segments"');
     expect(instagramDefaultReplyPage).toContain('AdminShell title="Instagram 預設回覆"');
     expect(instagramDefaultReplyPage).not.toContain('AdminShell title="Instagram Default Reply"');
-    expect(adminPayoutsPage).toContain('AdminShell title="提領管理"');
+    expect(adminPayoutsPage).toMatch(/AdminShell\s+title="提領管理"/);
     expect(adminPayoutsPage).not.toContain('AdminShell title="Admin Payouts"');
     expect(adminPayoutsPage).not.toContain(">Batches<");
     expect(adminPayoutBatchesPage).toContain('AdminShell title="提領批次"');

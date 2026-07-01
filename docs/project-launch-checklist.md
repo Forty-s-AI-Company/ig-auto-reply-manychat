@@ -1,8 +1,15 @@
+# 2026-07-01 - Admin affiliate / payout light-theme polish
+
+- `[x]` Admin affiliate / payout pages have been aligned with the light dashboard surface.
+- `[x]` Admin affiliate / payout tables now use Chinese status labels and empty states instead of dark raw list rows.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Simple-release analytics smoke stability follow-up
 
-- [x] Simple-release Analytics smoke now tolerates a transient Next dev manifest race by retrying the route once.
-- [x] No production code path, product behavior, DB, migration, or deployment policy changed.
-- [ ] GitHub master CI should return green after the follow-up PR is merged.
+- `[x]` Simple-release Analytics smoke now tolerates a transient Next dev manifest race by retrying the route once.
+- `[x]` No production code path, product behavior, DB, migration, or deployment policy changed.
+- `[x]` GitHub master CI returned green after the follow-up PR was merged.
 # 2026-07-01 - Signup light-theme and form UX polish
 
 - `[x]` 註冊頁已與登入頁對齊成亮色 public auth surface。

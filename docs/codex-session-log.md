@@ -1,7 +1,30 @@
+# 2026-07-01 - Admin affiliate / payout light-theme polish
+
+Task:
+
+- Continue product UI completeness after signup polish, focusing on admin affiliate and payout pages that still used dark internal-tool styling.
+
+Changes:
+
+- `/admin/affiliates`, `/admin/payouts`, and `/admin/payouts/batches` now use light dashboard cards, semantic tables, Chinese status labels, visible focus states, and empty states.
+- `tests/admin-affiliate-payout-light-theme.test.ts` guards against dark admin page regressions.
+
+Validation:
+
+- `npx eslint src/app/admin/affiliates/page.tsx src/app/admin/payouts/page.tsx src/app/admin/payouts/batches/page.tsx tests/admin-affiliate-payout-light-theme.test.ts tests/admin-shell-localized-titles.test.ts`: passed.
+- `npx vitest run tests/admin-affiliate-payout-light-theme.test.ts tests/admin-shell-localized-titles.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Windows Vitest batch access-violation diagnostics reran affected files individually and confirmed they pass.
+- `npm run build`: passed. Existing Windows Prisma engine lock fallback reused the generated client.
+
+Launch impact:
+
+- Admin UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Simple-release analytics smoke stability follow-up
 
-- Master CI after PR #86 exposed a mobile simple-release smoke flake on /analytics where Next dev briefly missed .next/dev/server/app/analytics/page/build-manifest.json.
-- 	ests/e2e/simple-release.spec.ts now retries the Analytics navigation once before asserting the controlled simple-release broadcast banner.
+- Master CI after PR #86 exposed a mobile simple-release smoke flake on `/analytics` where Next dev briefly missed `.next/dev/server/app/analytics/page/build-manifest.json`.
+- `tests/e2e/simple-release.spec.ts` now retries the Analytics navigation once before asserting the controlled simple-release broadcast banner.
 - This is a test-runner stability change only; no product logic, production DB, migration, Production deployment, Meta App Review, or PayUNI production change.
 # 2026-07-01 - Segments light-theme polish
 

@@ -1,3 +1,15 @@
+# 2026-07-01 - Admin affiliate / payout light-theme polish
+
+Status: improved for internal operations readiness; public paid launch remains Hold.
+
+What changed:
+
+- Admin affiliate and payout screens now align with the shared light SaaS dashboard system.
+- Payout requests, payout batches, and affiliate applications now use semantic tables, user-facing Chinese status labels, and empty states.
+
+Remaining launch gates:
+
+- Public paid launch still requires Meta App Review, PayUNI production go-live, and final launch approval.
 # 2026-07-01 - Signup light-theme and form UX polish
 
 Status: improved for public auth consistency; public paid launch remains Hold.

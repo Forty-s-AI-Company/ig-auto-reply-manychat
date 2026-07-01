@@ -1,8 +1,20 @@
+# Latest - 2026-07-01 Admin affiliate / payout light-theme polish
+
+Current status:
+
+- [x] Admin affiliate / payout pages no longer use the old dark internal-tool surface.
+- [x] Affiliate and payout status values now have user-facing Chinese labels.
+- [x] Targeted and full validation passed locally.
+
+Next safe action:
+
+- Open PR and let CI confirm the admin UI polish.
+
 # 2026-07-01 - Simple-release analytics smoke stability follow-up
 
-- [x] CI flake source identified: mobile simple-release Analytics smoke can hit a Next dev manifest race before nalytics-state-banner is rendered.
+- [x] CI flake source identified: mobile simple-release Analytics smoke can hit a Next dev manifest race before `analytics-state-banner` is rendered.
 - [x] Analytics simple-release smoke now retries navigation once before failing the assertion.
-- [ ] Follow-up PR CI needs to confirm the simple-release smoke is green again on GitHub Actions.
+- [x] Follow-up PR CI confirmed the simple-release smoke is green again on GitHub Actions.
 # Latest - 2026-07-01 Signup light-theme and form UX polish
 
 Current status:
