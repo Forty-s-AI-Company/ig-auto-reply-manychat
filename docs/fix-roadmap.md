@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Automations editor more-actions disabled copy polish
+
+Current status:
+
+- `[x]` Automations editor icon-only `更多操作` control remains disabled, but its title no longer uses implementation-flavored `沒有接好` copy.
+- `[x]` The disabled title now explains copy, archive, export, and audit-log requirements.
+- `[x]` Authenticated smoke covers the editor more-actions disabled title.
+
+Remaining:
+
+- `[ ]` PR CI still needs to run seeded authenticated smoke.
+- `[ ]` Continue safe product-completeness sweeps only if another visible-but-unusable control is found.
+
 # Latest - 2026-07-01 Automations trash disabled copy polish
 
 Current status:

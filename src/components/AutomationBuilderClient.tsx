@@ -2301,8 +2301,9 @@ function FlowBuilderInner({
           <button
             type="button"
             disabled
-            title="更多操作目前還沒有接好，先保留清楚的 disabled 狀態。"
+            title="更多操作屬於受控開通功能，需先完成複製、封存、匯出與稽核紀錄設計。"
             aria-disabled="true"
+            data-testid="automation-editor-more-disabled"
             className="cursor-not-allowed rounded-md border border-zinc-300 p-2 text-zinc-400 opacity-60"
           >
             <MoreVertical className="h-4 w-4" />
