@@ -1,3 +1,27 @@
+# 2026-07-01 - Json CRUD inline feedback polish
+
+Task:
+
+- Continue the visible-but-unusable / prototype-feeling sweep after PR #73.
+- Focus on remaining native alert dialogs in the generic Json CRUD client.
+
+Changes:
+
+- Replaced queue and preview alert dialogs with inline error / success feedback.
+- Added inline success feedback for create and update actions.
+- Extended the focused client feedback guard to cover `JsonCrudClient`.
+
+Validation:
+
+- Pending in this branch: focused lint, focused test, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- Client UX and test coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Channels inline error feedback polish
 
 Task:

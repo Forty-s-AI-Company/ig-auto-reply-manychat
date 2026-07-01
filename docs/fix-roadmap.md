@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Json CRUD inline feedback polish
+
+Current status:
+
+- `[x]` Json CRUD queue and preview actions no longer use native browser alert dialogs.
+- `[x]` Create, update, queue, and preview actions now share inline success/error feedback.
+- `[x]` Focused client feedback guard covers Json CRUD alongside Channels / Social connect feedback.
+
+Remaining:
+
+- `[ ]` PR CI should rerun the full smoke suite.
+- `[ ]` Longer-term work can replace the generic Json CRUD screen with domain-specific Tags / Knowledge Base screens.
+
 # Latest - 2026-07-01 Channels inline error feedback polish
 
 Current status:

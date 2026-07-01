@@ -1,3 +1,18 @@
+# 2026-07-01 - Json CRUD inline feedback polish
+
+Status: improved for internal admin-style product surfaces; public paid launch remains Hold.
+
+What changed:
+
+- Generic Json CRUD actions now show inline feedback instead of native browser alerts.
+- Create, update, queue, and preview actions now provide consistent status messaging.
+- The client feedback guard now also covers the generic Json CRUD client.
+
+Launch impact:
+
+- This removes another prototype-feeling interaction from Tags / Knowledge Base style screens.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Channels inline error feedback polish
 
 Status: improved for Channels / Social connect UX clarity; public paid launch remains Hold.
