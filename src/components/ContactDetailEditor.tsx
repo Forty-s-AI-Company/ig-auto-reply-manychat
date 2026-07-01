@@ -194,32 +194,45 @@ export function ContactDetailEditor({
           <label className="block text-sm font-medium text-[#344054]">
             使用者名稱
             <input
+              id="contact-detail-username"
+              name="username"
               data-testid="contact-detail-username"
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
-              placeholder="Instagram username"
+              autoComplete="username"
+              spellCheck={false}
+              placeholder="例如：carry.digital.nomad"
             />
           </label>
           <label className="block text-sm font-medium text-[#344054]">
             Email
             <input
+              id="contact-detail-email"
+              name="email"
               data-testid="contact-detail-email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
-              placeholder="name@example.com"
+              autoComplete="email"
+              spellCheck={false}
+              placeholder="例如：hello@example.com"
             />
           </label>
           <label className="block text-sm font-medium text-[#344054]">
             電話
             <input
+              id="contact-detail-phone"
+              name="phone"
               data-testid="contact-detail-phone"
+              type="tel"
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
               className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
-              placeholder="+886..."
+              autoComplete="tel"
+              inputMode="tel"
+              placeholder="例如：0912 345 678"
             />
           </label>
         </div>
@@ -287,6 +300,7 @@ export function ContactDetailEditor({
       {toast ? (
         <div
           role="status"
+          aria-live="polite"
           className={`fixed bottom-5 right-5 z-50 w-[min(360px,calc(100vw-40px))] rounded-md border bg-white px-4 py-3 text-sm shadow-[0_16px_48px_rgba(16,24,40,0.18)] ${
             toast.tone === "success" ? "border-green-200 text-green-900" : "border-red-200 text-red-900"
           }`}

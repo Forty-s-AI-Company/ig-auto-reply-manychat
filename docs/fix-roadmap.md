@@ -1,3 +1,18 @@
+# Latest - 2026-07-01 Contacts / Automations form accessibility polish
+
+Current status:
+
+- `[x]` Contacts search no longer relies only on placeholder text; it now has an accessible label and stable autocomplete behavior.
+- `[x]` Contact detail username / email / phone fields now include browser-friendly names, autocomplete, tel semantics, and clearer examples.
+- `[x]` Contacts inline success / error feedback now uses live-region semantics.
+- `[x]` Automations editor has fewer prototype-feeling details: loading copy uses `…`, decorative icons are hidden from assistive tech, and icon-only controls have labels.
+- `[x]` Focused lint, full lint, unit suite, and build passed locally.
+
+Remaining:
+
+- `[ ]` CI authenticated Playwright smoke should run the Contacts / Automations assertions with seeded test DB.
+- `[ ]` Continue product-completeness sweeps only if another real visible-but-unusable control appears.
+
 # Latest - 2026-07-01 Automations editor more-actions disabled copy polish
 
 Current status:

@@ -1,3 +1,11 @@
+# 2026-07-01 - Contacts / Automations form accessibility polish
+
+- `[x]` Contacts search, contact detail fields, and inline feedback now have clearer accessibility semantics.
+- `[x]` Automations editor copy and icon-only controls have been polished to reduce prototype feel.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` CI authenticated Playwright smoke should run the seeded Contacts / Automations assertions.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Automations editor more-actions disabled copy polish
 
 - `[x]` Automations editor `更多操作` disabled title no longer uses implementation-flavored `沒有接好` copy.

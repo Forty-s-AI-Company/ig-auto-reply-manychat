@@ -1,3 +1,18 @@
+# 2026-07-01 - Contacts / Automations form accessibility polish
+
+Status: improved for product polish and accessibility; public paid launch remains Hold.
+
+- Contacts search now has a proper accessible label and more polished placeholder copy.
+- Contact detail username, Email, and phone fields now provide browser autocomplete metadata and clearer example placeholders.
+- Contacts inline success and error feedback now use assistive live-region semantics.
+- Automations editor copy and icon-only controls were tightened so the existing editor feels less like a prototype.
+- Local focused lint, full lint, unit suite, build, and public smoke checks passed; authenticated Playwright coverage is expected to run in CI with seeded test DB.
+
+Readiness implication:
+
+- This is a low-risk product-completeness polish pass. It does not change launch gates.
+- Public paid launch still remains Hold because Meta App Review and PayUNI production gates are human-controlled.
+
 # 2026-07-01 - Automations editor more-actions disabled copy polish
 
 Status: improved for Automations editor disabled UX clarity; public paid launch remains Hold.
