@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Json CRUD light-theme polish
+
+Current status:
+
+- `[x]` Generic Json CRUD screens now use the same light dashboard language as the rest of InboxPilot.
+- `[x]` Tags / Knowledge Base style pages no longer look like dark developer tools inside the SaaS dashboard.
+- `[x]` Dialogs, JSON editors, item cards, preview metrics, and preview tables now use white cards, `#f8fafc` surfaces, and `#d7dbe0` borders.
+
+Remaining:
+
+- `[ ]` PR CI should rerun the full smoke suite.
+- `[ ]` Longer-term product work can replace Json CRUD with domain-specific forms where needed.
+
 # Latest - 2026-07-01 Json CRUD inline feedback polish
 
 Current status:
