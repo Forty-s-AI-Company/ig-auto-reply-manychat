@@ -655,3 +655,9 @@ Current decision:
 - `[x]` Inbox sequence disabled tooltip uses `Instagram 設定` in the simple release focus list.
 - `[x]` Profile menu controls have keyboard focus states and named language select coverage.
 - `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
+
+## 2026-07-01 - Preview deploy batching rule
+
+- `[x]` 小型 UI / 文案 / disabled UX 修正先累積成同一主題閉環，再送 Vercel Preview。
+- `[x]` 大功能、完整驗證或需要交付時才推進 Preview / deployment，避免頻繁觸發 build rate limit。
+- `[x]` AI_TEAM / 交付流程文件已寫明 preview/build 額度限制與交付節奏。

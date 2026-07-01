@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import { config } from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import { loadProjectEnv } from "./load-env.mjs";
 
 const PRODUCTION_SUPABASE_PROJECT_REF = "lmwvzskffzozuiamjxvc";
 const DEFAULT_WORKSPACE_ID = "default-workspace";
@@ -8,8 +8,7 @@ const DEFAULT_WORKSPACE_SLUG = "default";
 const E2E_CHANNEL_NAME = "Instagram E2E";
 const E2E_ALT_CHANNEL_NAME = "Instagram E2E Alt";
 
-config({ path: ".env", quiet: true });
-config({ path: ".env.local", override: false, quiet: true });
+loadProjectEnv();
 
 const testDatabaseUrl = process.env.TEST_DATABASE_URL?.trim();
 
