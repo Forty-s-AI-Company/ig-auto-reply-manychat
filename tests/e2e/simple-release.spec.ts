@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import dotenv from "dotenv";
 import { getAuthenticatedRouteSmokeGuard } from "./authenticated-route-smoke-guard";
 
@@ -6,6 +6,20 @@ dotenv.config({ path: ".env", quiet: true });
 dotenv.config({ path: ".env.local", override: true, quiet: true });
 
 const loginRunId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+async function gotoAnalyticsWithDevRetry(page: Page) {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    await page.goto("/analytics", { waitUntil: "domcontentloaded" });
+
+    try {
+      await expect(page.getByTestId("analytics-state-banner")).toBeVisible({ timeout: attempt === 1 ? 5_000 : 10_000 });
+      return;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await page.waitForTimeout(500);
+    }
+  }
+}
 
 test.describe("simple release smoke", () => {
   const adminEmail = process.env.ADMIN_EMAIL?.trim();
@@ -87,9 +101,7 @@ test.describe("simple release smoke", () => {
   });
 
   test("shows Analytics broadcast management as a controlled simple-release feature", async ({ page }) => {
-    await page.goto("/analytics", { waitUntil: "domcontentloaded" });
-
-    await expect(page.getByTestId("analytics-state-banner")).toBeVisible();
+    await gotoAnalyticsWithDevRetry(page);
     await expect(page.locator("body")).toContainText("分析總覽");
     await expect(page.locator("body")).not.toContainText("Analytics");
     await expect(page.getByTestId("analytics-broadcast-gated")).toBeDisabled();

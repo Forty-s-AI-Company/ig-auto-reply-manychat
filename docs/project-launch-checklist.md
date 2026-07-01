@@ -1,3 +1,8 @@
+# 2026-07-01 - Simple-release analytics smoke stability follow-up
+
+- [x] Simple-release Analytics smoke now tolerates a transient Next dev manifest race by retrying the route once.
+- [x] No production code path, product behavior, DB, migration, or deployment policy changed.
+- [ ] GitHub master CI should return green after the follow-up PR is merged.
 # 2026-07-01 - Signup light-theme and form UX polish
 
 - `[x]` 註冊頁已與登入頁對齊成亮色 public auth surface。
