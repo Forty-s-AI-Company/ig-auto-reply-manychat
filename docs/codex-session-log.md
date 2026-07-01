@@ -1,3 +1,27 @@
+# 2026-07-02 - Channels Instagram action disabled-reason clarity
+
+Task:
+
+- Make Instagram media / comments / token controls on `/channels#instagram` easier to understand when a connected account lacks the right token or login mode.
+
+Changes:
+
+- Added stable test ids for the Instagram media, comments, and token action buttons.
+- Added per-action disabled reason copy with `aria-describedby` instead of relying only on hover titles or a merged summary.
+- Added source-level regression coverage for the disabled-reason UI.
+
+Validation:
+
+- `npx vitest run tests/channel-client-feedback.test.ts tests/channel-action-feedback.test.ts --reporter=dot` passed.
+- `npm run e2e:admin:ensure && npm run test:e2e:auth` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed; one Windows Vitest multi-file batch crashed with `3221225477`, then every file in that batch passed on diagnostic one-by-one rerun.
+
+Launch impact:
+
+- Improves Channels settings clarity without changing Meta API behavior, token storage, schema, production DB, deployment, or PayUNI mode.
+
 # 2026-07-02 - Referral link copy action
 
 Task:

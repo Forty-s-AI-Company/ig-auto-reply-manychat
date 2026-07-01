@@ -1,5 +1,15 @@
 # Meta App Review Checklist
 
+## 2026-07-02 - Channels Instagram action disabled-reason clarity
+
+- Channels Instagram action controls now show per-action disabled reasons for media, comments, and token refresh prerequisites.
+- This is a UI clarity improvement only; it does not add new Meta scopes, submit App Review, change OAuth callback behavior, or alter token storage.
+
+App Review implication:
+
+- Reviewer-facing UX is clearer when permissions or token state are insufficient.
+- Actual App Review remains Hold until Meta dashboard submission, reviewer assets, requested permission proof, and final redaction review are complete.
+
 ## 2026-06-26 - Autopilot Meta boundary
 
 - InboxPilot Autopilot may prepare docs, run code checks, and review Meta readiness evidence.

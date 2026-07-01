@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Channels Instagram action disabled-reason clarity
+
+Current status:
+
+- `[x]` Instagram media / comments / token action buttons now have stable test ids.
+- `[x]` Disabled actions now show per-action reasons inline instead of relying only on hover titles.
+- `[x]` Source regression coverage guards the disabled-reason UI.
+
+Remaining:
+
+- `[ ]` Real Meta capability still depends on the connected account's granted permissions, token state, and App Review scope.
+
 # Latest - 2026-07-02 Referral link copy action
 
 Current status:

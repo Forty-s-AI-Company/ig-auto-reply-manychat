@@ -1,3 +1,17 @@
+# 2026-07-02 - Channels Instagram action disabled-reason clarity
+
+Status: improved for settings UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Instagram media, comments, and token action buttons now expose stable UI hooks and per-action disabled reasons.
+- Users can see why a specific Instagram action is unavailable without guessing from hover-only text.
+
+Readiness implication:
+
+- Channels settings has fewer controls that feel broken when token or permission prerequisites are missing.
+- This does not change Meta API calls, App Review requirements, token storage, production data, or deployment gates.
+
 # 2026-07-02 - Referral link copy action
 
 Status: improved for referral sharing UX; public paid launch remains Hold.
