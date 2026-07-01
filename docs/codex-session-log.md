@@ -7027,3 +7027,25 @@ Validation:
 Launch impact:
 
 - Product copy / localization polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Instagram channel action light-theme polish
+
+Task:
+
+- Continue product UI completeness after admin title localization, focusing on Channels page Instagram action controls that still used dark internal-tool styling inside a light settings page.
+
+Changes:
+
+- `RefreshInstagramProfileButton` now uses light-theme amber warning styling instead of `text-amber-100` / dark hover treatment.
+- `InstagramChannelActions` now uses a light blue information panel, blue primary CTA, white secondary controls, and readable green / red / muted feedback text.
+- `tests/channel-client-feedback.test.ts` now guards against dark channel action class regressions.
+
+Validation:
+
+- `npx eslint src/components/RefreshInstagramProfileButton.tsx src/components/InstagramChannelActions.tsx tests/channel-client-feedback.test.ts`: passed.
+- `npx vitest run tests/channel-client-feedback.test.ts`: passed.
+- `rg` confirmed the touched channel action source no longer contains the guarded dark theme classes.
+
+Launch impact:
+
+- UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

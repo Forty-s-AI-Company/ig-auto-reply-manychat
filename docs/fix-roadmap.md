@@ -2560,3 +2560,16 @@ Remaining:
 
 - `[ ]` Admin-only 聯盟 / 提領頁仍保留深色內部工具卡片樣式；若後續要開放給營運人員長期使用，應另開一輪 admin console light-theme polish。
 - `[ ]` 若要正式開放分眾 / AI 設定給 simple release，需要另補功能 gate、權限與 QA，不在本輪打開功能。
+
+## Latest - 2026-07-01 Instagram channel action light-theme polish
+
+Current status:
+
+- `[x]` Channels 頁 Instagram profile refresh 按鈕改成白底 / amber 文案的亮色警示控制。
+- `[x]` Instagram 動作區塊改成淡藍資訊面板，主要 CTA、次要連結與 disabled action button 都符合亮色設定頁。
+- `[x]` Source guard test 擋住 `cyan-950`、`text-zinc-100`、`border-zinc-700` 等暗色內部工具樣式回歸。
+
+Remaining:
+
+- `[ ]` 後續若要真正開放抓取貼文、同步留言、更新長效權杖，需要繼續驗證 Meta 權限、token 狀態與 App Review 範圍。
+- `[ ]` Channels 頁仍可再做完整瀏覽器視覺 QA，確認多帳號卡片、權限提醒與設定側欄在手機版沒有擠壓。
