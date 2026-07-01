@@ -1,3 +1,18 @@
+# 2026-07-02 - Admin refund reconciliation route
+
+Status: improved for operator-controlled refund handling; public paid launch remains Hold.
+
+What changed:
+
+- Admin operators now have a protected API route that can mark an invoice refunded and invoke referral-credit reconciliation.
+- The route returns safe Chinese errors for missing invoices and records audit metadata without exposing secrets or provider raw errors.
+
+Readiness implication:
+
+- Refund-driven referral-credit reversal is no longer only a library function; it has a minimal protected operator entrypoint.
+- Full automation still needs a verified PayUNI refund callback integration before production operations can rely on it unattended.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
+
 # 2026-07-02 - Referral credit refund reconciliation service
 
 Status: improved for referral-credit financial correctness; public paid launch remains Hold.

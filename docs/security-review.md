@@ -1,3 +1,21 @@
+# 2026-07-02 - Admin refund reconciliation route
+
+Scope:
+
+- Added `POST /api/admin/invoices/[id]/refund` as a protected operator route for invoice refund reconciliation.
+- The route invokes the existing service that cancels pending referral credits and creates idempotent clawback debits for available referral credits.
+- No production DB action, migration, deployment, Meta action, or PayUNI production action was performed.
+
+Security decision:
+
+- The route uses the shared admin API guard, same-origin validation, and admin rate limit.
+- The response exposes only invoice id/status and reconciliation amounts, not raw Prisma, token, payment-provider, or secret details.
+- Missing invoice errors are translated to a safe Chinese 404 response.
+
+Residual risk:
+
+- A future PayUNI refund callback must still verify provider signature/idempotency before invoking the same reconciliation service.
+
 # 2026-07-02 - Referral credit refund reconciliation
 
 Scope:
