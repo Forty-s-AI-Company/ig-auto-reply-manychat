@@ -7355,3 +7355,24 @@ Validation:
 Launch impact:
 
 - Public pricing copy / UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Profile menu IA fallback wording polish
+
+Task:
+
+- Continue product IA / UI cleanup after profile menu and settings navigation polish, focusing on remaining legacy `渠道` wording that conflicts with the newer `設定` navigation model.
+
+Changes:
+
+- Instagram account dropdown fallback copy now tells users to refresh incomplete profile metadata from `設定`, not `渠道`.
+- Inbox simple-release sequence disabled tooltip now says the official release focuses on Inbox, Contacts, Instagram settings, Analytics, and Automations.
+- Profile menu controls gained clearer keyboard focus states, an explicit menu panel relationship, and a named language select.
+- Added `tests/profile-menu-ia.test.ts` to guard profile menu IA, keyboard-friendly controls, and settings wording.
+
+Validation:
+
+- Focused validation will run before PR delivery.
+
+Launch impact:
+
+- UI/IA polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

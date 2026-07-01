@@ -34,14 +34,16 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
   const displayName = name || "管理員";
   const displayEmail = email || "尚未設定 Email";
   const planActionLabel = getPlanActionLabel(planKey);
+  const menuId = "inboxpilot-profile-menu";
 
   return (
     <div ref={rootRef} className="relative">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white"
+        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[#b8dadd] hover:bg-white/8 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sidebar-bg-dark)]"
         aria-expanded={open}
+        aria-controls={open ? menuId : undefined}
       >
         <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="sm" />
         <span className="min-w-0 flex-1 truncate text-left">我的個人檔案</span>
@@ -49,7 +51,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
       </button>
 
       {open ? (
-        <div className="absolute bottom-full left-0 z-50 mb-2 max-h-[min(620px,calc(100vh-92px))] w-full overflow-y-auto rounded-md border border-[#d7dbe0] bg-white shadow-xl">
+        <div id={menuId} className="absolute bottom-full left-0 z-50 mb-2 max-h-[min(620px,calc(100vh-92px))] w-full overflow-y-auto rounded-md border border-[#d7dbe0] bg-white shadow-xl">
           <div className="flex items-center gap-3 p-4">
             <ProfileAvatar avatarUrl={avatarUrl} displayName={displayName} size="lg" />
             <div className="min-w-0">
@@ -65,7 +67,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
                 <p className="min-w-0 truncate text-sm font-semibold text-[#111827]">{planName}</p>
                 <Link
                   href="/billing"
-                  className="shrink-0 rounded-md bg-[#19d3d8] px-2.5 py-1.5 text-xs font-semibold text-[#063a3d] hover:bg-[#11bfc4]"
+                  className="shrink-0 rounded-md bg-[#19d3d8] px-2.5 py-1.5 text-xs font-semibold text-[#063a3d] hover:bg-[#11bfc4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f8f96] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f8fafc]"
                 >
                   {planActionLabel}
                 </Link>
@@ -94,9 +96,10 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
             <label className="flex items-center justify-between gap-3 text-sm text-[#667085]">
               語言
               <select
+                name="interfaceLanguage"
                 value={language}
                 onChange={(event) => setLanguage(event.target.value)}
-                className="h-9 flex-1 rounded-md border border-[#d7dbe0] bg-white px-3 text-[#111827]"
+                className="h-9 flex-1 rounded-md border border-[#d7dbe0] bg-white px-3 text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8]"
                 aria-label="選擇介面語言"
                 aria-describedby="profile-language-help"
               >
@@ -115,7 +118,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
             <button
               type="button"
               onClick={logout}
-              className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]"
+              className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-inset"
             >
               <LogOut className="h-4 w-4" aria-hidden="true" />
               登出
@@ -153,7 +156,7 @@ function ProfileAvatar({ avatarUrl, displayName, size }: { avatarUrl?: string | 
 
 function MenuLink({ href, icon, label }: { href: string; icon?: React.ReactNode; label: string }) {
   return (
-    <Link href={href} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7]">
+    <Link href={href} className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-inset">
       <span className="shrink-0 text-[#667085]" aria-hidden="true">{icon}</span>
       <span className="min-w-0 flex-1">{label}</span>
     </Link>

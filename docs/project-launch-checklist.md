@@ -648,3 +648,10 @@ Current decision:
 - `[x]` Simple-release sequence disabled action now uses full-release copy.
 - `[x]` Playwright smoke covers the new disabled copy.
 - `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.
+
+## 2026-07-01 - Profile menu IA fallback wording polish
+
+- `[x]` IG metadata fallback copy uses `設定` instead of the old `渠道` label.
+- `[x]` Inbox sequence disabled tooltip uses `Instagram 設定` in the simple release focus list.
+- `[x]` Profile menu controls have keyboard focus states and named language select coverage.
+- `[ ]` Confirm PR CI and master CI pass before treating this polish as merged.

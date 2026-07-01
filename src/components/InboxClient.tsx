@@ -1623,7 +1623,7 @@ function ContactPanel({
                 type="button"
                 disabled
                 aria-disabled="true"
-                title="序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、渠道、分析與自動化核心流程。"
+                title="序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、Instagram 設定、分析與自動化核心流程。"
                 data-testid="inbox-sequence-subscribe-disabled"
                 className="rounded-full border border-[#d7dbe0] px-2 py-0.5 text-[11px] text-[#98a2b3] disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:hover:bg-[#f8fafc]"
               >
