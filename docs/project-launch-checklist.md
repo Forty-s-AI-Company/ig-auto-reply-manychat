@@ -1,3 +1,10 @@
+# 2026-07-02 - Billing invoice status copy polish
+
+- `[x]` Billing invoice statuses are localized for users.
+- `[x]` Recent PayUNI order statuses are localized for users.
+- `[x]` Billing copy explains refund-driven referral-credit cancellation / clawback at a high level.
+- `[ ]` Public paid launch still requires Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-02 - Referral credit refund reconciliation
 
 - `[x]` Pending referral credits can be cancelled by the refund reconciliation service.

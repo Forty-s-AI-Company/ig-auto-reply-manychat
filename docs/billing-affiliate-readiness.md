@@ -1,5 +1,12 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Billing invoice status copy polish
+
+- `[x]` Billing invoice history no longer exposes raw status enums to users.
+- `[x]` Recent PayUNI order status labels are localized.
+- `[x]` Refund-related Billing copy now explains that referral credits can be cancelled or clawed back after refund.
+- `[ ]` PayUNI production go-live remains blocked until final merchant approval and manual low-value production smoke.
+
 # 2026-07-02 - Referral credit v1 as the primary launch direction
 
 - `[x]` Public referral / affiliate direction is now being narrowed to `推薦折抵制度 v1`, not public cash payout.
