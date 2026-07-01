@@ -113,9 +113,11 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-notice")).toContainText("已設定 1 小時 提醒");
 
     await page.getByTestId("inbox-reminder-toggle").click();
+    await expect(page.getByTestId("inbox-reminder-custom-disabled")).toContainText("受控開通");
+    await expect(page.getByTestId("inbox-reminder-custom-disabled")).toHaveAttribute("title", /受控開通/);
     await page.getByTestId("inbox-reminder-custom-disabled").click();
     await expect(page.getByTestId("inbox-reminder-menu")).toBeHidden();
-    await expect(page.getByTestId("inbox-notice")).toContainText("自訂日期與時間提醒目前尚未完成");
+    await expect(page.getByTestId("inbox-notice")).toContainText("自訂日期與時間提醒屬於受控開通功能");
 
     await page.getByTestId("inbox-reminder-toggle").click();
     await page.getByTestId("inbox-reminder-clear").click();

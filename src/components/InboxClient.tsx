@@ -545,7 +545,7 @@ export function InboxClient({
     setReminderOpen(false);
     showNotice(
       "info",
-      "自訂日期與時間提醒目前尚未完成，先支援固定提醒時段。若需要精準排程，請先使用 20 分鐘、1 小時、6 小時或 12 小時提醒。",
+      "自訂日期與時間提醒屬於受控開通功能，會在排程規則、時區與通知稽核整理完成後開放。現在請先使用 20 分鐘、1 小時、6 小時或 12 小時提醒。",
     );
   }
 
@@ -1054,10 +1054,12 @@ export function InboxClient({
                             type="button"
                             className="flex w-full items-center gap-2 px-3 py-2 text-left text-[#98a2b3] hover:bg-[#f8fafc]"
                             onClick={explainUnavailableCustomReminder}
+                            title="自訂日期與時間提醒屬於受控開通功能，請先使用固定提醒時段。"
+                            aria-label="自訂日期與時間提醒屬於受控開通功能，請先使用固定提醒時段。"
                             data-testid="inbox-reminder-custom-disabled"
                           >
                             <CalendarClock className="h-4 w-4" />
-                            自訂日期與時間（準備中）
+                            自訂日期與時間（受控開通）
                           </button>
                           {selected.reminderAt ? (
                             <button

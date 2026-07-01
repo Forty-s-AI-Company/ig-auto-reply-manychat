@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Inbox custom reminder controlled-opening copy
+
+Current status:
+
+- `[x]` Inbox custom reminder no longer says `準備中`.
+- `[x]` The control now labels the feature as `受控開通` and explains schedule, timezone, and audit prerequisites.
+- `[x]` Authenticated Inbox smoke covers the visible label, title, and notice copy.
+
+Remaining:
+
+- `[ ]` PR CI should run seeded Inbox smoke.
+- `[ ]` Custom exact-date reminders can be implemented later after reminder scheduling rules are finalized.
+
 # Latest - 2026-07-01 Automations mobile smoke stability
 
 Current status:
