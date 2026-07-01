@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 
 type SequenceStep = {
@@ -47,6 +47,7 @@ export function SequencesClient({
   const [selectedSequenceId, setSelectedSequenceId] = useState(initialSequences[0]?.id || "");
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || "");
   const [message, setMessage] = useState("");
+  const [hasHydrated, setHasHydrated] = useState(false);
 
   const trimmedName = name.trim();
   const selectedSequence = useMemo(
@@ -57,8 +58,10 @@ export function SequencesClient({
     const delaySeconds = Number(step.delaySeconds);
     return !step.text.trim() || !Number.isFinite(delaySeconds) || delaySeconds < 0;
   });
-  const canSaveSequence = Boolean(trimmedName) && steps.length > 0 && !invalidStep;
-  const saveDisabledReason = !trimmedName
+  const canSaveSequence = hasHydrated && Boolean(trimmedName) && steps.length > 0 && !invalidStep;
+  const saveDisabledReason = !hasHydrated
+    ? "序列表單正在載入，請稍候。"
+    : !trimmedName
     ? "請先填寫序列名稱。"
     : invalidStep
       ? "每個步驟都需要填寫訊息，延遲秒數也不能小於 0。"
@@ -68,6 +71,11 @@ export function SequencesClient({
     : !selectedContactId
       ? "請先選擇要加入序列的聯絡人。"
       : "";
+
+  useEffect(() => {
+    const hydrationTimer = window.setTimeout(() => setHasHydrated(true), 0);
+    return () => window.clearTimeout(hydrationTimer);
+  }, []);
 
   async function reload() {
     const response = await fetch("/api/sequences");

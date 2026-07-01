@@ -6,6 +6,9 @@ describe("sequences form state", () => {
     const source = readFileSync("src/components/SequencesClient.tsx", "utf8");
 
     expect(source).toContain("const trimmedName = name.trim()");
+    expect(source).toContain("const [hasHydrated, setHasHydrated] = useState(false)");
+    expect(source).toContain("setHasHydrated(true)");
+    expect(source).toContain("const canSaveSequence = hasHydrated && Boolean(trimmedName)");
     expect(source).toContain("function syncNameFromInput");
     expect(source).toContain("onChange={syncNameFromInput}");
     expect(source).toContain("onChangeCapture={syncNameFromInput}");
