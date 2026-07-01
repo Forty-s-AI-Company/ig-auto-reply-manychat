@@ -1,3 +1,19 @@
+# 2026-07-01 - Mock tester light-theme and feedback polish
+
+Status: improved for Full-release testing UX; public paid launch remains Hold.
+
+What changed:
+
+- `/mock-tester` now follows the light dashboard visual system instead of the old dark internal-tool form.
+- The mock webhook form now has labeled controls, stable names, focus-visible states, loading state, and inline success/error feedback.
+- The raw JSON response remains available for debugging, but no longer acts as the only user feedback.
+- A focused guard prevents the component from regressing to the dark class set or silent-submit behavior.
+
+Launch impact:
+
+- This improves operator and QA confidence when testing inbound webhook flows in full release.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Affiliate light-theme and eligibility UX polish
 
 Status: improved for Affiliate UI clarity; public paid launch remains Hold.

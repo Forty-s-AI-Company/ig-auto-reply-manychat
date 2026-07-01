@@ -1,3 +1,11 @@
+# 2026-07-01 - Mock tester light-theme and feedback polish
+
+- `[x]` Webhook 測試工具已改成亮色 SaaS 後台風格。
+- `[x]` 測試表單有明確 label / name / focus state / loading state。
+- `[x]` 模擬 webhook 送出後會顯示 inline success / error feedback。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Affiliate light-theme and eligibility UX polish
 
 - `[x]` 聯盟分潤頁已改成亮色 SaaS 後台風格。
