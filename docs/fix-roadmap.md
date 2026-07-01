@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Secondary admin title localization
+
+Current status:
+
+- `[x]` Tags admin header now reads `標籤管理`.
+- `[x]` Knowledge Base admin header now reads `知識庫`.
+- `[x]` A focused localization guard prevents these secondary admin surfaces from regressing to English shell titles.
+
+Remaining:
+
+- `[ ]` PR CI should rerun the full smoke suite.
+- `[ ]` Continue scanning secondary admin surfaces for English-only or developer-tool copy.
+
 # Latest - 2026-07-01 Json CRUD light-theme polish
 
 Current status:

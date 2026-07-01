@@ -1,3 +1,27 @@
+# 2026-07-01 - Secondary admin title localization
+
+Task:
+
+- Continue IA / UI consistency after Json CRUD light-theme polish.
+- Focus on secondary admin surfaces that still showed English shell titles despite Chinese page content.
+
+Changes:
+
+- Updated `/tags` AdminShell title from `Tags` to `標籤管理`.
+- Updated `/knowledge-base` AdminShell title from `Knowledge Base` to `知識庫`.
+- Added a focused source-level localization guard.
+
+Validation:
+
+- Pending in this branch: focused lint, focused test, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI copy and test coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Json CRUD light-theme polish
 
 Task:

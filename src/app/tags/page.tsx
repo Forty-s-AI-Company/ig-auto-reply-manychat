@@ -9,7 +9,7 @@ export default async function TagsPage() {
   const workspaceId = await getCurrentWorkspaceId();
   const tags = await getDb().tag.findMany({ where: { workspaceId }, orderBy: { name: "asc" } });
   return (
-    <AdminShell title="Tags">
+    <AdminShell title="標籤管理">
       <JsonCrudClient
         title="標籤"
         description="建立、編輯、刪除聯絡人標籤。"

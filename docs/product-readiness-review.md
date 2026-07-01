@@ -1,3 +1,18 @@
+# 2026-07-01 - Secondary admin title localization
+
+Status: improved for Chinese SaaS consistency; public paid launch remains Hold.
+
+What changed:
+
+- `/tags` now uses `標籤管理` in the dashboard header.
+- `/knowledge-base` now uses `知識庫` in the dashboard header.
+- Added a focused guard so these titles do not regress to English-only labels.
+
+Launch impact:
+
+- This removes a small but visible English/internal-tool mismatch from secondary admin surfaces.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Json CRUD light-theme polish
 
 Status: improved for UI consistency; public paid launch remains Hold.
