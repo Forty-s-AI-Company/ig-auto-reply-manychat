@@ -1,3 +1,18 @@
+# 2026-07-01 - Instagram default reply light-theme polish
+
+Status: improved for Automations UI consistency; public paid launch remains Hold.
+
+What changed:
+
+- `/automations/instagram-default-reply` now follows the light dashboard visual system instead of the old dark internal-tool surface.
+- The editor, preview, test instructions, status badges, and feedback states now use consistent white cards, pale surfaces, readable text colors, and visible focus states.
+- A focused guard prevents the page from regressing to the dark class set.
+
+Launch impact:
+
+- This improves the perceived completeness of the Automations product area for beta operators.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Secondary admin title localization
 
 Status: improved for Chinese SaaS consistency; public paid launch remains Hold.

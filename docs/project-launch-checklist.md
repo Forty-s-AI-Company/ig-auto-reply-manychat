@@ -1,3 +1,10 @@
+# 2026-07-01 - Instagram default reply light-theme polish
+
+- `[x]` Instagram 預設回覆頁已改成亮色 SaaS 後台風格。
+- `[x]` 預設回覆 editor 與預覽 / 測試卡片不再像深色內部工具。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Contacts / Automations form accessibility polish
 
 - `[x]` Contacts search, contact detail fields, and inline feedback now have clearer accessibility semantics.
