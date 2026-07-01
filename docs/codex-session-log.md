@@ -1,3 +1,30 @@
+# 2026-07-02 - Admin invoice refund operator UI
+
+Task:
+
+- Add the missing internal operator surface for the existing admin-only invoice refund reconciliation route.
+
+Changes:
+
+- Added `/admin/invoices` for admin-only invoice review and controlled refund marking.
+- Added a client-side confirmation button that calls the protected refund reconciliation API and reloads after success.
+- Added admin entry points from payout management and the profile menu.
+- Kept the copy explicit that this does not trigger an automatic PayUNI refund; PayUNI refund still requires operator confirmation in the sandbox / provider back office flow.
+- Added regression coverage for controlled copy, paid-only refund action, localized statuses, and the admin entry point.
+
+Validation:
+
+- `npx vitest run tests/admin-invoices-page.test.ts tests/admin-invoice-refund-route.test.ts tests/referral-credit-refund-lifecycle.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `npm test` passed.
+- `npm run e2e:admin:ensure` passed.
+- `npm run test:e2e:auth` passed.
+
+Launch impact:
+
+- Improves internal billing operations readiness without production DB changes, production deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Billing invoice status copy polish
 
 Task:

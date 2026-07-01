@@ -1,3 +1,10 @@
+# 2026-07-02 - Admin invoice refund operator UI
+
+- `[x]` Admin-only refund reconciliation now has an internal operator page.
+- `[x]` Refund marking requires an explicit confirmation and is limited to paid invoices.
+- `[x]` Operator copy states PayUNI refunds are not automatically initiated by this action.
+- `[ ]` PayUNI refund automation / callback integration remains blocked until production go-live approval.
+
 # 2026-07-02 - Billing invoice status copy polish
 
 - `[x]` Billing invoice statuses are localized for users.

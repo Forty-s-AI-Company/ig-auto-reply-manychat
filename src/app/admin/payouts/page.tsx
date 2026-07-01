@@ -52,12 +52,20 @@ export default async function AdminPayoutsPage() {
     <AdminShell
       title="提領管理"
       headerRight={
-        <Link
-          className="inline-flex h-10 items-center rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-          href="/admin/payouts/batches"
-        >
-          查看批次
-        </Link>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Link
+            className="inline-flex h-10 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+            href="/admin/invoices"
+          >
+            帳單退款處理
+          </Link>
+          <Link
+            className="inline-flex h-10 items-center rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+            href="/admin/payouts/batches"
+          >
+            查看批次
+          </Link>
+        </div>
       }
     >
       <section className="ip-dashboard-card overflow-hidden">

@@ -1,3 +1,19 @@
+# 2026-07-02 - Admin invoice refund operator UI
+
+Scope:
+
+- Added an admin-only UI surface that calls the existing protected invoice refund reconciliation route.
+
+Security notes:
+
+- The UI is only rendered after `requireUser()` confirms the current user is an admin.
+- The actual state-changing request still goes through `requireAdminApiUser()` in the API route, preserving same-origin, admin-role, and rate-limit checks.
+- The button requires explicit confirmation and does not initiate a PayUNI provider refund.
+
+Residual risk:
+
+- Provider-side refund automation remains intentionally blocked until PayUNI production refund semantics, signature verification, and idempotency evidence are finalized.
+
 # 2026-07-02 - Admin refund reconciliation route
 
 Scope:

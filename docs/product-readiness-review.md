@@ -1,3 +1,18 @@
+# 2026-07-02 - Admin invoice refund operator UI
+
+Status: improved for internal billing operations; public paid launch remains Hold.
+
+What changed:
+
+- Added an admin-only invoice refund handling page for controlled operator reconciliation.
+- Admins can mark paid invoices as refunded through the existing protected API route, with explicit confirmation and user-facing safety copy.
+- The UI clarifies that this does not call PayUNI refund automation.
+
+Readiness implication:
+
+- Refund / referral-credit reconciliation is now reachable from the admin product surface.
+- Fully automated provider refund handling remains a launch blocker until PayUNI production operations are approved and callback behavior is verified.
+
 # 2026-07-02 - Billing status copy polish
 
 Status: improved for billing usability; public paid launch remains Hold.

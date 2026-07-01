@@ -1,5 +1,12 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Admin invoice refund operator UI
+
+- `[x]` Internal admins now have a controlled `/admin/invoices` surface for paid invoice refund marking.
+- `[x]` The operator UI makes clear that InboxPilot reconciliation does not automatically initiate PayUNI refunds.
+- `[x]` Refund marking is constrained to paid invoices and calls the protected admin-only reconciliation route.
+- `[ ]` Provider-driven refund automation remains blocked until PayUNI production operations and callback semantics are finalized.
+
 # 2026-07-02 - Billing invoice status copy polish
 
 - `[x]` Billing invoice history no longer exposes raw status enums to users.
