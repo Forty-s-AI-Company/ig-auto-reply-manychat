@@ -42,6 +42,16 @@ test.describe("inbox authenticated smoke", () => {
     if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
     await selectSidebarInstagramChannel(page, "E2E", "Alt");
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
+    if (!isMobileProject) {
+      const createInboxTagButton = page.getByRole("button", { name: "建立收件匣標籤" });
+      await expect(createInboxTagButton).toBeVisible();
+      await createInboxTagButton.click();
+      await expect(page.getByRole("dialog", { name: "新增標籤" })).toBeVisible();
+      await expect(page.getByLabel("新標籤名稱")).toHaveAttribute("name", "tagName");
+      await expect(page.locator("#contact-tag-color")).toHaveAttribute("name", "tagColor");
+      await page.getByRole("button", { name: "取消" }).click();
+      await expect(page.getByRole("dialog", { name: "新增標籤" })).toBeHidden();
+    }
     await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
     await expect(page.locator("body")).not.toContainText("E2E 第二 IG 帳號聯絡人");
 

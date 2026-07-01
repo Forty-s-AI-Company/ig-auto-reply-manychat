@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Inbox sidebar tag creation affordance
+
+Current status:
+
+- `[x]` Inbox left-sidebar tag `+` now opens the real tag creation dialog instead of acting as a navigation-only shortcut.
+- `[x]` Shared tag creation form has `name`, `autocomplete`, color input name, and clear saving copy.
+- `[x]` Source-level regression prevents the Inbox tag action from reverting to the old link-only affordance.
+
+Remaining:
+
+- `[ ]` Let CI / seeded authenticated smoke confirm the Inbox tag dialog on the full-release auth job.
+- `[ ]` Continue visible-but-unusable cleanup for Inbox, Contacts, Channels, Automations, and Analytics.
+
 # Latest - 2026-07-01 Social connect settings terminology polish
 
 Current status:

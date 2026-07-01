@@ -1,3 +1,27 @@
+# 2026-07-01 - Inbox sidebar tag creation affordance
+
+Task:
+
+- Continue product-completeness cleanup after settings / Social connect IA work, focusing on the visible-but-unusable `+` affordance beside Inbox sidebar tags.
+
+Changes:
+
+- The Inbox sidebar tag `+` now opens the shared `新增標籤` dialog directly instead of sending users to Contacts.
+- The shared tag creation form now includes semantic `name` / `autocomplete` attributes and a clearer loading label.
+- Added regression coverage so the Inbox tag action cannot silently regress back to a link-only affordance.
+- Added authenticated Inbox smoke coverage for opening the tag creation dialog in desktop layout.
+
+Validation:
+
+- `npx eslint src/components/InboxClient.tsx src/components/ContactTagCreateButton.tsx tests/e2e/inbox-auth.spec.ts tests/inbox-tag-create-affordance.test.ts`: passed.
+- `npx vitest run tests/inbox-tag-create-affordance.test.ts --reporter=dot`: passed.
+- `npx playwright test tests/e2e/inbox-auth.spec.ts --grep "loads, scopes by Instagram channel"`: skipped locally by authenticated smoke guard; CI / seeded test DB will run it.
+- Full validation will run before PR delivery.
+
+Launch impact:
+
+- Product UX improvement only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Task:

@@ -114,12 +114,14 @@ export function ContactTagCreateButton({
               <label className="block text-sm font-medium text-[#344054]">
                 新標籤名稱
                 <input
+                  name="tagName"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   maxLength={40}
                   autoFocus
+                  autoComplete="off"
                   className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] px-3 text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
-                  placeholder="例如：VIP、待追蹤"
+                  placeholder="例如：VIP、待追蹤…"
                 />
               </label>
 
@@ -130,6 +132,7 @@ export function ContactTagCreateButton({
                 <div className="mt-2 flex items-center gap-2">
                   <input
                     id="contact-tag-color"
+                    name="tagColor"
                     type="color"
                     value={color}
                     onChange={(event) => setColor(event.target.value)}
@@ -170,7 +173,7 @@ export function ContactTagCreateButton({
                   disabled={isSaving || isPending}
                   className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSaving || isPending ? "儲存中" : "建立標籤"}
+                  {isSaving || isPending ? "儲存中…" : "建立標籤"}
                 </button>
               </div>
             </form>

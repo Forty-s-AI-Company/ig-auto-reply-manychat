@@ -1,3 +1,17 @@
+# 2026-07-01 - Inbox sidebar tag creation affordance
+
+Status: improved for Inbox product completeness; public paid launch remains Hold.
+
+What changed:
+
+- The `+` beside Inbox sidebar tags now opens the real tag creation dialog.
+- The shared tag creation form has clearer semantics for browser autofill and automated UI smoke.
+
+Readiness implication:
+
+- This removes one more visible-but-unusable Inbox affordance. Users can create tags from the same surface where they filter conversations.
+- This does not change production data, schema, Meta review, PayUNI production, or deployment gates.
+
 # 2026-07-01 - Social connect settings terminology polish
 
 Status: improved for product IA consistency; public paid launch remains Hold.
