@@ -1,3 +1,26 @@
+# 2026-07-01 - PR #93 full-release auth smoke stability follow-up
+
+Task:
+
+- GitHub Actions for PR #93 had one duplicate `full-release-auth-smoke` run fail while the parallel duplicate passed. The failure was isolated to the Sequences disabled-state smoke, where the test cleared the sequence name before the hydrated client state had settled.
+
+Changes:
+
+- `tests/e2e/public-and-auth.spec.ts` now waits for the default sequence name value before clearing the field and asserting that the save button is disabled.
+- No product runtime logic was changed.
+
+Validation:
+
+- `npm run test:e2e:auth -- --grep "shows Sequences disabled states"`: skipped locally because authenticated smoke requires the CI / test DB auth setup.
+- `npm run lint`: passed.
+- `npx vitest run tests/analytics-state.test.ts tests/channels-connect-visibility.test.ts --reporter=dot`: passed.
+- `npm test`: passed.
+- `npm run build`: passed; existing Windows Prisma engine lock fallback reused the generated client.
+
+Launch impact:
+
+- Test stability only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
 # 2026-07-01 - Analytics and OAuth sync user-facing copy polish
 
 Task:

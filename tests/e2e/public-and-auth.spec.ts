@@ -187,9 +187,12 @@ test.describe("authenticated route smoke", () => {
     await page.goto("/sequences", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "序列", exact: true })).toBeVisible();
 
-    await page.getByTestId("sequence-name-input").fill("");
-    await expect(page.getByTestId("sequence-save-button")).toBeDisabled();
-    await expect(page.getByTestId("sequence-save-button")).toHaveAttribute("title", "請先填寫序列名稱。");
+    const sequenceNameInput = page.getByTestId("sequence-name-input");
+    await expect(sequenceNameInput).toHaveValue("新名單培養序列");
+    await sequenceNameInput.fill("");
+    const sequenceSaveButton = page.getByTestId("sequence-save-button");
+    await expect(sequenceSaveButton).toBeDisabled();
+    await expect(sequenceSaveButton).toHaveAttribute("title", "請先填寫序列名稱。");
     await expect(page.locator("body")).toContainText("請先填寫序列名稱。");
 
     await page.getByTestId("sequence-subscribe-sequence-select").selectOption("");

@@ -1,3 +1,16 @@
+# 2026-07-01 - PR #93 Sequences smoke stability follow-up
+
+Status: improved for delivery reliability; public paid launch remains Hold.
+
+What changed:
+
+- The Sequences disabled-state Playwright smoke now waits for hydrated client state before clearing the name field.
+- This reduces false CI failures where the blank-name disabled state was checked before the client component finished settling.
+
+Readiness implication:
+
+- This does not change product behavior. It improves confidence that the existing disabled-state UX is verified consistently in CI.
+
 # 2026-07-01 - Analytics and OAuth sync user-facing copy polish
 
 Status: improved for product IA and error-message clarity; public paid launch remains Hold.

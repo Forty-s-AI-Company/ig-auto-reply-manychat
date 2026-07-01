@@ -1,3 +1,15 @@
+# Latest - 2026-07-01 PR #93 full-release auth smoke stability follow-up
+
+Current status:
+
+- `[x]` PR #93 duplicate `full-release-auth-smoke` failure was isolated to the Sequences disabled-state smoke.
+- `[x]` The smoke now waits for the hydrated sequence-name input value before clearing it.
+- `[x]` Local lint, focused tests, full unit suite, and build passed.
+
+Remaining:
+
+- `[ ]` Let GitHub Actions rerun PR #93 and confirm both duplicate full-release auth smoke jobs are green before merge.
+
 # Latest - 2026-07-01 Analytics and OAuth sync user-facing copy polish
 
 Current status:

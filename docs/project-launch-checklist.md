@@ -1,3 +1,10 @@
+# 2026-07-01 - PR #93 Sequences smoke stability follow-up
+
+- `[x]` Sequences disabled-state smoke now waits for hydrated input state before asserting disabled save behavior.
+- `[x]` Local lint, focused tests, full unit suite, and build passed after the smoke stability change.
+- `[ ]` Confirm PR #93 GitHub Actions returns fully green before merge.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Analytics and OAuth sync user-facing copy polish
 
 - `[x]` Analytics no-Instagram guidance points users to Settings terminology.
