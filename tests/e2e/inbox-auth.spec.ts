@@ -48,7 +48,7 @@ test.describe("inbox authenticated smoke", () => {
       await createInboxTagButton.click();
       await expect(page.getByRole("dialog", { name: "新增標籤" })).toBeVisible();
       await expect(page.getByLabel("新標籤名稱")).toHaveAttribute("name", "tagName");
-      await expect(page.getByLabel("顏色")).toHaveAttribute("name", "tagColor");
+      await expect(page.locator("#contact-tag-color")).toHaveAttribute("name", "tagColor");
       await page.getByRole("button", { name: "取消" }).click();
       await expect(page.getByRole("dialog", { name: "新增標籤" })).toBeHidden();
     }
