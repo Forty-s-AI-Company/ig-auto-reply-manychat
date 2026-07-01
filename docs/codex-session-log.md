@@ -1,3 +1,26 @@
+# 2026-07-02 - Account dropdown scope switch failure feedback
+
+Task:
+
+- Make Instagram account scope switching visible when the account-scope API request fails.
+
+Changes:
+
+- Added inline account-switch failure feedback to the sidebar Instagram account dropdown.
+- Preserved the existing account switch success flow and router refresh behavior.
+- Extended source regression coverage for API and network failure messages.
+
+Validation:
+
+- `npx vitest run tests/account-channel-list.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed; the existing Windows Prisma DLL lock warning was handled by the safe generate fallback.
+- `npm test` passed; the runner recovered from a Windows batch-level Vitest access violation by rerunning the affected files individually.
+
+Launch impact:
+
+- Improves multi-account scope clarity without changing schema, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Profile logout failure feedback
 
 Task:

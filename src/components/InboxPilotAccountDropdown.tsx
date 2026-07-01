@@ -39,6 +39,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
     return value.filter((id): id is string => typeof id === "string" && channelIds.has(id));
   }, [channelIds]);
   const [open, setOpen] = useState(false);
+  const [scopeError, setScopeError] = useState("");
   const [pinnedIds, setPinnedIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -78,15 +79,24 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
   }, [pinnedIds.length, safePinnedIds]);
 
   async function changeAccount(channelId: string) {
-    const response = await fetch("/api/account-scope", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ channelId }),
-    });
-    if (!response.ok) return;
-    window.dispatchEvent(new CustomEvent("inbox-channel-scope-change", { detail: channelId }));
-    setOpen(false);
-    startTransition(() => router.refresh());
+    setScopeError("");
+    try {
+      const response = await fetch("/api/account-scope", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ channelId }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setScopeError(typeof data.error === "string" ? data.error : "切換 Instagram 帳號失敗，請稍後再試。");
+        return;
+      }
+      window.dispatchEvent(new CustomEvent("inbox-channel-scope-change", { detail: channelId }));
+      setOpen(false);
+      startTransition(() => router.refresh());
+    } catch {
+      setScopeError("切換 Instagram 帳號失敗，請確認網路連線後再試一次。");
+    }
   }
 
   function togglePinned(channelId: string) {
@@ -122,6 +132,11 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
 
       {open ? (
         <div className="absolute left-0 top-[calc(100%+6px)] z-[90] w-full min-w-[260px] max-w-[calc(100vw-32px)] overflow-hidden rounded-md border border-[#d6dae0] bg-white text-[#111827] shadow-[0_18px_42px_rgba(2,23,24,0.22)]">
+          {scopeError ? (
+            <p className="m-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+              {scopeError}
+            </p>
+          ) : null}
           <div className="max-h-[312px] overflow-y-auto p-1.5">
             {sortedChannels.length > 0 ? (
               sortedChannels.map((channel) => {
