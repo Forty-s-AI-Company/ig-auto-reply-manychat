@@ -1916,7 +1916,7 @@ function FlowBuilderInner({
                     disabled
                     aria-disabled="true"
                     data-testid="automation-trash-disabled"
-                    title="回收桶目前還沒接好。先保留說明，不讓它像可直接使用的入口。"
+                    title="回收桶屬於受控開通功能，需先完成流程還原、永久刪除與稽核紀錄設計。"
                     className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
                   >
                     <Trash2 className="h-4 w-4" />

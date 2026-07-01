@@ -1,3 +1,18 @@
+# 2026-07-01 - Automations trash disabled copy polish
+
+Status: improved for Automations disabled UX clarity; public paid launch remains Hold.
+
+What changed:
+
+- Automations `回收桶` was already disabled, but its browser title still used implementation-flavored `目前還沒接好` copy.
+- The title now explains that the trash workflow is a controlled-opening feature requiring restore, permanent-delete, and audit-log design.
+- Authenticated smoke covers the title copy.
+
+Launch impact:
+
+- Automations has one fewer placeholder-feeling control.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Inbox automation pause disabled copy polish
 
 Status: improved for Inbox disabled UX clarity; public paid launch remains Hold.

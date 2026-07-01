@@ -147,6 +147,8 @@ test.describe("authenticated route smoke", () => {
     }
     await page.getByTestId("automation-trigger-filter").selectOption("all");
     await expect(page.getByRole("button", { name: "回收桶" })).toBeDisabled();
+    await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("title", /受控開通/);
+    await expect(page.getByTestId("automation-trash-disabled")).not.toHaveAttribute("title", /沒接好/);
     await page.getByRole("button", { name: "基礎流程" }).click();
     await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
