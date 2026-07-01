@@ -5,11 +5,11 @@ import { getDb } from "@/lib/db";
 
 export default async function AdminPayoutBatchesPage() {
   const user = await requireUser();
-  if (user.role !== "admin") return <AdminShell title="Admin"><p>Admin only.</p></AdminShell>;
+  if (user.role !== "admin") return <AdminShell title="管理後台"><p>僅管理員可查看。</p></AdminShell>;
   const batches = await getDb().payoutBatch.findMany({ orderBy: { createdAt: "desc" }, include: { items: true } });
 
   return (
-    <AdminShell title="Payout Batches">
+    <AdminShell title="提領批次">
       <div className="space-y-4">
         <form action="/api/admin/payouts/batches" method="post" className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
           <button className="rounded-md bg-cyan-500 px-4 py-2 text-sm font-bold text-zinc-950">產生本月 15 日批次</button>

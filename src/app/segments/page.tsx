@@ -29,7 +29,7 @@ export default async function SegmentsPage() {
   );
 
   return (
-    <AdminShell title="Segments">
+    <AdminShell title="分眾名單">
       <SegmentsClient
         initialSegments={JSON.parse(JSON.stringify(segmentsWithCounts))}
         tags={JSON.parse(JSON.stringify(tags))}

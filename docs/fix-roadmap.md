@@ -2547,3 +2547,16 @@ Remaining:
 
 - `[ ]` 若要把 TikTok / WhatsApp / Telegram 變成真正可用，需另開平台串接主題，補 OAuth / webhook / token / tenant isolation / QA。
 - `[ ]` 若要開放 Email 通知、顯示語言、轉換事件，需要補 API、資料模型或設定儲存策略，不能只打開 UI。
+
+## Latest - 2026-07-01 Remaining admin title localization
+
+Current status:
+
+- `[x]` AI 設定、分眾名單、Instagram 預設回覆頁面標題已改為繁中產品語意。
+- `[x]` Admin-only 聯盟 / 提領頁面標題、權限提示與批次入口已改為繁中，降低半成品感。
+- `[x]` Source guard test 覆蓋這些標題，避免再次退回英文內部工具字串。
+
+Remaining:
+
+- `[ ]` Admin-only 聯盟 / 提領頁仍保留深色內部工具卡片樣式；若後續要開放給營運人員長期使用，應另開一輪 admin console light-theme polish。
+- `[ ]` 若要正式開放分眾 / AI 設定給 simple release，需要另補功能 gate、權限與 QA，不在本輪打開功能。

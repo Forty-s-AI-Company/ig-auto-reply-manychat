@@ -22,7 +22,7 @@ export default async function AiSettingsPage() {
   ]);
 
   return (
-    <AdminShell title="InboxPilot AI">
+    <AdminShell title="AI 設定">
       <AiSettingsClient
         initialState={{
           setting,
