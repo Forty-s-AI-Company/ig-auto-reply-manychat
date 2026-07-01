@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Referral link copy action
+
+Current status:
+
+- `[x]` Referral page now includes a visible `複製推薦連結` action next to the referral URL.
+- `[x]` Copy success and clipboard fallback messages are user-readable.
+- `[x]` Source and Playwright regression coverage prevent the referral URL from becoming static-only again.
+
+Remaining:
+
+- `[ ]` Click tracking remains deferred until a proper event table, de-duplication, fraud, and privacy rules are implemented.
+
 # Latest - 2026-07-02 Contact detail mobile tag add stability
 
 Current status:

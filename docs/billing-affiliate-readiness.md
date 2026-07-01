@@ -1,5 +1,11 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Referral link copy action
+
+- `[x]` Referral URL now has a visible copy action so the referral credit flow is easier to share and verify.
+- `[x]` Copy success / fallback messages are explicit and do not imply unavailable cash payout behavior.
+- `[ ]` Click tracking remains deferred until event storage, de-duplication, fraud, and privacy rules are implemented.
+
 # 2026-07-02 - Affiliate controlled cash copy polish
 
 - `[x]` Affiliate UI wording now treats cash commission amounts as internal review / controlled operations data.

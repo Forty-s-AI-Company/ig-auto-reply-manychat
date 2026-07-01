@@ -41,6 +41,13 @@ async function expectNoHorizontalOverflow(page: Page) {
   expect(overflow).toBeLessThanOrEqual(2);
 }
 
+async function expectPublicLandingPage(page: Page) {
+  await expect(page).toHaveURL(/\/official(?:[?#].*)?$/);
+  await expect(page).toHaveTitle(/InboxPilot/);
+  await expect(page.getByRole("heading", { name: /社群訊息，自動處理|InboxPilot/ }).first()).toBeVisible();
+  await expect(page.locator("body")).toContainText(/InboxPilot/);
+}
+
 async function expectAuthenticatedRoute(page: Page, route: AuthenticatedRouteSmoke) {
   await page.goto(route.path, { waitUntil: "domcontentloaded" });
   await expect(page).toHaveURL(route.finalUrl || routeUrlPattern(route.path));
@@ -76,9 +83,8 @@ async function loginForAuthenticatedSmoke(page: Page, testInfo: TestInfo, email:
 
 test.describe("public and protected navigation", () => {
   test("renders the public landing page and reaches login", async ({ page }) => {
-    await page.goto("/");
-    await expect(page).toHaveTitle(/InboxPilot/);
-    await expect(page.locator("body")).toContainText(/InboxPilot/);
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await expectPublicLandingPage(page);
 
     await page.goto("/login");
     await expect(page.getByRole("heading", { name: /登入|Login/ })).toBeVisible();
@@ -95,7 +101,7 @@ test.describe("public and protected navigation", () => {
   test("mobile public page does not overflow horizontally", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator("body")).toContainText("InboxPilot");
+    await expectPublicLandingPage(page);
     await page.waitForLoadState("networkidle").catch(() => {});
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -187,7 +193,10 @@ test.describe("authenticated route smoke", () => {
     await page.goto("/sequences", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "序列", exact: true })).toBeVisible();
 
-    await page.getByTestId("sequence-name-input").fill("");
+    const sequenceNameInput = page.getByTestId("sequence-name-input");
+    await expect(sequenceNameInput).toHaveValue("新名單培養序列");
+    await sequenceNameInput.fill("");
+    await expect(sequenceNameInput).toHaveValue("");
     await expect(page.getByTestId("sequence-save-button")).toBeDisabled();
     await expect(page.getByTestId("sequence-save-button")).toHaveAttribute("title", "請先填寫序列名稱。");
     await expect(page.locator("body")).toContainText("請先填寫序列名稱。");
@@ -225,6 +234,7 @@ test.describe("authenticated route smoke", () => {
     await page.goto("/referrals", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("referrals-hero-card")).toBeVisible();
     await expect(page.getByTestId("referrals-url")).toContainText(/ref=|邀請|http/);
+    await expect(page.getByRole("button", { name: "複製推薦連結" })).toBeVisible();
     await expect(page.getByTestId("referrals-records-card")).toBeVisible();
     await expect(page.locator("body")).toContainText(/推薦折抵制度 v1|待確認折抵|可用折抵/);
     await expect(page.locator("body")).toContainText("7 天退款觀察期");

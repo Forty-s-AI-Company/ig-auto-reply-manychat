@@ -15,6 +15,8 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("待確認折抵");
     expect(source).toContain("可用折抵");
     expect(source).toContain("referralStatusLabel");
+    expect(source).toContain("ReferralLinkCopyButton");
+    expect(source).toContain('data-testid="referrals-url"');
     expect(source).toContain("7 天退款觀察期");
     expect(source).not.toContain("<span>{item.status}</span>");
   });
