@@ -1,3 +1,32 @@
+# 2026-07-01 - Instagram default reply light-theme polish
+
+Task:
+
+- Continue product UI consistency after Channels / admin light-theme passes.
+- Focus on `/automations/instagram-default-reply`, which still used dark internal-tool styling inside the light admin shell.
+
+Changes:
+
+- Reworked `InstagramDefaultReplyClient` to use the shared light dashboard language: white cards, `#f8fafc` surfaces, and `#d7dbe0` borders.
+- Added clearer focus states, decorative icon semantics, textarea label semantics, and inline live-region feedback.
+- Added a focused regression test to prevent this page from returning to dark internal-tool classes.
+
+Validation:
+
+- `npx eslint src/components/InstagramDefaultReplyClient.tsx tests/instagram-default-reply-light-theme.test.ts`: passed.
+- `npx vitest run tests/instagram-default-reply-light-theme.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm test`: passed. Existing Meta webhook audit mock stderr still appears, but the suite exits 0.
+- `npm run build`: passed. Existing local Prisma engine lock fallback reused the generated client.
+
+Safety:
+
+- UI styling / accessibility semantics and source-level test only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+- No Meta App Review or PayUNI production action.
+
 # 2026-07-01 - Secondary admin title localization
 
 Task:

@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Instagram default reply light-theme polish
+
+Current status:
+
+- `[x]` Instagram 預設回覆頁不再使用深色內部工具卡片。
+- `[x]` 預設回覆 editor、流程節點、預覽與測試卡片已改成亮色 dashboard 視覺語言。
+- `[x]` textarea label、focus-visible state、decorative icon semantics 與 inline feedback live region 已補齊。
+- `[x]` Source-level regression test 防止這頁回到 `bg-zinc-900` / `text-cyan-300` 這類暗色樣式。
+
+Remaining:
+
+- `[ ]` 若後續要把 QR code 即時測試做成真正可用，需要另接 Meta / Instagram 實際 API 與安全測試流程。
+- `[ ]` 繼續掃描分眾、錢包、聯盟與 admin-only 頁面是否仍有深色內部工具樣式。
+
 # Latest - 2026-07-01 Secondary admin title localization
 
 Current status:
