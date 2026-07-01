@@ -8021,3 +8021,27 @@ Validation:
 Launch impact:
 
 - Local test infrastructure only. No production DB, staging DB, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-02 - Legacy IG account switcher failure feedback
+
+Task:
+
+- Continue product completeness cleanup by checking account scope switching controls for visible-but-silent failure states.
+
+Changes:
+
+- Updated `src/components/IgAccountSwitcher.tsx` so the legacy IG account selector no longer fails silently when `/api/account-scope` returns an error or the request fails.
+- Added user-visible Traditional Chinese fallback messages for API and network failures.
+- Added an `aria-live="polite"` status region so assistive technology can announce the failure.
+- Added a source regression in `tests/account-channel-list.test.ts`.
+
+Validation:
+
+- `npx vitest run tests/account-channel-list.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm test`: passed.
+
+Launch impact:
+
+- Product UX hardening only. No production DB, Production deployment, Meta App Review, or PayUNI production change was performed.

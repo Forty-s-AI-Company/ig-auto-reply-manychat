@@ -3056,3 +3056,17 @@ Remaining:
 
 - `[ ]` 後續產品功能修復可直接使用本機 `55322` 作為 dev/test baseline。
 - `[ ]` 若要更嚴格隔離 dev 與 test，可另建立獨立 test DB port，避免 E2E fixtures 留在 dev DB。
+
+## Latest - 2026-07-02 Legacy IG account switcher failure feedback
+
+Current status:
+
+- `[x]` 舊版 `IgAccountSwitcher` 的 IG 帳號切換不再靜默失敗。
+- `[x]` `/api/account-scope` 回傳錯誤時會顯示「切換 Instagram 帳號失敗，請稍後再試。」或 API 回傳訊息。
+- `[x]` 網路錯誤時會顯示「切換 Instagram 帳號失敗，請確認網路連線後再試一次。」。
+- `[x]` 已補 source regression，避免舊版切換器回到無提示狀態。
+
+Remaining:
+
+- `[ ]` 若確認 `IgAccountSwitcher` 已完全不再被任何頁面使用，可後續移除 legacy component，降低維護面。
+- `[ ]` Vercel Preview 目前遇到 build rate limit；後續小修應先累積成較大主題再送 PR。
