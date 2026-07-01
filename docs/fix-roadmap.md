@@ -2341,3 +2341,17 @@ Remaining:
 
 - `[ ]` 讓 PR CI 驗證 auth / simple smoke 回綠，合併後再確認 master CI 與 Production / Staging health。
 - `[ ]` 繼續盤點 Contacts / Automations / Analytics 的低風險 UI polish 與 visible-but-unusable 缺口。
+
+## Latest - 2026-07-01 Inbox tag creation semantics
+
+Current status:
+
+- `[x]` Inbox 右側「聯絡人標籤」區塊不再把套用既有標籤誤寫成 `+ 新增標籤`。
+- `[x]` Inbox 現在同時提供 `套用既有標籤` 與 `建立新標籤` 兩個清楚動作。
+- `[x]` 建立新標籤後會套用到目前聯絡人並刷新頁面。
+- `[x]` Authenticated Inbox smoke 覆蓋新語意，避免這個入口再退回假按鈕。
+
+Remaining:
+
+- `[ ]` 將 Profile menu / sidebar IA 集中調整：`帳單` 改往 `方案` 語意、`渠道` 改往 `設定` 語意、低頻入口收進個人檔案或設定分組。
+- `[ ]` 補一次完整 in-app browser 或 Playwright 視覺 QA，檢查 Inbox / Contacts / Channels / Automations / Analytics 的主流 SaaS 導航與 RWD 一致性。

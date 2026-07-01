@@ -1054,3 +1054,17 @@ Readiness implication:
 
 - Automations reads more like a controlled product surface instead of unfinished UI.
 - Public paid launch status does not change; external Meta App Review and PayUNI production go-live remain manual gates.
+
+## 2026-07-01 - Inbox tag creation semantics
+
+Status:
+
+- Inbox contact panel now separates `套用既有標籤` from `建立新標籤`.
+- The create-tag control uses the shared tag creation dialog and applies the created tag to the selected contact.
+- Authenticated Inbox smoke checks the clearer control copy.
+
+Readiness implication:
+
+- This removes a misleading Inbox control that looked like tag creation but only applied existing tags.
+- Inbox is closer to a usable daily operator surface.
+- Navigation IA remains a P1 product polish item: billing/plan, channels/settings, AI settings, audit, and help entry placement should be consolidated in a dedicated IA pass.
