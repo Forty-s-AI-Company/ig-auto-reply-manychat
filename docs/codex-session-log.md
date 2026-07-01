@@ -1,3 +1,26 @@
+# 2026-07-01 - Automations trash disabled copy polish
+
+Task:
+
+- Continue safe product completeness work after Inbox automation pause copy.
+- Focus on the Automations `回收桶` disabled control, whose title still used implementation-flavored copy: `目前還沒接好`.
+
+Changes:
+
+- Updated the Automations trash disabled title to describe it as a controlled-opening feature requiring restore, permanent-delete, and audit-log design.
+- Extended authenticated smoke coverage to assert the title uses `受控開通` and no longer exposes `沒接好`.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI copy and smoke coverage only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Inbox automation pause disabled copy polish
 
 Task:

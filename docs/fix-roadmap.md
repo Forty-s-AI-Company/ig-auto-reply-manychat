@@ -1,3 +1,16 @@
+# Latest - 2026-07-01 Automations trash disabled copy polish
+
+Current status:
+
+- `[x]` Automations `回收桶` remains disabled, but its title no longer uses implementation-flavored `沒接好` copy.
+- `[x]` The disabled title now explains the controlled-opening requirements: restore, permanent delete, and audit logs.
+- `[x]` Authenticated smoke covers the title copy.
+
+Remaining:
+
+- `[ ]` PR CI still needs to run seeded authenticated smoke.
+- `[ ]` Continue safe Contacts / Automations / Inbox product-completeness sweeps only if another visible-but-unusable control is found.
+
 # Latest - 2026-07-01 Inbox automation pause disabled copy polish
 
 Current status:

@@ -1,3 +1,10 @@
+# 2026-07-01 - Automations trash disabled copy polish
+
+- `[x]` Automations `回收桶` disabled title no longer uses implementation-flavored `沒接好` copy.
+- `[x]` The title now explains restore, permanent-delete, and audit-log requirements before opening the feature.
+- `[x]` Authenticated smoke covers this disabled copy.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Inbox automation pause disabled copy polish
 
 - `[x]` Inbox contact-panel `自動化暫停` disabled title no longer uses vague `尚未開放` copy.
