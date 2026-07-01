@@ -22,5 +22,8 @@ describe("segments light-theme polish", () => {
     expect(source).toContain('name="segment-last-inbound-days"');
     expect(source).toContain('aria-live="polite"');
     expect(source).toContain("focus-visible:ring");
+    expect(source).toContain('data-testid="segments-save-button"');
+    expect(source).toContain('id="segment-save-disabled-reason"');
+    expect(source).toContain("請先輸入分群名稱，才能儲存這組篩選條件。");
   });
 });

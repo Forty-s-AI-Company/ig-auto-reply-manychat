@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Segments empty-name disabled UX
+
+Current status:
+
+- `[x]` Segments create/update now disables the save action when the segment name is empty.
+- `[x]` Empty segment saves now show a clear inline reason instead of relying on an error after click.
+- `[x]` Source regression coverage guards the disabled save state.
+
+Remaining:
+
+- `[ ]` Continue Segments QA for delete confirmation polish and full broadcast recipient flow before expanding segment automation.
+
 # Latest - 2026-07-02 Daily AI model cache refresh
 
 Current status:
