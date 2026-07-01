@@ -2573,3 +2573,16 @@ Remaining:
 
 - `[ ]` 後續若要真正開放抓取貼文、同步留言、更新長效權杖，需要繼續驗證 Meta 權限、token 狀態與 App Review 範圍。
 - `[ ]` Channels 頁仍可再做完整瀏覽器視覺 QA，確認多帳號卡片、權限提醒與設定側欄在手機版沒有擠壓。
+
+## Latest - 2026-07-01 Channel action product copy polish
+
+Current status:
+
+- `[x]` Instagram 動作區標題從 `功能已開始實作` 改成正式產品語氣 `Instagram 功能檢查`。
+- `[x]` Instagram 動作區不再顯示 `disabled` 這類工程字眼，改成 `暫時停用`。
+- `[x]` Channels Connect 頁面不再描述 `disabled 入口`，改為 `受控開通入口`。
+- `[x]` Source guard test 防止這些半成品文案回歸。
+
+Remaining:
+
+- `[ ]` 後續可再用 in-app browser 針對 Channels / Connect 頁做完整視覺 QA，確認文案在手機與桌面版都不擠壓。

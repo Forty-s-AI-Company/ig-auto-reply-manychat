@@ -7049,3 +7049,25 @@ Validation:
 Launch impact:
 
 - UI polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-01 - Channel action product copy polish
+
+Task:
+
+- Continue Channels UI polish after light-theme action styling, focusing on copy that still sounded like implementation status or developer terminology.
+
+Changes:
+
+- `Instagram 功能已開始實作` became `Instagram 功能檢查`.
+- `維持 disabled` became `暫時停用`.
+- Channels Connect page copy now says `受控開通入口` instead of `disabled 入口`.
+- Source-level tests guard against the old semi-finished copy.
+
+Validation:
+
+- `npx eslint src/components/InstagramChannelActions.tsx src/app/channels/connect/page.tsx tests/channel-client-feedback.test.ts tests/channels-connect-visibility.test.ts`: passed.
+- `npx vitest run tests/channel-client-feedback.test.ts tests/channels-connect-visibility.test.ts`: passed.
+
+Launch impact:
+
+- Product copy polish only. No production DB, migration, Production deployment, Meta App Review, or PayUNI production change was performed.

@@ -1273,3 +1273,16 @@ Readiness implication:
 
 - Settings / Channels 頁的視覺一致性更接近主流 SaaS 設定頁。
 - 本輪不改 Meta OAuth、token refresh、webhook、App Review 或資料模型；只收斂 UI/UX。
+
+## 2026-07-01 - Channel action product copy polish
+
+Status:
+
+- Channels / Instagram action controls no longer use implementation-status copy such as `功能已開始實作`.
+- User-facing copy no longer exposes `disabled` as a developer term; controlled availability is described in product language.
+- Regression tests cover these copy boundaries.
+
+Readiness implication:
+
+- Channels / Connect now feels less like an engineering preview and more like a controlled product settings surface.
+- No functional gate, token, webhook, Meta App Review, or database behavior was changed.
