@@ -18,6 +18,8 @@ describe("affiliate page light theme", () => {
     expect(source).toContain("目前僅開放折抵金");
     expect(source).toContain("Simple release 仍以推薦活動與折抵金為主");
     expect(source).toContain("commissionStatusLabel");
+    expect(source).not.toContain("可提領佣金");
+    expect(source).not.toContain("提領申請中");
     expect(source).not.toContain("not_applied");
     expect(source).not.toContain("toLocaleDateString");
   });

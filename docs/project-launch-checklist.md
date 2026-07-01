@@ -1,3 +1,9 @@
+# 2026-07-02 - Affiliate controlled cash copy polish
+
+- `[x]` Affiliate public copy no longer suggests self-service cash withdrawal is available.
+- `[x]` Wallet fallback labels avoid `提領` wording for legacy payout states.
+- `[ ]` Cash affiliate payout remains excluded from the public paid launch until legal / tax / fraud / payout operations are approved.
+
 # 2026-07-02 - Admin invoice refund operator UI
 
 - `[x]` Admin-only refund reconciliation now has an internal operator page.

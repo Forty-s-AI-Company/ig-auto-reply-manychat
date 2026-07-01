@@ -38,8 +38,8 @@ function ledgerStatusLabel(status: string) {
       used: "已折抵",
       expired: "已失效",
       cancelled: "已取消",
-      payout_requested: "提領申請中",
-      paid: "已提領",
+      payout_requested: "內部審核中",
+      paid: "內部已結案",
     }[status] || status
   );
 }

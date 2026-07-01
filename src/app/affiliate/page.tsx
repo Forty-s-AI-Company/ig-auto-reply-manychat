@@ -25,9 +25,9 @@ function commissionStatusLabel(status: string) {
   return (
     {
       pending: "等待確認",
-      available: "可提領",
-      payout_requested: "提領申請中",
-      paid: "已付款",
+      available: "內部可審核",
+      payout_requested: "內部審核中",
+      paid: "內部已結案",
       clawback: "已沖回",
       cancelled: "已取消",
     }[status] || status
@@ -56,22 +56,22 @@ export default async function AffiliatePage() {
     {
       label: "等待確認",
       value: formatTwd(dashboard.summary.pendingAmount),
-      description: "仍在退款 / 爭議等待期內，暫不可提領。",
+      description: "仍在退款 / 爭議等待期內，暫不進入任何現金流程。",
     },
     {
-      label: "可提領佣金",
+      label: "內部可審核金額",
       value: formatTwd(dashboard.availableBalance),
-      description: "已過等待期、可申請批次匯款的金額。",
+      description: "已過等待期，但公開產品仍不提供自助提領。",
     },
     {
-      label: "提領申請中",
+      label: "內部審核中",
       value: formatTwd(dashboard.summary.payoutRequestedAmount),
-      description: "已鎖定並等待營運審核 / 匯款批次。",
+      description: "僅供營運端受控驗證，不代表會自動匯款。",
     },
     {
-      label: "已付款",
+      label: "內部已結案",
       value: formatTwd(dashboard.summary.paidAmount),
-      description: "已由營運端標記完成付款的佣金。",
+      description: "歷史營運紀錄；正式主線仍以推薦折抵為準。",
     },
   ];
 
@@ -165,7 +165,7 @@ export default async function AffiliatePage() {
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-3">
             <h2 className="font-semibold text-[var(--text-primary)]">佣金紀錄</h2>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆分潤計算、等待期與提領狀態。</p>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆分潤計算、等待期與內部審核狀態。</p>
           </div>
           {dashboard.commissions.length > 0 ? (
             <div className="overflow-x-auto">
@@ -198,7 +198,7 @@ export default async function AffiliatePage() {
             </div>
           ) : (
             <div className="px-4 py-8 text-sm leading-6 text-[var(--text-muted)]">
-              目前還沒有現金分潤紀錄。Simple release 仍以推薦活動與折抵金為主；現金分潤會等方案、審核與提領流程完整後再開通。
+              目前還沒有現金分潤紀錄。Simple release 仍以推薦活動與折抵金為主；現金分潤會等方案、審核與營運流程完整後再受控開通。
             </div>
           )}
         </section>

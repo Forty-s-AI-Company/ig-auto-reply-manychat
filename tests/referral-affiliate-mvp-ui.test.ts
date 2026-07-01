@@ -25,6 +25,8 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("現金分潤後續開放");
     expect(source).toContain("正式產品主線目前以推薦折抵為主");
     expect(source).toContain("目前不開放現金提領");
+    expect(source).toContain("內部可審核金額");
+    expect(source).toContain("不代表會自動匯款");
     expect(source).toContain("分潤安全規則");
   });
 
