@@ -1,3 +1,27 @@
+# 2026-07-01 - Json CRUD light-theme polish
+
+Task:
+
+- Continue product UI consistency work after PR #74.
+- Focus on the generic Json CRUD client used by Tags / Knowledge Base style screens.
+
+Changes:
+
+- Reworked Json CRUD panels from dark internal-tool styling to the shared light dashboard language.
+- Updated create/edit JSON editors, item cards, modal dialogs, preview metrics, and preview tables.
+- Kept the change visual-only; API routes, data model, and mutations were not changed.
+
+Validation:
+
+- Pending in this branch: focused lint, full lint, unit suite, build, and PR CI.
+
+Safety:
+
+- UI styling only.
+- No production DB access.
+- No migration or `db push`.
+- No Production deployment.
+
 # 2026-07-01 - Json CRUD inline feedback polish
 
 Task:

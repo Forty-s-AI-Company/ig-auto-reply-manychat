@@ -1,3 +1,17 @@
+# 2026-07-01 - Json CRUD light-theme polish
+
+Status: improved for UI consistency; public paid launch remains Hold.
+
+What changed:
+
+- Generic Json CRUD screens now match the light dashboard visual system.
+- Item cards, form panels, edit dialogs, preview metrics, and preview tables no longer use the old dark developer-tool treatment.
+
+Launch impact:
+
+- Tags / Knowledge Base style admin surfaces feel less like unfinished internal tooling.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Json CRUD inline feedback polish
 
 Status: improved for internal admin-style product surfaces; public paid launch remains Hold.
