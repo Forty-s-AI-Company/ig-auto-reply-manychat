@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Segments and Sequences delete failure feedback
+
+Current status:
+
+- `[x]` Segments delete/reload failures now show user-readable fallback messages.
+- `[x]` Sequences delete/reload failures now show user-readable fallback messages.
+- `[x]` Source regression coverage guards both failure states.
+
+Remaining:
+
+- `[ ]` Consider replacing native confirm dialogs with project-styled modals in a later UI polish pass.
+
 # Latest - 2026-07-02 Sequences hydration-safe save guard
 
 Current status:
