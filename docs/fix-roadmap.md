@@ -1,3 +1,17 @@
+# Latest - 2026-07-01 Signup light-theme and form UX polish
+
+Current status:
+
+- `[x]` 註冊頁已與登入頁對齊成亮色 public auth surface。
+- `[x]` Email 註冊表單已補齊 field name、autocomplete、focus-visible、錯誤 live region 與送出中狀態。
+- `[x]` Google 建立帳號入口保留原流程，但樣式與焦點狀態已統一。
+- `[x]` Source-level regression test 防止註冊頁回到深色表單。
+
+Remaining:
+
+- `[ ]` 若後續要進一步提升註冊轉換，可補密碼強度提示、條款 checkbox 與 onboarding first-run smoke。
+- `[ ]` 繼續掃描 admin-only 頁面是否仍有深色內部工具樣式。
+
 # Latest - 2026-07-01 Mock tester light-theme and feedback polish
 
 Current status:

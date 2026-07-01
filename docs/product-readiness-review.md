@@ -1,3 +1,19 @@
+# 2026-07-01 - Signup light-theme and form UX polish
+
+Status: improved for public auth consistency; public paid launch remains Hold.
+
+What changed:
+
+- `/signup` now matches the light login surface instead of the old dark form treatment.
+- Email signup controls now include stable names, useful autocomplete values, visible focus states, loading state, and live error feedback.
+- Google signup keeps the existing OAuth path while using the same light auth visual language.
+- A focused guard prevents the signup page from regressing to the dark class set.
+
+Launch impact:
+
+- This improves first-run account creation trust and consistency for new users.
+- This does not change signup API behavior, production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Mock tester light-theme and feedback polish
 
 Status: improved for Full-release testing UX; public paid launch remains Hold.

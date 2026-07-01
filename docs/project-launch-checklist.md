@@ -1,3 +1,11 @@
+# 2026-07-01 - Signup light-theme and form UX polish
+
+- `[x]` 註冊頁已與登入頁對齊成亮色 public auth surface。
+- `[x]` Email 註冊表單有明確 field name / autocomplete / focus state / loading state。
+- `[x]` 註冊錯誤會以 inline live feedback 呈現。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Mock tester light-theme and feedback polish
 
 - `[x]` Webhook 測試工具已改成亮色 SaaS 後台風格。
