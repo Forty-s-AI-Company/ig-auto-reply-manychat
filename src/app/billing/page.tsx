@@ -15,6 +15,37 @@ function formatDate(date?: Date | null) {
   return new Intl.DateTimeFormat("zh-TW", { dateStyle: "medium" }).format(date);
 }
 
+function invoiceStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    draft: "草稿",
+    open: "待處理",
+    pending_payment: "待付款",
+    paid: "已付款",
+    failed: "付款失敗",
+    void: "已作廢",
+    refunded: "已退款",
+  };
+  return labels[status] ?? "狀態待確認";
+}
+
+function paymentStatusLabel(status: string) {
+  const labels: Record<string, string> = {
+    pending: "待付款",
+    paid: "已付款",
+    failed: "付款失敗",
+    canceled: "已取消",
+  };
+  return labels[status] ?? "狀態待確認";
+}
+
+function statusBadgeClass(status: string) {
+  if (status === "paid") return "border-green-200 bg-green-50 text-green-700";
+  if (status === "failed" || status === "refunded" || status === "void" || status === "canceled") {
+    return "border-red-200 bg-red-50 text-red-700";
+  }
+  return "border-amber-200 bg-amber-50 text-amber-800";
+}
+
 function progress(used: number, limit: number) {
   if (limit <= 0) return 0;
   return Math.min(Math.round((used / limit) * 100), 100);
@@ -158,11 +189,18 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
 
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-3 font-medium text-[var(--text-primary)]">發票紀錄</div>
+          <p className="border-b border-[var(--border-soft)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
+            發票狀態會以中文顯示；若發生退款，推薦折抵會依規則取消或沖回，不會留下看不懂的系統狀態。
+          </p>
           <div className="divide-y divide-[var(--border-soft)]">
             {invoices.map((invoice) => (
               <div key={invoice.id} className="grid gap-2 px-4 py-3 text-sm text-[var(--text-secondary)] md:grid-cols-5">
                 <span className="font-mono text-xs text-[var(--text-muted)]">{invoice.invoiceNumber}</span>
-                <span>{invoice.status}</span>
+                <span>
+                  <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(invoice.status)}`}>
+                    {invoiceStatusLabel(invoice.status)}
+                  </span>
+                </span>
                 <span>{formatTwd(invoice.subtotalAmount)}</span>
                 <span>折抵 {formatTwd(invoice.creditUsedAmount)}</span>
                 <span>{formatDate(invoice.createdAt)}</span>
@@ -180,7 +218,11 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
                 <span className="font-mono text-xs text-[var(--text-muted)]">{order.merTradeNo}</span>
                 <span>{order.planKey}</span>
                 <span>{formatTwd(order.amount)}</span>
-                <span>{order.status}</span>
+                <span>
+                  <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusBadgeClass(order.status)}`}>
+                    {paymentStatusLabel(order.status)}
+                  </span>
+                </span>
               </div>
             ))}
             {recentOrders.length === 0 ? <p className="px-4 py-6 text-sm text-[var(--text-muted)]">尚無 PayUNI 訂單。</p> : null}

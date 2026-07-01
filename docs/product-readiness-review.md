@@ -1,3 +1,18 @@
+# 2026-07-02 - Billing status copy polish
+
+Status: improved for billing usability; public paid launch remains Hold.
+
+What changed:
+
+- Billing invoice history now shows Chinese status labels instead of raw invoice enums.
+- Recent PayUNI order status also uses Chinese labels and badge treatment.
+- The invoice history section explains that refunded invoices can cancel or claw back referral credits.
+
+Readiness implication:
+
+- Billing is less likely to feel like an internal database view.
+- This does not change production data, payment gateway mode, Meta review, or production deployment gates.
+
 # 2026-07-02 - Admin refund reconciliation route
 
 Status: improved for operator-controlled refund handling; public paid launch remains Hold.

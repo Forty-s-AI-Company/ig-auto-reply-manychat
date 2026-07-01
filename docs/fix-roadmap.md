@@ -1,3 +1,16 @@
+# Latest - 2026-07-02 Billing invoice status copy polish
+
+Current status:
+
+- `[x]` Billing 發票紀錄不再直接顯示 raw `InvoiceStatus` enum。
+- `[x]` 最近 PayUNI 訂單不再直接顯示 raw `PaymentStatus` enum。
+- `[x]` 發票紀錄補上退款後推薦折抵取消 / 沖回的使用者可讀說明。
+- `[x]` Source-level regression 已覆蓋 status copy。
+
+Remaining:
+
+- `[ ]` 若後續新增完整退款操作 UI，需補 Playwright smoke 覆蓋 admin-only route。
+
 # Latest - 2026-07-02 Referral credit v1 direction
 
 Current status:

@@ -1,3 +1,30 @@
+# 2026-07-02 - Billing invoice status copy polish
+
+Task:
+
+- Remove raw invoice / payment status enum display from the user-facing Billing page.
+
+Changes:
+
+- Added Chinese invoice status labels for draft / open / pending payment / paid / failed / void / refunded.
+- Added Chinese PayUNI order status labels for pending / paid / failed / canceled.
+- Added status badge styling and a short refund-credit explanation below the invoice history heading.
+- Added a source-level regression test to prevent raw status enums from returning to the Billing UI.
+
+Validation:
+
+- `npx vitest run tests/billing-page-status-copy.test.ts tests/billing-checkout-route.test.ts tests/payuni-billing.test.ts --reporter=dot` passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `npm test` passed.
+- `npm run e2e:admin:ensure` passed after the first authenticated smoke showed the local fixture needed reseeding.
+- `npm run test:e2e:auth` passed after reseeding the local E2E admin fixture.
+- `npm run test:e2e:simple` completed with the current suite configured as skipped.
+
+Launch impact:
+
+- Improves Billing UX clarity without changing payment behavior, production DB, deployment, Meta App Review, or PayUNI production mode.
+
 # 2026-07-02 - Admin-only referral credit refund route
 
 Task:
