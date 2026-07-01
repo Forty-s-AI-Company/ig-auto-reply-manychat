@@ -90,6 +90,10 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-quick-partner-tag")).not.toContainText("🤝");
     await expect(page.getByTestId("inbox-apply-tag-select")).toContainText("套用既有標籤");
     await expect(page.getByRole("button", { name: "建立新標籤" })).toBeVisible();
+    await expect(page.getByTestId("inbox-new-field-label")).toHaveAttribute("placeholder", "新增欄位，例如：課程興趣");
+    await expect(page.getByTestId("inbox-create-field-button")).toBeDisabled();
+    await expect(page.getByTestId("inbox-create-field-button")).toHaveAttribute("title", "請先輸入欄位名稱。");
+    await expect(page.getByTestId("inbox-create-field-disabled-reason")).toContainText("請先輸入欄位名稱");
     await page.getByTestId("inbox-apply-tag-select").selectOption({ label: "e2e-vip" });
     await expect(page.getByTestId("inbox-notice")).toContainText("標籤已加入聯絡人");
     if (isMobileProject) {
