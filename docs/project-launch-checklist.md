@@ -1,3 +1,12 @@
+# 2026-07-01 - Affiliate light-theme and eligibility UX polish
+
+- `[x]` 聯盟分潤頁已改成亮色 SaaS 後台風格。
+- `[x]` 不符合現金分潤資格時，申請按鈕會清楚 disabled 並說明 Creator+ 條件。
+- `[x]` 佣金紀錄、狀態與空狀態不再像深色內部工具。
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+- `[ ]` Affiliate cash payout go-live still requires terms, anti-fraud, refund/clawback, payout reconciliation, and final operational approval.
+- `[ ]` Public paid launch still requires remaining human gates: Meta App Review, PayUNI production go-live, and final launch approval.
+
 # 2026-07-01 - Wallet light-theme polish
 
 - `[x]` 折抵金錢包頁已改成亮色 SaaS 後台風格。

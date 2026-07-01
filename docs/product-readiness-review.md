@@ -1,3 +1,20 @@
+# 2026-07-01 - Affiliate light-theme and eligibility UX polish
+
+Status: improved for Affiliate UI clarity; public paid launch remains Hold.
+
+What changed:
+
+- `/affiliate` now follows the light dashboard visual system instead of the old dark internal-tool surface.
+- Ineligible users now see a disabled cash-payout application control with clear Creator+ plan requirements instead of a button that fails only after submitting.
+- Affiliate status, level, commission status, commission ledger, dates, and empty state now use user-readable Traditional Chinese copy and semantic table markup.
+- A focused guard prevents the page from regressing to the dark class set or raw `not_applied` copy.
+
+Launch impact:
+
+- This reduces confusion for users who reach the affiliate page, but does not open affiliate cash payouts as a public launch feature.
+- Public affiliate go-live still requires terms, anti-fraud, refund/clawback, payout reconciliation, and final operational approval.
+- This does not unlock production deployment, Meta review, PayUNI production, or production DB gates.
+
 # 2026-07-01 - Wallet light-theme polish
 
 Status: improved for Billing / Wallet UI consistency; public paid launch remains Hold.
