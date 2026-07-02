@@ -82,7 +82,7 @@ export default async function WalletPage() {
             <h2 className="font-semibold text-[var(--text-primary)]">折抵金流水</h2>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆折抵金入帳、待確認、到期失效、退款沖回與帳單折抵紀錄。</p>
             <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
-              推薦折抵只能折抵方案費，單筆帳單最低可折到 0 元；轉成可用後 30 天內未使用會自動失效。
+              推薦折抵只能折抵方案費，單筆帳單最低可折到 0 元；轉成可用後 30 天內未使用會自動失效。若來源付款退款，待確認折抵會取消，已使用折抵會以沖回紀錄抵銷。
             </p>
             <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--text-muted)]">
               <span>下一筆可用時間：{summary.nextAvailableAt ? formatLedgerDate(summary.nextAvailableAt) : "目前沒有待確認折抵"}</span>

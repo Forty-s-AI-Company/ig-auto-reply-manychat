@@ -68,6 +68,12 @@ function ProgressBar({ label, used, limit }: { label: string; used: number; limi
   );
 }
 
+function checkoutButtonLabel(plan: { customSales?: boolean }, payuniStatus: { checkoutEnabled: boolean; sandbox: boolean }) {
+  if (plan.customSales) return "聯絡管理員";
+  if (!payuniStatus.checkoutEnabled) return "正式站受控開通中";
+  return payuniStatus.sandbox ? "前往 PayUNI Sandbox 月繳" : "前往 PayUNI 月繳";
+}
+
 export default async function BillingPage({ searchParams }: { searchParams?: Promise<{ payment?: string; payuni?: string }> }) {
   const user = await requireUser();
   const params = await searchParams;
@@ -138,6 +144,7 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
             <p className="mt-1">
               目前可用折抵 {formatTwd(walletSummary.availableCredits)}，待確認折抵 {formatTwd(walletSummary.pendingCredits)}。
               折抵只能用在方案費，單筆帳單最低可折到 0 元；首筆有效付費需先經過 7 天退款觀察期，轉成可用後 30 天內未使用會失效。
+              若在觀察期內退款，待確認折抵會取消；若已使用後才退款，會以沖回紀錄抵銷。
             </p>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -158,16 +165,22 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
                 <button
                   type="submit"
                   disabled={plan.customSales || !payuniStatus.checkoutEnabled}
+                  data-testid={`billing-checkout-${plan.key}`}
                   title={
                     plan.customSales
                       ? "客製方案需要由管理員手動開通。"
-                      : payuniStatus.checkoutDisabledReason || undefined
+                      : payuniStatus.checkoutDisabledReason || (payuniStatus.sandbox ? "這會前往 PayUNI Sandbox 測試站，不會進入正式扣款。" : undefined)
                   }
                   className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
                 >
-                  {plan.customSales ? "聯絡管理員" : payuniStatus.checkoutEnabled ? "月繳付款" : "正式站受控開通中"}
+                  {checkoutButtonLabel(plan, payuniStatus)}
                 </button>
               </form>
+              {!plan.customSales && payuniStatus.checkoutEnabled && payuniStatus.sandbox ? (
+                <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+                  目前會導向 PayUNI Sandbox 測試站；正式扣款需等營運人員切換 production gate。
+                </p>
+              ) : null}
               {!plan.customSales && !payuniStatus.checkoutEnabled ? (
                 <p className="mt-2 text-xs leading-5 text-amber-800">{payuniStatus.checkoutDisabledReason}</p>
               ) : null}

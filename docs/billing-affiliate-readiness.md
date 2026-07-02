@@ -379,3 +379,10 @@ Billing launch implication:
 
 - `npm test` 第一次遇到既有的 Vitest 子程序 crash（Windows / Node 24 / Vitest 既有不穩定），第二次完整通過
 - `npm run build` 成功，但仍有既有 Prisma engine DLL lock `EPERM` 噪音；`prisma-generate-safe` 已 fallback 成功
+
+# 2026-07-02 - Billing / PayUNI Sandbox / referral credit UX QA
+
+- `[x]` Billing checkout CTA now explicitly labels PayUNI Sandbox when the configured gateway is sandbox.
+- `[x]` Referral credit copy now consistently states: no cash-out, credit can reduce an invoice to 0, pending waits 7 days, available expires after 30 days, refunds cancel pending credits or create clawback / debit records.
+- `[x]` Admin invoice refund and payout review surfaces now say clearly that internal marking/review does not trigger PayUNI refunds, card refunds, bank transfers, or cash payout.
+- `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.

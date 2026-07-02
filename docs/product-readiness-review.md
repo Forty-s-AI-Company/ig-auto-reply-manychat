@@ -1624,3 +1624,9 @@ Readiness implication:
 
 - Product feel is closer to launch quality because destructive controls no longer behave like temporary browser prompts.
 - This does not remove the remaining launch holds: Meta App Review, PayUNI production switch, production deployment authorization, and final browser QA remain manual gates.
+
+## 2026-07-02 - Billing / Referral Credit UX QA
+
+- Billing / PayUNI Sandbox copy is clearer for public beta users.
+- Referral credit v1 remains the launch-safe direction: no cash-out, 7-day pending observation, 30-day expiry, refund cancellation / clawback.
+- Public paid launch still requires PayUNI production go-live approval and final sandbox-to-production evidence.

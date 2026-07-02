@@ -17,6 +17,10 @@ function referralStatusLabel(status: string) {
   );
 }
 
+function formatReferralDate(date: Date) {
+  return new Intl.DateTimeFormat("zh-TW", { dateStyle: "medium" }).format(date);
+}
+
 export default async function ReferralsPage() {
   const user = await requireUser();
   const dashboard = await getReferralDashboard(user.id);
@@ -47,8 +51,8 @@ export default async function ReferralsPage() {
           </div>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
             {simpleRelease
-              ? "目前推薦活動以方案折抵為主：首筆有效付費會先進入待確認，超過退款觀察期才會轉成可用折抵金。"
-              : "有效推薦會讓雙方各 +1 天試用；首筆有效付費會先進入待確認折抵金，超過退款觀察期後才可折抵後續方案費。"}
+              ? "目前推薦活動以方案折抵為主：首筆有效付費會先進入待確認，超過 7 天退款觀察期才會轉成可用折抵金。"
+              : "有效推薦會讓雙方各 +1 天試用；首筆有效付費會先進入待確認折抵金，超過 7 天退款觀察期後才可折抵後續方案費。"}
           </p>
         </section>
 
@@ -65,7 +69,7 @@ export default async function ReferralsPage() {
             <div className="mt-4 grid gap-3 text-sm leading-6 text-[var(--text-secondary)]">
               <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3">
                 <p className="font-semibold text-[var(--text-primary)]">折抵怎麼生效</p>
-                <p className="mt-1">推薦人完成第一筆有效付費後，折抵金會先進 pending；超過退款觀察期才會轉成 available。</p>
+                <p className="mt-1">推薦人完成第一筆有效付費後，折抵金會先進待確認；超過 7 天退款觀察期才會轉成可用。</p>
               </div>
               <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3">
                 <p className="font-semibold text-[var(--text-primary)]">折抵規則</p>
@@ -89,8 +93,8 @@ export default async function ReferralsPage() {
               目前不顯示假點擊數，也不把現金提領包裝成已可用功能。這個頁面只顯示已可驗證的註冊、啟用、待確認折抵與可用折抵。
             </p>
             <div className="mt-4 rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3 text-sm leading-6 text-[var(--text-secondary)]">
-              <p>下一筆可用折抵時間：{dashboard.walletSummary.nextAvailableAt ? dashboard.walletSummary.nextAvailableAt.toLocaleDateString("zh-TW") : "目前沒有待確認折抵"}</p>
-              <p className="mt-1">下一筆到期時間：{dashboard.walletSummary.nextExpiryAt ? dashboard.walletSummary.nextExpiryAt.toLocaleDateString("zh-TW") : "目前沒有可用折抵即將到期"}</p>
+              <p>下一筆可用折抵時間：{dashboard.walletSummary.nextAvailableAt ? formatReferralDate(dashboard.walletSummary.nextAvailableAt) : "目前沒有待確認折抵"}</p>
+              <p className="mt-1">下一筆到期時間：{dashboard.walletSummary.nextExpiryAt ? formatReferralDate(dashboard.walletSummary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</p>
             </div>
             {!simpleRelease ? (
               <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
@@ -107,7 +111,7 @@ export default async function ReferralsPage() {
               <span className="font-medium text-[var(--text-primary)]">{item.referred.name}</span>
               <span>{item.referred.email}</span>
               <span>{referralStatusLabel(item.status)}</span>
-              <span>{item.createdAt.toLocaleDateString("zh-TW")}</span>
+              <span>{formatReferralDate(item.createdAt)}</span>
             </div>
           ))}
           {dashboard.attributions.length === 0 ? (

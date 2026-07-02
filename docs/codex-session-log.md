@@ -8438,3 +8438,35 @@ Launch impact:
 
 - Product UX polish only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Billing / PayUNI Sandbox / referral credit UX QA
+
+Task:
+
+- Review Billing, Wallet, Referrals, Affiliate, Admin payouts, and Admin invoices for misleading cash payout copy, unclear referral-credit rules, PayUNI Sandbox ambiguity, mobile overflow, and rough controlled-operation UX without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Public referral-credit direction was already correct, but the Billing checkout CTA still read like a generic payment button even when the gateway is PayUNI Sandbox.
+- Referrals still used direct `toLocaleDateString()` formatting and mixed internal pending/available wording into user-facing copy.
+- Wallet explained expiry, but did not explicitly say refunded source payments cancel pending credits or claw back already-used credits.
+- Admin refund and payout surfaces were controlled, but operator copy could be clearer that approval/refund marking does not trigger PayUNI refunds, card refunds, bank transfers, or cash payout.
+
+Changes:
+
+- Billing checkout CTA now explicitly says `前往 PayUNI Sandbox 月繳` when the gateway is sandbox, with supporting copy explaining this is not production charging.
+- Billing and Wallet now clarify referral-credit cancellation / clawback behavior after refunds.
+- Referrals now uses `Intl.DateTimeFormat`, removes raw pending/available wording from the user-facing rule copy, and states the 7-day observation / 30-day expiry rules more directly.
+- Admin invoice refund dialog now has mobile scroll containment, test hook, focus-visible controls, and stronger copy that it does not refund credit cards or call PayUNI automatically.
+- Admin payout review copy now states approve/reject is internal review only and will not trigger bank transfer, payment gateway transfer, or cash payout.
+
+Validation:
+
+- `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts tests/admin-invoices-page.test.ts tests/affiliate-light-theme.test.ts tests/payuni-billing.test.ts`: passed.
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "authenticated launch routes" --project=chromium`: passed.
+
+Launch impact:
+
+- Product copy, UX clarity, and admin safety polish only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
