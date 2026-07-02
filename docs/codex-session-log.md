@@ -8378,3 +8378,33 @@ Changes:
 Validation:
 
 - `npm run e2e:admin:ensure && npm run test:e2e:auth -- --grep "Sequences disabled states" --project=chromium`: passed.
+
+# 2026-07-02 - Automations / Sequences / Segments closeout follow-up
+
+Task:
+
+- Continue the Automations / Sequences / Segments product closeout without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Automations flow delete, editor node delete, and Segments delete already use in-app confirmation dialogs.
+- The Sequences editor still removed draft steps immediately, which made a destructive draft edit feel like a one-click action.
+- Segments had a clear delete dialog, but the authenticated smoke did not yet cover the create-disabled reason and delete confirmation path.
+
+Changes:
+
+- Added a `SequenceStepRemoveDialog` before removing sequence draft steps.
+- Added a status message clarifying that step removal applies to the current draft and only takes effect after save.
+- Added authenticated Playwright smoke coverage for sequence step removal confirmation and Segments create/delete clarity.
+- Extended the sequence source regression test so the UI does not regress back to immediate step removal.
+
+Validation:
+
+- `npm run e2e:admin:ensure`: passed.
+- `npx vitest run tests/sequences-form-state.test.ts tests/segments-light-theme.test.ts`: passed.
+- `npm run test:e2e:auth -- --grep "Sequences disabled states|confirmation dialog before removing sequence draft steps|Segments create and delete actions" --project=chromium`: passed.
+
+Launch impact:
+
+- Product UX polish only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
