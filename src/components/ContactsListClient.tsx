@@ -240,7 +240,7 @@ export function ContactsListClient({
 
   return (
     <div
-      className="flex h-[calc(100vh-100px)] min-h-0 overflow-hidden rounded-lg border border-[#d7dbe0] bg-white"
+      className="flex min-h-[calc(100vh-100px)] overflow-hidden rounded-lg border border-[#d7dbe0] bg-white lg:h-[calc(100vh-100px)] lg:min-h-0"
       data-testid="contacts-list-client"
       data-ready={isHydrated ? "true" : "false"}
     >
@@ -301,20 +301,20 @@ export function ContactsListClient({
               className="h-9 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
             />
           </form>
-          <div className="relative flex shrink-0 items-center gap-2">
+          <div className="relative flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap">
             <button
               type="button"
               onClick={() => setIsFilterOpen((current) => !current)}
               data-testid="contacts-filter-button"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]"
+              className="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:flex-none"
               aria-expanded={isFilterOpen}
             >
-              <Filter className="h-4 w-4" />
+              <Filter className="h-4 w-4" aria-hidden="true" />
               篩選
               {status || tagId ? <span className="rounded-full bg-[#eef6ff] px-1.5 py-0.5 text-xs text-[#006fe6]">已套用</span> : null}
             </button>
-            <Link href="/tags" className="inline-flex h-9 items-center gap-2 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8]">
-              <Plus className="h-4 w-4" />
+            <Link href="/tags" className="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:flex-none">
+              <Plus className="h-4 w-4" aria-hidden="true" />
               新增標籤
             </Link>
             <button
@@ -325,9 +325,9 @@ export function ContactsListClient({
                 setIsSegmentDialogOpen(true);
               }}
               data-testid="contacts-create-segment-button"
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]"
+              className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:w-auto"
             >
-              <Users className="h-4 w-4" />
+              <Users className="h-4 w-4" aria-hidden="true" />
               建立分眾
             </button>
 

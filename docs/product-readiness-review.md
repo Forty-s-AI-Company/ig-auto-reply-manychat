@@ -1719,3 +1719,8 @@ Readiness implication:
 ## 2026-07-03 - PR #136 CI smoke stabilization
 
 - Readiness update：Automations 建立流程的空白模板入口已具備穩定測試 selector，降低 mobile CI 與後續回歸測試 flaky 風險。
+
+## 2026-07-03 - Contacts mobile activation header polish
+
+- Readiness update：新使用者進入 Contacts 空狀態時，mobile header actions 不再依賴單行擠壓；篩選、標籤與分眾入口保留清楚 focus state。
+- Remaining risk：仍需逐頁掃描 Dashboard / Inbox / Automations 在真實手機 viewport 下的 CTA 密度與 disabled UX。

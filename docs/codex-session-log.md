@@ -8689,3 +8689,10 @@ Launch impact:
 - 變更：Automations template dialog 的「從空白開始」補穩定 data-testid，Playwright auth smoke 改為先等待 template dialog，再點擊該 test id；同時將按鈕 Plus icon 標為 decorative。
 - 驗證：npm run e2e:admin:ensure && npm run test:e2e:auth 通過；npm run lint、npm run build、npm test 通過。
 - 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - Contacts mobile activation header polish
+
+- 目標：延續新使用者啟用路徑，修補 Contacts 空狀態/篩選工具列在 mobile 下的按鈕擁擠與鍵盤 focus 可見性。
+- 變更：Contacts shell 改為 mobile min-height、desktop fixed-height；篩選/新增標籤/建立分眾工具列在 mobile 可換行，並補 focus-visible ring 與 decorative icon aria-hidden。
+- 驗證：focused Vitest 通過；empty workspace activation Playwright smoke desktop/mobile 通過。
+- 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。

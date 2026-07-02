@@ -3365,3 +3365,8 @@ Remaining:
 
 - 已完成：Automations mobile auth smoke 不再依賴 role lookup 競態，改用 template dialog 與 stable test id 驗證。
 - 驗證：test:e2e:auth、lint、build、npm test 通過。
+
+## 2026-07-03 - Contacts mobile activation header polish
+
+- 已完成：Contacts mobile header actions 可換行、focus-visible 可見、空 workspace activation smoke 覆蓋 desktop/mobile。
+- 下一步：若沒有人工阻塞，繼續檢查 Dashboard/Inbox/Automations 的 mobile CTA 與 disabled UX 是否仍有擠壓或半實作入口。
