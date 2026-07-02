@@ -1,3 +1,9 @@
+## 2026-07-03 05:50 +08:00 - Inbox custom reminder disabled reason linkage
+
+- Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.
+- Updated Inbox custom reminder controlled-opening action with aria-describedby and visible reason text inside the reminder menu.
+- Kept click feedback so users still get a clear toast instead of a dead control.
+- Validation target: Inbox authenticated smoke, lint, build, npm test.
 ## 2026-07-03 05:40 +08:00 - Channels settings disabled controls reason linkage
 
 - Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.
@@ -8351,14 +8357,14 @@ Launch impact:
 
 
 ## 2026-07-02 Session
-1. ¥»¦¸¥ô°È¥Ø¼Ð¡G°w¹ï InboxPilot Staging Àô¹Ò¶i¦æ³v­¶¤â°Ê¥\¯à»PµøÄ±¤@­P©Ê QA ´ú¸Õ¡C
-2. ­×§ïÀÉ®×¡Gdocs/qa-analysis-report.md
-3. ­×§ï¤º®e¡G«Ø¥ß§¹¾ãªº QA ¤ÀªR³ø§i¡A²[»\ Dashboard¡BInbox¡BContacts¡BAutomations¡BAnalytics¡BBilling¡BChannels µ¥®Ö¤ß­¶­±ª¬ºA¡C
-4. ÅçÃÒ«ü¥O»Pµ²ªG¡G¬d¾\ React Components »P Page µ²ºc½T»{¥\¯à¹ê§@ (¨Ò¦p Contacts Tag + «ö¶sªº <ContactTagCreateButton> ¼uµ¡ÅÞ¿è¡BBilling ¤ëÃº¥I´Ú¦ê±µ <form action='/api/billing/payuni/checkout'>)¡Cµ²ªG¥þ¼Æ¥\¯à§¡¯u¹ê¹B§@¡C
-5. ¬O§_¼vÅT¤W½uª¬ºA¡G¤£¼vÅT¡C
-6. ¬O§_·s¼W­·ÀI¡GµL¡C
-7. ¤å¥ó§ó·s²M³æ¡Gdocs/qa-analysis-report.md
-8. ¤U¤@­Ó«ØÄ³ Codex Prompt¡G'½Ð®Ú¾Ú QA ³ø§i¡A°w¹ï Analytics ­¶­±¾É¤J Recharts¡AÃ¸»sªñ 7 ¤Ñ°T®§§é½u¹Ï¡A´£¤ÉµøÄ±Â×´I«×¡C'
+1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥Ø¼Ð¡Gï¿½wï¿½ï¿½ InboxPilot Staging ï¿½ï¿½ï¿½Ò¶iï¿½ï¿½vï¿½ï¿½ï¿½ï¿½Ê¥\ï¿½ï¿½Pï¿½ï¿½Ä±ï¿½@ï¿½Pï¿½ï¿½ QA ï¿½ï¿½ï¿½Õ¡C
+2. ï¿½×§ï¿½ï¿½É®×¡Gdocs/qa-analysis-report.md
+3. ï¿½×§ï¤ºï¿½eï¿½Gï¿½Ø¥ß§ï¿½ï¿½ãªº QA ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½iï¿½Aï¿½[ï¿½\ Dashboardï¿½BInboxï¿½BContactsï¿½BAutomationsï¿½BAnalyticsï¿½BBillingï¿½BChannels ï¿½ï¿½ï¿½Ö¤ß­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½C
+4. ï¿½ï¿½ï¿½Ò«ï¿½ï¿½Oï¿½Pï¿½ï¿½ï¿½Gï¿½Gï¿½dï¿½\ React Components ï¿½P Page ï¿½ï¿½ï¿½cï¿½Tï¿½{ï¿½\ï¿½ï¿½ï¿½@ (ï¿½Ò¦p Contacts Tag + ï¿½ï¿½ï¿½sï¿½ï¿½ <ContactTagCreateButton> ï¿½uï¿½ï¿½ï¿½Þ¿ï¿½BBilling ï¿½ï¿½Ãºï¿½Iï¿½Ú¦ê±µ <form action='/api/billing/payuni/checkout'>)ï¿½Cï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Æ¥\ï¿½à§¡ï¿½uï¿½ï¿½Bï¿½@ï¿½C
+5. ï¿½Oï¿½_ï¿½vï¿½Tï¿½Wï¿½uï¿½ï¿½ï¿½Aï¿½Gï¿½ï¿½ï¿½vï¿½Tï¿½C
+6. ï¿½Oï¿½_ï¿½sï¿½Wï¿½ï¿½ï¿½Iï¿½Gï¿½Lï¿½C
+7. ï¿½ï¿½ï¿½ï¿½sï¿½Mï¿½ï¿½Gdocs/qa-analysis-report.md
+8. ï¿½Uï¿½@ï¿½Ó«ï¿½Ä³ Codex Promptï¿½G'ï¿½Ð®Ú¾ï¿½ QA ï¿½ï¿½ï¿½iï¿½Aï¿½wï¿½ï¿½ Analytics ï¿½ï¿½ï¿½ï¿½ï¿½É¤J Rechartsï¿½AÃ¸ï¿½sï¿½ï¿½ 7 ï¿½Ñ°Tï¿½ï¿½ï¿½ï¿½uï¿½Ï¡Aï¿½ï¿½ï¿½Éµï¿½Ä±ï¿½×´Iï¿½×¡C'
 
 # 2026-07-02 - Analytics Recharts 7-day message trend
 

@@ -1111,6 +1111,7 @@ export function InboxClient({
                             type="button"
                             className="flex w-full items-center gap-2 px-3 py-2 text-left text-[#98a2b3] hover:bg-[#f8fafc]"
                             onClick={explainUnavailableCustomReminder}
+                            aria-describedby="inbox-reminder-custom-disabled-reason"
                             title="自訂日期與時間提醒屬於受控開通功能，請先使用固定提醒時段。"
                             aria-label="自訂日期與時間提醒屬於受控開通功能，請先使用固定提醒時段。"
                             data-testid="inbox-reminder-custom-disabled"
@@ -1118,6 +1119,9 @@ export function InboxClient({
                             <CalendarClock className="h-4 w-4" />
                             自訂日期與時間（受控開通）
                           </button>
+                          <p id="inbox-reminder-custom-disabled-reason" className="px-3 pb-2 text-[11px] leading-5 text-[#98a2b3]">
+                            自訂提醒需完成時區、排程與通知稽核；目前請先使用固定提醒時段。
+                          </p>
                           {selected.reminderAt ? (
                             <button
                               type="button"
@@ -1670,6 +1674,7 @@ function ContactPanel({
               className="rounded-full px-2 py-1 text-xs text-white"
               style={{ backgroundColor: tag.color }}
               title="移除標籤"
+              data-testid={`inbox-contact-tag-${tag.name}`}
             >
               {tag.name}
             </button>

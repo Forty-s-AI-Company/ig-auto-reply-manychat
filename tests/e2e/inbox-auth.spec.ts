@@ -117,7 +117,7 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-create-field-button")).toHaveAttribute("title", "請先輸入欄位名稱。");
     await expect(page.getByTestId("inbox-create-field-disabled-reason")).toContainText("請先輸入欄位名稱");
     await page.getByTestId("inbox-apply-tag-select").selectOption({ label: "e2e-vip" });
-    await expect(page.getByTestId("inbox-notice")).toContainText("標籤已加入聯絡人");
+    await expect(page.getByTestId("inbox-contact-tag-e2e-vip")).toBeVisible();
     if (isMobileProject) {
       await page.getByTestId("inbox-pane-detail").click();
       await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
@@ -140,6 +140,11 @@ test.describe("inbox authenticated smoke", () => {
 
     await page.getByTestId("inbox-reminder-toggle").click();
     await expect(page.getByTestId("inbox-reminder-custom-disabled")).toContainText("受控開通");
+    await expect(page.getByTestId("inbox-reminder-custom-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "inbox-reminder-custom-disabled-reason",
+    );
+    await expect(page.getByTestId("inbox-reminder-menu")).toContainText("自訂提醒需完成時區、排程與通知稽核");
     await expect(page.getByTestId("inbox-reminder-custom-disabled")).toHaveAttribute("title", /受控開通/);
     await page.getByTestId("inbox-reminder-custom-disabled").click();
     await expect(page.getByTestId("inbox-reminder-menu")).toBeHidden();

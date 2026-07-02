@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Inbox custom reminder disabled reason linkage
+
+Current status:
+
+- [x] Inbox custom reminder controlled-opening action now exposes a visible reason.
+- [x] Custom reminder action references the visible reason through aria-describedby while still providing click feedback.
+- [x] Inbox authenticated smoke coverage checks the disabled reason linkage.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Channels settings disabled reason linkage
 
 Current status:
