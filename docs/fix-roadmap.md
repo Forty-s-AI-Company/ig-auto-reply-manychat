@@ -3118,3 +3118,16 @@ Remaining:
 
 - `[ ]` 後續可再補 Automations / Broadcasts 的小型趨勢視覺，但應等真實事件資料來源穩定後再做。
 - `[ ]` 若要更精準支援使用者時區，可後續加入 workspace timezone 設定；本輪先用 UTC calendar day 做穩定聚合。
+
+## Latest - 2026-07-02 Dashboard release-aware recent message empty state
+
+Current status:
+
+- `[x]` Dashboard 最近訊息空狀態不再一律導向測試工具。
+- `[x]` Simple release 會依 IG 連線狀態導向 Inbox 或 Channels connect。
+- `[x]` Full release 仍保留 mock tester CTA，適合 QA / seeded workflow。
+- `[x]` 已補 source regression，避免 simple release 再出現錯誤 CTA。
+
+Remaining:
+
+- `[ ]` 後續可用瀏覽器逐頁檢查 Dashboard / Inbox / Analytics 的 RWD 空狀態與 CTA 位置。

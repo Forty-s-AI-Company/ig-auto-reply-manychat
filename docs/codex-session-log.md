@@ -8146,3 +8146,38 @@ Validation update:
 - `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
 - `npm test`: passed. One Windows Vitest batch hit the known `3221225477` batch-level crash, then every file in that batch passed when rerun individually by the project test runner.
 - `npm run lint`: blocked by pre-existing untracked `AI_TEAM/scripts/qa-staging.js` using CommonJS `require()`; the Analytics changed files passed targeted ESLint.
+
+# 2026-07-02 - Dashboard release-aware recent message empty state
+
+Task:
+
+- Continue product visual and completeness cleanup after Analytics Recharts by auditing Dashboard / Analytics / Inbox for misleading empty states or visible-but-unusable controls.
+
+Findings:
+
+- Analytics now has a real Recharts trend chart and clear empty states.
+- Inbox visible controls largely have either working minimum actions or explicit disabled UX.
+- Dashboard recent-message empty state still told every user to use the mock tester, but simple release gates that tool. That made the CTA feel broken even though the page itself was working.
+
+Changes:
+
+- Replaced the Dashboard recent-message text-only empty state with a release-aware empty state.
+- Simple release now routes users to Inbox when an IG channel exists, or Channels connect when no IG channel exists.
+- Full release keeps the mock tester CTA for seeded / QA workflows.
+- Added source regression coverage for the release-aware Dashboard empty state.
+
+Validation:
+
+- Pending in this session: focused test, lint, build, and `npm test`.
+
+Launch impact:
+
+- Product UX clarity only. No production DB, Production deployment, migration, Meta App Review, or PayUNI production change was performed.
+
+Validation update:
+
+- `npx vitest run tests/dashboard-empty-state.test.ts --reporter=dot`: passed.
+- `npx eslint src/app/dashboard/page.tsx tests/dashboard-empty-state.test.ts`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm test`: passed. The known Windows Vitest `3221225477` batch-level crash appeared in some batches, then every affected file passed when rerun individually by the project test runner.
+- `npm run lint`: blocked by pre-existing untracked `AI_TEAM/scripts/qa-staging.js` using CommonJS `require()`; this file is not included in the PR and the changed files passed targeted ESLint.
