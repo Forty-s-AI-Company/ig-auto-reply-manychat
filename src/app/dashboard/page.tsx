@@ -118,6 +118,21 @@ export default async function DashboardPage({
       href: simpleRelease ? "/inbox" : "/mock-tester",
     },
   ];
+  const recentMessagesEmptyState = simpleRelease
+    ? {
+        title: "目前還沒有最近訊息",
+        body: connectedInstagramChannels > 0
+          ? "先從收件匣確認是否已有新對話；如果還沒有資料，請用已連接的 Instagram 帳號實際互動一則訊息。"
+          : "先連接 Instagram 帳號，收到第一則訊息後，這裡就會開始顯示最近對話。",
+        href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect",
+        label: connectedInstagramChannels > 0 ? "查看收件匣" : "連接 Instagram",
+      }
+    : {
+        title: "目前還沒有最近訊息",
+        body: "可以先用測試工具送一則測試訊息，再回到收件匣確認對話流程。",
+        href: "/mock-tester",
+        label: "送一則測試訊息",
+      };
   const healthItems = [
     { label: "IG 連線", value: `${connectedInstagramChannels} 個帳號`, ok: connectedInstagramChannels > 0 },
     { label: "自動化", value: `${automations} 個流程`, ok: automations > 0 },
@@ -310,9 +325,17 @@ export default async function DashboardPage({
                 </div>
               ))}
               {recentMessages.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-[var(--text-muted)]">
-                  還沒有訊息。可以先用測試工具送一則測試訊息。
-                </p>
+                <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]" data-testid="dashboard-recent-messages-empty">
+                  <p className="font-semibold text-[var(--text-primary)]">{recentMessagesEmptyState.title}</p>
+                  <p className="mt-1">{recentMessagesEmptyState.body}</p>
+                  <Link
+                    href={recentMessagesEmptyState.href}
+                    className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+                  >
+                    {recentMessagesEmptyState.label}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               ) : null}
             </div>
           </div>
