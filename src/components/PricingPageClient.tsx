@@ -22,6 +22,10 @@ function formatPlanLimit(value: number | null, suffix: string) {
   return value === null ? "不限" : `${value.toLocaleString()} ${suffix}`;
 }
 
+function getReferralCreditSummary(plan: BillingPlan) {
+  return plan.key === "trial" ? "推薦折抵升級後可用" : "推薦折抵可用於方案費";
+}
+
 export function PricingPageClient() {
   const publicPlans = billingPlans.filter((plan) => plan.key !== "agency");
 
@@ -115,7 +119,7 @@ export function PricingPageClient() {
                 </li>
                 <li className="flex gap-2">
                   <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-cyan-600" />
-                  推薦折抵 {plan.affiliateCashPayoutEligible ? "可查看成效" : "可使用"}
+                  {getReferralCreditSummary(plan)}
                 </li>
               </ul>
               <Link
@@ -129,9 +133,10 @@ export function PricingPageClient() {
           ))}
         </div>
 
-        <section className="mt-8 rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-sm leading-7 text-cyan-950">
+        <section className="mt-8 rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-sm leading-7 text-cyan-950" data-testid="pricing-referral-credit-rules">
           <strong>加量包：</strong>
           訊息事件、活躍聯絡人、團隊席次與資料保存天數可按月加購；可用推薦折抵金折抵方案費，單筆帳單最低可折到 0 元。
+          推薦折抵不可提現、不可轉讓；首筆有效付費會先待確認，超過 7 天退款觀察期才可用，轉成可用後 30 天內使用。
         </section>
       </section>
     </main>

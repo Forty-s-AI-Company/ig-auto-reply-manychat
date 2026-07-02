@@ -8491,3 +8491,30 @@ Launch impact:
 
 - Product copy, UX clarity, and admin safety polish only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Prepaid onboarding referral credit clarity
+
+Task:
+
+- Review the new-user pre-payment path from Pricing / Signup through Billing and Referrals, focusing on CTA clarity, referral-credit wording, PayUNI Sandbox expectations, and visible-but-unusable controls without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- The public pricing cards still used a vague referral line (`可查看成效`) that could be read like affiliate cash payout instead of non-cash bill credit.
+- Signup accepted `?ref=` during email signup, but the code was not visible in the form and Google signup did not preserve a referral code unless the user manually typed it.
+- Billing / Wallet / Referrals already carried the core v1 rules from the previous round: no cash-out, can offset to 0, pending after refund observation, 30-day expiry, refund cancellation / clawback.
+
+Changes:
+
+- Signup now detects `?ref=` from invitation links, pre-fills the referral-code field, preserves the same referral code for Google signup, and explains that credits are bill-only and not cash-out.
+- Pricing now describes referral credits as bill credits, with public rules for no cash-out / no transfer, 7-day refund observation, 30-day usage window, and invoices reducible to 0.
+- Added source-level tests for referral attribution and public pricing credit rules.
+
+Validation:
+
+- `npx vitest run tests/signup-light-theme.test.ts tests/pricing-page-polish.test.ts`: passed.
+
+Launch impact:
+
+- Product UX and public pricing clarity only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
