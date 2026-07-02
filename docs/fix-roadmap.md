@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Contacts batch tag disabled reason polish
+
+Current status:
+
+- [x] Contacts batch add / remove tag buttons now expose a disabled reason through title and aria-describedby.
+- [x] The batch toolbar now shows a visible reason when tags are missing or no batch tag is selected.
+- [x] Source regression coverage prevents the batch actions from returning to silent disabled controls.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview deployment quota is rate-limited.
+
 # Latest - 2026-07-03 Referral affiliate backend error wording cleanup
 
 Current status:

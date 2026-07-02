@@ -1,3 +1,23 @@
+# 2026-07-03 - Contacts batch tag disabled reason polish
+
+Task:
+
+- Make Contacts batch tag actions explain why they are disabled when no tag is available or selected.
+
+Changes:
+
+- Added title / aria-describedby wiring for Contacts batch add / remove tag actions.
+- Added an inline disabled reason for missing or unselected batch tags.
+- Added a source regression guard so the batch toolbar does not silently gray out again.
+
+Validation:
+
+- Focused Contacts empty-state source test was updated.
+- No production DB, production deployment, migration / db push, Meta App Review, PayUNI production switch, push, or PR action was performed.
+
+Launch impact:
+
+- Contacts batch actions are less likely to feel broken on a new or lightly configured workspace.
 # 2026-07-03 - Referral affiliate backend error wording cleanup
 
 Task:

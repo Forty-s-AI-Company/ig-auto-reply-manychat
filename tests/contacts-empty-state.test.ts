@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { getContactsEmptyState } from "@/lib/contacts-empty-state";
 
 describe("contacts empty state", () => {
@@ -63,5 +64,14 @@ describe("contacts empty state", () => {
         testId: "contacts-empty-check-channels",
       },
     ]);
+  });
+
+  it("keeps batch tag actions from looking silently disabled", () => {
+    const source = readFileSync("src/components/ContactsListClient.tsx", "utf8");
+
+    expect(source).toContain("contacts-batch-disabled-reason");
+    expect(source).toContain("請先建立標籤，才能批次加入或移除標籤。");
+    expect(source).toContain("請先選擇要套用的標籤。");
+    expect(source).toContain("aria-describedby={batchActionDisabledReason ? \"contacts-batch-disabled-reason\" : undefined}");
   });
 });

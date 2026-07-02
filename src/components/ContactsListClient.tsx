@@ -104,6 +104,13 @@ export function ContactsListClient({
     isChannelScoped,
     workspaceContactCount,
   });
+  const batchTagDisabledReason =
+    tags.length === 0
+      ? "請先建立標籤，才能批次加入或移除標籤。"
+      : !batchTagId
+        ? "請先選擇要套用的標籤。"
+        : "";
+  const batchActionDisabledReason = isPending ? "正在處理批次標籤操作，請稍候。" : batchTagDisabledReason;
 
   useEffect(() => {
     queueMicrotask(() => setIsHydrated(true));
@@ -433,6 +440,8 @@ export function ContactsListClient({
               type="button"
               onClick={batchAddTag}
               disabled={isPending || !batchTagId}
+              title={batchActionDisabledReason || undefined}
+              aria-describedby={batchActionDisabledReason ? "contacts-batch-disabled-reason" : undefined}
               data-testid="contacts-batch-add-tag"
               className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
             >
@@ -442,6 +451,8 @@ export function ContactsListClient({
               type="button"
               onClick={batchRemoveTag}
               disabled={isPending || !batchTagId}
+              title={batchActionDisabledReason || undefined}
+              aria-describedby={batchActionDisabledReason ? "contacts-batch-disabled-reason" : undefined}
               data-testid="contacts-batch-remove-tag"
               className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
             >
@@ -450,7 +461,11 @@ export function ContactsListClient({
             <button type="button" onClick={() => setSelectedIds([])} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
               取消選取
             </button>
-            {tags.length === 0 ? <span className="w-full text-xs text-[#b54708]">先建立標籤，才能批次加入或移除標籤。</span> : null}
+            {batchTagDisabledReason ? (
+              <p id="contacts-batch-disabled-reason" data-testid="contacts-batch-disabled-reason" className="w-full text-xs text-[#b54708]">
+                {batchTagDisabledReason}
+              </p>
+            ) : null}
           </div>
         ) : null}
 

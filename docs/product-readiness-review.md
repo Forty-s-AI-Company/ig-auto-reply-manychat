@@ -1,3 +1,18 @@
+# 2026-07-03 - Contacts batch tag disabled reason polish
+
+Status: improved for Contacts batch operation clarity; public paid launch remains Hold.
+
+What changed:
+
+- Contacts batch add / remove tag controls now explain why they are disabled when no tag is available or selected.
+- The disabled state is exposed through visible copy, title, and `aria-describedby`.
+- Source regression coverage now guards this toolbar from returning to silent disabled controls.
+
+Readiness implication:
+
+- Contacts batch operations are less likely to feel broken for new workspaces that have contacts selected but no tag setup yet.
+- No database schema, production data, deployment, Meta, or PayUNI behavior changed.
+
 # 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
 
 Status: improved for Billing / Referral / Wallet / Admin financial clarity; public paid launch remains Hold.
