@@ -100,7 +100,11 @@ export default async function ReferralsPage() {
               <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
                 前往折抵金錢包
               </Link>
-            ) : null}
+            ) : (
+              <div className="mt-3 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm leading-6 text-[var(--text-secondary)]">
+                折抵金錢包在完整版本中開放；目前 simple release 會先在推薦活動與方案頁顯示待確認、可用與到期規則。
+              </div>
+            )}
           </article>
         </section>
 

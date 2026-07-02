@@ -1,3 +1,8 @@
+## 2026-07-03 - Referrals simple-release wallet gate clarity
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Referrals now explains that the Wallet ledger is a full-release surface instead of silently hiding the link in simple release.
+- Next: continue local-mode sweeps for remaining simple/full release clarity issues across product surfaces.
 ## 2026-07-03 - Affiliate controlled-payment disabled UX polish
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

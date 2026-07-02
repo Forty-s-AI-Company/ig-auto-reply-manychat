@@ -3395,6 +3395,7 @@ Current status:
 - `[x]` The disabled checkout reason is connected with `aria-describedby`, so touch/mobile and assistive-tech users can understand why the CTA is unavailable.
 - `[x]` Billing source-level coverage now guards the custom-plan disabled copy.
 - `[x]` Affiliate controlled-payment disabled CTA now has an explicit described-by reason and clarifies it does not submit a payment request.
+- `[x]` Referrals simple-release view now explains that the Wallet ledger is a full-release surface instead of silently hiding the link.
 
 Remaining:
 
