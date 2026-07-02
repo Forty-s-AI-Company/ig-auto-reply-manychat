@@ -1,3 +1,16 @@
+# Latest - 2026-07-02 Referral credit rule docs v1 alignment
+
+Current status:
+
+- [x] Referral docs now state non-cash credits, 7-day refund observation, 30-day usage, and clawback / debit handling.
+- [x] Affiliate cash docs are framed as controlled future operations, not current public payout.
+- [x] Billing plan docs no longer promise public add-on cash commission.
+- [x] Regression coverage guards against the old 180-day and cash-first rules returning.
+
+Remaining:
+
+- [ ] Keep PayUNI production, cash payout, production DB changes, and production deploy behind manual launch gates.
+
 # Latest - 2026-07-02 Affiliate payout blocker copy hardening
 
 Current status:

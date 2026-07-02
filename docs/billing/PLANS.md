@@ -6,7 +6,7 @@ Single source of truth：`src/lib/billing/plans.ts`
 
 ## 方案
 
-| 方案 | 月費 | 年費 | Active Contacts | Message Events | 自動化 | 關鍵字 | Broadcasts | Seats | 保存天數 | API | 現金分潤 |
+| 方案 | 月費 | 年費 | Active Contacts | Message Events | 自動化 | 關鍵字 | Broadcasts | Seats | 保存天數 | API | 推薦折抵 |
 | --- | ---: | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: | --- | --- |
 | Trial | 0 | 0 | 300 | 3,000 | 3 | 20 | 0 | 1 | 7 | 否 | 否 |
 | Starter | 199 | 1,990 | 500 | 5,000 | 10 | 50 | 1 | 1 | 30 | 否 | 否 |
@@ -46,4 +46,4 @@ Retention：
 - `retention_180`：NT$299 / 月，保存天數 +180
 - `retention_365`：NT$599 / 月，保存天數 +365
 
-加量包當月有效，不累積到下月，可併入 invoice，可用折抵金折抵，也可產生聯盟分潤。
+加量包當月有效，不累積到下月，可併入 invoice。推薦折抵制度 v1 只承諾折抵方案費；加量包是否可折抵或產生現金型聯盟分潤，維持受控開通並需另行審核成本與退款規則。

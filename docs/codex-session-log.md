@@ -1,3 +1,25 @@
+# 2026-07-02 - Referral credit rule docs v1 alignment
+
+Task:
+
+- Align referral / affiliate rule documents with the public referral credit v1 direction.
+
+Changes:
+
+- Updated referral rules from old 180-day carryover credit language to 7-day refund observation, 30-day usage, non-cash bill credit, and clawback / debit handling.
+- Reframed affiliate cash rules as controlled future operations rather than a public payout promise.
+- Updated billing plan docs so add-ons do not promise public cash affiliate commission.
+- Added doc regression coverage for the referral-credit v1 rules.
+
+Validation:
+
+- Focused docs regression test was added for referral / affiliate / billing plan rule alignment.
+- No production DB, production deployment, migration / db push, Meta App Review, or PayUNI production switch was performed.
+
+Launch impact:
+
+- Reduces risk that future development follows outdated cash-payout or 180-day credit rules.
+
 # 2026-07-02 - Affiliate payout blocker copy hardening
 
 Task:

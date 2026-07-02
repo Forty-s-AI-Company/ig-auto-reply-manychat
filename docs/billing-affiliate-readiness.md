@@ -1,3 +1,15 @@
+# 2026-07-02 - Referral credit rule docs v1 alignment
+
+- [x] Referral / affiliate rule docs now match referral credit v1: non-cash, 7-day refund observation, 30-day usage window, and clawback / debit handling.
+- [x] Affiliate cash payout docs are explicitly internal / controlled future operations.
+- [x] Billing plan docs no longer promise public cash commission on add-ons.
+- [x] Doc regression coverage guards against outdated 180-day credit and cash-first rules.
+
+Billing launch implication:
+
+- Product, billing, and QA docs now point future work toward referral credits instead of reopening cash payout by accident.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, or Meta App Review action was performed.
+
 # 2026-07-02 - Affiliate payout blocker copy hardening
 
 - [x] Affiliate payout blocker reasons now avoid user-facing withdrawable-commission wording.

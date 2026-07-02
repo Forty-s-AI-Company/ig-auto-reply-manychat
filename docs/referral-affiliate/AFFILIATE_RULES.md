@@ -1,10 +1,14 @@
-# 聯盟分潤規則
+# 受控聯盟現金流程規則
 
-## 資格
+> 目前公開產品主線是「推薦折抵制度 v1」，不是現金分潤。
+> 本文件只保留後續受控聯盟現金流程的內部規劃，不代表已對使用者開放提領。
+
+## 受控開通資格
 
 - Creator 以上付費用戶可以申請
 - 需 admin approval
-- Starter 不能申請現金提領，只能拿折抵金
+- Starter 只能使用推薦折抵制度，不開放現金流程
+- 正式開放前必須完成法務、稅務、反作弊、退款 / clawback、對帳與營運付款 SOP
 
 ## 等級
 
@@ -15,7 +19,7 @@
 | Gold | 累積 30 位有效付費推薦 | 20% |
 | Agency Partner | 後台手動設定 | custom |
 
-加量包分潤目前統一 10%，Agency Partner 未來可改 custom。
+加量包分潤目前不作為公開銷售承諾；若後續重啟，需要重新確認成本、退款與對帳規則。
 
 ## 計算
 
@@ -23,14 +27,14 @@
 
 `commissionAmount = floor(commissionBase * commissionRate)`
 
-單筆訂單總分潤不得超過實收金額 40%。
+單筆訂單總分潤不得超過實收金額 40%。現金流程仍維持 Hold，公開產品只使用非現金折抵。
 
 ## 狀態
 
 - payment success 後建立 `pending`
-- pending 30 天
-- 30 天後可轉 `available`
-- payout request 後鎖定為 `payout_requested`
-- paid 後標記 `paid`
+- pending 需等待退款 / 爭議觀察期
+- 觀察期後可轉 `available`，但仍只代表內部可審核，不代表使用者可自助提領
+- payout request 後鎖定為 `payout_requested`，僅供內部營運對帳
+- paid 後標記 `paid`，只代表內部結案紀錄
 - refund / fraud 可取消 pending commission
 - 已 payout 後退款，應建立 clawback 從下次扣回
