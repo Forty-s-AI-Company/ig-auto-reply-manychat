@@ -63,12 +63,21 @@ export const segmentSchema = z.object({
   description: z.string().max(240).optional().nullable(),
   filterJson: z
     .object({
+      q: z.string().max(120).optional().nullable(),
       tagId: z.string().min(1).optional().nullable(),
       consentStatus: z.enum(["opted_in", "opted_out", "unknown"]).optional().nullable(),
       channelId: z.string().min(1).optional().nullable(),
       lastInboundWithinDays: z.coerce.number().int().positive().max(365).optional().nullable(),
     })
     .default({}),
+});
+
+export const contactFilterSegmentSchema = z.object({
+  name: z.string().min(1).max(80),
+  description: z.string().max(240).optional().nullable(),
+  q: z.string().max(120).optional().nullable(),
+  status: z.enum(["opted_in", "opted_out", "unknown"]).optional().nullable(),
+  tagId: z.string().min(1).optional().nullable(),
 });
 
 export const contactFieldDefinitionSchema = z.object({

@@ -56,6 +56,11 @@ const flowChrome: Array<{ accent: string; icon: IconComponent }> = [
 ];
 
 const integrationIcons = [siInstagram, siMeta, siFacebook];
+const footerLinks = [
+  { label: "Privacy", href: "/privacy-policy" },
+  { label: "Terms", href: "/terms-of-service" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
 const copy = {
   zhTW: {
@@ -975,10 +980,10 @@ function Footer({ t }: { t: Copy }) {
           InboxPilot
         </div>
         <div className="flex flex-wrap justify-center gap-5 text-sm font-bold text-zinc-300">
-          {t.footer.map((item) => (
-            <a key={item} href="#" className="hover:text-white">
-              {item}
-            </a>
+          {footerLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-white">
+              {t.footer.find((label) => label === item.label) || item.label}
+            </Link>
           ))}
         </div>
       </div>

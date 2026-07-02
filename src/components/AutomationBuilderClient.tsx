@@ -44,6 +44,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AutomationScopeBanner } from "@/components/AutomationScopeBanner";
 
 type StepType = "send_message" | "add_tag" | "remove_tag" | "wait" | "condition" | "ai_reply" | "set_field";
 type TriggerType = "keyword" | "new_contact" | "manual" | "webhook";
@@ -51,6 +52,7 @@ type PreviewMode = "preview" | "test";
 type PostSelectionMode = "specific" | "all" | "next" | "continue";
 type AutomationView = "overview" | "folder" | "editor";
 type AutomationTab = "my" | "basic" | "sequences";
+type AutomationTriggerFilter = "all" | TriggerType;
 type TemplateCategory =
   | "all"
   | "grow-followers"
@@ -126,6 +128,23 @@ type AutomationFolder = {
   _count?: { automations: number };
 };
 
+type BasicAutomationItem = {
+  title: string;
+  description: string;
+  status: string;
+  action: string;
+  href?: string;
+  disabledReason?: string;
+  testId?: string;
+};
+
+type AutomationBuilderClientProps = {
+  initialItems: AutomationItem[];
+  initialFolders: AutomationFolder[];
+  selectedChannelName?: string | null;
+  isSimpleRelease: boolean;
+};
+
 type AutomationTemplate = {
   id: string;
   title: string;
@@ -180,6 +199,21 @@ const stepMeta: Record<StepType, { label: string; description: string; iconName:
   condition: { label: "條件分流", description: "依訊息、標籤或欄位走不同路徑。", iconName: "branch" },
   ai_reply: { label: "AI 回覆", description: "使用知識庫或 AI 產生回覆。", iconName: "bot" },
   set_field: { label: "更新欄位", description: "儲存電子信箱、電話或其他資料。", iconName: "wand" },
+};
+
+const triggerFilterOptions: Array<{ value: AutomationTriggerFilter; label: string }> = [
+  { value: "all", label: "所有觸發條件" },
+  { value: "keyword", label: "關鍵字 / 留言" },
+  { value: "new_contact", label: "新聯絡人" },
+  { value: "manual", label: "手動觸發" },
+  { value: "webhook", label: "Webhook" },
+];
+
+const triggerTypeLabels: Record<TriggerType, string> = {
+  keyword: "關鍵字 / 留言",
+  new_contact: "新聯絡人",
+  manual: "手動觸發",
+  webhook: "Webhook",
 };
 
 const defaultSteps: AutomationStep[] = [
@@ -720,7 +754,7 @@ const automationTemplates: AutomationTemplate[] = [
   },
 ];
 
-const basicAutomations = [
+const basicAutomations: BasicAutomationItem[] = [
   {
     title: "預設回覆",
     description: "當用戶傳入私訊但沒有命中其他自動化時，立即送出預設回覆。",
@@ -732,25 +766,33 @@ const basicAutomations = [
     title: "新追蹤者歡迎訊息",
     description: "用戶第一次追蹤後，送出一次性的歡迎私訊。此功能需 Meta 官方 API 支援。",
     status: "暫不可用",
-    action: "了解更多",
+    action: "暫不可用",
+    disabledReason: "此功能需要 Meta 官方 API 與事件支援，現在先保留說明，不做假按鈕。",
+    testId: "automation-basic-disabled-new-follower",
   },
   {
     title: "對話開場白",
     description: "在 Instagram 私訊入口顯示常見問題按鈕，點擊後觸發指定回覆。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "受控開通",
+    disabledReason: "對話開場白需要先接好 Instagram 入口按鈕與對應流程，目前只保留說明。",
+    testId: "automation-basic-disabled-opening-prompts",
   },
   {
     title: "限動提及回覆",
     description: "當用戶在限動提及你的帳號時，自動送出感謝訊息或啟動流程。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "受控開通",
+    disabledReason: "限動提及觸發還沒有完整的資料與事件串接，先不讓它看起來像已可直接使用。",
+    testId: "automation-basic-disabled-story-mentions",
   },
   {
     title: "主選單",
     description: "建立私訊底部的選單，協助追蹤者快速找到常見資訊。",
-    status: "未設定",
-    action: "設定",
+    status: "規劃中",
+    action: "受控開通",
+    disabledReason: "主選單會牽涉 Instagram 訊息入口配置，還沒整理成可直接啟用的流程。",
+    testId: "automation-basic-disabled-main-menu",
   },
 ];
 
@@ -807,7 +849,7 @@ function postSelectionLabel(mode: PostSelectionMode) {
 
 function mediaTitle(item: InstagramMediaItem) {
   const caption = item.caption?.replace(/\s+/g, " ").trim();
-  if (caption) return caption.length > 52 ? `${caption.slice(0, 52)}...` : caption;
+  if (caption) return caption.length > 52 ? `${caption.slice(0, 52)}…` : caption;
   return `${item.mediaType || "MEDIA"} ${item.id}`;
 }
 
@@ -1141,7 +1183,7 @@ function StepConfigEditor({
               data-testid="trigger-fetch-media"
               className="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 disabled:opacity-60"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${mediaLoading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${mediaLoading ? "animate-spin" : ""}`} aria-hidden="true" />
               抓取貼文
             </button>
           </div>
@@ -1196,7 +1238,7 @@ function StepConfigEditor({
               }}
               className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-950 outline-none focus:border-blue-500"
             >
-              <option value="">{mediaLoading ? "正在抓取貼文..." : "請選擇一篇貼文或 Reels"}</option>
+              <option value="">{mediaLoading ? "正在抓取貼文…" : "請選擇一篇貼文或 Reels"}</option>
               {mediaItems.map((item) => (
                 <option key={item.id} value={item.id}>
                   {mediaTitle(item)}
@@ -1332,7 +1374,7 @@ function StepConfigEditor({
             value={String(step.configJson.text || "")}
             onChange={(event) => updateConfig({ ...step.configJson, text: event.target.value })}
             rows={8}
-            placeholder="輸入要傳送給顧客的訊息"
+            placeholder="輸入要傳送給顧客的訊息…"
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-zinc-950 outline-none focus:border-blue-500"
           />
         </label>
@@ -1440,10 +1482,9 @@ function StepConfigEditor({
 function FlowBuilderInner({
   initialItems,
   initialFolders,
-}: {
-  initialItems: AutomationItem[];
-  initialFolders: AutomationFolder[];
-}) {
+  selectedChannelName,
+  isSimpleRelease,
+}: AutomationBuilderClientProps) {
   const [items, setItems] = useState(initialItems);
   const [folders, setFolders] = useState(initialFolders);
   const [view, setView] = useState<AutomationView>("overview");
@@ -1461,6 +1502,7 @@ function FlowBuilderInner({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(initialGraph.edges);
   const [selectedNodeId, setSelectedNodeId] = useState("trigger");
   const [search, setSearch] = useState("");
+  const [triggerFilter, setTriggerFilter] = useState<AutomationTriggerFilter>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "stopped">("all");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -1471,7 +1513,10 @@ function FlowBuilderInner({
   const [mediaLoading, setMediaLoading] = useState(false);
   const [mediaError, setMediaError] = useState("");
   const [mediaErrorActionHref, setMediaErrorActionHref] = useState("");
+  const [pendingDeleteFlow, setPendingDeleteFlow] = useState<AutomationItem | null>(null);
+  const [pendingDeleteNode, setPendingDeleteNode] = useState<Node<FlowNodeData> | null>(null);
   const nodeCounterRef = useRef(1000);
+  const previewPanelRef = useRef<HTMLDivElement | null>(null);
   const { fitView, screenToFlowPosition } = useReactFlow();
 
   const selectedNode = nodes.find((node) => node.id === selectedNodeId);
@@ -1483,13 +1528,14 @@ function FlowBuilderInner({
   const visibleItems = useMemo(() => {
     return items.filter((item) => {
       const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+      const matchesTrigger = triggerFilter === "all" || item.triggerType === triggerFilter;
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "active" && item.enabled) ||
         (statusFilter === "stopped" && !item.enabled);
-      return matchesSearch && matchesStatus;
+      return matchesSearch && matchesTrigger && matchesStatus;
     });
-  }, [items, search, statusFilter]);
+  }, [items, search, statusFilter, triggerFilter]);
   const selectedFolder = selectedFolderId ? folders.find((folder) => folder.id === selectedFolderId) || null : null;
   const folderItems = useMemo(
     () => visibleItems.filter((item) => (selectedFolderId ? item.folderId === selectedFolderId : true)),
@@ -1674,10 +1720,16 @@ function FlowBuilderInner({
     setNodes((current) => current.map((node) => (node.id === nextNode.id ? { ...nextNode, selected: true } : node)));
   }
 
-  function deleteSelectedNode() {
+  function requestDeleteSelectedNode() {
     if (!selectedNode || selectedNode.id === "trigger") return;
-    setNodes((current) => current.filter((node) => node.id !== selectedNode.id).map((node) => ({ ...node, selected: node.id === "trigger" })));
-    setEdges((current) => current.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id));
+    setPendingDeleteNode(selectedNode);
+  }
+
+  function confirmDeleteSelectedNode() {
+    if (!pendingDeleteNode || pendingDeleteNode.id === "trigger") return;
+    setNodes((current) => current.filter((node) => node.id !== pendingDeleteNode.id).map((node) => ({ ...node, selected: node.id === "trigger" })));
+    setEdges((current) => current.filter((edge) => edge.source !== pendingDeleteNode.id && edge.target !== pendingDeleteNode.id));
+    setPendingDeleteNode(null);
     setSelectedNodeId("trigger");
   }
 
@@ -1727,11 +1779,29 @@ function FlowBuilderInner({
     }
   }
 
-  async function deleteFlow(id: string) {
-    if (!confirm("確定要刪除這個自動化嗎？")) return;
-    await fetch(`/api/automations/${id}`, { method: "DELETE" });
-    await reload();
-    if (view === "editor") loadAutomation();
+  function requestDeleteFlow(item: AutomationItem) {
+    setError("");
+    setPendingDeleteFlow(item);
+  }
+
+  async function confirmDeleteFlow() {
+    if (!pendingDeleteFlow) return;
+    setError("");
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/automations/${pendingDeleteFlow.id}`, { method: "DELETE" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : "刪除自動化失敗，請稍後再試。");
+      }
+      setPendingDeleteFlow(null);
+      await reload();
+      if (view === "editor") loadAutomation();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "刪除自動化失敗，請稍後再試。");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (view !== "editor") {
@@ -1740,12 +1810,26 @@ function FlowBuilderInner({
 
     return (
       <div className="w-full bg-[var(--ip-bg)] pb-10 text-[var(--ip-text)]">
+        <div className="px-4 pt-4 lg:px-6">
+          <AutomationScopeBanner
+            badgeLabel="工作區共用"
+            notice={
+              selectedChannelName
+                ? `目前左側選擇的是「${selectedChannelName}」，但自動化流程仍是整個工作區共用。`
+                : "自動化目前顯示整個工作區的流程。"
+            }
+            selectedChannelName={selectedChannelName || undefined}
+            releaseNote={isSimpleRelease ? "簡版生產站" : "完整版本"}
+            testId="automation-scope-notice"
+          />
+        </div>
         <div className="border-b border-[var(--ip-border)] bg-[var(--ip-surface)] px-4 py-4 lg:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-[28px] font-bold text-[var(--ip-text)]">自動化</h2>
             <button
               type="button"
               onClick={() => setTemplateDialogOpen(true)}
+              data-testid="automation-header-create-cta"
               className="ip-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold"
             >
               <Plus className="h-4 w-4" />
@@ -1762,6 +1846,7 @@ function FlowBuilderInner({
                   <button
                     key={tab.id}
                     type="button"
+                    data-testid={`automation-tab-${tab.id}`}
                     onClick={() => {
                       setActiveTab(tab.id);
                       if (tab.id !== "my") {
@@ -1818,16 +1903,22 @@ function FlowBuilderInner({
                     <input
                       value={search}
                       onChange={(event) => setSearch(event.target.value)}
-                      placeholder="搜尋所有自動化"
+                      placeholder="搜尋所有自動化…"
                       className="min-w-0 flex-1 bg-transparent outline-none"
                     />
                   </label>
-                  <select className="h-10 rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] px-3 text-sm text-[var(--ip-muted)] outline-none md:w-[180px]">
-                    <option>所有觸發條件</option>
-                    <option>貼文 / Reels 留言</option>
-                    <option>私訊</option>
-                    <option>限動回覆</option>
-                    <option>直播留言</option>
+                  <select
+                    value={triggerFilter}
+                    onChange={(event) => setTriggerFilter(event.target.value as AutomationTriggerFilter)}
+                    data-testid="automation-trigger-filter"
+                    aria-label="篩選自動化觸發條件"
+                    className="h-10 rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] px-3 text-sm text-[var(--ip-muted)] outline-none md:w-[180px]"
+                  >
+                    {triggerFilterOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                   <select
                     value={statusFilter}
@@ -1839,17 +1930,24 @@ function FlowBuilderInner({
                     <option value="stopped">已停止</option>
                   </select>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFolderDialogOpen(true)}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
+                >
+                  <Plus className="h-4 w-4" />
+                  新增資料夾
+                </button>
                   <button
                     type="button"
-                    onClick={() => setFolderDialogOpen(true)}
-                    className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
+                    disabled
+                    aria-disabled="true"
+                    data-testid="automation-trash-disabled"
+                    title="回收桶屬於受控開通功能，需先完成流程還原、永久刪除與稽核紀錄設計。"
+                    className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
                   >
-                    <Plus className="h-4 w-4" />
-                    新增資料夾
-                  </button>
-                  <button type="button" className="inline-flex h-10 items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]">
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
                     回收桶
                   </button>
                 </div>
@@ -1892,7 +1990,11 @@ function FlowBuilderInner({
               <div className="grid gap-3">
                 {folderItems.length ? (
                   folderItems.map((item) => (
-                    <article key={item.id} className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-4 shadow-sm">
+                    <article
+                      key={item.id}
+                      data-testid={`automation-item-${item.triggerType}`}
+                      className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-4 shadow-sm"
+                    >
                       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_90px_80px_130px_36px] md:items-center">
                         <button type="button" onClick={() => loadAutomation(item)} className="min-w-0 text-left">
                           <span className="flex flex-wrap items-center gap-2">
@@ -1907,21 +2009,59 @@ function FlowBuilderInner({
                           </span>
                           <span className="mt-2 block text-sm text-[var(--ip-muted-2)]">
                             {item.folder?.name ? `${item.folder.name} · ` : ""}
-                            {item.steps.length} 個步驟
+                            {triggerTypeLabels[item.triggerType] || item.triggerType} · {item.steps.length} 個步驟
                           </span>
                         </button>
                         <span className="text-sm font-medium text-[var(--ip-text)]">{item.runs?.length || 0}</span>
                         <span className="text-sm text-[var(--ip-muted)]">尚無</span>
                         <span className="text-sm text-[var(--ip-muted)]">{formatDateTime(item.updatedAt)}</span>
-                        <button type="button" onClick={() => deleteFlow(item.id)} className="justify-self-start rounded-md p-2 text-[var(--ip-text-soft)] hover:bg-[var(--ip-surface-hover)] md:justify-self-end">
-                          <MoreVertical className="h-5 w-5" />
+                        <button
+                          type="button"
+                          onClick={() => requestDeleteFlow(item)}
+                          aria-label={`刪除自動化 ${item.name}`}
+                          className="justify-self-start rounded-md p-2 text-[var(--ip-text-soft)] hover:bg-[var(--ip-surface-hover)] md:justify-self-end"
+                        >
+                          <MoreVertical className="h-5 w-5" aria-hidden="true" />
                         </button>
                       </div>
                     </article>
                   ))
                 ) : (
-                  <div className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-8 text-center text-lg text-[var(--ip-text)] shadow-sm">
-                    {emptyMessage}
+                  <div
+                    className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-8 text-center text-lg text-[var(--ip-text)] shadow-sm"
+                    data-testid="automation-list-empty"
+                  >
+                    {search || triggerFilter !== "all" || statusFilter !== "all" ? (
+                      <>
+                        <p>{emptyMessage === "尚未建立自動化" ? "目前沒有符合篩選條件的自動化" : emptyMessage}</p>
+                        <p className="mt-2 text-sm font-normal text-[var(--ip-muted)]">請調整搜尋、觸發條件或狀態篩選。</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>{emptyMessage}</p>
+                        <p className="mx-auto mt-2 max-w-xl text-sm font-normal leading-6 text-[var(--ip-muted)]">
+                          新工作區可以先從 Instagram 預設回覆或空白流程開始；建立後會出現在這裡，也會同步到首頁的最近自動化。
+                        </p>
+                        <div className="mt-5 flex flex-wrap justify-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setTemplateDialogOpen(true)}
+                            data-testid="automation-empty-create-cta"
+                            className="inline-flex h-10 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                          >
+                            新增自動化
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("basic")}
+                            data-testid="automation-empty-basic-cta"
+                            className="inline-flex h-10 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                          >
+                            查看基礎流程
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -1938,11 +2078,23 @@ function FlowBuilderInner({
                       <h3 className="text-base font-bold text-[var(--ip-text)]">{basic.title}</h3>
                     </div>
                     <p className="mt-2 max-w-4xl text-sm leading-6 text-[var(--ip-muted)]">{basic.description}</p>
+                    {basic.disabledReason ? <p className="mt-2 text-xs leading-5 text-[#667085]">{basic.disabledReason}</p> : null}
                   </div>
                   {basic.href ? (
                     <a href={basic.href} className="ip-button-primary inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold">
                       {basic.action}
                     </a>
+                  ) : basic.disabledReason ? (
+                    <button
+                      type="button"
+                      disabled
+                      title={basic.disabledReason}
+                      aria-disabled="true"
+                      data-testid={basic.testId}
+                      className="inline-flex h-10 items-center justify-center rounded-md border border-dashed border-[var(--ip-border)] px-4 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
+                    >
+                      {basic.action}
+                    </button>
                   ) : (
                     <button type="button" className="ip-button-secondary inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold">
                       {basic.action}
@@ -1963,10 +2115,29 @@ function FlowBuilderInner({
                 <p className="mt-3 text-sm leading-6 text-[var(--ip-muted)]">
                   序列流程用來在一段時間內自動傳送多則訊息，例如歡迎流程、課程通知、名單培養或活動提醒。
                 </p>
-                <a href="/sequences" className="ip-button-primary mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold">
-                  <Plus className="h-4 w-4" />
-                  新增序列
-                </a>
+                {isSimpleRelease ? (
+                  <button
+                    type="button"
+                    disabled
+                    title="序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。"
+                    aria-disabled="true"
+                    data-testid="automation-sequence-disabled"
+                    className="ip-button-secondary mt-5 inline-flex h-10 cursor-not-allowed items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold opacity-70"
+                  >
+                    <Plus className="h-4 w-4" />
+                    完整版開放
+                  </button>
+                ) : (
+                  <a href="/sequences" className="ip-button-primary mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold">
+                    <Plus className="h-4 w-4" />
+                    新增序列
+                  </a>
+                )}
+                {isSimpleRelease ? (
+                  <p className="mt-3 text-xs leading-5 text-[var(--ip-muted-2)]">
+                    目前只是把範圍說清楚，不是假裝序列已經在簡版可直接使用。
+                  </p>
+                ) : null}
               </div>
             </div>
               ) : null}
@@ -1975,10 +2146,16 @@ function FlowBuilderInner({
         </div>
 
         {templateDialogOpen ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6">
-            <div className="flex max-h-[88vh] w-full max-w-6xl flex-col rounded-md bg-white shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6" role="presentation">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="automation-template-dialog-title"
+              data-testid="automation-template-dialog"
+              className="flex max-h-[88vh] w-full max-w-6xl flex-col overflow-hidden overscroll-contain rounded-md bg-white shadow-2xl"
+            >
               <div className="flex items-center justify-between gap-3 border-b border-[#d7dbe0] px-4 py-3">
-                <h3 className="text-xl font-bold text-[#202124]">自動化模板</h3>
+                <h3 id="automation-template-dialog-title" className="text-xl font-bold text-[#202124]">自動化模板</h3>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -1986,13 +2163,18 @@ function FlowBuilderInner({
                       setTemplateDialogOpen(false);
                       loadAutomation();
                     }}
-                    className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] px-3 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc]"
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] px-3 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   >
                     <Plus className="h-4 w-4" />
                     從空白開始
                   </button>
-                  <button type="button" onClick={() => setTemplateDialogOpen(false)} className="rounded-md p-2 text-[#4b5563] hover:bg-[#f5f5f5]">
-                    <X className="h-5 w-5" />
+                  <button
+                    type="button"
+                    onClick={() => setTemplateDialogOpen(false)}
+                    aria-label="關閉模板選擇"
+                    className="rounded-md p-2 text-[#4b5563] hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                  >
+                    <X className="h-5 w-5" aria-hidden="true" />
                   </button>
                 </div>
               </div>
@@ -2000,10 +2182,12 @@ function FlowBuilderInner({
                 <label className="flex h-10 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm">
                   <Search className="h-4 w-4 text-[#667085]" />
                   <input
+                    name="automation-template-search"
+                    autoComplete="off"
                     value={templateSearch}
                     onChange={(event) => setTemplateSearch(event.target.value)}
-                    placeholder="搜尋 Instagram 模板..."
-                    className="min-w-0 flex-1 bg-transparent outline-none"
+                    placeholder="搜尋 Instagram 模板…"
+                    className="min-w-0 flex-1 bg-transparent outline-none focus-visible:ring-0"
                   />
                 </label>
               </div>
@@ -2051,7 +2235,7 @@ function FlowBuilderInner({
                         <button
                           type="button"
                           onClick={() => loadTemplate(template)}
-                          className="mt-auto inline-flex h-10 items-center justify-center rounded-md bg-[#0077e6] px-3 text-sm font-semibold text-white hover:bg-[#0064c8]"
+                          className="mt-auto inline-flex h-10 items-center justify-center rounded-md bg-[#0077e6] px-3 text-sm font-semibold text-white hover:bg-[#0064c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                         >
                           使用模板
                         </button>
@@ -2068,26 +2252,33 @@ function FlowBuilderInner({
         ) : null}
 
         {folderDialogOpen ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-6">
-            <div className="w-full max-w-md rounded-md bg-white shadow-xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6" role="presentation">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="automation-folder-dialog-title"
+              data-testid="automation-folder-dialog"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-md bg-white shadow-xl"
+            >
               <div className="flex items-center justify-between border-b border-[#d7dbe0] px-5 py-4">
-                <h3 className="text-xl font-bold text-[#202124]">建立資料夾</h3>
-                <button type="button" onClick={() => setFolderDialogOpen(false)} className="rounded-md p-2 hover:bg-[#f5f5f5]">
-                  <X className="h-5 w-5" />
+                <h3 id="automation-folder-dialog-title" className="text-xl font-bold text-[#202124]">建立資料夾</h3>
+                <button type="button" onClick={() => setFolderDialogOpen(false)} aria-label="關閉建立資料夾" className="rounded-md p-2 hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2">
+                  <X className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
               <div className="p-5">
                 <label className="block text-sm font-medium text-[#202124]">
                   資料夾名稱
                   <input
-                    autoFocus
+                    name="automation-folder-name"
+                    autoComplete="off"
                     value={folderName}
                     onChange={(event) => setFolderName(event.target.value)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") void createFolder();
                     }}
-                    placeholder="輸入資料夾名稱"
-                    className="mt-3 h-12 w-full rounded-md border border-[#0077e6] px-3 text-base outline-none ring-1 ring-blue-100"
+                    placeholder="輸入資料夾名稱…"
+                    className="mt-3 h-12 w-full rounded-md border border-[#0077e6] px-3 text-base outline-none ring-1 ring-blue-100 focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
               </div>
@@ -2095,7 +2286,7 @@ function FlowBuilderInner({
                 <button
                   type="button"
                   onClick={() => setFolderDialogOpen(false)}
-                  className="h-11 rounded-md border border-[#d7dbe0] px-4 text-base font-medium text-[#202124] hover:bg-[#f5f5f5]"
+                  className="h-11 rounded-md border border-[#d7dbe0] px-4 text-base font-medium text-[#202124] hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 >
                   取消
                 </button>
@@ -2103,13 +2294,21 @@ function FlowBuilderInner({
                   type="button"
                   disabled={folderSaving}
                   onClick={createFolder}
-                  className="h-11 rounded-md bg-[#0077e6] px-5 text-base font-semibold text-white hover:bg-[#0064c8] disabled:bg-[#d7dbe0]"
+                  className="h-11 rounded-md bg-[#0077e6] px-5 text-base font-semibold text-white hover:bg-[#0064c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d7dbe0]"
                 >
-                  {folderSaving ? "建立中..." : "建立"}
+                  {folderSaving ? "建立中…" : "建立"}
                 </button>
               </div>
             </div>
           </div>
+        ) : null}
+        {pendingDeleteFlow ? (
+          <DeleteAutomationDialog
+            flowName={pendingDeleteFlow.name}
+            saving={saving}
+            onCancel={() => setPendingDeleteFlow(null)}
+            onConfirm={confirmDeleteFlow}
+          />
         ) : null}
       </div>
     );
@@ -2117,14 +2316,28 @@ function FlowBuilderInner({
 
   return (
     <div className="min-h-[calc(100vh-112px)] w-full overflow-visible rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-950 lg:h-[calc(100vh-112px)] lg:overflow-hidden">
+      <div className="px-4 pt-4 lg:px-6">
+        <AutomationScopeBanner
+          badgeLabel="工作區共用"
+          notice={
+            selectedChannelName
+              ? `目前左側選擇的是「${selectedChannelName}」，但自動化流程仍是整個工作區共用。`
+              : "自動化目前顯示整個工作區的流程。"
+          }
+          selectedChannelName={selectedChannelName || undefined}
+          releaseNote={isSimpleRelease ? "簡版生產站" : "完整版本"}
+          testId="automation-scope-notice"
+        />
+      </div>
       <div className="flex min-h-16 flex-col gap-3 border-b border-zinc-200 bg-white px-3 py-3 sm:px-4 lg:flex-row lg:items-center lg:justify-between lg:py-0">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => setView(selectedFolderId ? "folder" : "overview")}
+            aria-label="返回自動化列表"
             className="shrink-0 rounded-md p-2 text-zinc-500 hover:bg-zinc-100"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5" aria-hidden="true" />
           </button>
           <div className="min-w-0">
             <div className="flex min-w-0 items-center gap-1 text-xs text-zinc-500 sm:gap-2 sm:text-sm">
@@ -2155,7 +2368,14 @@ function FlowBuilderInner({
             <Check className="h-4 w-4" />
             {draft.id ? "已儲存" : "草稿"}
           </span>
-          <button type="button" className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50">
+          <button
+            type="button"
+            onClick={() => {
+              setPreviewMode("preview");
+              previewPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50"
+          >
             預覽
           </button>
           <button
@@ -2164,11 +2384,20 @@ function FlowBuilderInner({
             onClick={saveFlow}
             className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
-            <Save className="h-4 w-4" />
-            {saving ? "儲存中..." : "儲存"}
+            <Save className="h-4 w-4" aria-hidden="true" />
+            {saving ? "儲存中…" : "儲存"}
           </button>
-          <button type="button" className="rounded-md border border-zinc-300 p-2 text-zinc-600 hover:bg-zinc-50">
-            <MoreVertical className="h-4 w-4" />
+          <button
+            type="button"
+            disabled
+            title="更多操作屬於受控開通功能，需先完成複製、封存、匯出與稽核紀錄設計。"
+            aria-label="更多操作受控開通"
+            aria-disabled="true"
+            data-testid="automation-editor-more-disabled"
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-500 opacity-70"
+          >
+            <MoreVertical className="h-4 w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">更多操作受控</span>
           </button>
         </div>
       </div>
@@ -2182,8 +2411,8 @@ function FlowBuilderInner({
               <p className="truncate font-semibold text-zinc-950">{selectedNode?.data.label || "尚未選取節點"}</p>
               <p className="text-xs text-zinc-500">點選畫布節點即可編輯</p>
             </div>
-            <button type="button" onClick={() => setEditorOpen(false)} className="hidden rounded-md p-2 hover:bg-white lg:block">
-              <X className="h-4 w-4" />
+            <button type="button" onClick={() => setEditorOpen(false)} aria-label="收合節點編輯面板" className="hidden rounded-md p-2 hover:bg-white lg:block">
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
           <div className="space-y-5 p-4">
@@ -2201,10 +2430,10 @@ function FlowBuilderInner({
             {selectedNode?.id !== "trigger" ? (
               <button
                 type="button"
-                onClick={deleteSelectedNode}
+                onClick={requestDeleteSelectedNode}
                 className="inline-flex items-center gap-2 rounded-md border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" aria-hidden="true" />
                 刪除節點
               </button>
             ) : null}
@@ -2214,7 +2443,7 @@ function FlowBuilderInner({
                 <input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="搜尋其他自動化"
+                  placeholder="搜尋其他自動化…"
                   className="min-w-0 flex-1 outline-none"
                 />
               </label>
@@ -2244,8 +2473,8 @@ function FlowBuilderInner({
                         <p className="truncate font-medium text-zinc-950">{item.name}</p>
                         <p className="mt-1 text-xs text-zinc-500">{formatDateTime(item.updatedAt)}</p>
                       </button>
-                      <button type="button" onClick={() => deleteFlow(item.id)} className="text-zinc-400 hover:text-red-500">
-                        <Trash2 className="h-4 w-4" />
+                      <button type="button" onClick={() => requestDeleteFlow(item)} aria-label={`刪除自動化 ${item.name}`} className="text-zinc-400 hover:text-red-500">
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
                       </button>
                     </div>
                   </article>
@@ -2255,17 +2484,34 @@ function FlowBuilderInner({
           </div>
         </aside>
 
+        <section
+          className="border-t border-zinc-200 bg-white p-4 lg:hidden"
+          data-testid="automation-mobile-canvas-notice"
+        >
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+            <p className="font-semibold">流程畫布建議使用桌機或平板編輯</p>
+            <p className="mt-1 leading-6">
+              手機版目前支援節點設定、預覽與儲存；拖拉節點與連線操作需要較大的螢幕，避免誤觸造成流程錯亂。
+            </p>
+          </div>
+        </section>
+
         <main className="relative hidden min-w-0 bg-[#f3f6f8] lg:block">
-          <div className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-md bg-white px-3 py-2 text-sm text-zinc-500 shadow">
-            👇 點選節點即可編輯
+          <div
+            className="absolute left-1/2 top-3 z-10 inline-flex -translate-x-1/2 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 shadow"
+            data-testid="automation-canvas-editor-hint"
+          >
+            <MousePointer2 className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
+            點選節點即可編輯
           </div>
           {!editorOpen ? (
             <button
               type="button"
               onClick={() => setEditorOpen(true)}
+              aria-label="展開節點編輯面板"
               className="absolute left-3 top-1/2 z-20 rounded-full bg-white p-3 text-zinc-500 shadow hover:text-zinc-950"
             >
-              <ChevronLeft className="h-5 w-5 rotate-180" />
+              <ChevronLeft className="h-5 w-5 rotate-180" aria-hidden="true" />
             </button>
           ) : null}
           <button
@@ -2312,7 +2558,12 @@ function FlowBuilderInner({
             </div>
           ) : null}
 
-          <div className="h-full min-h-[520px]" onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
+          <div
+            className="h-full min-h-[520px]"
+            data-testid="automation-flow-canvas"
+            onDrop={onDrop}
+            onDragOver={(event) => event.preventDefault()}
+          >
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -2340,7 +2591,7 @@ function FlowBuilderInner({
           </div>
         </main>
 
-        <aside className="hidden overflow-y-auto border-l border-zinc-200 bg-white xl:block">
+        <aside ref={previewPanelRef} className="hidden overflow-y-auto border-l border-zinc-200 bg-white xl:block">
           <div className="border-b border-zinc-200 p-4">
             <div className="flex rounded-md bg-zinc-100 p-1 text-sm">
               {(["preview", "test"] as PreviewMode[]).map((mode) => (
@@ -2397,6 +2648,131 @@ function FlowBuilderInner({
             </a>
           </div>
         </aside>
+        {pendingDeleteFlow ? (
+          <DeleteAutomationDialog
+            flowName={pendingDeleteFlow.name}
+            saving={saving}
+            onCancel={() => setPendingDeleteFlow(null)}
+            onConfirm={confirmDeleteFlow}
+          />
+        ) : null}
+        {pendingDeleteNode ? (
+          <DeleteNodeDialog
+            nodeLabel={pendingDeleteNode.data.label}
+            onCancel={() => setPendingDeleteNode(null)}
+            onConfirm={confirmDeleteSelectedNode}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function DeleteNodeDialog({
+  nodeLabel,
+  onCancel,
+  onConfirm,
+}: {
+  nodeLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="automation-node-delete-title"
+        data-testid="automation-node-delete-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-100 bg-white p-5 shadow-xl"
+      >
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-red-50 p-2 text-red-600">
+            <Trash2 className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <h2 id="automation-node-delete-title" className="text-base font-semibold text-zinc-950">
+              刪除流程節點？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              你即將從目前草稿移除「<span className="font-medium text-zinc-950">{nodeLabel}</span>」與相關連線。儲存後才會套用到這個自動化流程。
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            data-testid="automation-node-confirm-delete"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+          >
+            確認刪除節點
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeleteAutomationDialog({
+  flowName,
+  saving,
+  onCancel,
+  onConfirm,
+}: {
+  flowName: string;
+  saving: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="automation-delete-title"
+        data-testid="automation-delete-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-100 bg-white p-5 shadow-xl"
+      >
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-red-50 p-2 text-red-600">
+            <Trash2 className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <h2 id="automation-delete-title" className="text-base font-semibold text-zinc-950">
+              刪除自動化？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              你即將刪除「<span className="font-medium text-zinc-950">{flowName}</span>」。刪除後會從目前工作區移除這個流程，建議先確認沒有正在使用中的留言或私訊活動。
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onCancel}
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onConfirm}
+            data-testid="automation-confirm-delete"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-red-200"
+          >
+            {saving ? "刪除中…" : "確認刪除"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -2405,13 +2781,17 @@ function FlowBuilderInner({
 export function AutomationBuilderClient({
   initialItems,
   initialFolders,
-}: {
-  initialItems: AutomationItem[];
-  initialFolders: AutomationFolder[];
-}) {
+  selectedChannelName,
+  isSimpleRelease,
+}: AutomationBuilderClientProps) {
   return (
     <ReactFlowProvider>
-      <FlowBuilderInner initialItems={initialItems} initialFolders={initialFolders} />
+      <FlowBuilderInner
+        initialItems={initialItems}
+        initialFolders={initialFolders}
+        selectedChannelName={selectedChannelName}
+        isSimpleRelease={isSimpleRelease}
+      />
     </ReactFlowProvider>
   );
 }

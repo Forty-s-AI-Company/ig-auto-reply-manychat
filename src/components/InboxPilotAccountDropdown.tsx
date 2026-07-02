@@ -13,8 +13,12 @@ type Channel = {
   id: string;
   name: string;
   displayName?: string;
+  subtitle?: string;
   username?: string;
   avatarUrl?: string;
+  avatarFallback?: string;
+  metadataStatus?: "complete" | "partial";
+  metadataHint?: string;
 };
 
 type InboxPilotAccountDropdownProps = {
@@ -35,6 +39,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
     return value.filter((id): id is string => typeof id === "string" && channelIds.has(id));
   }, [channelIds]);
   const [open, setOpen] = useState(false);
+  const [scopeError, setScopeError] = useState("");
   const [pinnedIds, setPinnedIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -74,14 +79,24 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
   }, [pinnedIds.length, safePinnedIds]);
 
   async function changeAccount(channelId: string) {
-    const response = await fetch("/api/account-scope", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ channelId }),
-    });
-    if (!response.ok) return;
-    setOpen(false);
-    startTransition(() => router.refresh());
+    setScopeError("");
+    try {
+      const response = await fetch("/api/account-scope", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ channelId }),
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        setScopeError(typeof data.error === "string" ? data.error : "切換 Instagram 帳號失敗，請稍後再試。");
+        return;
+      }
+      window.dispatchEvent(new CustomEvent("inbox-channel-scope-change", { detail: channelId }));
+      setOpen(false);
+      startTransition(() => router.refresh());
+    } catch {
+      setScopeError("切換 Instagram 帳號失敗，請確認網路連線後再試一次。");
+    }
   }
 
   function togglePinned(channelId: string) {
@@ -97,10 +112,9 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
 
   const currentChannel = selectedChannel || sortedChannels[0];
   const currentName = currentChannel?.displayName || currentChannel?.name || "尚未連接平台帳號";
-  const connectedLabel = channels.length === 1 ? "已連接 1 個平台帳號" : `已連接 ${channels.length} 個平台帳號`;
-
+  const currentSubtitle = currentChannel?.subtitle || (currentChannel?.username ? `@${currentChannel.username}` : "尚未取得帳號資料");
   return (
-    <div ref={rootRef} className="relative z-50">
+    <div ref={rootRef} className="relative z-50" data-testid="account-dropdown">
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
@@ -108,16 +122,25 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
           open ? "border-white/18 bg-white/12" : "border-transparent bg-white/5 hover:bg-white/10"
         }`}
         aria-expanded={open}
+        data-testid="account-dropdown-trigger"
       >
         <InstagramAvatar channel={currentChannel} size="sm" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-medium text-white">{currentName}</p>
+          <p className="mt-0.5 truncate text-[11px] leading-4 text-[#c6f3f5]" data-testid="account-dropdown-trigger-subtitle">
+            {currentSubtitle}
+          </p>
         </div>
         <ChevronDown className={`h-4 w-4 shrink-0 text-[#9bd6d9] transition ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open ? (
         <div className="absolute left-0 top-[calc(100%+6px)] z-[90] w-full min-w-[260px] max-w-[calc(100vw-32px)] overflow-hidden rounded-md border border-[#d6dae0] bg-white text-[#111827] shadow-[0_18px_42px_rgba(2,23,24,0.22)]">
+          {scopeError ? (
+            <p className="m-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+              {scopeError}
+            </p>
+          ) : null}
           <div className="max-h-[312px] overflow-y-auto p-1.5">
             {sortedChannels.length > 0 ? (
               sortedChannels.map((channel) => {
@@ -128,6 +151,8 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   type="button"
                   disabled={isPending}
                   onClick={() => changeAccount(channel.id)}
+                  data-testid="account-channel-option"
+                  data-channel-id={channel.id}
                   className={`flex h-[52px] w-full items-center gap-3 rounded-sm border px-2 text-left text-sm ${
                     channel.id === selectedChannelId || (!selectedChannelId && channel.id === sortedChannels[0]?.id)
                       ? "border-[#b6eef2] bg-[var(--primary-soft)]"
@@ -138,10 +163,19 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
                   <div className="min-w-0 flex-1">
                     <div className="flex min-w-0 items-center gap-1.5">
                       <span className="truncate text-sm font-medium text-[#34363a]">{channel.displayName || channel.name}</span>
+                      {channel.metadataHint ? (
+                        <span
+                          className="inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700"
+                          title={channel.metadataHint}
+                          aria-label={channel.metadataHint}
+                        >
+                          {channel.metadataHint}
+                        </span>
+                      ) : null}
                       <PlanBadge />
                     </div>
                     <p className="mt-0.5 truncate text-[11px] text-[#667085]">
-                      {channel.username ? `@${channel.username}` : connectedLabel}
+                      {channel.subtitle || (channel.username ? `@${channel.username}` : "尚未取得帳號資料")}
                     </p>
                   </div>
                   <span
@@ -205,9 +239,18 @@ function InstagramAvatar({ channel, size }: { channel?: Channel; size: "sm" | "m
           // eslint-disable-next-line @next/next/no-img-element
           <img src={channel.avatarUrl} alt={channel.displayName || channel.name || "Instagram"} className="h-full w-full object-cover" />
         ) : (
-          "IG"
+          channel?.avatarFallback || "IG"
         )}
       </div>
+      {channel?.metadataStatus === "partial" ? (
+        <span
+          className="absolute -right-1 bottom-0 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-white bg-amber-400 text-[8px] font-black text-amber-950"
+          title="尚未取得完整帳號名稱與頭像"
+          aria-label="尚未取得完整帳號名稱與頭像"
+        >
+          !
+        </span>
+      ) : null}
       <PlanBadge className={`absolute ${badgeClass} z-20`} compact />
     </div>
   );

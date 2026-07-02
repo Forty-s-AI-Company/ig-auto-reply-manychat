@@ -66,6 +66,37 @@ npm run test:unit
 npm run test:e2e
 ```
 
+## AI_TEAM
+
+舊的 root autopilot 入口已退場。現在請以 [AI_TEAM/README.md](./AI_TEAM/README.md) 作為無人值守開發與 QA 的總控文件。
+
+AI_TEAM 的重點是：
+
+- 文件先行，不把流程藏在單一 runner 裡
+- 角色分工清楚
+- 每輪都會留下報告與下一輪 prompt
+- 高風險動作先停下來做人工作業確認
+
+如果你只是想開始下一輪工作，先讀：
+
+- [AI_TEAM/PROJECT_STATE.md](./AI_TEAM/PROJECT_STATE.md)
+- [AI_TEAM/LAUNCH_CRITERIA.md](./AI_TEAM/LAUNCH_CRITERIA.md)
+- [AI_TEAM/tasks/current-task.md](./AI_TEAM/tasks/current-task.md)
+- [AI_TEAM/tasks/backlog.md](./AI_TEAM/tasks/backlog.md)
+
+常用指令：
+
+```bash
+npm run ai-team
+npm run ai-team:next
+npm run ai-team:check
+npm run ai-team:qa
+npm run ai-team:models
+npm run ai-team:loop:once
+```
+
+執行期輸出現在會寫到 `AI_TEAM/runtime/`，避免長跑 runner 一直把 tracked 報告檔弄髒。
+
 ## 環境變數
 
 最少需要：
@@ -109,4 +140,12 @@ docs           Product, ops, security and API docs
 - [環境變數](./docs/environment-variables.md)
 - [API 文件](./docs/api.md)
 - [ERD](./docs/erd.md)
+- [PayUNI Production SOP](./docs/payuni-production-sop.md)
 - [Codex Windows Setup](./docs/codex-windows-setup.md)
+
+## AI Local CLI Opt-in
+
+- `codex_cli` and `antigravity_cli` are local CLI providers.
+- They are opt-in only and are not part of the default shared SaaS / cron refresh flow.
+- Leave `AI_ENABLE_LOCAL_CLI` unset in shared environments unless the machine actually has the CLI installed and authenticated.
+- `antigravity_cli` currently resolves through the local `agy.exe` binary when no explicit command override is set.

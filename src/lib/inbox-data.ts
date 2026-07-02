@@ -68,9 +68,15 @@ export function getConversationApiList(input: ScopedListInput) {
       orderBy: [{ lastMessageAt: "desc" }, { updatedAt: "desc" }],
       take: limit,
       include: {
-        contact: { include: { tags: { include: { tag: true } } } },
+        contact: {
+          include: {
+            tags: { include: { tag: true } },
+            fieldValues: { include: { definition: true } },
+          },
+        },
         channel: { select: publicChannelSelect },
-        messages: { orderBy: { createdAt: "desc" }, take: 1 },
+        assignedTo: { select: { id: true, name: true, email: true } },
+        messages: { orderBy: { createdAt: "desc" }, take: 10 },
       },
     });
   });

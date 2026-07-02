@@ -1,0 +1,14 @@
+{
+  "fixtureId": "SBL09-REDACTION-RAW-CODE-UNSAFE",
+  "area": "redaction",
+  "safety": "unsafe",
+  "input": {
+    "code": "UNSAFE_FAKE_AUTH_CODE_SHOULD_FAIL",
+    "state": "UNSAFE_FAKE_RAW_STATE_SHOULD_FAIL",
+    "nonce": "UNSAFE_FAKE_RAW_NONCE_SHOULD_FAIL"
+  },
+  "expected": {
+    "redactionResult": "fail",
+    "errorType": "raw_oauth_artifact_detected"
+  }
+}

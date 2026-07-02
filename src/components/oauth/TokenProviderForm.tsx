@@ -88,7 +88,7 @@ export function TokenProviderForm({ provider, title, description }: TokenProvide
         disabled={submitting}
         className="flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "驗證中..." : "連接 Telegram Bot"}
+        {submitting ? "驗證中…" : "連接 Telegram Bot"}
       </button>
     </form>
   );

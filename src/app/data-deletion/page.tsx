@@ -31,6 +31,10 @@ export default function DataDeletionPage() {
           title: "可能保留的資料",
           body: "若資料涉及付款、帳務、資安稽核、法律保存義務或防止濫用，我們可能會保留必要紀錄，但會限制用途，只用於符合法規或服務安全的目的。",
         },
+        {
+          title: "Meta 與付款資料",
+          body: "若你要求刪除 Meta / Instagram 連接資料，我們會移除 InboxPilot 內保存的 channel token、連接設定與相關自動化資料。若資料涉及 PayUNI 訂單、發票、退款、爭議款或稽核紀錄，會依法律與對帳需求保存必要紀錄。",
+        },
       ]}
     />
   );

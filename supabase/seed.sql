@@ -1,0 +1,2 @@
+-- Local Supabase seed placeholder.
+-- Prisma tests create isolated schemas via TEST_DATABASE_URL, so this file can stay empty.

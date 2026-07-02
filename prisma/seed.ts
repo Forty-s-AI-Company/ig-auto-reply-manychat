@@ -1,6 +1,8 @@
-import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { loadProjectEnv } from "../scripts/load-env.mjs";
+
+loadProjectEnv();
 
 const prisma = new PrismaClient();
 const DEFAULT_WORKSPACE_ID = "default-workspace";

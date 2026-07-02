@@ -35,9 +35,14 @@ function getRequestId(request: NextRequest) {
 function isBlockedSimpleOAuthPath(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   if (pathname.startsWith("/api/oauth/") && !pathname.startsWith("/api/oauth/meta-instagram/")) return true;
-  if (pathname === "/api/meta/oauth/start" && request.nextUrl.searchParams.get("mode") !== "instagram") return true;
+  if (pathname === "/api/meta/oauth/start" && request.nextUrl.searchParams.get("mode") === "facebook") return true;
   if (pathname.startsWith("/oauth/providers/")) return true;
   return false;
+}
+
+function getFullOnlyFeatureKey(pathname: string) {
+  const firstSegment = pathname.split("/").filter(Boolean)[0] || "full";
+  return firstSegment.replace(/[^a-z0-9-]/gi, "").slice(0, 40) || "full";
 }
 
 export function proxy(request: NextRequest) {
@@ -67,6 +72,8 @@ export function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";
+    url.searchParams.set("alert", "feature_gated");
+    url.searchParams.set("feature", getFullOnlyFeatureKey(pathname));
     const response = NextResponse.redirect(url, 307);
     response.headers.set("x-request-id", requestId);
     return response;

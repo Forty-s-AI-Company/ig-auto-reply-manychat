@@ -1,12 +1,21 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { POST as telegramWebhookPost } from "@/app/api/webhooks/telegram/route";
 import { createSession } from "@/lib/auth";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
+import { encryptSecret } from "@/lib/secrets";
 import { secureCompare } from "@/lib/webhook-security";
 
 describe("security defaults", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
+
+  function stubProductionFallbackEnv() {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("INBOXPILOT_DEPLOYMENT_ENV", "");
+    vi.stubEnv("INBOXPILOT_DB_ENV", "");
+    vi.stubEnv("VERCEL_ENV", "");
+  }
 
   it("rejects weak auth secrets in production", async () => {
     vi.stubEnv("NODE_ENV", "production");
@@ -20,6 +29,37 @@ describe("security defaults", () => {
     vi.stubEnv("AUTH_SECRET", "production-secret-with-at-least-32-characters");
 
     await expect(createSession("user-id")).resolves.toEqual(expect.any(String));
+  });
+
+  it("treats NODE_ENV production as a production deployment fallback", () => {
+    stubProductionFallbackEnv();
+
+    expect(getInboxPilotDeploymentEnv()).toBe("production");
+  });
+
+  it("requires a dedicated token encryption key in production", () => {
+    stubProductionFallbackEnv();
+    vi.stubEnv("AUTH_SECRET", "production-secret-with-at-least-32-characters");
+    vi.stubEnv("TOKEN_ENCRYPTION_KEY", "");
+
+    expect(() => encryptSecret("access-token")).toThrow("TOKEN_ENCRYPTION_KEY must be set");
+  });
+
+  it("rejects reusing AUTH_SECRET as the production token encryption key", () => {
+    const sharedSecret = "shared-production-secret-with-at-least-32-characters";
+    stubProductionFallbackEnv();
+    vi.stubEnv("AUTH_SECRET", sharedSecret);
+    vi.stubEnv("TOKEN_ENCRYPTION_KEY", sharedSecret);
+
+    expect(() => encryptSecret("access-token")).toThrow("TOKEN_ENCRYPTION_KEY must be separate");
+  });
+
+  it("allows a strong dedicated production token encryption key", () => {
+    stubProductionFallbackEnv();
+    vi.stubEnv("AUTH_SECRET", "production-auth-secret-with-at-least-32-characters");
+    vi.stubEnv("TOKEN_ENCRYPTION_KEY", "production-token-encryption-key-with-at-least-32-characters");
+
+    expect(encryptSecret("access-token")).toEqual(expect.stringMatching(/^enc:v1:/));
   });
 
   it("compares shared webhook secrets without plain string equality", () => {

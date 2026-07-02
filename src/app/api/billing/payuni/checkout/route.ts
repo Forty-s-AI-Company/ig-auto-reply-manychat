@@ -128,7 +128,7 @@ export async function POST(request: Request) {
 
   const config = getPayuniConfig();
   if (!isPayuniSandboxGateway(config.gatewayUrl) && process.env.PAYUNI_ALLOW_PRODUCTION !== "true") {
-    return NextResponse.json({ error: "PayUNI production gateway is not enabled while merchant review is pending." }, { status: 503 });
+    return NextResponse.redirect(new URL("/billing?payuni=production_gate_pending", request.url), 303);
   }
   const merTradeNo = createMerchantTradeNo(workspaceId);
   const payload = {
