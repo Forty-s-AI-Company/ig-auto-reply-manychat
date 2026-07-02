@@ -20,6 +20,7 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("7 天退款觀察期");
     expect(source).toContain("30 天內要使用");
     expect(source).toContain("formatReferralDate");
+    expect(source).toContain("break-all");
     expect(source).not.toContain("<span>{item.status}</span>");
     expect(source).not.toContain("toLocaleDateString");
   });
@@ -40,11 +41,28 @@ describe("referral and affiliate MVP UX guards", () => {
 
     expect(source).toContain("/approve");
     expect(source).toContain("/reject");
-    expect(source).toContain("內部保留的受控提領面板");
+    expect(source).toContain("分潤審核（內部）");
+    expect(source).toContain("內部保留的受控分潤審核面板");
     expect(source).toContain("不會觸發銀行匯款、金流付款或現金提領");
-    expect(source).toContain("核准進入批次");
+    expect(source).toContain("核准進入對帳");
     expect(source).toContain("退回申請");
-    expect(source).toContain("核准");
-    expect(source).toContain("退回");
+    expect(source).toContain("表格可左右滑動查看 Email、金額、狀態與操作");
+    expect(source).not.toContain("提領管理");
+    expect(source).not.toContain("已付款");
+    expect(source).not.toContain("付款失敗");
+  });
+
+  it("keeps admin payout batches as internal reconciliation instead of payment execution", () => {
+    const source = read("src/app/admin/payouts/batches/page.tsx");
+
+    expect(source).toContain("分潤對帳批次");
+    expect(source).toContain("建立內部對帳批次");
+    expect(source).toContain("不會觸發銀行匯款、PayUNI 付款或現金提領");
+    expect(source).toContain("下載對帳 CSV");
+    expect(source).toContain("下載內部對帳 CSV，不會執行付款");
+    expect(source).toContain("表格可左右滑動查看批次 ID、金額與匯出操作");
+    expect(source).not.toContain("建立付款批次");
+    expect(source).not.toContain("產生本月 15 日批次");
+    expect(source).not.toContain("目前還沒有提領批次");
   });
 });

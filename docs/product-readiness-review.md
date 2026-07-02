@@ -1,3 +1,19 @@
+# 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
+
+Status: improved for Billing / Referral / Wallet / Admin financial clarity; public paid launch remains Hold.
+
+What changed:
+
+- Admin payout pages now describe the flow as internal commission review and reconciliation, not a public cash payout capability.
+- Payout batch UI now says reconciliation batch / CSV, and explicitly avoids payment-execution language.
+- Admin invoice, payout, and batch tables now have mobile scroll guidance and better wrapping for long IDs / emails.
+- Referral records now avoid mobile overflow for long referred-user names and emails.
+
+Readiness implication:
+
+- Referral credit v1 is clearer as the launch-safe incentive program.
+- Cash payout, PayUNI production refunds, production DB writes, and production deployment remain manual launch gates.
+
 # 2026-07-02 - Channels Instagram action disabled-reason clarity
 
 Status: improved for settings UX clarity; public paid launch remains Hold.

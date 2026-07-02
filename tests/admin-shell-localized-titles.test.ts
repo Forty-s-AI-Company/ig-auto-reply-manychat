@@ -22,11 +22,13 @@ describe("admin shell localized titles", () => {
     expect(segmentsPage).not.toContain('AdminShell title="Segments"');
     expect(instagramDefaultReplyPage).toContain('AdminShell title="Instagram 預設回覆"');
     expect(instagramDefaultReplyPage).not.toContain('AdminShell title="Instagram Default Reply"');
-    expect(adminPayoutsPage).toMatch(/AdminShell\s+title="提領管理"/);
+    expect(adminPayoutsPage).toMatch(/AdminShell\s+title="分潤審核（內部）"/);
     expect(adminPayoutsPage).not.toContain('AdminShell title="Admin Payouts"');
     expect(adminPayoutsPage).not.toContain(">Batches<");
-    expect(adminPayoutBatchesPage).toContain('AdminShell title="提領批次"');
+    expect(adminPayoutsPage).not.toContain('AdminShell title="提領管理"');
+    expect(adminPayoutBatchesPage).toContain('AdminShell title="分潤對帳批次"');
     expect(adminPayoutBatchesPage).not.toContain('AdminShell title="Payout Batches"');
+    expect(adminPayoutBatchesPage).not.toContain('AdminShell title="提領批次"');
     expect(adminAffiliatesPage).toContain('AdminShell title="聯盟夥伴管理"');
     expect(adminAffiliatesPage).not.toContain('AdminShell title="Admin Affiliates"');
     expect(adminAffiliatesPage).not.toContain(">Approve<");

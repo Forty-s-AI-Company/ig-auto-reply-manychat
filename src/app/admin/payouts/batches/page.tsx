@@ -13,10 +13,10 @@ function formatDate(value: Date) {
 
 function formatBatchStatus(status: string) {
   const labels: Record<string, string> = {
-    pending: "待匯出",
-    exported: "已匯出",
-    paid: "已付款",
-    failed: "付款失敗",
+    pending: "待匯出對帳",
+    exported: "已匯出對帳",
+    paid: "內部已結案",
+    failed: "批次異常",
   };
 
   return labels[status] ?? status;
@@ -44,27 +44,35 @@ export default async function AdminPayoutBatchesPage() {
   });
 
   return (
-    <AdminShell title="提領批次">
+    <AdminShell title="分潤對帳批次">
       <div className="space-y-4">
         <form action="/api/admin/payouts/batches" method="post" className="ip-dashboard-card px-4 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">建立付款批次</h2>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">依目前待核准提領資料產生本月 15 日付款批次。</p>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">建立內部對帳批次</h2>
+              <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+                依目前已核准的受控分潤資料產生本月 15 日對帳批次；這不會觸發銀行匯款、PayUNI 付款或現金提領。
+              </p>
             </div>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+              title="只建立內部對帳批次，不會執行付款。"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
             >
-              產生本月 15 日批次
+              產生對帳批次
             </button>
           </div>
         </form>
 
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-4">
-            <h2 className="text-base font-semibold text-[var(--text-primary)]">批次紀錄</h2>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">下載 CSV 前請再次確認金額、筆數與狀態。</p>
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">對帳批次紀錄</h2>
+            <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+              CSV 僅供內部對帳與人工營運紀錄，下載前請再次確認金額、筆數與狀態。
+            </p>
+            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)] sm:hidden">
+              表格可左右滑動查看批次 ID、金額與匯出操作。
+            </p>
           </div>
 
           <div className="overflow-x-auto">
@@ -82,7 +90,9 @@ export default async function AdminPayoutBatchesPage() {
               <tbody className="divide-y divide-[var(--border-soft)]">
                 {batches.map((batch) => (
                   <tr key={batch.id} className="align-top">
-                    <td className="px-4 py-3 font-mono text-xs text-[var(--text-secondary)]">{batch.id}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-[var(--text-secondary)]">
+                      <span className="block max-w-64 break-all">{batch.id}</span>
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass(batch.status)}`}>
                         {formatBatchStatus(batch.status)}
@@ -91,8 +101,12 @@ export default async function AdminPayoutBatchesPage() {
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{batch.itemCount} 筆</td>
                     <td className="px-4 py-3 font-semibold text-[var(--text-primary)]">{formatTwd(batch.totalAmount)}</td>
                     <td className="px-4 py-3">
-                      <a className="font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)]" href={`/api/admin/payouts/batches/${batch.id}/export`}>
-                        下載 CSV
+                      <a
+                        className="font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                        href={`/api/admin/payouts/batches/${batch.id}/export`}
+                        title="下載內部對帳 CSV，不會執行付款。"
+                      >
+                        下載對帳 CSV
                       </a>
                     </td>
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(batch.createdAt)}</td>
@@ -100,8 +114,8 @@ export default async function AdminPayoutBatchesPage() {
                 ))}
                 {batches.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-secondary)]">
-                      目前還沒有提領批次。
+                  <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-secondary)]">
+                      目前還沒有內部對帳批次。
                     </td>
                   </tr>
                 ) : null}

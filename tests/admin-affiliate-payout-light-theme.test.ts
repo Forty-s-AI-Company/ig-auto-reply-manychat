@@ -26,9 +26,13 @@ describe("admin affiliate and payout light-theme polish", () => {
 
     expect(affiliateSource).toContain("待審核");
     expect(affiliateSource).toContain("目前沒有聯盟申請");
-    expect(payoutSource).toContain("提領申請");
-    expect(payoutSource).toContain("目前沒有待處理的提領申請");
-    expect(batchSource).toContain("建立付款批次");
-    expect(batchSource).toContain("目前還沒有提領批次");
+    expect(payoutSource).toContain("受控分潤審核");
+    expect(payoutSource).toContain("目前沒有待審核的分潤紀錄");
+    expect(payoutSource).toContain("max-w-56 break-all");
+    expect(batchSource).toContain("建立內部對帳批次");
+    expect(batchSource).toContain("目前還沒有內部對帳批次");
+    expect(batchSource).toContain("待匯出對帳");
+    expect(batchSource).not.toContain("已付款");
+    expect(batchSource).not.toContain("付款失敗");
   });
 });
