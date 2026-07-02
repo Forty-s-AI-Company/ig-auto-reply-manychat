@@ -1,3 +1,24 @@
+# 2026-07-03 - Affiliate public cash wording de-emphasis
+
+Task:
+
+- Reduce the remaining public-facing cash payout emphasis on `/affiliate` while keeping the controlled affiliate data model untouched.
+
+Changes:
+
+- Reworded the disabled affiliate application CTA from cash-first wording to controlled-affiliate wording.
+- Renamed the controlled cash status section to controlled affiliate payment status.
+- Renamed the commission table copy to internal calculation records so users are less likely to read it as an open cash payout product.
+- Updated source regression tests to prevent the old cash-first CTA and section title from returning.
+
+Validation:
+
+- Focused referral / affiliate UX tests were updated for the copy guard.
+- No production DB, production deployment, migration / db push, Meta App Review, PayUNI production switch, push, or PR action was performed.
+
+Launch impact:
+
+- Public referral credit remains the primary launch-safe direction; controlled affiliate payment remains a future internal capability.
 # 2026-07-02 - Referral credit rule docs v1 alignment
 
 Task:

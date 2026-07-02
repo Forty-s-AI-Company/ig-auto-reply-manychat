@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Affiliate public cash wording de-emphasis
+
+Current status:
+
+- [x] /affiliate disabled CTA now says 受控聯盟後續開放 instead of cash-first wording.
+- [x] The controlled status section now uses 受控聯盟付款狀態.
+- [x] The old commission table is presented as internal calculation records, not as an open payout surface.
+- [x] Source regression tests guard against the old cash-first CTA and section title returning.
+
+Remaining:
+
+- [ ] Keep cash payout, production DB changes, PayUNI production, and production deployment behind manual launch gates.
+- [ ] After Vercel Preview quota recovers, batch PR / Preview validation can resume.
+
 # Latest - 2026-07-02 Referral credit rule docs v1 alignment
 
 Current status:

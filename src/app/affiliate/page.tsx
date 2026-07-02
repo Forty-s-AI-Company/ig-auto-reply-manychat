@@ -41,17 +41,17 @@ export default async function AffiliatePage() {
   const cashProgramControlled = true;
   const applyDisabled = cashProgramControlled || !canApply || profileStatus === "pending" || profileStatus === "approved";
   const applyLabel = cashProgramControlled
-    ? "現金分潤後續開放"
+    ? "受控聯盟後續開放"
     : profileStatus === "pending"
       ? "審核中"
       : profileStatus === "approved"
         ? "已是聯盟夥伴"
-        : "申請聯盟夥伴";
+        : "申請受控聯盟";
   const applyHelp = cashProgramControlled
-    ? "正式產品主線目前以推薦折抵為主。現金分潤、提領與批次匯款先維持受控能力，等法務、風控、對帳與營運流程完全收斂後再開放。"
+    ? "正式產品主線目前以推薦折抵為主。現金型合作、提領與批次匯款先維持受控能力，等法務、風控、對帳與營運流程完全收斂後再開放。"
     : canApply
-      ? "送出後會由營運人員審核，確認資格與稅務/匯款資料後才會開通現金分潤。"
-      : "現金分潤目前只開放 Creator 以上付費方案；Starter 仍可使用推薦活動與折抵金。";
+      ? "送出後會由營運人員審核，確認資格與稅務 / 匯款資料後才會開通受控聯盟付款。"
+      : "受控聯盟付款目前只開放 Creator 以上付費方案；Starter 仍可使用推薦活動與折抵金。";
   const summaryCards = [
     {
       label: "等待確認",
@@ -85,7 +85,7 @@ export default async function AffiliatePage() {
               <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">{affiliateStatusLabel(profileStatus)}</h2>
             </div>
             <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-1 text-sm font-medium text-[var(--text-secondary)]">
-              {cashProgramControlled ? "現金分潤受控開通中" : canApply ? "可申請現金分潤" : "目前僅開放折抵金"}
+              {cashProgramControlled ? "受控聯盟暫不開放" : canApply ? "可申請受控聯盟" : "目前僅開放折抵金"}
             </span>
           </div>
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
@@ -116,22 +116,22 @@ export default async function AffiliatePage() {
         <section className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
           <article className="ip-dashboard-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">受控現金流程狀態</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">受控聯盟付款狀態</h2>
               <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)]">
                 最低 {formatTwd(dashboard.minimumPayoutAmount)}
               </span>
             </div>
             {dashboard.cashPayoutReady && !cashProgramControlled ? (
               <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
-                已達提領門檻。正式提領仍由營運端建立或審核 payout request，避免付款資料、稅務資料或退款爭議未完成時誤匯款。
+                已達內部審核門檻。正式付款仍由營運端建立或審核 payout request，避免付款資料、稅務資料或退款爭議未完成時誤匯款。
               </p>
             ) : (
               <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900">
-                <p className="font-semibold">目前不開放現金提領</p>
+                <p className="font-semibold">目前不開放受控付款</p>
                 <ul className="mt-2 list-disc space-y-1 pl-5">
                   {cashProgramControlled ? (
                     <>
-                      <li>正式產品主線已改為推薦折抵制度 v1，現金分潤不作為公開銷售主打。</li>
+                      <li>正式產品主線已改為推薦折抵制度 v1，現金型合作不作為公開銷售主打。</li>
                       <li>提領流程仍需要法務條款、退款觀察、反作弊規則、對帳與人工付款 SOP。</li>
                       <li>若後續重新開放，現有佣金資料仍可作為內部驗證基礎，不需要重做整個資料模型。</li>
                     </>
@@ -148,7 +148,7 @@ export default async function AffiliatePage() {
               disabled
               className="mt-4 inline-flex h-10 cursor-not-allowed items-center rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 text-sm font-semibold text-[var(--text-muted)]"
             >
-              現金提領後續開放
+              受控付款後續開放
             </button>
           </article>
 
@@ -164,8 +164,8 @@ export default async function AffiliatePage() {
 
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-3">
-            <h2 className="font-semibold text-[var(--text-primary)]">佣金紀錄</h2>
-            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆分潤計算、等待期與內部審核狀態。</p>
+            <h2 className="font-semibold text-[var(--text-primary)]">內部計算紀錄</h2>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆受控聯盟計算、等待期與內部審核狀態。</p>
           </div>
           {dashboard.commissions.length > 0 ? (
             <div className="overflow-x-auto">
@@ -173,9 +173,9 @@ export default async function AffiliatePage() {
                 <thead className="bg-[var(--ip-surface-muted)] text-xs font-semibold text-[var(--text-secondary)]">
                   <tr>
                     <th scope="col" className="px-4 py-3">狀態</th>
-                    <th scope="col" className="px-4 py-3">分潤率</th>
+                    <th scope="col" className="px-4 py-3">內部比例</th>
                     <th scope="col" className="px-4 py-3 text-right">計算基礎</th>
-                    <th scope="col" className="px-4 py-3 text-right">佣金</th>
+                    <th scope="col" className="px-4 py-3 text-right">內部計算金額</th>
                     <th scope="col" className="px-4 py-3">建立時間</th>
                   </tr>
                 </thead>
@@ -198,7 +198,7 @@ export default async function AffiliatePage() {
             </div>
           ) : (
             <div className="px-4 py-8 text-sm leading-6 text-[var(--text-muted)]">
-              目前還沒有現金分潤紀錄。Simple release 仍以推薦活動與折抵金為主；現金分潤會等方案、審核與營運流程完整後再受控開通。
+              目前還沒有受控聯盟計算紀錄。Simple release 仍以推薦活動與折抵金為主；現金型合作會等方案、審核與營運流程完整後再受控開通。
             </div>
           )}
         </section>

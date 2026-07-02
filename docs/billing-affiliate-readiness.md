@@ -1,3 +1,16 @@
+# 2026-07-03 - Affiliate public cash wording de-emphasis
+
+- [x] /affiliate now avoids cash-first CTA wording and presents the disabled action as a controlled affiliate future capability.
+- [x] The controlled status card now says 受控聯盟付款狀態 instead of 受控現金流程狀態.
+- [x] The public table copy now uses 內部計算紀錄 / 內部計算金額 so it does not read like an open cash-payout ledger.
+- [x] Regression tests guard against the old cash-first public CTA wording returning.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- Referral credit v1 remains the launch-safe product direction, while controlled affiliate payment remains internal / future.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, or PR action was performed.
+
 # 2026-07-02 - Referral credit rule docs v1 alignment
 
 - [x] Referral / affiliate rule docs now match referral credit v1: non-cash, 7-day refund observation, 30-day usage window, and clawback / debit handling.
