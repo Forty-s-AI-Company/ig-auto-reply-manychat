@@ -1684,4 +1684,4 @@ Status:
 Readiness implication:
 
 - Local QA can now catch first-run onboarding regressions instead of relying only on seeded E2E accounts.
-- Preview / Staging still needs a real empty tenant browser QA pass before paid launch.
+- Preview / Staging now has a real empty tenant browser QA pass on desktop/mobile, using a fresh staging signup and selector-level assertions for Dashboard, Channels, Inbox, Contacts, and Automations.
