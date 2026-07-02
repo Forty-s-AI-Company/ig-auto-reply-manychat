@@ -76,7 +76,12 @@ export function SequencesClient({
       : "";
 
   useEffect(() => {
-    const hydrationTimer = window.setTimeout(() => setHasHydrated(true), 0);
+    const hydrationTimer = window.setTimeout(() => {
+      if (nameInputRef.current) {
+        setName(nameInputRef.current.value);
+      }
+      setHasHydrated(true);
+    }, 0);
     return () => window.clearTimeout(hydrationTimer);
   }, []);
 

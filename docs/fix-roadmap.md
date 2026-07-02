@@ -3370,3 +3370,8 @@ Remaining:
 
 - 已完成：Contacts mobile header actions 可換行、focus-visible 可見、空 workspace activation smoke 覆蓋 desktop/mobile。
 - 下一步：若沒有人工阻塞，繼續檢查 Dashboard/Inbox/Automations 的 mobile CTA 與 disabled UX 是否仍有擠壓或半實作入口。
+
+## 2026-07-03 - Sequences save disabled reason CI stabilization
+
+- 已完成：Sequences 建立表單在 hydration 完成時會同步目前 input DOM value，避免 mobile smoke 在清空名稱後看到可按但無 title 的「建立序列」狀態。
+- 下一步：重新跑 CI full-release-auth-smoke，確認 Sequences disabled UX 在 desktop/mobile 都穩定。

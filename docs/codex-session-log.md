@@ -8696,3 +8696,10 @@ Launch impact:
 - 變更：Contacts shell 改為 mobile min-height、desktop fixed-height；篩選/新增標籤/建立分眾工具列在 mobile 可換行，並補 focus-visible ring 與 decorative icon aria-hidden。
 - 驗證：focused Vitest 通過；empty workspace activation Playwright smoke desktop/mobile 通過。
 - 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - Sequences save disabled reason CI stabilization
+
+- 目標：修正 master CI full-release-auth-smoke 中 mobile Sequences 測項的 disabled reason 競態。
+- 變更：Sequences 表單 hydration 完成前若使用者或測試已更新名稱輸入框，先從 DOM 同步目前值再開放儲存狀態，避免空名稱時「建立序列」按鈕短暫失去 disabled title。
+- 驗證：npx vitest run tests/sequences-form-state.test.ts --reporter=dot 通過；本機整包 auth smoke 另受本機 login 404 環境問題影響，CI 的失敗點已縮小為 Sequences button title race。
+- 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。

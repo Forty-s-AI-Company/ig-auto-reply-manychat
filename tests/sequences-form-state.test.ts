@@ -7,6 +7,7 @@ describe("sequences form state", () => {
 
     expect(source).toContain("const trimmedName = name.trim()");
     expect(source).toContain("const [hasHydrated, setHasHydrated] = useState(false)");
+    expect(source).toContain("setName(nameInputRef.current.value)");
     expect(source).toContain("setHasHydrated(true)");
     expect(source).toContain("const canSaveSequence = hasHydrated && Boolean(trimmedName)");
     expect(source).toContain("function syncNameFromInput");
