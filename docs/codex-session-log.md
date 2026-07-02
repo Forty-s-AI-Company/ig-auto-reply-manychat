@@ -1,3 +1,24 @@
+# 2026-07-03 - Referral affiliate backend error wording cleanup
+
+Task:
+
+- Remove remaining cash-withdrawal wording from referral / affiliate public copy and backend error strings that could surface to users.
+
+Changes:
+
+- Reworded referral tracking boundary copy from cash withdrawal to controlled payment.
+- Reworded affiliate public copy from reopening cash commission to reopening controlled cash-type cooperation.
+- Reworded affiliate / payout service errors toward controlled affiliate payment and internal review balance wording.
+- Added regression guards for public copy and service error strings.
+
+Validation:
+
+- Focused referral / affiliate source tests were updated.
+- No production DB, production deployment, migration / db push, Meta App Review, PayUNI production switch, push, or PR action was performed.
+
+Launch impact:
+
+- User-facing and API-propagated wording is less likely to imply self-service cash payout is available.
 # 2026-07-03 - Admin affiliate controlled-review wording
 
 Task:

@@ -89,7 +89,7 @@ export default async function AffiliatePage() {
             </span>
           </div>
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
-            推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前只保留後續受控聯盟流程的狀態說明：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金分潤。
+            推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前只保留後續受控聯盟流程的狀態說明：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金型合作。
           </p>
           <form action="/api/affiliate/apply" method="post" className="mt-4">
             <button

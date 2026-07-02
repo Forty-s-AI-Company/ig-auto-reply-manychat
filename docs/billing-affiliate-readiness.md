@@ -1,3 +1,16 @@
+# 2026-07-03 - Referral affiliate backend error wording cleanup
+
+- [x] Referral tracking boundary copy now says controlled payment instead of cash withdrawal.
+- [x] Affiliate public copy avoids promising that cash commission will reopen.
+- [x] Affiliate / payout service errors now use controlled affiliate payment and internal review balance wording.
+- [x] Regression tests guard against old cash-withdrawal service strings returning.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- API-propagated errors and public copy are less likely to imply self-service cash payout is already available.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, or PR action was performed.
+
 # 2026-07-03 - Admin affiliate controlled-review wording
 
 - [x] Admin affiliate review now uses 受控聯盟審核 instead of a generic partner-management surface.

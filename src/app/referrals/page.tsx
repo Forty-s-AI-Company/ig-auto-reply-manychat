@@ -90,7 +90,7 @@ export default async function ReferralsPage() {
               </span>
             </div>
             <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
-              目前不顯示假點擊數，也不把現金提領包裝成已可用功能。這個頁面只顯示已可驗證的註冊、啟用、待確認折抵與可用折抵。
+              目前不顯示假點擊數，也不把受控付款包裝成已可用功能。這個頁面只顯示已可驗證的註冊、啟用、待確認折抵與可用折抵。
             </p>
             <div className="mt-4 rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-3 text-sm leading-6 text-[var(--text-secondary)]">
               <p>下一筆可用折抵時間：{dashboard.walletSummary.nextAvailableAt ? formatReferralDate(dashboard.walletSummary.nextAvailableAt) : "目前沒有待確認折抵"}</p>

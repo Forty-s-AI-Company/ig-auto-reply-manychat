@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Referral affiliate backend error wording cleanup
+
+Current status:
+
+- [x] Referral page now says controlled payment instead of cash withdrawal when explaining unavailable tracking boundaries.
+- [x] Affiliate page no longer says it will reopen cash commission in public copy.
+- [x] Affiliate and payout service errors now use controlled affiliate payment / internal review balance wording.
+- [x] Regression tests guard against the old cash-withdrawal service strings returning.
+
+Remaining:
+
+- [ ] Keep cash payout and production payment operations behind manual launch gates.
+
 # Latest - 2026-07-03 Admin affiliate controlled-review wording
 
 Current status:

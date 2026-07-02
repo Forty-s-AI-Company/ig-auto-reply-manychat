@@ -23,6 +23,7 @@ describe("affiliate page light theme", () => {
     expect(source).not.toContain('AdminShell title="聯盟分潤"');
     expect(source).not.toContain("受控現金流程狀態");
     expect(source).not.toContain("現金分潤後續開放");
+    expect(source).not.toContain("重新開啟現金分潤");
     expect(source).not.toContain("可提領佣金");
     expect(source).not.toContain("提領申請中");
     expect(source).not.toContain("not_applied");

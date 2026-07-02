@@ -13,16 +13,16 @@ function csvEscape(value: string | number | null | undefined) {
 }
 
 export async function requestPayout(userId: string, amount: number, db: DbWithTransaction = getDb()) {
-  if (amount < MIN_PAYOUT_AMOUNT_TWD) throw new Error(`最低提領金額為 NT$${MIN_PAYOUT_AMOUNT_TWD}。`);
+  if (amount < MIN_PAYOUT_AMOUNT_TWD) throw new Error(`最低內部付款金額為 NT$${MIN_PAYOUT_AMOUNT_TWD}。`);
   const profile = await db.affiliateProfile.findUnique({ where: { userId } });
-  if (!profile || profile.status !== "approved") throw new Error("聯盟夥伴審核通過後才能申請提領。");
+  if (!profile || profile.status !== "approved") throw new Error("受控聯盟審核通過後才能建立付款申請。");
 
   const availableCommissions = await db.affiliateCommission.findMany({
     where: { affiliateUserId: userId, status: "available" },
     orderBy: { availableAt: "asc" },
   });
   const available = availableCommissions.reduce((sum, commission) => sum + commission.commissionAmount, 0);
-  if (available < amount) throw new Error("可提領餘額不足。");
+  if (available < amount) throw new Error("內部可審核餘額不足。");
 
   return db.$transaction(async (tx: Prisma.TransactionClient) => {
     const payout = await tx.payoutRequest.create({

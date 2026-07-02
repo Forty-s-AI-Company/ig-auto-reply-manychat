@@ -25,7 +25,7 @@ export async function canApplyAffiliate(userId: string, db: DbOrTx = getDb()) {
 
 export async function applyAffiliate(userId: string, db: DbOrTx = getDb()) {
   if (!(await canApplyAffiliate(userId, db))) {
-    throw new Error("Creator 以上付費方案才能申請現金分潤。");
+    throw new Error("Creator 以上付費方案才能申請受控聯盟付款。");
   }
   return db.affiliateProfile.upsert({
     where: { userId },
