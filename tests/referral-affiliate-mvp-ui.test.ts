@@ -27,6 +27,7 @@ describe("referral and affiliate MVP UX guards", () => {
 
   it("keeps affiliate cash payout behind a controlled-opening gate", () => {
     const source = read("src/app/affiliate/page.tsx");
+    const serviceSource = read("src/lib/billing/affiliate-service.ts");
 
     expect(source).toContain("現金分潤後續開放");
     expect(source).toContain("正式產品主線目前以推薦折抵為主");
@@ -34,6 +35,9 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("內部可審核金額");
     expect(source).toContain("不代表會自動匯款");
     expect(source).toContain("分潤安全規則");
+    expect(serviceSource).toContain("內部可審核佣金尚未達");
+    expect(serviceSource).toContain("受控聯盟付款資料尚未完整送審");
+    expect(serviceSource).not.toContain("可提領佣金");
   });
 
   it("gives admin operators approve and reject controls for payout requests", () => {

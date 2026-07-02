@@ -1,3 +1,15 @@
+# 2026-07-02 - Affiliate payout blocker copy hardening
+
+- [x] Affiliate payout blocker reasons now avoid user-facing withdrawable-commission wording.
+- [x] Blockers now describe controlled internal review / operations readiness instead of self-service cash payout.
+- [x] Source regression coverage guards the service copy path.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- Future changes to the affiliate gate are less likely to accidentally expose cash payout wording.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, or Meta App Review action was performed.
+
 # 2026-07-02 - Affiliate public title credit-first wording
 
 - [x] /affiliate now presents as 推薦折抵與受控聯盟, not a cash-first 聯盟分潤 page.

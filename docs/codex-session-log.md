@@ -1,3 +1,23 @@
+# 2026-07-02 - Affiliate payout blocker copy hardening
+
+Task:
+
+- Remove the remaining cash-withdrawal phrasing from affiliate payout blocker reasons.
+
+Changes:
+
+- Reworded affiliate-service payout blockers from user-facing withdrawable commission language to internal review language.
+- Added regression coverage so 可提領佣金 does not return through the affiliate dashboard service path.
+
+Validation:
+
+- Focused referral / affiliate source tests were updated for the blocker copy guard.
+- No production DB, production deployment, migration / db push, Meta App Review, or PayUNI production switch was performed.
+
+Launch impact:
+
+- Keeps cash payout language controlled even if the public affiliate gate changes later.
+
 # 2026-07-02 - Affiliate public title credit-first wording
 
 Task:
