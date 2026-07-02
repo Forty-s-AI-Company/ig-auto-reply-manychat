@@ -1514,6 +1514,7 @@ function FlowBuilderInner({
   const [mediaError, setMediaError] = useState("");
   const [mediaErrorActionHref, setMediaErrorActionHref] = useState("");
   const [pendingDeleteFlow, setPendingDeleteFlow] = useState<AutomationItem | null>(null);
+  const [pendingDeleteNode, setPendingDeleteNode] = useState<Node<FlowNodeData> | null>(null);
   const nodeCounterRef = useRef(1000);
   const previewPanelRef = useRef<HTMLDivElement | null>(null);
   const { fitView, screenToFlowPosition } = useReactFlow();
@@ -1719,10 +1720,16 @@ function FlowBuilderInner({
     setNodes((current) => current.map((node) => (node.id === nextNode.id ? { ...nextNode, selected: true } : node)));
   }
 
-  function deleteSelectedNode() {
+  function requestDeleteSelectedNode() {
     if (!selectedNode || selectedNode.id === "trigger") return;
-    setNodes((current) => current.filter((node) => node.id !== selectedNode.id).map((node) => ({ ...node, selected: node.id === "trigger" })));
-    setEdges((current) => current.filter((edge) => edge.source !== selectedNode.id && edge.target !== selectedNode.id));
+    setPendingDeleteNode(selectedNode);
+  }
+
+  function confirmDeleteSelectedNode() {
+    if (!pendingDeleteNode || pendingDeleteNode.id === "trigger") return;
+    setNodes((current) => current.filter((node) => node.id !== pendingDeleteNode.id).map((node) => ({ ...node, selected: node.id === "trigger" })));
+    setEdges((current) => current.filter((edge) => edge.source !== pendingDeleteNode.id && edge.target !== pendingDeleteNode.id));
+    setPendingDeleteNode(null);
     setSelectedNodeId("trigger");
   }
 
@@ -2344,9 +2351,10 @@ function FlowBuilderInner({
             aria-label="更多操作受控開通"
             aria-disabled="true"
             data-testid="automation-editor-more-disabled"
-            className="cursor-not-allowed rounded-md border border-zinc-300 p-2 text-zinc-400 opacity-60"
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-500 opacity-70"
           >
             <MoreVertical className="h-4 w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">更多操作受控</span>
           </button>
         </div>
       </div>
@@ -2379,7 +2387,7 @@ function FlowBuilderInner({
             {selectedNode?.id !== "trigger" ? (
               <button
                 type="button"
-                onClick={deleteSelectedNode}
+                onClick={requestDeleteSelectedNode}
                 className="inline-flex items-center gap-2 rounded-md border border-red-200 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -2432,6 +2440,18 @@ function FlowBuilderInner({
             </div>
           </div>
         </aside>
+
+        <section
+          className="border-t border-zinc-200 bg-white p-4 lg:hidden"
+          data-testid="automation-mobile-canvas-notice"
+        >
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+            <p className="font-semibold">流程畫布建議使用桌機或平板編輯</p>
+            <p className="mt-1 leading-6">
+              手機版目前支援節點設定、預覽與儲存；拖拉節點與連線操作需要較大的螢幕，避免誤觸造成流程錯亂。
+            </p>
+          </div>
+        </section>
 
         <main className="relative hidden min-w-0 bg-[#f3f6f8] lg:block">
           <div
@@ -2593,6 +2613,60 @@ function FlowBuilderInner({
             onConfirm={confirmDeleteFlow}
           />
         ) : null}
+        {pendingDeleteNode ? (
+          <DeleteNodeDialog
+            nodeLabel={pendingDeleteNode.data.label}
+            onCancel={() => setPendingDeleteNode(null)}
+            onConfirm={confirmDeleteSelectedNode}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function DeleteNodeDialog({
+  nodeLabel,
+  onCancel,
+  onConfirm,
+}: {
+  nodeLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4" role="dialog" aria-modal="true" aria-labelledby="automation-node-delete-title">
+      <div className="w-full max-w-md rounded-lg border border-red-100 bg-white p-5 shadow-xl">
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-red-50 p-2 text-red-600">
+            <Trash2 className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <h2 id="automation-node-delete-title" className="text-base font-semibold text-zinc-950">
+              刪除流程節點？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              你即將從目前草稿移除「<span className="font-medium text-zinc-950">{nodeLabel}</span>」與相關連線。儲存後才會套用到這個自動化流程。
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            data-testid="automation-node-confirm-delete"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700"
+          >
+            確認刪除節點
+          </button>
+        </div>
       </div>
     </div>
   );

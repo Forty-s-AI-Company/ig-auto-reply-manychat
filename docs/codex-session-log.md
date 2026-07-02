@@ -8327,3 +8327,54 @@ Launch impact:
 
 - Automations editor warning cleaned up; no schema, production DB, production deploy, migration, Meta App Review, or PayUNI production changes.
 - This reduces noisy QA output and adds a direct regression guard around the React Flow editor surface.
+
+# 2026-07-02 - Automations product closeout
+
+Task:
+
+- Continue the Automations product-layer closeout after the React Flow style-warning fix.
+- Audit destructive actions, disabled editor controls, mobile canvas expectations, and simple/full release clarity without touching production DB, migrations, Production deployment, Meta App Review, or PayUNI production mode.
+
+Findings:
+
+- Sequence delete and segment delete already use in-app confirmation dialogs.
+- Automation delete already uses an in-app confirmation dialog.
+- The editor-side `刪除節點` action still removed the selected flow node immediately, which made a destructive draft edit feel like a one-click accident.
+- The React Flow canvas is intentionally desktop/tablet-oriented, but mobile users saw the editor controls without a clear explanation that drag/connect interactions need a larger screen.
+- The disabled `更多操作` button was technically gated but still looked like a bare icon-only control.
+
+Changes:
+
+- Added a `DeleteNodeDialog` confirmation flow before deleting an Automation editor node from the current draft.
+- Added a mobile-only canvas limitation notice explaining that node configuration, preview, and save remain available on mobile while drag/connect editing should use a larger screen.
+- Changed the editor `更多操作` disabled control from icon-only to labeled disabled UX (`更多操作受控`).
+- Extended `tests/e2e/automations-editor.spec.ts` to cover node-delete confirmation and mobile canvas limitation guidance.
+
+Validation:
+
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/automations-editor.spec.ts`: passed, 6 tests across Chromium and mobile Chrome.
+
+Launch impact:
+
+- Product UX polish only.
+- No production DB, Production deployment, migration, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Sequence name input CI stability follow-up
+
+Task:
+
+- Follow up on PR #124 CI after the PR full-release auth smoke repeatedly failed on the existing Sequences disabled-state check while the push workflow and local focused smoke passed.
+
+Findings:
+
+- The failing check was not caused by the new Automations editor node delete dialog.
+- CI desktop Chromium could observe the sequence name input as empty while the controlled React state briefly kept the save button enabled with no disabled reason title.
+
+Changes:
+
+- Added a native `input` / `change` event synchronization guard to the sequence name input so DOM value changes from browser automation stay aligned with React state.
+
+Validation:
+
+- `npm run e2e:admin:ensure && npm run test:e2e:auth -- --grep "Sequences disabled states" --project=chromium`: passed.
