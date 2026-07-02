@@ -29,8 +29,10 @@ describe("admin shell localized titles", () => {
     expect(adminPayoutBatchesPage).toContain('AdminShell title="分潤對帳批次"');
     expect(adminPayoutBatchesPage).not.toContain('AdminShell title="Payout Batches"');
     expect(adminPayoutBatchesPage).not.toContain('AdminShell title="提領批次"');
-    expect(adminAffiliatesPage).toContain('AdminShell title="聯盟夥伴管理"');
+    expect(adminAffiliatesPage).toContain('AdminShell title="受控聯盟審核"');
     expect(adminAffiliatesPage).not.toContain('AdminShell title="Admin Affiliates"');
+    expect(adminAffiliatesPage).not.toContain('AdminShell title="聯盟夥伴管理"');
+    expect(adminAffiliatesPage).not.toContain("分潤資格");
     expect(adminAffiliatesPage).not.toContain(">Approve<");
     expect(adminAffiliatesPage).not.toContain(">Reject<");
   });

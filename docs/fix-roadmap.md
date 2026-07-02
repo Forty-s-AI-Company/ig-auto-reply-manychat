@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Admin affiliate controlled-review wording
+
+Current status:
+
+- [x] Admin affiliate surface now uses 受控聯盟審核 instead of a broad partner-management title.
+- [x] Operator copy now describes controlled cooperation eligibility and payment-review state instead of public-facing cash / bank-data wording.
+- [x] Auth smoke expectations were updated for the new affiliate disabled-payment copy.
+
+Remaining:
+
+- [ ] Keep cash payout and production payment operations behind legal / tax / anti-fraud / reconciliation gates.
+
 # Latest - 2026-07-03 Affiliate public cash wording de-emphasis
 
 Current status:

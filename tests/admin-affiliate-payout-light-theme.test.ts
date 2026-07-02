@@ -25,7 +25,10 @@ describe("admin affiliate and payout light-theme polish", () => {
     const batchSource = readFileSync("src/app/admin/payouts/batches/page.tsx", "utf8");
 
     expect(affiliateSource).toContain("待審核");
-    expect(affiliateSource).toContain("目前沒有聯盟申請");
+    expect(affiliateSource).toContain("目前沒有受控聯盟申請");
+    expect(affiliateSource).toContain("付款資料審核狀態");
+    expect(affiliateSource).not.toContain("分潤資格");
+    expect(affiliateSource).not.toContain("尚未填寫銀行資料");
     expect(payoutSource).toContain("受控分潤審核");
     expect(payoutSource).toContain("目前沒有待審核的分潤紀錄");
     expect(payoutSource).toContain("max-w-56 break-all");

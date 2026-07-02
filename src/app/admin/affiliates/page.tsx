@@ -46,11 +46,13 @@ export default async function AdminAffiliatesPage() {
   });
 
   return (
-    <AdminShell title="聯盟夥伴管理">
+    <AdminShell title="受控聯盟審核">
       <section className="ip-dashboard-card overflow-hidden">
         <div className="border-b border-[var(--border-soft)] px-4 py-4">
-          <h2 className="text-base font-semibold text-[var(--text-primary)]">聯盟申請</h2>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">管理創作者分潤資格、等級與銀行資料狀態。</p>
+          <h2 className="text-base font-semibold text-[var(--text-primary)]">受控聯盟申請</h2>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            管理創作者受控合作資格、等級與付款資料審核狀態。公開產品仍以推薦折抵為主，這裡只保留內部營運審核。
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -61,7 +63,7 @@ export default async function AdminAffiliatesPage() {
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">狀態</th>
                 <th className="px-4 py-3 font-medium">等級</th>
-                <th className="px-4 py-3 font-medium">銀行資料</th>
+                <th className="px-4 py-3 font-medium">付款資料</th>
                 <th className="px-4 py-3 font-medium">操作</th>
               </tr>
             </thead>
@@ -77,7 +79,7 @@ export default async function AdminAffiliatesPage() {
                   </td>
                   <td className="px-4 py-3 text-[var(--text-secondary)]">{formatAffiliateLevel(profile.level)}</td>
                   <td className="px-4 py-3 text-[var(--text-secondary)]">
-                    {profile.bankAccountLast4 ? `已填寫（末四碼 ${profile.bankAccountLast4}）` : "尚未填寫銀行資料"}
+                    {profile.bankAccountLast4 ? `已送審（末四碼 ${profile.bankAccountLast4}）` : "尚未送審付款資料"}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-2">
@@ -104,7 +106,7 @@ export default async function AdminAffiliatesPage() {
               {affiliates.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-secondary)]">
-                    目前沒有聯盟申請。
+                    目前沒有受控聯盟申請。
                   </td>
                 </tr>
               ) : null}

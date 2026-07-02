@@ -1,3 +1,23 @@
+# 2026-07-03 - Admin affiliate controlled-review wording
+
+Task:
+
+- Keep internal affiliate administration aligned with the referral-credit-first product direction.
+
+Changes:
+
+- Renamed the admin affiliate surface from general partner management to controlled affiliate review.
+- Reworded creator payout / bank-data copy into controlled cooperation and payment-review copy.
+- Updated admin title and authenticated smoke guards so old cash-forward wording does not return.
+
+Validation:
+
+- Focused admin / affiliate source and Playwright expectation tests were updated.
+- No production DB, production deployment, migration / db push, Meta App Review, PayUNI production switch, push, or PR action was performed.
+
+Launch impact:
+
+- Internal operator surfaces are less likely to accidentally imply that cash affiliate payout is open as a public product.
 # 2026-07-03 - Affiliate public cash wording de-emphasis
 
 Task:

@@ -1,3 +1,15 @@
+# 2026-07-03 - Admin affiliate controlled-review wording
+
+- [x] Admin affiliate review now uses 受控聯盟審核 instead of a generic partner-management surface.
+- [x] Operator-facing copy now describes controlled cooperation and payment-review state, not public cash payout readiness.
+- [x] Auth smoke expectations were updated so the affiliate page stays aligned with the new controlled-payment wording.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- Internal admin surfaces are less likely to drift away from the referral-credit-first public product direction.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, or PR action was performed.
+
 # 2026-07-03 - Affiliate public cash wording de-emphasis
 
 - [x] /affiliate now avoids cash-first CTA wording and presents the disabled action as a controlled affiliate future capability.

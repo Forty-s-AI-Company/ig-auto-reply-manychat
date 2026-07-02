@@ -300,9 +300,9 @@ test.describe("authenticated route smoke", () => {
     await page.goto("/affiliate", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "推薦折抵與受控聯盟" })).toBeVisible();
     await expect(page.locator("body")).toContainText("正式產品主線目前以推薦折抵為主");
-    await expect(page.locator("body")).toContainText("目前不開放現金提領");
-    await expect(page.getByRole("button", { name: "現金提領後續開放" })).toBeDisabled();
-    await expect(page.locator("body")).toContainText("受控現金流程狀態");
+    await expect(page.locator("body")).toContainText("目前不開放受控付款");
+    await expect(page.getByRole("button", { name: "受控付款後續開放" })).toBeDisabled();
+    await expect(page.locator("body")).toContainText("受控聯盟付款狀態");
   });
 
   test("shows wallet lifecycle guidance for pending and expiring referral credits", async ({ page }) => {
