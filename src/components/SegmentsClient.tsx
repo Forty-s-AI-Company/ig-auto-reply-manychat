@@ -347,12 +347,16 @@ function SegmentDeleteDialog({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="segment-delete-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4"
+      role="presentation"
     >
-      <div className="w-full max-w-md rounded-lg border border-[#d7dbe0] bg-white shadow-xl">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="segment-delete-title"
+        data-testid="segments-delete-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-[#d7dbe0] bg-white shadow-xl"
+      >
         <div className="border-b border-[#d7dbe0] px-5 py-4">
           <p id="segment-delete-title" className="text-base font-semibold text-[#111827]">
             刪除分眾名單？

@@ -3243,3 +3243,17 @@ Remaining:
 
 - `[ ]` Staging mobile browser QA should still inspect Automations / Sequences / Segments after Preview deployment.
 - `[ ]` If future sequence step editing grows more complex, consider an undo toast for draft-only operations.
+
+## Latest - 2026-07-02 Automations / Sequences / Segments mobile full-flow QA
+
+Current status:
+
+- `[x]` Automations template, folder creation, automation delete, and node delete dialogs now have explicit mobile scroll containment and test hooks.
+- `[x]` Sequences delete and draft step removal dialogs now have mobile scroll containment and Playwright assertions against horizontal overflow.
+- `[x]` Segments delete confirmation dialog now has mobile scroll containment and Playwright assertions against horizontal overflow.
+- `[x]` Sequences editable controls have more consistent focus-visible affordances for keyboard users.
+
+Remaining:
+
+- `[ ]` After this reaches Preview, run a real browser mobile QA pass against Automations / Sequences / Segments to catch device-specific keyboard and viewport quirks.
+- `[ ]` Simple-release smoke still needs a correctly configured local simple-release environment before it can be counted as a full local pass.

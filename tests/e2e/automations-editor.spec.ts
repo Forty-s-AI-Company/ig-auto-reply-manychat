@@ -19,6 +19,12 @@ async function login(page: Page, testInfo: TestInfo, email: string, password: st
   expect(response.ok(), `login failed with ${response.status()}: ${await response.text()}`).toBeTruthy();
 }
 
+async function expectNoHorizontalOverflow(page: Page) {
+  await page.waitForTimeout(150);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(2);
+}
+
 test.describe("automations editor polish", () => {
   test.setTimeout(45_000);
 
@@ -96,5 +102,23 @@ test.describe("automations editor polish", () => {
     await expect(page.getByTestId("automation-mobile-canvas-notice")).toBeVisible();
     await expect(page.getByTestId("automation-mobile-canvas-notice")).toContainText("流程畫布建議使用桌機或平板編輯");
     await expect(page.getByTestId("automation-flow-canvas")).toBeHidden();
+  });
+
+  test("keeps mobile automation dialogs scroll-safe", async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await login(page, testInfo, adminEmail, adminPassword);
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+
+    await page.getByRole("button", { name: "新增資料夾" }).click();
+    await expect(page.getByTestId("automation-folder-dialog")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    await page.getByRole("button", { name: "取消" }).click();
+    await expect(page.getByTestId("automation-folder-dialog")).toHaveCount(0);
+
+    await page.getByRole("button", { name: "新增自動化" }).click();
+    await expect(page.getByTestId("automation-template-dialog")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    await page.getByLabel("關閉模板選擇").click();
+    await expect(page.getByTestId("automation-template-dialog")).toHaveCount(0);
   });
 });

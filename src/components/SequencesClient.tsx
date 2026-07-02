@@ -312,7 +312,7 @@ export function SequencesClient({
                 onChangeCapture={syncNameFromInput}
                 onInput={syncNameFromInput}
                 onInputCapture={syncNameFromInput}
-                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 data-testid="sequence-name-input"
               />
             </label>
@@ -340,22 +340,25 @@ export function SequencesClient({
                   <input
                     type="number"
                     min="0"
+                    name={`sequence-step-delay-${index}`}
+                    inputMode="numeric"
                     value={step.delaySeconds}
                     onChange={(event) => updateStep(index, { delaySeconds: event.target.value })}
-                    className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                    className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
                 <label className="mt-2 block text-sm">
                   <span className="mb-1 block text-[#667085]">訊息</span>
                   <textarea
+                    name={`sequence-step-message-${index}`}
                     value={step.text}
                     onChange={(event) => updateStep(index, { text: event.target.value })}
-                    className="h-24 w-full resize-none rounded-md border border-[#d7dbe0] px-3 py-2"
+                    className="h-24 w-full resize-none rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
               </div>
             ))}
-            <button type="button" onClick={addStep} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054]">
+            <button type="button" onClick={addStep} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2">
               新增步驟
             </button>
             <button
@@ -363,7 +366,7 @@ export function SequencesClient({
               onClick={createSequence}
               disabled={!canSaveSequence}
               title={saveDisabledReason || undefined}
-              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               data-testid="sequence-save-button"
             >
               {editingSequenceId ? "更新序列" : "建立序列"}
@@ -379,8 +382,9 @@ export function SequencesClient({
               <span className="mb-1 block text-[#667085]">序列</span>
               <select
                 value={selectedSequenceId}
+                name="sequence-subscribe-sequence"
                 onChange={(event) => setSelectedSequenceId(event.target.value)}
-                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 data-testid="sequence-subscribe-sequence-select"
               >
                 <option value="">選擇序列</option>
@@ -393,8 +397,9 @@ export function SequencesClient({
               <span className="mb-1 block text-[#667085]">聯絡人</span>
               <select
                 value={selectedContactId}
+                name="sequence-subscribe-contact"
                 onChange={(event) => setSelectedContactId(event.target.value)}
-                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 data-testid="sequence-subscribe-contact-select"
               >
                 <option value="">選擇聯絡人</option>
@@ -408,7 +413,7 @@ export function SequencesClient({
               onClick={subscribe}
               disabled={Boolean(subscribeDisabledReason)}
               title={subscribeDisabledReason || undefined}
-              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               data-testid="sequence-subscribe-button"
             >
               加入序列
@@ -428,7 +433,8 @@ export function SequencesClient({
             role="dialog"
             aria-modal="true"
             aria-labelledby="sequence-delete-title"
-            className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+            data-testid="sequence-delete-dialog"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-200 bg-white p-5 shadow-xl"
           >
             <h2 id="sequence-delete-title" className="text-base font-semibold text-[#111827]">
               確認刪除序列？
@@ -440,7 +446,7 @@ export function SequencesClient({
               <button
                 type="button"
                 onClick={() => setDeleteTargetId("")}
-                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc]"
+                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
               >
                 取消
               </button>
@@ -448,7 +454,7 @@ export function SequencesClient({
                 type="button"
                 onClick={() => deleteSequence(deleteTargetId)}
                 data-testid="sequence-confirm-delete"
-                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
               >
                 確認刪除
               </button>
@@ -482,7 +488,8 @@ function SequenceStepRemoveDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="sequence-step-remove-title"
-        className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+        data-testid="sequence-step-remove-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-200 bg-white p-5 shadow-xl"
       >
         <h2 id="sequence-step-remove-title" className="text-base font-semibold text-[#111827]">
           移除序列步驟？

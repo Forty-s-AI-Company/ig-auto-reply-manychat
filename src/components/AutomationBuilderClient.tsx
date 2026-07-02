@@ -2118,10 +2118,16 @@ function FlowBuilderInner({
         </div>
 
         {templateDialogOpen ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6">
-            <div className="flex max-h-[88vh] w-full max-w-6xl flex-col rounded-md bg-white shadow-2xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6" role="presentation">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="automation-template-dialog-title"
+              data-testid="automation-template-dialog"
+              className="flex max-h-[88vh] w-full max-w-6xl flex-col overflow-hidden overscroll-contain rounded-md bg-white shadow-2xl"
+            >
               <div className="flex items-center justify-between gap-3 border-b border-[#d7dbe0] px-4 py-3">
-                <h3 className="text-xl font-bold text-[#202124]">自動化模板</h3>
+                <h3 id="automation-template-dialog-title" className="text-xl font-bold text-[#202124]">自動化模板</h3>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -2129,7 +2135,7 @@ function FlowBuilderInner({
                       setTemplateDialogOpen(false);
                       loadAutomation();
                     }}
-                    className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] px-3 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc]"
+                    className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] px-3 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   >
                     <Plus className="h-4 w-4" />
                     從空白開始
@@ -2138,7 +2144,7 @@ function FlowBuilderInner({
                     type="button"
                     onClick={() => setTemplateDialogOpen(false)}
                     aria-label="關閉模板選擇"
-                    className="rounded-md p-2 text-[#4b5563] hover:bg-[#f5f5f5]"
+                    className="rounded-md p-2 text-[#4b5563] hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   >
                     <X className="h-5 w-5" aria-hidden="true" />
                   </button>
@@ -2148,10 +2154,12 @@ function FlowBuilderInner({
                 <label className="flex h-10 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm">
                   <Search className="h-4 w-4 text-[#667085]" />
                   <input
+                    name="automation-template-search"
+                    autoComplete="off"
                     value={templateSearch}
                     onChange={(event) => setTemplateSearch(event.target.value)}
                     placeholder="搜尋 Instagram 模板…"
-                    className="min-w-0 flex-1 bg-transparent outline-none"
+                    className="min-w-0 flex-1 bg-transparent outline-none focus-visible:ring-0"
                   />
                 </label>
               </div>
@@ -2199,7 +2207,7 @@ function FlowBuilderInner({
                         <button
                           type="button"
                           onClick={() => loadTemplate(template)}
-                          className="mt-auto inline-flex h-10 items-center justify-center rounded-md bg-[#0077e6] px-3 text-sm font-semibold text-white hover:bg-[#0064c8]"
+                          className="mt-auto inline-flex h-10 items-center justify-center rounded-md bg-[#0077e6] px-3 text-sm font-semibold text-white hover:bg-[#0064c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                         >
                           使用模板
                         </button>
@@ -2216,11 +2224,17 @@ function FlowBuilderInner({
         ) : null}
 
         {folderDialogOpen ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-6">
-            <div className="w-full max-w-md rounded-md bg-white shadow-xl">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-3 sm:p-6" role="presentation">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="automation-folder-dialog-title"
+              data-testid="automation-folder-dialog"
+              className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-md bg-white shadow-xl"
+            >
               <div className="flex items-center justify-between border-b border-[#d7dbe0] px-5 py-4">
-                <h3 className="text-xl font-bold text-[#202124]">建立資料夾</h3>
-                <button type="button" onClick={() => setFolderDialogOpen(false)} aria-label="關閉建立資料夾" className="rounded-md p-2 hover:bg-[#f5f5f5]">
+                <h3 id="automation-folder-dialog-title" className="text-xl font-bold text-[#202124]">建立資料夾</h3>
+                <button type="button" onClick={() => setFolderDialogOpen(false)} aria-label="關閉建立資料夾" className="rounded-md p-2 hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2">
                   <X className="h-5 w-5" aria-hidden="true" />
                 </button>
               </div>
@@ -2228,14 +2242,15 @@ function FlowBuilderInner({
                 <label className="block text-sm font-medium text-[#202124]">
                   資料夾名稱
                   <input
-                    autoFocus
+                    name="automation-folder-name"
+                    autoComplete="off"
                     value={folderName}
                     onChange={(event) => setFolderName(event.target.value)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") void createFolder();
                     }}
                     placeholder="輸入資料夾名稱…"
-                    className="mt-3 h-12 w-full rounded-md border border-[#0077e6] px-3 text-base outline-none ring-1 ring-blue-100"
+                    className="mt-3 h-12 w-full rounded-md border border-[#0077e6] px-3 text-base outline-none ring-1 ring-blue-100 focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
               </div>
@@ -2243,7 +2258,7 @@ function FlowBuilderInner({
                 <button
                   type="button"
                   onClick={() => setFolderDialogOpen(false)}
-                  className="h-11 rounded-md border border-[#d7dbe0] px-4 text-base font-medium text-[#202124] hover:bg-[#f5f5f5]"
+                  className="h-11 rounded-md border border-[#d7dbe0] px-4 text-base font-medium text-[#202124] hover:bg-[#f5f5f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 >
                   取消
                 </button>
@@ -2251,7 +2266,7 @@ function FlowBuilderInner({
                   type="button"
                   disabled={folderSaving}
                   onClick={createFolder}
-                  className="h-11 rounded-md bg-[#0077e6] px-5 text-base font-semibold text-white hover:bg-[#0064c8] disabled:bg-[#d7dbe0]"
+                  className="h-11 rounded-md bg-[#0077e6] px-5 text-base font-semibold text-white hover:bg-[#0064c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d7dbe0]"
                 >
                   {folderSaving ? "建立中…" : "建立"}
                 </button>
@@ -2635,8 +2650,14 @@ function DeleteNodeDialog({
   onConfirm: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4" role="dialog" aria-modal="true" aria-labelledby="automation-node-delete-title">
-      <div className="w-full max-w-md rounded-lg border border-red-100 bg-white p-5 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="automation-node-delete-title"
+        data-testid="automation-node-delete-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-100 bg-white p-5 shadow-xl"
+      >
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-red-50 p-2 text-red-600">
             <Trash2 className="h-5 w-5" aria-hidden="true" />
@@ -2654,7 +2675,7 @@ function DeleteNodeDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
           >
             取消
           </button>
@@ -2662,7 +2683,7 @@ function DeleteNodeDialog({
             type="button"
             onClick={onConfirm}
             data-testid="automation-node-confirm-delete"
-            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
           >
             確認刪除節點
           </button>
@@ -2684,8 +2705,14 @@ function DeleteAutomationDialog({
   onConfirm: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4" role="dialog" aria-modal="true" aria-labelledby="automation-delete-title">
-      <div className="w-full max-w-md rounded-lg border border-red-100 bg-white p-5 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="automation-delete-title"
+        data-testid="automation-delete-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-100 bg-white p-5 shadow-xl"
+      >
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-red-50 p-2 text-red-600">
             <Trash2 className="h-5 w-5" aria-hidden="true" />
@@ -2704,7 +2731,7 @@ function DeleteAutomationDialog({
             type="button"
             disabled={saving}
             onClick={onCancel}
-            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             取消
           </button>
@@ -2713,7 +2740,7 @@ function DeleteAutomationDialog({
             disabled={saving}
             onClick={onConfirm}
             data-testid="automation-confirm-delete"
-            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-red-200"
           >
             {saving ? "刪除中…" : "確認刪除"}
           </button>
