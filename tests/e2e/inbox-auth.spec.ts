@@ -93,6 +93,19 @@ test.describe("inbox authenticated smoke", () => {
     }
     await expect(page.getByTestId("inbox-contact-avatar")).toBeVisible();
     await expect(page.getByTestId("inbox-contact-avatar")).not.toContainText("🤖");
+    if (isMobileProject) {
+      await page.getByTestId("inbox-pane-detail").click();
+      await expect(page.getByTestId("inbox-composer-textarea")).toBeVisible();
+    }
+    await page.getByTestId("inbox-composer-textarea").fill("");
+    await expect(page.getByTestId("inbox-send-message")).toBeDisabled();
+    await expect(page.getByTestId("inbox-send-message")).toHaveAttribute("title", "請先輸入要送出的回覆內容。");
+    await expect(page.getByTestId("inbox-send-message")).toHaveAttribute("aria-describedby", "inbox-composer-disabled-reason");
+    await expect(page.getByTestId("inbox-composer-disabled-reason")).toContainText("請先輸入要送出的回覆內容。");
+    if (isMobileProject) {
+      await page.getByTestId("inbox-pane-contact").click();
+      await expect(page.getByRole("heading", { name: "自動化" })).toBeVisible();
+    }
     await expect(page.getByTestId("inbox-automation-pause-disabled")).toBeDisabled();
     await expect(page.locator('section:has-text("自動化")')).toContainText("自動化暫停需要先完成流程級控制與稽核設計");
     await expect(page.getByTestId("inbox-quick-hot-tag")).not.toContainText("🔥");
@@ -219,6 +232,10 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-automation-pause-disabled")).not.toHaveAttribute("title", /尚未開放/);
 
     await page.getByRole("button", { name: "備註", exact: true }).click();
+    await page.getByTestId("inbox-composer-textarea").fill("");
+    await expect(page.getByTestId("inbox-send-message")).toBeDisabled();
+    await expect(page.getByTestId("inbox-send-message")).toHaveAttribute("title", "請先輸入內部備註內容。");
+    await expect(page.getByTestId("inbox-composer-disabled-reason")).toContainText("請先輸入內部備註內容。");
     await page.getByTestId("inbox-composer-textarea").fill(`E2E internal note ${Date.now()}`);
     await page.getByTestId("inbox-send-message").click();
     await expect(page.getByTestId("inbox-notice")).toContainText("內部備註已儲存");

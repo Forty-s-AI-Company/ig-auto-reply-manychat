@@ -8703,3 +8703,10 @@ Launch impact:
 - 變更：Sequences 表單 hydration 完成前若使用者或測試已更新名稱輸入框，先從 DOM 同步目前值再開放儲存狀態，避免空名稱時「建立序列」按鈕短暫失去 disabled title。
 - 驗證：npx vitest run tests/sequences-form-state.test.ts --reporter=dot 通過；本機整包 auth smoke 另受本機 login 404 環境問題影響，CI 的失敗點已縮小為 Sequences button title race。
 - 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - Inbox composer disabled reason polish
+
+- 目標：修補 Inbox 回覆/備註 composer 空內容時只是灰色 disabled、缺少明確原因的 UX 缺口。
+- 變更：送出按鈕在空回覆與空內部備註時顯示對應 title、aria-describedby 與可讀說明文字；送出 icon 標為 decorative，並補 focus-visible ring。
+- 驗證：補 inbox authenticated Playwright smoke 斷言；後續跑 lint、build、npm test 與 inbox smoke。
+- 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。

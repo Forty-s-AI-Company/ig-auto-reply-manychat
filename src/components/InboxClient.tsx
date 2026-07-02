@@ -346,6 +346,8 @@ export function InboxClient({
     }
     return descriptions;
   }, [category, channelFilter, query, selectedTagId, selectedTeamMemberId, sortNewest, statusFilter, tags, teamMembers, unreadOnly]);
+  const composerDisabledReason =
+    activeTab === "note" ? "請先輸入內部備註內容。" : "請先輸入要送出的回覆內容。";
 
   function showNotice(tone: InboxNotice["tone"], message: string) {
     setNotice({ tone, message });
@@ -1220,13 +1222,20 @@ export function InboxClient({
                           type="button"
                           onClick={sendMessage}
                           disabled={!text.trim()}
-                          className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white disabled:bg-[#cfe2ff] disabled:text-white"
+                          title={!text.trim() ? composerDisabledReason : undefined}
+                          aria-describedby={!text.trim() ? "inbox-composer-disabled-reason" : undefined}
+                          className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#cfe2ff] disabled:text-white"
                           data-testid="inbox-send-message"
                         >
                           {activeTab === "note" ? "儲存內部備註" : "傳送到 Instagram"}
-                          <Send className="h-4 w-4" />
+                          <Send aria-hidden="true" className="h-4 w-4" />
                         </button>
                       </div>
+                      {!text.trim() ? (
+                        <p id="inbox-composer-disabled-reason" className="mt-2 text-xs leading-5 text-[#667085]" data-testid="inbox-composer-disabled-reason">
+                          {composerDisabledReason}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 </>
