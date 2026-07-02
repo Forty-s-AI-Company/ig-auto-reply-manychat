@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Broadcasts disabled action clarity
+
+Current status:
+
+- [x] Broadcast draft creation now shows which required fields are missing before the button can be used.
+- [x] Broadcast row actions now expose clearer disabled titles / labels for busy, sent, and sending states.
+- [x] Focused source coverage guards the disabled UX copy and linkage.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Inbox custom reminder disabled reason linkage
 
 Current status:

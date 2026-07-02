@@ -1,3 +1,9 @@
+## 2026-07-03 06:00 +08:00 - Broadcasts disabled action clarity
+
+- Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.
+- Updated Broadcasts draft creation disabled state to show the missing required fields before users can create a draft.
+- Added clearer disabled reasons for busy, sent, and sending row actions through title and aria-label copy.
+- Validation target: focused source test, lint, build, npm test.
 ## 2026-07-03 05:50 +08:00 - Inbox custom reminder disabled reason linkage
 
 - Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.

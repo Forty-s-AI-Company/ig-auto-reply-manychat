@@ -87,6 +87,15 @@ function toPayload(form: FormState) {
   };
 }
 
+function getCreateDisabledReason(form: FormState, audienceCount: number) {
+  const missing: string[] = [];
+  if (!form.name.trim()) missing.push("活動名稱");
+  if (audienceCount === 0 || !form.audienceId) missing.push("受眾");
+  if (!form.message.trim()) missing.push("訊息內容");
+  if (missing.length === 0) return "";
+  return `請先補齊 ${missing.join("、")}，才能建立廣播草稿。`;
+}
+
 export function BroadcastsClient({
   initialBroadcasts,
   tags,
@@ -110,7 +119,8 @@ export function BroadcastsClient({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const audienceOptions = form.audienceType === "segment" ? segments : tags;
-  const canSubmit = form.name.trim() && form.audienceId && form.message.trim();
+  const createDisabledReason = getCreateDisabledReason(form, audienceOptions.length);
+  const canSubmit = !createDisabledReason;
 
   const totals = useMemo(
     () => ({
@@ -237,11 +247,18 @@ export function BroadcastsClient({
               type="button"
               disabled={!canSubmit}
               onClick={createBroadcast}
+              aria-describedby={!canSubmit ? "broadcast-create-disabled-reason" : undefined}
+              title={createDisabledReason || "建立廣播草稿"}
               className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Megaphone className="h-4 w-4" />
               建立草稿
             </button>
+            {!canSubmit ? (
+              <p id="broadcast-create-disabled-reason" className="text-xs leading-5 text-[var(--text-muted)]">
+                {createDisabledReason}
+              </p>
+            ) : null}
             {feedback ? <p className="rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm text-[var(--text-secondary)]">{feedback}</p> : null}
           </div>
         </div>
@@ -269,9 +286,41 @@ export function BroadcastsClient({
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <IconButton label="預覽" disabled={busyId === item.id} onClick={() => loadPreview(item.id)} icon={<Eye className="h-4 w-4" />} />
-                      <IconButton label="排程" disabled={busyId === item.id || item.status === "sent"} onClick={() => queueBroadcast(item.id)} icon={<Send className="h-4 w-4" />} primary />
-                      <IconButton label="刪除" disabled={busyId === item.id || item.status === "sending"} onClick={() => deleteBroadcast(item.id)} icon={<Trash2 className="h-4 w-4" />} danger />
+                      <IconButton
+                        label="預覽"
+                        disabled={busyId === item.id}
+                        disabledReason={busyId === item.id ? "正在處理這個廣播活動，請稍候再預覽。" : undefined}
+                        onClick={() => loadPreview(item.id)}
+                        icon={<Eye className="h-4 w-4" />}
+                      />
+                      <IconButton
+                        label="排程"
+                        disabled={busyId === item.id || item.status === "sent"}
+                        disabledReason={
+                          busyId === item.id
+                            ? "正在處理這個廣播活動，請稍候再排程。"
+                            : item.status === "sent"
+                              ? "已完成發送的廣播活動不能再次排程。"
+                              : undefined
+                        }
+                        onClick={() => queueBroadcast(item.id)}
+                        icon={<Send className="h-4 w-4" />}
+                        primary
+                      />
+                      <IconButton
+                        label="刪除"
+                        disabled={busyId === item.id || item.status === "sending"}
+                        disabledReason={
+                          busyId === item.id
+                            ? "正在處理這個廣播活動，請稍候再刪除。"
+                            : item.status === "sending"
+                              ? "發送中的廣播活動不能刪除，避免任務狀態不一致。"
+                              : undefined
+                        }
+                        onClick={() => deleteBroadcast(item.id)}
+                        icon={<Trash2 className="h-4 w-4" />}
+                        danger
+                      />
                     </div>
                   </div>
                   {itemPreview ? (
@@ -320,6 +369,7 @@ function IconButton({
   icon,
   onClick,
   disabled,
+  disabledReason,
   primary,
   danger,
 }: {
@@ -327,6 +377,7 @@ function IconButton({
   icon: ReactNode;
   onClick: () => void;
   disabled?: boolean;
+  disabledReason?: string;
   primary?: boolean;
   danger?: boolean;
 }) {
@@ -340,7 +391,8 @@ function IconButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      title={label}
+      title={disabledReason || label}
+      aria-label={disabledReason ? `${label}：${disabledReason}` : label}
       className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
       {icon}
