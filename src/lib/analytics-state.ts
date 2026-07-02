@@ -1,7 +1,14 @@
+export type AnalyticsMessageTrendPoint = {
+  date: string;
+  label: string;
+  messages: number;
+};
+
 export type AnalyticsSummarySnapshot = {
   contacts: number;
   messages: number;
   recentMessages: number;
+  messageTrend: AnalyticsMessageTrendPoint[];
   openConversations: number;
   broadcasts: number;
   queuedBroadcasts: number;

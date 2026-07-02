@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BarChart3, Inbox, Megaphone, MessageCircle, TrendingUp, Users, AlertTriangle, Compass } from "lucide-react";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/AdminShell";
+import { AnalyticsMessageTrendChart } from "@/components/AnalyticsMessageTrendChart";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getAnalyticsSummary } from "@/lib/dashboard-summary";
@@ -20,6 +21,7 @@ export default async function AnalyticsPage() {
     contacts: 0,
     messages: 0,
     recentMessages: 0,
+    messageTrend: [],
     openConversations: 0,
     broadcasts: 0,
     queuedBroadcasts: 0,
@@ -170,12 +172,12 @@ export default async function AnalyticsPage() {
               <h3 className="font-semibold text-[var(--text-primary)]">最近訊息</h3>
             </div>
             <div className="px-4 py-6">
-              {analytics.recentMessages > 0 ? (
-                <div className="space-y-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  <p className="font-semibold text-[var(--text-primary)]">近 7 天共有 {analytics.recentMessages} 則訊息</p>
-                  <p>{analyticsState.scopeDetail}</p>
-                  <p>這裡先不畫假圖表，直接把數字與範圍說清楚，避免讓人誤以為資料壞掉。</p>
-                </div>
+              {analytics.messageTrend.length > 0 ? (
+                <AnalyticsMessageTrendChart
+                  data={analytics.messageTrend}
+                  total={analytics.recentMessages}
+                  scopeDetail={analyticsState.scopeDetail}
+                />
               ) : (
                 <EmptyState title={analyticsState.recentMessagesTitle} body={analyticsState.recentMessagesBody} />
               )}

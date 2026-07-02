@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { getServerCache } from "@/lib/server-cache";
 
 const DASHBOARD_SUMMARY_CACHE_TTL_MS = 5_000;
+const ANALYTICS_TREND_DAYS = 7;
 
 type SummaryInput = {
   workspaceId: string;
@@ -13,6 +14,43 @@ type SummaryInput = {
 
 function summaryCacheKey(prefix: string, { workspaceId, selectedChannelId }: SummaryInput) {
   return `${prefix}:${workspaceId}:${selectedChannelId || "all"}`;
+}
+
+function startOfUtcDay(date: Date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+}
+
+function formatTrendDateKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function formatTrendLabel(date: Date) {
+  return `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+}
+
+export function buildMessageTrendPoints(messages: Array<{ createdAt: Date }>, now = new Date()) {
+  const today = startOfUtcDay(now);
+  const days = Array.from({ length: ANALYTICS_TREND_DAYS }, (_, index) => {
+    const day = new Date(today);
+    day.setUTCDate(today.getUTCDate() - (ANALYTICS_TREND_DAYS - 1 - index));
+
+    return {
+      date: formatTrendDateKey(day),
+      label: formatTrendLabel(day),
+      messages: 0,
+    };
+  });
+  const counts = new Map(days.map((day) => [day.date, day]));
+
+  for (const message of messages) {
+    const key = formatTrendDateKey(startOfUtcDay(message.createdAt));
+    const point = counts.get(key);
+    if (point) {
+      point.messages += 1;
+    }
+  }
+
+  return days;
 }
 
 export function getDashboardSummary(input: SummaryInput) {
@@ -72,6 +110,8 @@ export function getAnalyticsSummary(input: SummaryInput) {
   return getServerCache(summaryCacheKey("analytics-summary", input), DASHBOARD_SUMMARY_CACHE_TTL_MS, async () => {
     const db = getDb();
     const channelWhere = instagramChannelWhere(input.selectedChannelId, input.workspaceId);
+    const trendStart = startOfUtcDay(new Date());
+    trendStart.setUTCDate(trendStart.getUTCDate() - (ANALYTICS_TREND_DAYS - 1));
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -87,6 +127,7 @@ export function getAnalyticsSummary(input: SummaryInput) {
       enabledAutomations,
       connectedInstagramChannels,
       selectedChannel,
+      messageTrendRows,
     ] = await Promise.all([
       db.contact.count({ where: channelWhere }),
       db.message.count({ where: channelWhere }),
@@ -104,6 +145,11 @@ export function getAnalyticsSummary(input: SummaryInput) {
             select: { name: true, configJson: true },
           })
         : Promise.resolve(null),
+      db.message.findMany({
+        where: { ...channelWhere, createdAt: { gte: trendStart } },
+        orderBy: { createdAt: "asc" },
+        select: { createdAt: true },
+      }),
     ]);
 
     const selectedChannelConfig = selectedChannel ? getMetaChannelConfig(selectedChannel.configJson) : null;
@@ -117,6 +163,7 @@ export function getAnalyticsSummary(input: SummaryInput) {
       contacts,
       messages,
       recentMessages,
+      messageTrend: buildMessageTrendPoints(messageTrendRows),
       openConversations,
       broadcasts,
       queuedBroadcasts,
