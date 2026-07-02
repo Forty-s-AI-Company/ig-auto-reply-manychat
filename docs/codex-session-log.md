@@ -1,3 +1,9 @@
+## 2026-07-03 - Analytics simple-release broadcast gate visible reason
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Analytics simple-release broadcast management gate.
+- Change: replaced title-only disabled explanation with visible helper text connected through aria-describedby.
+- Validation planned: focused analytics test, lint, build, npm test.
 ## 2026-07-03 - Contacts empty-state disabled action clarity
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

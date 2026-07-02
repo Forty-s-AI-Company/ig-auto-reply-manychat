@@ -40,6 +40,8 @@ export default async function AnalyticsPage() {
   }
 
   const analyticsState = buildAnalyticsState(analytics, analyticsError);
+  const broadcastGateReason =
+    "廣播活動在正式營運版中受控開通；目前 simple release 先保留分析讀取，不開放廣播管理。";
 
   return (
     <AdminShell title="分析">
@@ -61,17 +63,23 @@ export default async function AnalyticsPage() {
             </div>
           </div>
           {simpleRelease ? (
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              title="廣播活動在正式營運版中受控開通；目前 simple release 先保留分析讀取，不開放廣播管理。"
-              data-testid="analytics-broadcast-gated"
-              className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 text-sm font-semibold text-[var(--text-muted)]"
-            >
-              <Megaphone className="h-4 w-4" />
-              廣播活動受控開通
-            </button>
+            <div className="max-w-sm text-left sm:text-right">
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                aria-describedby="analytics-broadcast-gate-reason"
+                title={broadcastGateReason}
+                data-testid="analytics-broadcast-gated"
+                className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 text-sm font-semibold text-[var(--text-muted)]"
+              >
+                <Megaphone className="h-4 w-4" />
+                廣播活動受控開通
+              </button>
+              <p id="analytics-broadcast-gate-reason" className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+                {broadcastGateReason}
+              </p>
+            </div>
           ) : (
             <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d]">
               <Megaphone className="h-4 w-4" />

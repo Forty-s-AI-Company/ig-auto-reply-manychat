@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Analytics simple-release broadcast gate visible reason
+
+Current status:
+
+- [x] Analytics simple-release broadcast management gate now exposes the disabled reason through visible helper text and aria-describedby.
+- [x] Regression coverage prevents the broadcast gate from returning to a title-only explanation.
+
+Remaining:
+
+- [ ] Continue local-only sweeps for visible-but-unusable controls while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Contacts batch tag disabled reason polish
 
 Current status:

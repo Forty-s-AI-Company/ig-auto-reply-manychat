@@ -16,4 +16,10 @@ describe("analytics empty state CTA", () => {
     expect(source).toContain('actionHref="/automations"');
     expect(source).toContain('actionLabel="建立第一個流程"');
   });
+
+  it("shows a visible simple-release reason for disabled broadcast management", () => {
+    expect(source).toContain('aria-describedby="analytics-broadcast-gate-reason"');
+    expect(source).toContain('id="analytics-broadcast-gate-reason"');
+    expect(source).toContain("目前 simple release 先保留分析讀取，不開放廣播管理。");
+  });
 });
