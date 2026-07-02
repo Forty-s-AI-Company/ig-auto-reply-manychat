@@ -2495,7 +2495,12 @@ function FlowBuilderInner({
             </div>
           ) : null}
 
-          <div className="h-full min-h-[520px]" onDrop={onDrop} onDragOver={(event) => event.preventDefault()}>
+          <div
+            className="h-full min-h-[520px]"
+            data-testid="automation-flow-canvas"
+            onDrop={onDrop}
+            onDragOver={(event) => event.preventDefault()}
+          >
             <ReactFlow
               nodes={nodes}
               edges={edges}
