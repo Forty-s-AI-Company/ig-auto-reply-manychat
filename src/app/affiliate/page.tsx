@@ -76,12 +76,12 @@ export default async function AffiliatePage() {
   ];
 
   return (
-    <AdminShell title="聯盟分潤">
+    <AdminShell title="推薦折抵與受控聯盟">
       <div className="space-y-6">
         <section className="ip-dashboard-card p-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-[var(--text-secondary)]">聯盟夥伴狀態</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">受控聯盟狀態</p>
               <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">{affiliateStatusLabel(profileStatus)}</h2>
             </div>
             <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-1 text-sm font-medium text-[var(--text-secondary)]">
@@ -89,7 +89,7 @@ export default async function AffiliatePage() {
             </span>
           </div>
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
-            推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前保留給後續受控聯盟流程：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金分潤。
+            推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前只保留後續受控聯盟流程的狀態說明：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金分潤。
           </p>
           <form action="/api/affiliate/apply" method="post" className="mt-4">
             <button
@@ -116,7 +116,7 @@ export default async function AffiliatePage() {
         <section className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
           <article className="ip-dashboard-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">受控功能狀態</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">受控現金流程狀態</h2>
               <span className="rounded-full border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-2.5 py-1 text-xs font-semibold text-[var(--text-secondary)]">
                 最低 {formatTwd(dashboard.minimumPayoutAmount)}
               </span>

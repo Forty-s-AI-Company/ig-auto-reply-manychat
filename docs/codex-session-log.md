@@ -1,3 +1,24 @@
+# 2026-07-02 - Affiliate public title credit-first wording
+
+Task:
+
+- Reduce public confusion around the affiliate page now that referral credit v1 is the launch-safe incentive direction.
+
+Changes:
+
+- Renamed /affiliate from 聯盟分潤 to 推薦折抵與受控聯盟.
+- Reworded the page status sections so the visible product promise stays on non-cash bill credits.
+- Kept cash payout / commission data framed as controlled future operations, not self-service payout.
+
+Validation:
+
+- Focused source and Playwright smoke expectations were updated for the new page heading.
+- No production DB, production deployment, migration / db push, Meta App Review, or PayUNI production switch was performed.
+
+Launch impact:
+
+- Reduces the chance that users interpret the affiliate surface as public cash payout being available.
+
 # 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
 
 Task:
