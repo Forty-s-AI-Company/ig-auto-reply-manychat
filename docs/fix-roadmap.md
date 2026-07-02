@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Inbox disabled controls reason linkage
+
+Current status:
+
+- [x] Inbox header disabled controls now connect to the visible disabled hint through aria-describedby.
+- [x] Inbox contact action disabled controls now connect to their export / block reason text.
+- [x] Inbox automation pause and sequence subscribe disabled controls now expose their visible reason through aria-describedby.
+- [x] Authenticated Inbox smoke now checks the most important disabled reason links.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Channels connect disabled reason linkage
 
 Current status:

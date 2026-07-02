@@ -1,3 +1,9 @@
+## 2026-07-03 - Inbox disabled controls reason linkage
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Inbox disabled header actions, contact actions, automation pause, and sequence subscribe controls.
+- Change: connected visible disabled reasons to controls with aria-describedby and expanded authenticated smoke expectations.
+- Validation planned: e2e admin ensure, Inbox Playwright smoke, lint, build, npm test.
 ## 2026-07-03 - Channels connect disabled reason linkage
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

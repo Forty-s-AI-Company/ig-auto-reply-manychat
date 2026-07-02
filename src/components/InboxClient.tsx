@@ -1031,6 +1031,7 @@ export function InboxClient({
                           type="button"
                           disabled
                           aria-disabled="true"
+                          aria-describedby="inbox-header-disabled-hint"
                           className="inline-flex cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3]"
                           title="視訊通話目前暫時停用，因為即時通話服務、權限控管與客服排班流程尚未完成。"
                           aria-label="視訊通話目前暫時停用，因為即時通話服務、權限控管與客服排班流程尚未完成。"
@@ -1076,6 +1077,7 @@ export function InboxClient({
                           type="button"
                           disabled
                           aria-disabled="true"
+                          aria-describedby="inbox-header-disabled-hint"
                           className="inline-flex cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-1 text-[#98a2b3]"
                           title="更多對話操作目前暫時停用，因為批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。"
                           aria-label="更多對話操作目前暫時停用，因為批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。"
@@ -1547,26 +1549,28 @@ function ContactPanel({
               type="button"
               disabled
               aria-disabled="true"
+              aria-describedby="inbox-contact-export-disabled-reason"
               title="匯出聯絡人資料目前已暫時停用，需完成匯出權限、資料遮罩與稽核紀錄後再開放。"
               data-testid="inbox-contact-export-disabled"
               className="mt-1 block w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-[#98a2b3] disabled:hover:bg-transparent"
             >
               匯出聯絡人資料
             </button>
-            <p className="px-3 pb-2 text-[11px] leading-5 text-[#98a2b3]">
+            <p id="inbox-contact-export-disabled-reason" className="px-3 pb-2 text-[11px] leading-5 text-[#98a2b3]">
               匯出目前先停用，等匯出權限、資料遮罩與稽核紀錄完成後再開放。
             </p>
             <button
               type="button"
               disabled
               aria-disabled="true"
+              aria-describedby="inbox-contact-block-disabled-reason"
               title="封鎖或解除訂閱操作目前已暫時停用，需確認 Instagram 同步規則與客服審核流程後再開放。"
               data-testid="inbox-contact-block-disabled"
               className="block w-full cursor-not-allowed rounded-md px-3 py-2 text-left text-[#98a2b3] disabled:hover:bg-transparent"
             >
               封鎖 / 解除訂閱
             </button>
-            <p className="px-3 pb-1 pt-1 text-[11px] leading-5 text-[#98a2b3]">
+            <p id="inbox-contact-block-disabled-reason" className="px-3 pb-1 pt-1 text-[11px] leading-5 text-[#98a2b3]">
               封鎖 / 解除訂閱目前先停用，等 Instagram 同步規則與客服審核流程完成後再開放。
             </p>
           </div>
@@ -1595,13 +1599,14 @@ function ContactPanel({
           type="button"
           disabled
           aria-disabled="true"
+          aria-describedby="inbox-automation-pause-disabled-reason"
           title="自動化暫停屬於受控開通功能，需先完成流程級控制與稽核設計。"
           data-testid="inbox-automation-pause-disabled"
           className="h-9 w-full cursor-not-allowed rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] text-sm text-[#98a2b3]"
         >
           暫停
         </button>
-        <p className="mt-2 text-xs leading-6 text-[#98a2b3]">
+        <p id="inbox-automation-pause-disabled-reason" className="mt-2 text-xs leading-6 text-[#98a2b3]">
           自動化暫停需要先完成流程級控制與稽核設計；目前請直接到自動化頁調整流程。
         </p>
       </PanelSection>
@@ -1686,13 +1691,14 @@ function ContactPanel({
                 type="button"
                 disabled
                 aria-disabled="true"
+                aria-describedby="inbox-sequence-subscribe-disabled-reason"
                 title="序列功能目前只在完整版本開放。正式營運版先聚焦收件匣、聯絡人、Instagram 設定、分析與自動化核心流程。"
                 data-testid="inbox-sequence-subscribe-disabled"
                 className="rounded-full border border-[#d7dbe0] px-2 py-0.5 text-[11px] text-[#98a2b3] disabled:cursor-not-allowed disabled:bg-[#f8fafc] disabled:hover:bg-[#f8fafc]"
               >
                 完整版功能
               </button>
-              <p className="mt-2 max-w-[160px] text-[11px] leading-5 text-[#98a2b3]">
+              <p id="inbox-sequence-subscribe-disabled-reason" className="mt-2 max-w-[160px] text-[11px] leading-5 text-[#98a2b3]">
                 序列只在完整版本開放，這裡先保留清楚說明，不再假裝可直接訂閱。
               </p>
             </div>

@@ -197,8 +197,10 @@ test.describe("inbox authenticated smoke", () => {
       await expect(page.getByTestId("inbox-contact-actions-menu")).toBeVisible();
       await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("開啟聯絡人詳情");
       await expect(page.getByTestId("inbox-contact-export-disabled")).toBeDisabled();
+      await expect(page.getByTestId("inbox-contact-export-disabled")).toHaveAttribute("aria-describedby", "inbox-contact-export-disabled-reason");
       await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("匯出目前先停用");
       await expect(page.getByTestId("inbox-contact-block-disabled")).toBeDisabled();
+      await expect(page.getByTestId("inbox-contact-block-disabled")).toHaveAttribute("aria-describedby", "inbox-contact-block-disabled-reason");
       await expect(page.getByTestId("inbox-contact-actions-menu")).toContainText("封鎖 / 解除訂閱目前先停用");
     }
 
@@ -224,10 +226,13 @@ test.describe("inbox authenticated smoke", () => {
     await expect(page.getByTestId("inbox-notice")).not.toContainText("尚未開放");
 
     await expect(page.getByTestId("inbox-video-call-button")).toBeDisabled();
+    await expect(page.getByTestId("inbox-video-call-button")).toHaveAttribute("aria-describedby", "inbox-header-disabled-hint");
     await expect(page.getByTestId("inbox-more-actions-button")).toBeDisabled();
+    await expect(page.getByTestId("inbox-more-actions-button")).toHaveAttribute("aria-describedby", "inbox-header-disabled-hint");
     await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("視訊通話與更多對話操作目前先停用");
     await expect(page.getByTestId("inbox-header-disabled-hint")).toContainText("文字回覆、內部備註、指派、標籤與提醒");
     await expect(page.getByTestId("inbox-automation-pause-disabled")).toBeDisabled();
+    await expect(page.getByTestId("inbox-automation-pause-disabled")).toHaveAttribute("aria-describedby", "inbox-automation-pause-disabled-reason");
     await expect(page.getByTestId("inbox-automation-pause-disabled")).toHaveAttribute("title", /受控開通/);
     await expect(page.getByTestId("inbox-automation-pause-disabled")).not.toHaveAttribute("title", /尚未開放/);
 
