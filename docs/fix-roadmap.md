@@ -288,7 +288,7 @@ Remaining:
 
 Current status:
 
-- `[x]` 推薦折抵已正式收斂成公開產品主線，現金分潤暫時降級為受控能力。
+- `[x]` 推薦折抵已正式收斂成公開產品主線，現金型合作暫時降級為受控內部能力。
 - `[x]` 推薦折抵現在先進 `pending`，7 天後才會變成 `available`。
 - `[x]` 可用折抵的產品規則已改成 30 天內使用，逾期失效。
 - `[x]` 退款 reconciliation service 已可取消 pending 折抵，並針對 available 折抵建立 idempotent clawback debit。
@@ -299,23 +299,23 @@ Current status:
 Remaining:
 
 - `[ ]` 仍需把實際 PayUNI refund callback 接到 refund reconciliation service。
-- `[ ]` 如果後續真的要重新開放現金分潤，仍需法務條款、反作弊、對帳與付款 SOP 收斂。
+- `[ ]` 如果後續真的要重新開放受控聯盟付款，仍需法務條款、反作弊、對帳與付款 SOP 收斂。
 
 # Latest - 2026-07-01 Affiliate / Referral MVP closeout
 
 Current status:
 
-- `[x]` 推薦活動與聯盟分潤已拆清楚：推薦活動是試用 / 折抵，聯盟分潤是 Creator+ 審核後的現金佣金。
+- `[x]` 推薦活動與受控聯盟已拆清楚：公開主線是試用 / 折抵，受控聯盟僅保留內部審核與後續付款能力。
 - `[x]` 推薦頁只顯示目前可驗證的註冊、啟用、付費轉換與折抵金，不再暗示尚未建模的點擊數。
-- `[x]` 聯盟頁補上等待確認、可提領、提領申請中、已付款等 MVP 指標與提領 blocker。
-- `[x]` 管理端提領申請有核准 / 退回操作入口，並說明核准不等於自動匯款。
+- `[x]` 受控聯盟頁補上等待確認、內部可審核、內部審核中、內部已結案等狀態與付款 blocker。
+- `[x]` 管理端內部付款審核有核准 / 退回操作入口，並說明核准不等於自動匯款。
 - `[x]` `POST /api/affiliate/apply` 已補 same-origin 與 rate limit。
 
 Remaining:
 
 - `[ ]` Click tracking 仍需專用事件表、去重與防作弊規則，尚未開放為真 KPI。
-- `[ ]` 自助提領仍需 payout profile 表單、稅務 / 銀行資料審核、退款 / clawback SOP 與對帳流程。
-- `[ ]` Public affiliate cash payout launch 仍需法務條款、防舞弊、營運與 PayUNI production gate 人工簽核。
+- `[ ]` 若未來開放受控付款，仍需 payout profile 表單、稅務 / 付款資料審核、退款 / clawback SOP 與對帳流程。
+- `[ ]` Public cash payout remains Hold；正式開放仍需法務條款、防舞弊、營運與 PayUNI production gate 人工簽核。
 
 # Latest - 2026-07-01 Social connect settings terminology polish
 
@@ -375,19 +375,19 @@ Remaining:
 - `[ ]` 若後續要讓測試工具支援多 channel / 多 persona，需要另補 channel picker 與 tenant-safe seeded smoke。
 - `[ ]` 繼續掃描 admin-only 頁面是否仍有深色內部工具樣式。
 
-# Latest - 2026-07-01 Affiliate light-theme and eligibility UX polish
+# Latest - 2026-07-01 Affiliate light-theme and controlled-payment UX polish
 
 Current status:
 
-- `[x]` 聯盟分潤頁不再使用深色內部工具卡片。
-- `[x]` 不符合 Creator 以上方案時，申請現金分潤按鈕會清楚 disabled，避免使用者按下後才被 API 拒絕。
-- `[x]` 聯盟狀態、等級、佣金狀態與佣金紀錄已改成使用者可讀的繁體中文與亮色表格。
+- `[x]` 推薦折抵與受控聯盟頁不再使用深色內部工具卡片。
+- `[x]` 受控聯盟付款未開放時，申請按鈕會清楚 disabled，避免使用者按下後才被 API 拒絕。
+- `[x]` 聯盟狀態、等級、內部計算狀態與計算紀錄已改成使用者可讀的繁體中文與亮色表格。
 - `[x]` Source-level regression test 防止聯盟頁回到暗色樣式與 raw `not_applied` / date formatting。
 
 Remaining:
 
-- `[ ]` 聯盟分潤仍不是 simple release 主軸；正式開通前仍需 affiliate terms、anti-fraud、refund/clawback 與 payout reconciliation。
-- `[ ]` 繼續掃描 admin-only 聯盟 / 提領頁是否仍有深色內部工具樣式。
+- `[ ]` 受控聯盟付款仍不是 simple release 主軸；正式開通前仍需 affiliate terms、anti-fraud、refund/clawback 與 payout reconciliation。
+- `[ ]` 繼續掃描 admin-only 受控聯盟 / 付款審核頁是否仍有深色內部工具樣式。
 
 # Latest - 2026-07-01 Wallet light-theme polish
 

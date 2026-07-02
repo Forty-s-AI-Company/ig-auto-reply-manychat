@@ -405,7 +405,7 @@ Billing launch implication:
 - referral code / attribution / first payment credit 有基本實作
 - anti-fraud、self-referral、防重複歸因規則還不夠完整
 
-## 聯盟分潤完成度
+## 受控聯盟付款完成度
 
 檔案：
 

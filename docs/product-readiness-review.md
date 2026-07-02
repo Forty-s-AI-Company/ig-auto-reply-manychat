@@ -1566,7 +1566,7 @@ Readiness implication:
 Status:
 
 - AI 設定、分眾名單、Instagram 預設回覆不再顯示英文 AdminShell 標題。
-- Admin-only 聯盟與提領管理頁面已改成繁中標題、繁中權限提示與繁中操作文案。
+- Admin-only 受控聯盟與內部付款審核頁面已改成繁中標題、繁中權限提示與繁中操作文案。
 - 新增 source-level regression test，防止這些次要後台頁退回英文內部工具語氣。
 
 Readiness implication:
