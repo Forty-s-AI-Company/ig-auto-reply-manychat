@@ -3354,3 +3354,14 @@ Current status:
 Remaining:
 
 - `[ ]` Continue product walkthroughs for any remaining visible-but-unusable controls in onboarding, Inbox, Contacts, Automations, Billing, and Referrals.
+
+## 2026-07-03 - Activation follow-up accessibility polish
+
+- 已完成：Social connect CTA/link focus states、decorative icons、Inbox post-connect icon-only actions accessibility。
+- 驗證：focused Vitest 與 Inbox authenticated Playwright smoke 通過。
+- 下一步：若沒有人工阻塞，繼續檢查新使用者啟用路徑後段的 mobile/RWD 與 Dashboard/Inbox/Contacts/Automations 空狀態一致性。
+
+## 2026-07-03 - PR #136 CI smoke stabilization
+
+- 已完成：Automations mobile auth smoke 不再依賴 role lookup 競態，改用 template dialog 與 stable test id 驗證。
+- 驗證：test:e2e:auth、lint、build、npm test 通過。

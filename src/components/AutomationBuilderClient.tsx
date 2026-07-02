@@ -2163,9 +2163,10 @@ function FlowBuilderInner({
                       setTemplateDialogOpen(false);
                       loadAutomation();
                     }}
+                    data-testid="automation-template-blank-start"
                     className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] px-3 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className="h-4 w-4" aria-hidden="true" />
                     從空白開始
                   </button>
                   <button
