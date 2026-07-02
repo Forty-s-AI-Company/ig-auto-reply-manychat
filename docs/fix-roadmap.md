@@ -3131,3 +3131,15 @@ Current status:
 Remaining:
 
 - `[ ]` 後續可用瀏覽器逐頁檢查 Dashboard / Inbox / Analytics 的 RWD 空狀態與 CTA 位置。
+
+## Latest - 2026-07-02 Dashboard recent automation empty-state CTA
+
+Current status:
+
+- `[x]` Dashboard 最近自動化空狀態不再只是純文字提示。
+- `[x]` 空狀態現在提供 `建立自動化` CTA，讓使用者可以直接進入下一步。
+- `[x]` Focused regression 與 mobile authenticated smoke 已確認 Dashboard / Analytics / Inbox 相關路由沒有本輪新增問題。
+
+Remaining:
+
+- `[ ]` 後續可再用瀏覽器完整 QA Dashboard / Inbox / Analytics 的桌機與手機視覺細節，但目前沒有新增 production launch gate。
