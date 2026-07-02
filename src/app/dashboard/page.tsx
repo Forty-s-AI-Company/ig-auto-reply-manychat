@@ -116,7 +116,7 @@ export default async function DashboardPage({
     {
       done: messages > 0,
       title: simpleRelease ? "查看收件匣與最近訊息" : "送一則測試訊息並查看收件匣",
-      href: simpleRelease ? "/inbox" : "/mock-tester",
+      href: connectedInstagramChannels > 0 ? (simpleRelease ? "/inbox" : "/mock-tester") : "/channels/connect",
     },
   ];
   const recentMessagesEmptyState = simpleRelease
@@ -130,9 +130,12 @@ export default async function DashboardPage({
       }
     : {
         title: "目前還沒有最近訊息",
-        body: "可以先用測試工具送一則測試訊息，再回到收件匣確認對話流程。",
-        href: "/mock-tester",
-        label: "送一則測試訊息",
+        body:
+          connectedInstagramChannels > 0
+            ? "可以先用測試工具送一則測試訊息，再回到收件匣確認對話流程。"
+            : "先連接 Instagram 帳號，再用測試工具或真實互動產生第一則訊息。",
+        href: connectedInstagramChannels > 0 ? "/mock-tester" : "/channels/connect",
+        label: connectedInstagramChannels > 0 ? "送一則測試訊息" : "連接 Instagram",
       };
   const healthItems = [
     { label: "IG 連線", value: `${connectedInstagramChannels} 個帳號`, ok: connectedInstagramChannels > 0 },

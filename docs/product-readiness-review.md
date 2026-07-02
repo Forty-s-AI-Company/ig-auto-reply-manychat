@@ -1672,3 +1672,16 @@ Readiness implication:
 
 - The first-run product path is less likely to feel broken before Instagram data exists.
 - A final browser QA pass against an empty Preview/Staging workspace is still recommended before public paid launch.
+
+## 2026-07-02 - Empty workspace activation smoke
+
+Status:
+
+- A dedicated local empty workspace fixture now covers first-run behavior without seeded channels, contacts, conversations, or automations.
+- Playwright now exercises Dashboard, Channels connect, Inbox empty, Contacts empty, and Automations empty states against that fixture.
+- Dashboard now avoids sending a truly empty workspace to `/mock-tester` before an Instagram account exists.
+
+Readiness implication:
+
+- Local QA can now catch first-run onboarding regressions instead of relying only on seeded E2E accounts.
+- Preview / Staging still needs a real empty tenant browser QA pass before paid launch.

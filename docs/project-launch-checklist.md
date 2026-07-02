@@ -728,3 +728,9 @@ Current decision:
 - `[x]` Added `docs/manual-qa-script.md` for staging/local human QA.
 - `[x]` Added `docs/final-release-qa-report.md` for this final QA pass.
 - `[ ]` Run the manual QA script after this PR merges and before any controlled Production deployment.
+
+## 2026-07-02 - Empty workspace activation smoke
+
+- `[x]` Local Playwright coverage now includes an isolated empty workspace smoke for Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty.
+- `[x]` Dashboard no-data CTA now points a zero-IG workspace to Instagram connection before mock tester flows.
+- `[ ]` Preview / Staging still needs a real empty tenant browser QA pass before paid launch.
