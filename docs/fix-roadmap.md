@@ -3375,3 +3375,8 @@ Remaining:
 
 - 已完成：Sequences 建立表單在 hydration 完成時會同步目前 input DOM value，避免 mobile smoke 在清空名稱後看到可按但無 title 的「建立序列」狀態。
 - 下一步：重新跑 CI full-release-auth-smoke，確認 Sequences disabled UX 在 desktop/mobile 都穩定。
+
+## 2026-07-03 - Inbox composer disabled reason polish
+
+- 已完成：Inbox 回覆/備註 composer 在空內容時顯示明確 disabled reason、title 與 aria-describedby，不再只是灰色不可按。
+- 下一步：繼續檢查 Inbox / Dashboard / Automations 是否還有可見但不可理解的 disabled controls。
