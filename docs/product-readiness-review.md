@@ -1668,10 +1668,12 @@ Status:
 
 - Custom-sales checkout is still intentionally disabled for self-serve checkout.
 - The disabled state now has visible explanatory copy and `aria-describedby`, so mobile users are not left with a grey button that only explains itself on hover.
+- Affiliate controlled-payment CTA is now clearly informational and connected to a visible disabled reason.
 
 Readiness implication:
 
 - Billing is less likely to feel broken when a user reaches the Agency / custom plan card.
+- Referral / affiliate users are less likely to think the disabled controlled-payment CTA has silently failed.
 - This does not change PayUNI gateway behavior, pricing, subscription activation, or production launch gates.
 
 ## 2026-07-02 - New-user pre-payment clarity

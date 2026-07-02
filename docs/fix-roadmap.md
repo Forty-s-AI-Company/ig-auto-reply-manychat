@@ -3394,6 +3394,7 @@ Current status:
 - `[x]` Agency / custom-sales checkout now shows a visible disabled reason instead of relying only on hover `title`.
 - `[x]` The disabled checkout reason is connected with `aria-describedby`, so touch/mobile and assistive-tech users can understand why the CTA is unavailable.
 - `[x]` Billing source-level coverage now guards the custom-plan disabled copy.
+- `[x]` Affiliate controlled-payment disabled CTA now has an explicit described-by reason and clarifies it does not submit a payment request.
 
 Remaining:
 

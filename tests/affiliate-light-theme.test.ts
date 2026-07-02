@@ -16,6 +16,8 @@ describe("affiliate page light theme", () => {
     expect(source).toContain('AdminShell title="推薦折抵與受控聯盟"');
     expect(source).toContain("canApplyAffiliate");
     expect(source).toContain("disabled={applyDisabled}");
+    expect(source).toContain('aria-describedby="affiliate-controlled-payment-disabled-reason"');
+    expect(source).toContain("這顆按鈕目前只標示產品方向，不會送出付款申請");
     expect(source).toContain("目前僅開放折抵金");
     expect(source).toContain("Simple release 仍以推薦活動與折抵金為主");
     expect(source).toContain("受控聯盟付款狀態");

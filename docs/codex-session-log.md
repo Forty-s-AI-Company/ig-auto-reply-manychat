@@ -1,3 +1,8 @@
+## 2026-07-03 - Affiliate controlled-payment disabled UX polish
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Added an explicit described-by reason for the Affiliate controlled-payment disabled CTA so users understand it is informational only and does not submit a payment request.
+- Next: continue local-mode product sweeps for Billing / Wallet / Referral / Admin financial surfaces.
 ## 2026-07-03 - Billing custom-plan disabled UX polish
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

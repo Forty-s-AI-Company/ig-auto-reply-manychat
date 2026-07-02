@@ -146,10 +146,14 @@ export default async function AffiliatePage() {
             <button
               type="button"
               disabled
+              aria-describedby="affiliate-controlled-payment-disabled-reason"
               className="mt-4 inline-flex h-10 cursor-not-allowed items-center rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 text-sm font-semibold text-[var(--text-muted)]"
             >
               受控付款後續開放
             </button>
+            <p id="affiliate-controlled-payment-disabled-reason" className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+              這顆按鈕目前只標示產品方向，不會送出付款申請；推薦折抵仍是目前正式可用主線。
+            </p>
           </article>
 
           <article className="ip-dashboard-card p-5">
