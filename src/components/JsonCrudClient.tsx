@@ -64,6 +64,7 @@ export function JsonCrudClient({
   const [draft, setDraft] = useState(JSON.stringify(createTemplate, null, 2));
   const [editingId, setEditingId] = useState("");
   const [editingJson, setEditingJson] = useState("");
+  const [deleteTargetId, setDeleteTargetId] = useState("");
   const [preview, setPreview] = useState<BroadcastPreview | null>(null);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -116,7 +117,6 @@ export function JsonCrudClient({
   }
 
   async function deleteItem(id: string) {
-    if (!confirm("確定要刪除這筆資料嗎？")) return;
     setError("");
     setFeedback("");
     const response = await fetch(`${endpoint}/${id}`, { method: "DELETE" });
@@ -126,6 +126,7 @@ export function JsonCrudClient({
       return;
     }
     setFeedback("已刪除資料。");
+    setDeleteTargetId("");
     await reload();
   }
 
@@ -215,7 +216,7 @@ export function JsonCrudClient({
                   >
                     編輯
                   </button>
-                  <button onClick={() => deleteItem(id)} className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">
+                  <button onClick={() => setDeleteTargetId(id)} className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">
                     刪除
                   </button>
                 </div>
@@ -245,6 +246,41 @@ export function JsonCrudClient({
             <button onClick={updateItem} className="mt-3 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
               儲存
             </button>
+          </div>
+        </div>
+      ) : null}
+
+      {deleteTargetId ? (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60 p-4" role="presentation">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="json-crud-delete-title"
+            className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+          >
+            <h3 id="json-crud-delete-title" className="text-base font-semibold text-[#111827]">
+              確認刪除資料？
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-[#475467]">
+              這會刪除 ID 為 <span className="font-mono text-xs text-[#111827]">{deleteTargetId}</span> 的資料。刪除後需要重新建立，請先確認它沒有被其他流程使用。
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTargetId("")}
+                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc]"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteItem(deleteTargetId)}
+                data-testid="json-crud-confirm-delete"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white hover:bg-red-800"
+              >
+                確認刪除
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

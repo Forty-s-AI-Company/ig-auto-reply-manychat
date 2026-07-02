@@ -20,5 +20,9 @@ describe("sequences form state", () => {
     expect(source).toContain('title={saveDisabledReason || undefined}');
     expect(source).toContain("重新載入序列失敗，請稍後再試。");
     expect(source).toContain("刪除序列失敗，請稍後再試。");
+    expect(source).toContain('role="dialog"');
+    expect(source).toContain('aria-modal="true"');
+    expect(source).toContain('data-testid="sequence-confirm-delete"');
+    expect(source).not.toContain('confirm("確定要刪除這個序列？")');
   });
 });

@@ -3159,3 +3159,33 @@ Remaining:
 - `[ ]` Automations 仍是下一輪最值得切入的可販售缺口，尤其是 scope clarity、空狀態引導與破壞性操作 dialog 一致性。
 - `[ ]` Billing / Referral 仍需要收斂成更完整的可販售制度與頁面路徑，不在本輪處理。
 - `[ ]` 全量 `npm run lint` 目前仍被 pre-existing 的 `AI_TEAM/scripts/qa-staging.js` CommonJS 寫法卡住；本輪變更檔案的 targeted ESLint 已通過。
+
+## Latest - 2026-07-02 Final release QA destructive-action closeout
+
+Current status:
+
+- `[x]` Channels 解除綁定不再使用原生 `window.confirm()`，改成頁內確認 dialog，並說明會移除相關聯絡人、對話與訊息。
+- `[x]` Admin 帳單退款 / 推薦折抵沖回不再使用原生 `window.confirm()`，改成頁內確認 dialog，並明確提示不會自動呼叫 PayUNI 退款。
+- `[x]` 共用 JSON CRUD 刪除不再使用原生 `confirm()`，改成頁內確認 dialog，避免管理頁看起來像臨時工具。
+- `[x]` 序列刪除不再使用原生 `confirm()`，並提示若只是暫停應使用停用序列。
+- `[x]` 已新增 final release QA checklist、release checklist、QA report 與 manual QA script。
+
+Remaining:
+
+- `[ ]` Final QA 後仍需跑完整人工瀏覽器 QA，尤其是 Staging 的 mobile RWD、PayUNI Sandbox 與 Meta OAuth reviewer-safe path。
+- `[ ]` 若未來要提供刪除復原，需要先設計 soft-delete、restore 與 audit log；本輪只收斂 destructive confirmation UX。
+
+## Latest - 2026-07-02 Final release QA validation update
+
+Current status:
+
+- `[x]` `npm run lint` passed.
+- `[x]` `npm run build` passed.
+- `[x]` `npm test` passed through the Windows batch rerun safeguard.
+- `[x]` Auth, Inbox, and Contacts Playwright smoke passed after refreshing local E2E admin fixtures.
+- `[x]` React Flow CSS is now imported from the root layout instead of only through `globals.css`.
+
+Remaining:
+
+- `[ ]` Simple-release smoke was skipped by its current local guard; it should be verified in an environment configured for simple-release smoke before public launch.
+- `[ ]` Automations route still logs a React Flow style warning during auth smoke; UI smoke passes, but this should be handled in the next automation editor polish pass.

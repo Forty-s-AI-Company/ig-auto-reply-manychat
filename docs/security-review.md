@@ -1393,3 +1393,20 @@ Security properties:
 Residual risk:
 
 - If Meta later changes Instagram profile field availability, refresh may still fail gracefully and require reconnecting the IG account.
+
+## 2026-07-02 - Destructive action confirmation safety
+
+Scope:
+
+- Replaced native browser confirmation prompts in channel disconnect, admin invoice refund / referral credit clawback, shared JSON CRUD delete, and sequence delete.
+
+Security properties:
+
+- No authorization, tenant scope, database schema, payment signature, or webhook logic was changed.
+- Admin invoice refund copy explicitly states that the operation only updates internal refund / referral credit clawback state and does not automatically call PayUNI.
+- Channel disconnect copy clearly warns that related contacts, conversations, and messages are removed.
+- The change reduces accidental destructive action risk without adding new backend permissions.
+
+Residual risk:
+
+- These flows still perform hard deletes or irreversible state changes where the backend already did so before this UX pass. If undo is required, design soft-delete / restore / audit-log semantics in a separate schema-aware task.
