@@ -8675,3 +8675,17 @@ Launch impact:
 
 - Product UX / accessibility polish only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+## 2026-07-03 - Activation follow-up accessibility polish
+
+- 目標：延續空 workspace 啟用路徑，修補 Social connect 與 Inbox post-connect controls 的鍵盤可用性與 icon-only accessibility。
+- 變更：Social connect 的提示/連結/OAuth CTA 補上 focus-visible 狀態與 decorative icon aria-hidden；Inbox 對話右上 icon actions 補 aria-label、穩定 test id 與 visible focus ring。
+- 驗證：npx vitest run tests/activation-path-empty-states.test.ts tests/channels-connect-visibility.test.ts --reporter=dot 通過；npm run e2e:admin:ensure 後 npx playwright test tests/e2e/inbox-auth.spec.ts --project=chromium --workers=1 通過。第一次 Playwright 失敗是本機 3041 dev server 狀態/fixture 未同步造成，重新 ensure fixture 並清乾淨 3041 後通過。
+- 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - PR #136 CI smoke stabilization
+
+- 目標：修正 PR #136 其中一組 CI full-release-auth-smoke 在 mobile Automations 測項 timeout 的不穩定狀態。
+- 變更：Automations template dialog 的「從空白開始」補穩定 data-testid，Playwright auth smoke 改為先等待 template dialog，再點擊該 test id；同時將按鈕 Plus icon 標為 decorative。
+- 驗證：npm run e2e:admin:ensure && npm run test:e2e:auth 通過；npm run lint、npm run build、npm test 通過。
+- 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。

@@ -1034,22 +1034,41 @@ export function InboxClient({
                           aria-label="視訊通話目前暫時停用，因為即時通話服務、權限控管與客服排班流程尚未完成。"
                           data-testid="inbox-video-call-button"
                         >
-                          <Video className="h-5 w-5" />
+                          <Video className="h-5 w-5" aria-hidden="true" />
                         </button>
-                        <button type="button" onClick={() => updateConversation({ isFavorite: !selected.isFavorite })} className="p-1" title="收藏">
-                          <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                        <button
+                          type="button"
+                          onClick={() => updateConversation({ isFavorite: !selected.isFavorite })}
+                          className="rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          title={selected.isFavorite ? "取消收藏" : "收藏"}
+                          aria-label={selected.isFavorite ? "取消收藏對話" : "收藏對話"}
+                          data-testid="inbox-favorite-toggle"
+                        >
+                          <Heart className={`h-5 w-5 ${selected.isFavorite ? "fill-red-500 text-red-500" : ""}`} aria-hidden="true" />
                         </button>
                         <button
                           type="button"
                           onClick={() => setReminderOpen((current) => !current)}
-                          className={reminderOpen ? "rounded border border-red-500 p-1 text-[#111827]" : "p-1"}
+                          className={
+                            reminderOpen
+                              ? "rounded-md border border-red-500 p-1 text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                              : "rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          }
                           title="提醒"
+                          aria-label={reminderOpen ? "關閉提醒選單" : "開啟提醒選單"}
                           data-testid="inbox-reminder-toggle"
                         >
-                          <CalendarClock className="h-5 w-5" />
+                          <CalendarClock className="h-5 w-5" aria-hidden="true" />
                         </button>
-                        <button type="button" onClick={markRead} className="p-1" title="標記已讀">
-                          <CheckCheck className="h-5 w-5" />
+                        <button
+                          type="button"
+                          onClick={markRead}
+                          className="rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          title="標記已讀"
+                          aria-label="標記這則對話為已讀"
+                          data-testid="inbox-mark-read-button"
+                        >
+                          <CheckCheck className="h-5 w-5" aria-hidden="true" />
                         </button>
                         <button
                           type="button"

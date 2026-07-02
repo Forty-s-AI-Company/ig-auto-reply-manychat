@@ -155,7 +155,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
       <div className="space-y-6">
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <div className="flex items-start gap-3">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
             <div className="space-y-2 leading-6">
               <p>請先確認目前瀏覽器登入的是你要綁定的 Instagram / Meta 帳號。</p>
               <p>
@@ -182,7 +182,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         {params.meta_error ? (
           <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
             <div className="flex items-start gap-3">
-              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" aria-hidden="true" />
               <div className="space-y-1 leading-6">
                 <p className="font-semibold text-red-900">連接失敗</p>
                 <p>{params.meta_error}</p>
@@ -217,10 +217,10 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                       </div>
                       <Link
                         href="/channels#instagram"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-[#006fe6] hover:text-[#005fd0]"
+                        className="inline-flex items-center gap-1 rounded-sm text-xs font-medium text-[#006fe6] hover:text-[#005fd0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                       >
                         前往設定檢查
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                       </Link>
                     </div>
                     <div className="mt-3 space-y-2">
@@ -276,7 +276,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
 
                     <div className="mt-4 rounded-md border border-[#d7dbe0] bg-white p-3">
                       <div className="flex items-center gap-2 text-sm font-medium text-[#17191c]">
-                        <Link2 className="h-4 w-4 text-[#006fe6]" />
+                        <Link2 className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
                         同步到 Instagram 帳號
                       </div>
 
@@ -309,10 +309,10 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
                             <Link
                               href="/channels#instagram"
-                              className="inline-flex items-center gap-1 font-medium text-[#9a3412] hover:text-[#7c2d12]"
+                              className="inline-flex items-center gap-1 rounded-sm font-medium text-[#9a3412] hover:text-[#7c2d12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b54708] focus-visible:ring-offset-2"
                             >
                               前往設定檢查綁定狀態
-                              <ExternalLink className="h-3.5 w-3.5" />
+                              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                             </Link>
                             <span className="text-[#b54708]">如果是 Meta / Instagram 帳號，請嘗試重新同步或重新連接一次。</span>
                           </div>
@@ -339,7 +339,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
               <div key={provider.id} className="rounded-lg border border-[#d7dbe0] bg-white p-5">
                 <div className="flex items-start gap-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-md bg-[#eef6ff] text-[#006fe6]">
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="text-base font-semibold text-[#17191c]">{copy.title}</h3>
@@ -360,7 +360,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                         <OAuthPopupConnectButton
                           provider={provider.id}
                           href={authorizeHref.primary}
-                          className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
+                          className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                         >
                           連接帳號
                         </OAuthPopupConnectButton>
@@ -378,7 +378,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                         <OAuthPopupConnectButton
                           provider={provider.id}
                           href={authorizeHref.secondary}
-                          className="inline-flex h-11 items-center justify-center rounded-md border border-[#d0d5dd] bg-white px-4 text-sm font-semibold text-[#17191c] hover:bg-[#f9fafb]"
+                          className="inline-flex h-11 items-center justify-center rounded-md border border-[#d0d5dd] bg-white px-4 text-sm font-semibold text-[#17191c] hover:bg-[#f9fafb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                         >
                           {secondaryLabel}
                         </OAuthPopupConnectButton>

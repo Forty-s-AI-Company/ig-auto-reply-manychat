@@ -1710,3 +1710,12 @@ Readiness implication:
 
 - The Instagram connection entry is a little more production-grade for keyboard and mobile users.
 - This is UI/accessibility polish only and does not change OAuth, provider visibility, tenant scope, or payment behavior.
+
+## 2026-07-03 - Activation follow-up accessibility polish
+
+- Readiness update：登入後啟用路徑中的 Social connect 與 Inbox post-connect icon controls 已補齊 keyboard-visible focus 與 screen reader labels，降低新使用者在連接/查看訊息後遇到「看得到但不知道怎麼操作」的風險。
+- Remaining risk：仍需持續用空 workspace 與有資料 workspace 交叉驗證 Dashboard、Inbox、Contacts、Automations 的 mobile CTA 與 disabled UX。
+
+## 2026-07-03 - PR #136 CI smoke stabilization
+
+- Readiness update：Automations 建立流程的空白模板入口已具備穩定測試 selector，降低 mobile CI 與後續回歸測試 flaky 風險。
