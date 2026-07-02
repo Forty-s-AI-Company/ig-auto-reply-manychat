@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Automations basic and sequence disabled reason linkage
+
+Current status:
+
+- [x] Basic automation controlled-opening actions now link to their visible disabled reason.
+- [x] Simple-release sequence gate now links to visible scope explanation instead of relying on title alone.
+- [x] Source and Playwright regression coverage guard the disabled UX linkage.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Automations disabled controls reason linkage
 
 Current status:

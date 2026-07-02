@@ -1,3 +1,9 @@
+## 2026-07-03 - Automations basic and sequence disabled reason linkage
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Automations basic controlled actions and simple-release sequence gate.
+- Change: connected disabled automation actions to visible helper reasons with aria-describedby.
+- Validation planned: automation disabled UX unit test, auth Playwright smoke, lint, build, npm test.
 ## 2026-07-03 - Automations disabled controls reason linkage
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

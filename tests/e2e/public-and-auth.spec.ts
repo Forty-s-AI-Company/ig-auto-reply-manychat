@@ -163,6 +163,9 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toBeDisabled();
+    await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toHaveAttribute("aria-describedby", "automation-basic-disabled-opening-prompts-reason");
+    await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toHaveAttribute("aria-describedby", "automation-basic-disabled-story-mentions-reason");
+    await expect(page.getByTestId("automation-basic-disabled-main-menu")).toHaveAttribute("aria-describedby", "automation-basic-disabled-main-menu-reason");
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toContainText("受控開通");
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toContainText("受控開通");
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toContainText("受控開通");
