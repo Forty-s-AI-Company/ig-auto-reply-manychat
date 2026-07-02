@@ -216,6 +216,8 @@ test.describe("authenticated route smoke", () => {
 
     await page.getByTestId("sequence-step-remove-1").click();
     await expect(page.getByRole("dialog", { name: "移除序列步驟？" })).toBeVisible();
+    await expect(page.getByTestId("sequence-step-remove-dialog")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
     await page.getByRole("button", { name: "取消" }).click();
     await expect(page.getByRole("dialog", { name: "移除序列步驟？" })).toHaveCount(0);
     await expect(page.getByText("第 2 封", { exact: true })).toBeVisible();
@@ -246,6 +248,8 @@ test.describe("authenticated route smoke", () => {
     const segmentCard = page.locator("article").filter({ hasText: segmentName }).first();
     await segmentCard.getByRole("button", { name: "刪除" }).click();
     await expect(page.getByRole("dialog", { name: "刪除分眾名單？" })).toBeVisible();
+    await expect(page.getByTestId("segments-delete-dialog")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
     await expect(page.locator("body")).toContainText("刪除前請確認沒有正在排程或準備中的廣播依賴這個分眾。");
     await page.getByRole("button", { name: "取消" }).click();
     await expect(page.getByRole("dialog", { name: "刪除分眾名單？" })).toHaveCount(0);

@@ -8408,3 +8408,33 @@ Launch impact:
 
 - Product UX polish only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Automations / Sequences / Segments mobile full-flow QA
+
+Task:
+
+- Inspect Automations, Sequences, and Segments mobile/full-flow UX for overflow, unclear destructive actions, rough disabled UX, and half-implemented controls without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Automations template and folder dialogs were usable, but folder creation did not have mobile scroll containment and still used unconditional autofocus.
+- Automation node/delete dialogs, Sequence delete/step-remove dialogs, and Segment delete dialog needed explicit mobile scroll containment to avoid small-screen overflow regressions.
+- Sequences form controls were functionally complete, but some editable controls lacked consistent focus-visible treatment and form names.
+
+Changes:
+
+- Added dialog semantics, mobile max-height, `overflow-y-auto`, `overscroll-contain`, and test ids for Automations template/folder/delete dialogs.
+- Removed unconditional folder-name autofocus and added clearer focus-visible treatment for Automations and Sequences controls.
+- Added scroll-safe containment and test ids for Sequences and Segments destructive confirmation dialogs.
+- Extended Playwright smoke coverage for mobile Automations dialogs and mobile Sequences/Segments destructive dialogs with horizontal-overflow assertions.
+
+Validation:
+
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/automations-editor.spec.ts`: passed, 8 tests across Chromium and mobile Chrome.
+- `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "sequence draft steps|Segments create and delete"`: passed, 4 tests across Chromium and mobile Chrome.
+
+Launch impact:
+
+- Product UX polish only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
