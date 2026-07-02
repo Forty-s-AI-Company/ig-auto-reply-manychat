@@ -173,6 +173,13 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
   const isLocalCliProvider = activeProvider?.kind === "cli" && initialState.localCliEnabled;
   const canSaveSetting = Boolean(isApiProvider || isLocalCliProvider);
   const canTestModel = isApiProvider ? Boolean(activeCredential?.configured) : isLocalCliProvider;
+  const testModelDisabledReason = canTestModel ? "" : "請先加密儲存這個供應商的 API Key，才能測試模型。";
+  const saveSettingDisabledReason = canSaveSetting ? "" : "正式 SaaS 不會直接執行本機 CLI；請改用 API Key 連接。";
+  const refreshModelsDisabledReason = !canSaveSetting
+    ? saveSettingDisabledReason
+    : isApiProvider && !activeCredential?.configured
+      ? "請先加密儲存這個供應商的 API Key，再抓取最新模型清單。"
+      : "";
 
   async function loadModels(nextProvider: ProviderId, preferredModel?: string) {
     setLoadingModels(true);
@@ -338,7 +345,8 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             type="button"
             disabled={testing || loadingModels || !canTestModel}
             onClick={testModel}
-            title={canTestModel ? "測試目前模型" : "請先加密儲存這個供應商的 API Key"}
+            title={testModelDisabledReason || "測試目前模型"}
+            aria-describedby={testModelDisabledReason ? "ai-test-model-disabled-reason" : undefined}
             className="flex items-center gap-2 rounded-md border border-[#00b8d9] bg-white px-4 py-2 text-sm font-medium text-[#006d85] hover:bg-[#ecfeff] disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]"
           >
             <TestTube2 className="h-4 w-4" />
@@ -348,12 +356,19 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             type="button"
             disabled={saving || loadingModels || !canSaveSetting}
             onClick={saveSetting}
+            aria-describedby={saveSettingDisabledReason ? "ai-save-setting-disabled-reason" : undefined}
             className="flex items-center gap-2 rounded-md bg-[#00b8d9] px-4 py-2 text-sm font-medium text-[#111827] hover:bg-[#0098b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
             <Save className="h-4 w-4" />
             {saving ? "儲存中…" : "儲存設定"}
           </button>
         </div>
+        {testModelDisabledReason || saveSettingDisabledReason ? (
+          <div className="basis-full space-y-1 text-xs leading-5 text-[#667085] sm:text-right">
+            {testModelDisabledReason ? <p id="ai-test-model-disabled-reason">{testModelDisabledReason}</p> : null}
+            {saveSettingDisabledReason ? <p id="ai-save-setting-disabled-reason">{saveSettingDisabledReason}</p> : null}
+          </div>
+        ) : null}
       </div>
 
       {message ? (
@@ -394,6 +409,8 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                   type="button"
                   disabled={loadingModels || refreshingModels || !canSaveSetting || (isApiProvider && !activeCredential?.configured)}
                   onClick={refreshModels}
+                  title={refreshModelsDisabledReason || "抓取最新模型清單"}
+                  aria-describedby={refreshModelsDisabledReason ? "ai-refresh-models-disabled-reason" : undefined}
                   className="inline-flex items-center gap-1 rounded px-1 text-xs font-medium text-[#007f99] hover:text-[#005f73] disabled:text-[#667085]"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
@@ -412,6 +429,11 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                   </option>
                 ))}
               </select>
+              {refreshModelsDisabledReason ? (
+                <p id="ai-refresh-models-disabled-reason" className="mt-1 text-xs leading-5 text-[#667085]">
+                  {refreshModelsDisabledReason}
+                </p>
+              ) : null}
             </label>
           </div>
 

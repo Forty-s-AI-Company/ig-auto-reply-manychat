@@ -1,3 +1,8 @@
+## 2026-07-03 - AI Settings disabled UX polish
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Added visible disabled reasons and aria-describedby wiring for model test / model refresh actions when API keys are missing.
+- Next: continue local-mode product sweeps for remaining visible-but-unusable controls.
 ## 2026-07-03 - Sequences disabled reason accessibility polish
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

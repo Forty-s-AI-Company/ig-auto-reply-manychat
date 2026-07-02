@@ -3397,6 +3397,7 @@ Current status:
 - `[x]` Affiliate controlled-payment disabled CTA now has an explicit described-by reason and clarifies it does not submit a payment request.
 - `[x]` Referrals simple-release view now explains that the Wallet ledger is a full-release surface instead of silently hiding the link.
 - `[x]` Sequences save / subscribe disabled reasons are now connected with `aria-describedby` instead of being only adjacent helper copy.
+- `[x]` AI Settings model test / refresh disabled states now expose visible helper copy and `aria-describedby` when API keys are missing.
 
 Remaining:
 
