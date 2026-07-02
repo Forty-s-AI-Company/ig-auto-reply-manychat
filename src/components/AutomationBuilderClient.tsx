@@ -1513,6 +1513,7 @@ function FlowBuilderInner({
   const [mediaLoading, setMediaLoading] = useState(false);
   const [mediaError, setMediaError] = useState("");
   const [mediaErrorActionHref, setMediaErrorActionHref] = useState("");
+  const [pendingDeleteFlow, setPendingDeleteFlow] = useState<AutomationItem | null>(null);
   const nodeCounterRef = useRef(1000);
   const previewPanelRef = useRef<HTMLDivElement | null>(null);
   const { fitView, screenToFlowPosition } = useReactFlow();
@@ -1771,16 +1772,22 @@ function FlowBuilderInner({
     }
   }
 
-  async function deleteFlow(id: string) {
-    if (!confirm("確定要刪除這個自動化嗎？")) return;
+  function requestDeleteFlow(item: AutomationItem) {
+    setError("");
+    setPendingDeleteFlow(item);
+  }
+
+  async function confirmDeleteFlow() {
+    if (!pendingDeleteFlow) return;
     setError("");
     setSaving(true);
     try {
-      const response = await fetch(`/api/automations/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/automations/${pendingDeleteFlow.id}`, { method: "DELETE" });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(typeof data.error === "string" ? data.error : "刪除自動化失敗，請稍後再試。");
       }
+      setPendingDeleteFlow(null);
       await reload();
       if (view === "editor") loadAutomation();
     } catch (err) {
@@ -2002,7 +2009,7 @@ function FlowBuilderInner({
                         <span className="text-sm text-[var(--ip-muted)]">{formatDateTime(item.updatedAt)}</span>
                         <button
                           type="button"
-                          onClick={() => deleteFlow(item.id)}
+                          onClick={() => requestDeleteFlow(item)}
                           aria-label={`刪除自動化 ${item.name}`}
                           className="justify-self-start rounded-md p-2 text-[var(--ip-text-soft)] hover:bg-[var(--ip-surface-hover)] md:justify-self-end"
                         >
@@ -2245,6 +2252,14 @@ function FlowBuilderInner({
             </div>
           </div>
         ) : null}
+        {pendingDeleteFlow ? (
+          <DeleteAutomationDialog
+            flowName={pendingDeleteFlow.name}
+            saving={saving}
+            onCancel={() => setPendingDeleteFlow(null)}
+            onConfirm={confirmDeleteFlow}
+          />
+        ) : null}
       </div>
     );
   }
@@ -2407,7 +2422,7 @@ function FlowBuilderInner({
                         <p className="truncate font-medium text-zinc-950">{item.name}</p>
                         <p className="mt-1 text-xs text-zinc-500">{formatDateTime(item.updatedAt)}</p>
                       </button>
-                      <button type="button" onClick={() => deleteFlow(item.id)} aria-label={`刪除自動化 ${item.name}`} className="text-zinc-400 hover:text-red-500">
+                      <button type="button" onClick={() => requestDeleteFlow(item)} aria-label={`刪除自動化 ${item.name}`} className="text-zinc-400 hover:text-red-500">
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
                       </button>
                     </div>
@@ -2565,6 +2580,65 @@ function FlowBuilderInner({
             </a>
           </div>
         </aside>
+        {pendingDeleteFlow ? (
+          <DeleteAutomationDialog
+            flowName={pendingDeleteFlow.name}
+            saving={saving}
+            onCancel={() => setPendingDeleteFlow(null)}
+            onConfirm={confirmDeleteFlow}
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function DeleteAutomationDialog({
+  flowName,
+  saving,
+  onCancel,
+  onConfirm,
+}: {
+  flowName: string;
+  saving: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4" role="dialog" aria-modal="true" aria-labelledby="automation-delete-title">
+      <div className="w-full max-w-md rounded-lg border border-red-100 bg-white p-5 shadow-xl">
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-red-50 p-2 text-red-600">
+            <Trash2 className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <h2 id="automation-delete-title" className="text-base font-semibold text-zinc-950">
+              刪除自動化？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              你即將刪除「<span className="font-medium text-zinc-950">{flowName}</span>」。刪除後會從目前工作區移除這個流程，建議先確認沒有正在使用中的留言或私訊活動。
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onCancel}
+            className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            disabled={saving}
+            onClick={onConfirm}
+            data-testid="automation-confirm-delete"
+            className="h-10 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-200"
+          >
+            {saving ? "刪除中…" : "確認刪除"}
+          </button>
+        </div>
       </div>
     </div>
   );

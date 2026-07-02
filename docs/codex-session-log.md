@@ -8045,3 +8045,32 @@ Validation:
 Launch impact:
 
 - Product UX hardening only. No production DB, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-02 - Automation delete confirmation dialog
+
+Task:
+
+- Continue product completeness cleanup across Contacts / Inbox / Automations and remove the rough native confirmation from the clearest remaining Automations destructive action.
+
+Findings:
+
+- Contacts and Inbox already have most visible controls covered by minimum viable actions or clear disabled UX.
+- Automations still used the native browser confirmation for deleting an automation, which felt rough compared with the rest of the SaaS UI and gave no room for contextual guidance.
+
+Changes:
+
+- Replaced the native `confirm("確定要刪除這個自動化嗎？")` flow in `src/components/AutomationBuilderClient.tsx` with an in-app confirmation dialog.
+- The dialog explains which automation will be deleted and reminds the operator to confirm no active comment / DM campaign depends on it.
+- The same dialog is used from the overview list and the editor sidebar list.
+- Added source regression coverage in `tests/channel-client-feedback.test.ts`.
+
+Validation:
+
+- `npx vitest run tests/channel-client-feedback.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm test`: passed. One Windows Vitest batch hit the known `3221225477` batch-level crash, then every file in that batch passed when rerun individually by the project test runner.
+
+Launch impact:
+
+- Product UX hardening only. No production DB, Production deployment, Meta App Review, or PayUNI production change was performed.
