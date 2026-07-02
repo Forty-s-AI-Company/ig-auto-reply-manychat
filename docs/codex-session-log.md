@@ -1,3 +1,9 @@
+## 2026-07-03 - Social connect disabled provider reason linkage
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Channels social connect disabled OAuth provider cards.
+- Change: connected disabled provider buttons to visible disabled reasons with aria-describedby.
+- Validation planned: focused channel-connect visibility test, lint, build, npm test.
 ## 2026-07-03 - Automations basic and sequence disabled reason linkage
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

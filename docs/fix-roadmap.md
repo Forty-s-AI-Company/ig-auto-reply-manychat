@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Social connect disabled provider reason linkage
+
+Current status:
+
+- [x] Social connect disabled provider buttons now reference their visible disabled reason with aria-describedby.
+- [x] Regression coverage guards against returning to disconnected disabled provider copy.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Automations basic and sequence disabled reason linkage
 
 Current status:

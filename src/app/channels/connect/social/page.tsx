@@ -332,6 +332,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
             const Icon = copy.icon;
             const authorizeHref = buildAuthorizeHref(provider.id);
             const isMetaProvider = provider.id === "meta-instagram" || provider.id === "meta-facebook";
+            const disabledReasonId = `social-connect-${provider.id}-disabled-reason`;
             const secondaryLabel =
               provider.id === "meta-instagram" ? "重新登入 IG 後連接" : provider.id === "meta-facebook" ? "切換 Meta 帳號" : "";
 
@@ -351,7 +352,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                       </div>
                     ) : null}
                     {!uiState.enabled ? (
-                      <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-[#b54708]">
+                      <div id={disabledReasonId} className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-[#b54708]">
                         {uiState.disabledReason}
                       </div>
                     ) : null}
@@ -369,6 +370,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                           type="button"
                           disabled
                           aria-disabled="true"
+                          aria-describedby={disabledReasonId}
                           className="inline-flex h-11 cursor-not-allowed items-center justify-center rounded-md border border-[#d0d5dd] bg-[#f3f4f6] px-4 text-sm font-semibold text-[#98a2b3]"
                         >
                           {provider.id === "mock" ? "僅限本機 / QA 使用" : "目前不可連接"}
