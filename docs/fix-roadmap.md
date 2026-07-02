@@ -3084,3 +3084,17 @@ Remaining:
 
 - `[ ]` 後續可把 folder delete / sequence delete 等破壞性動作也逐步換成同一套確認 dialog pattern。
 - `[ ]` 若要提供刪除後復原，需要先設計 soft-delete、restore 與 audit log，不在本輪打開。
+
+## Latest - 2026-07-02 Segment delete confirmation dialog
+
+Current status:
+
+- `[x]` 分眾刪除流程不再使用原生 `confirm()`。
+- `[x]` 分眾刪除會先打開頁內確認 dialog，並清楚說明不會刪除聯絡人。
+- `[x]` Dialog 會提醒操作者先確認沒有排程中或準備中的廣播依賴該分眾。
+- `[x]` Source regression 覆蓋 `SegmentDeleteDialog`、`role="dialog"`、`aria-modal="true"` 與確認刪除按鈕。
+
+Remaining:
+
+- `[ ]` `SequencesClient` 仍有序列刪除原生確認，可在下一輪套用同一 pattern。
+- `[ ]` `JsonCrudClient` 是共用管理 CRUD，仍保留原生刪除確認；若後續確認使用者會頻繁接觸，應改成共用 confirmation dialog。

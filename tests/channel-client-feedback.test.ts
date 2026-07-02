@@ -39,6 +39,17 @@ describe("channel client feedback", () => {
     expect(source).not.toContain('await fetch(`/api/automations/${id}`, { method: "DELETE" });\n    await reload();');
   });
 
+  it("uses an in-app confirmation dialog for segment deletion", () => {
+    const source = readFileSync("src/components/SegmentsClient.tsx", "utf8");
+
+    expect(source).toContain("SegmentDeleteDialog");
+    expect(source).toContain('role="dialog"');
+    expect(source).toContain('aria-modal="true"');
+    expect(source).toContain('data-testid="segments-confirm-delete"');
+    expect(source).toContain("不會刪除聯絡人");
+    expect(source).not.toContain('confirm("確定要刪除這個分群？")');
+  });
+
   it("keeps Instagram channel action controls aligned with the light settings UI", () => {
     const disconnect = readFileSync("src/components/DisconnectChannelButton.tsx", "utf8");
     const profileRefresh = readFileSync("src/components/RefreshInstagramProfileButton.tsx", "utf8");
