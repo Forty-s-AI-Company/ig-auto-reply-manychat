@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 type SequenceStep = {
@@ -49,6 +49,7 @@ export function SequencesClient({
   const [deleteTargetId, setDeleteTargetId] = useState("");
   const [message, setMessage] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
 
   const trimmedName = name.trim();
   const selectedSequence = useMemo(
@@ -76,6 +77,20 @@ export function SequencesClient({
   useEffect(() => {
     const hydrationTimer = window.setTimeout(() => setHasHydrated(true), 0);
     return () => window.clearTimeout(hydrationTimer);
+  }, []);
+
+  useEffect(() => {
+    const element = nameInputRef.current;
+    if (!element) return;
+
+    const syncNameFromDom = () => setName(element.value);
+    element.addEventListener("input", syncNameFromDom);
+    element.addEventListener("change", syncNameFromDom);
+
+    return () => {
+      element.removeEventListener("input", syncNameFromDom);
+      element.removeEventListener("change", syncNameFromDom);
+    };
   }, []);
 
   async function reload() {
@@ -273,6 +288,7 @@ export function SequencesClient({
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">名稱</span>
               <input
+                ref={nameInputRef}
                 name="sequenceName"
                 required
                 autoComplete="off"

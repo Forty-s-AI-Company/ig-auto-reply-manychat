@@ -3203,3 +3203,29 @@ Remaining:
 
 - `[ ]` The next Automations pass should focus on higher-level editor/product polish: mobile expectations, empty-state teaching, and any remaining controlled-open feature wording.
 - `[ ]` Simple-release smoke still needs a correctly configured local simple-release environment before it can be counted as a full local pass.
+
+## Latest - 2026-07-02 Automations product closeout
+
+Current status:
+
+- `[x]` Sequence, segment, automation, and editor node destructive actions now use in-app confirmation patterns instead of native or instant destructive actions.
+- `[x]` Automation editor node deletion now opens a dedicated `刪除流程節點？` dialog and explains that deletion affects the current draft until saved.
+- `[x]` Mobile Automation editor now shows a clear canvas limitation notice, so users understand drag/connect editing is desktop/tablet-oriented while mobile can still configure, preview, and save.
+- `[x]` The disabled `更多操作` editor control now has visible gated wording instead of appearing as a bare icon-only dead control.
+- `[x]` Focused Playwright smoke covers React Flow style loading, node-delete confirmation, and mobile canvas guidance.
+
+Remaining:
+
+- `[ ]` Simple-release smoke still needs a correctly configured local simple-release environment before it can be counted as a full local pass.
+- `[ ]` A future browser QA pass should inspect Staging Automations on real mobile sizes after this PR is deployed to Preview.
+
+## Latest - 2026-07-02 Sequence name input CI stability follow-up
+
+Current status:
+
+- `[x]` Sequence name input now has a native `input` / `change` synchronization guard in addition to React handlers.
+- `[x]` The focused desktop Chromium authenticated smoke for Sequence disabled states passes locally after refreshing E2E admin fixtures.
+
+Remaining:
+
+- `[ ]` PR CI should rerun full-release-auth-smoke and confirm the desktop Sequence disabled-state flake is gone.

@@ -61,4 +61,40 @@ test.describe("automations editor polish", () => {
     const styleWarnings = consoleWarnings.filter((warning) => warning.includes("haven't loaded the styles"));
     expect(styleWarnings).toEqual([]);
   });
+
+  test("confirms destructive node deletion before changing the draft", async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await login(page, testInfo, adminEmail, adminPassword);
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByRole("button", { name: "從空白開始" }).click();
+
+    await page.getByTestId("flow-add-node").click();
+    await page.getByRole("button", { name: /傳送訊息/ }).click();
+    await expect(page.getByRole("button", { name: "刪除節點" })).toBeVisible();
+
+    await page.getByRole("button", { name: "刪除節點" }).click();
+    await expect(page.getByRole("dialog", { name: "刪除流程節點？" })).toBeVisible();
+
+    await page.getByRole("button", { name: "取消" }).click();
+    await expect(page.getByRole("dialog", { name: "刪除流程節點？" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "刪除節點" })).toBeVisible();
+
+    await page.getByRole("button", { name: "刪除節點" }).click();
+    await page.getByTestId("automation-node-confirm-delete").click();
+    await expect(page.getByRole("dialog", { name: "刪除流程節點？" })).toHaveCount(0);
+    await expect(page.getByText("觸發條件")).toBeVisible();
+  });
+
+  test("shows a clear mobile canvas limitation notice", async ({ page }, testInfo) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await login(page, testInfo, adminEmail, adminPassword);
+    await page.goto("/automations", { waitUntil: "domcontentloaded" });
+    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByRole("button", { name: "從空白開始" }).click();
+
+    await expect(page.getByTestId("automation-mobile-canvas-notice")).toBeVisible();
+    await expect(page.getByTestId("automation-mobile-canvas-notice")).toContainText("流程畫布建議使用桌機或平板編輯");
+    await expect(page.getByTestId("automation-flow-canvas")).toBeHidden();
+  });
 });
