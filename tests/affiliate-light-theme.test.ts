@@ -13,11 +13,14 @@ describe("affiliate page light theme", () => {
   });
 
   it("uses clear eligibility and commission messaging instead of raw states", () => {
+    expect(source).toContain('AdminShell title="推薦折抵與受控聯盟"');
     expect(source).toContain("canApplyAffiliate");
     expect(source).toContain("disabled={applyDisabled}");
     expect(source).toContain("目前僅開放折抵金");
     expect(source).toContain("Simple release 仍以推薦活動與折抵金為主");
+    expect(source).toContain("受控現金流程狀態");
     expect(source).toContain("commissionStatusLabel");
+    expect(source).not.toContain('AdminShell title="聯盟分潤"');
     expect(source).not.toContain("可提領佣金");
     expect(source).not.toContain("提領申請中");
     expect(source).not.toContain("not_applied");

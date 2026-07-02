@@ -1,3 +1,15 @@
+# Latest - 2026-07-02 Affiliate public title credit-first wording
+
+Current status:
+
+- [x] /affiliate now uses the title 推薦折抵與受控聯盟 instead of presenting the page as public 聯盟分潤.
+- [x] The status card now emphasizes controlled cash operations while keeping referral credit v1 as the public direction.
+- [x] Source and route smoke expectations were updated to prevent the old cash-first heading from returning.
+
+Remaining:
+
+- [ ] Keep cash payout hidden behind legal, tax, anti-fraud, reconciliation, and operator approval gates.
+
 # Latest - 2026-07-02 Financial surfaces mobile and cash-payout wording QA
 
 Current status:

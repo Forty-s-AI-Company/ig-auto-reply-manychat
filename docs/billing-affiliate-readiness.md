@@ -1,3 +1,15 @@
+# 2026-07-02 - Affiliate public title credit-first wording
+
+- [x] /affiliate now presents as 推薦折抵與受控聯盟, not a cash-first 聯盟分潤 page.
+- [x] Public copy keeps referral credit v1 as the launch-safe direction and frames cash payout as controlled future operations.
+- [x] Route smoke expectations were updated so the old heading does not quietly return.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- Users should be less likely to assume self-service cash payout is open during the referral-credit launch phase.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, or Meta App Review action was performed.
+
 # Billing / Affiliate Readiness
 
 # 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
