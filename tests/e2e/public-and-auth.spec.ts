@@ -154,8 +154,10 @@ test.describe("authenticated route smoke", () => {
     }
     await page.getByTestId("automation-trigger-filter").selectOption("all");
     await expect(page.getByRole("button", { name: "回收桶" })).toBeDisabled();
+    await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("aria-describedby", "automation-trash-disabled-reason");
     await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("title", /受控開通/);
     await expect(page.getByTestId("automation-trash-disabled")).not.toHaveAttribute("title", /沒接好/);
+    await expect(page.locator("#automation-trash-disabled-reason")).toContainText("還原、永久刪除與稽核紀錄");
     await page.getByTestId("automation-tab-basic").click();
     await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
@@ -176,8 +178,10 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByLabel("展開節點編輯面板")).toHaveCount(0);
     await expect(page.getByTestId("automation-editor-more-disabled")).toBeDisabled();
     await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-label", "更多操作受控開通");
+    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-describedby", "automation-editor-more-disabled-reason");
     await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("title", /受控開通/);
     await expect(page.getByTestId("automation-editor-more-disabled")).not.toHaveAttribute("title", /沒有接好/);
+    await expect(page.locator("#automation-editor-more-disabled-reason")).toContainText("複製、封存與匯出");
     await expect(page.getByPlaceholder("搜尋其他自動化…")).toBeVisible();
   });
 

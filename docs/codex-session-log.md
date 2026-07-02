@@ -1,3 +1,9 @@
+## 2026-07-03 - Automations disabled controls reason linkage
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Automations overview trash control and editor more-actions control.
+- Change: added visible controlled-opening reasons and connected disabled controls with aria-describedby.
+- Validation planned: focused auth Playwright smoke, lint, build, npm test.
 ## 2026-07-03 - Inbox disabled controls reason linkage
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

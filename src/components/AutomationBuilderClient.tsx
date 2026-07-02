@@ -1930,26 +1930,32 @@ function FlowBuilderInner({
                     <option value="stopped">已停止</option>
                   </select>
                 </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFolderDialogOpen(true)}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
-                >
-                  <Plus className="h-4 w-4" />
-                  新增資料夾
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    disabled
-                    aria-disabled="true"
-                    data-testid="automation-trash-disabled"
-                    title="回收桶屬於受控開通功能，需先完成流程還原、永久刪除與稽核紀錄設計。"
-                    className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
+                    onClick={() => setFolderDialogOpen(true)}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-dashed border-[var(--ip-primary)] px-4 text-sm font-semibold text-[var(--ip-primary)] hover:bg-[var(--ip-primary-soft)]"
                   >
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    回收桶
+                    <Plus className="h-4 w-4" />
+                    新增資料夾
                   </button>
+                  <div className="text-right">
+                    <button
+                      type="button"
+                      disabled
+                      aria-disabled="true"
+                      aria-describedby="automation-trash-disabled-reason"
+                      data-testid="automation-trash-disabled"
+                      title="回收桶屬於受控開通功能，需先完成流程還原、永久刪除與稽核紀錄設計。"
+                      className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
+                    >
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      回收桶
+                    </button>
+                    <p id="automation-trash-disabled-reason" className="mt-1 max-w-[220px] text-xs leading-5 text-[var(--ip-muted-2)]">
+                      回收桶需先完成還原、永久刪除與稽核紀錄設計後再開放。
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -2388,18 +2394,24 @@ function FlowBuilderInner({
             <Save className="h-4 w-4" aria-hidden="true" />
             {saving ? "儲存中…" : "儲存"}
           </button>
-          <button
-            type="button"
-            disabled
-            title="更多操作屬於受控開通功能，需先完成複製、封存、匯出與稽核紀錄設計。"
-            aria-label="更多操作受控開通"
-            aria-disabled="true"
-            data-testid="automation-editor-more-disabled"
-            className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-500 opacity-70"
-          >
-            <MoreVertical className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden sm:inline">更多操作受控</span>
-          </button>
+          <div className="text-right">
+            <button
+              type="button"
+              disabled
+              title="更多操作屬於受控開通功能，需先完成複製、封存、匯出與稽核紀錄設計。"
+              aria-label="更多操作受控開通"
+              aria-describedby="automation-editor-more-disabled-reason"
+              aria-disabled="true"
+              data-testid="automation-editor-more-disabled"
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-500 opacity-70"
+            >
+              <MoreVertical className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">更多操作受控</span>
+            </button>
+            <p id="automation-editor-more-disabled-reason" className="mt-1 max-w-[220px] text-xs leading-5 text-zinc-500">
+              複製、封存與匯出需完成權限與稽核紀錄後再開放。
+            </p>
+          </div>
         </div>
       </div>
 

@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Automations disabled controls reason linkage
+
+Current status:
+
+- [x] Automations overview回收桶 disabled control now links to a visible controlled-opening reason.
+- [x] Automation editor more-actions disabled control now links to a visible permission / audit prerequisite reason.
+- [x] Playwright smoke checks the disabled reasons are visible and connected through aria-describedby.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Inbox disabled controls reason linkage
 
 Current status:
