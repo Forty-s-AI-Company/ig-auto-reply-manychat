@@ -8619,3 +8619,32 @@ Launch impact:
 
 - The real empty-tenant staging/browser QA gate is now closed.
 - Remaining public paid launch blockers stay external/manual: Meta App Review, PayUNI production go-live, and final controlled Production launch.
+
+# 2026-07-03 - Empty workspace activation CTA clickthrough
+
+Task:
+
+- Close the remaining first-run activation path gap for a true empty workspace: Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty, without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Dashboard and Inbox already sent a zero-Instagram workspace to `/channels/connect`.
+- Contacts still sent the first-run “connect Instagram” CTA directly to `/channels/connect/social`, which skipped the higher-level connection choice screen used by the rest of the onboarding path.
+- The local empty-workspace Playwright smoke verified CTA hrefs and page visibility, but did not actually click the main first-run CTAs.
+
+Changes:
+
+- Updated Contacts empty-state “連接 Instagram 帳號” to route to `/channels/connect`.
+- Extended the empty-workspace Playwright smoke to click through Dashboard, Inbox, Contacts, and Automations first-run CTAs on desktop and mobile.
+- Added coverage that Automations “新增自動化” opens the template dialog and “查看基礎流程” switches to the basic-flow surface.
+
+Validation:
+
+- `npx vitest run tests/contacts-empty-state.test.ts tests/activation-path-empty-states.test.ts --reporter=dot`: passed.
+- `npm run e2e:empty:ensure`: passed.
+- `npx playwright test tests/e2e/empty-workspace-activation.spec.ts --workers=1`: passed on `chromium` and `mobile-chrome`.
+
+Launch impact:
+
+- First-run onboarding is more consistent and better covered by repeatable local smoke.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.

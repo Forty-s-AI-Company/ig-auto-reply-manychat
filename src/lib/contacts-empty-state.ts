@@ -62,7 +62,7 @@ export function getContactsEmptyState(input: ContactsEmptyStateInput): ContactsE
     actions: [
       {
         label: "連接 Instagram 帳號",
-        href: "/channels/connect/social",
+        href: "/channels/connect",
         testId: "contacts-empty-connect-instagram",
       },
       {

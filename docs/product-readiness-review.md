@@ -1685,3 +1685,16 @@ Readiness implication:
 
 - Local QA can now catch first-run onboarding regressions instead of relying only on seeded E2E accounts.
 - Preview / Staging now has a real empty tenant browser QA pass on desktop/mobile, using a fresh staging signup and selector-level assertions for Dashboard, Channels, Inbox, Contacts, and Automations.
+
+## 2026-07-03 - Empty workspace activation CTA clickthrough
+
+Status:
+
+- Contacts now routes the first-run Instagram connection CTA through the same `/channels/connect` entry used by Dashboard and Inbox.
+- The empty-workspace smoke now clicks through the primary CTAs for Dashboard, Inbox, Contacts, and Automations on desktop and mobile.
+- Automations first-run CTAs are covered for template dialog opening and basic-flow switching.
+
+Readiness implication:
+
+- The first-run path is less likely to strand a new user on a deep social callback page or a CTA that was only statically tested.
+- This improves local QA coverage only; production launch still depends on the existing manual gates.
