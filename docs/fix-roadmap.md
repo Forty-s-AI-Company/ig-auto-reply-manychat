@@ -3329,3 +3329,16 @@ Remaining:
 - `[x]` Ran the same empty-workspace path on Preview / Staging with a real empty test tenant before public paid launch.
 - `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.
 
+
+## Latest - 2026-07-03 Empty workspace activation CTA clickthrough
+
+Current status:
+
+- `[x]` Contacts first-run CTA now matches Dashboard / Inbox and routes to `/channels/connect`.
+- `[x]` Empty workspace smoke now clicks through Dashboard, Inbox, Contacts, and Automations CTAs on desktop and mobile instead of only checking hrefs.
+- `[x]` Automations empty state smoke confirms “新增自動化” opens the template dialog and “查看基礎流程” switches to the basic-flow surface.
+
+Remaining:
+
+- `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.
+- `[ ]` Meta App Review, PayUNI production go-live, and final controlled Production launch remain separate manual gates.

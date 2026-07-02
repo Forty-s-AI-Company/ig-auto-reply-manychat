@@ -53,6 +53,14 @@ test.describe("empty workspace activation path", () => {
     await expect(page.getByTestId("dashboard-recent-automations-empty-cta")).toHaveAttribute("href", "/automations");
     await expectNoHorizontalOverflow(page);
 
+    await page.getByTestId("dashboard-recent-messages-empty-cta").click();
+    await expect(page).toHaveURL(/\/channels\/connect$/);
+    await expect(page.getByRole("heading", { name: "連接平台帳號" })).toBeVisible();
+    await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
+    await page.getByTestId("dashboard-recent-automations-empty-cta").click();
+    await expect(page).toHaveURL(/\/automations$/);
+    await expect(page.getByTestId("automation-list-empty")).toBeVisible();
+
     await page.goto("/channels/connect", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "連接平台帳號" })).toBeVisible();
     await expect(page.locator("body")).toContainText("目前可連線");
@@ -69,13 +77,22 @@ test.describe("empty workspace activation path", () => {
     await expect(page.getByTestId("inbox-empty-manage-tags")).toHaveAttribute("href", "/contacts");
     await expectNoHorizontalOverflow(page);
 
+    await page.getByTestId("inbox-empty-connect-instagram").click();
+    await expect(page).toHaveURL(/\/channels\/connect$/);
+    await expect(page.getByRole("heading", { name: "連接平台帳號" })).toBeVisible();
+
     await page.goto("/contacts", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "聯絡人" }).first()).toBeVisible();
     await expect(page.locator("body")).toContainText("目前還沒有聯絡人");
     await expect(page.locator("body")).toContainText("現在可以先連接 Instagram 帳號");
+    await expect(page.getByTestId("contacts-empty-connect-instagram")).toHaveAttribute("href", "/channels/connect");
     await expect(page.locator("body")).toContainText("前往標籤管理");
     await expect(page.locator("body")).toContainText("CSV 匯入不是壞掉");
     await expectNoHorizontalOverflow(page);
+
+    await page.getByTestId("contacts-empty-connect-instagram").click();
+    await expect(page).toHaveURL(/\/channels\/connect$/);
+    await expect(page.getByRole("heading", { name: "連接平台帳號" })).toBeVisible();
 
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: "自動化" }).first()).toBeVisible();
@@ -83,6 +100,14 @@ test.describe("empty workspace activation path", () => {
     await expect(page.getByTestId("automation-list-empty")).toContainText("新工作區可以先從 Instagram 預設回覆或空白流程開始");
     await expect(page.getByTestId("automation-empty-create-cta")).toBeVisible();
     await expect(page.getByTestId("automation-empty-basic-cta")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    await page.getByTestId("automation-empty-create-cta").click();
+    await expect(page.getByTestId("automation-template-dialog")).toBeVisible();
+    await page.getByLabel("關閉模板選擇").click();
+    await expect(page.getByTestId("automation-template-dialog")).toBeHidden();
+    await page.getByTestId("automation-empty-basic-cta").click();
+    await expect(page.locator("body")).toContainText("基礎流程");
     await expectNoHorizontalOverflow(page);
   });
 });
