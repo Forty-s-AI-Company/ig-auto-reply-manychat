@@ -1698,3 +1698,15 @@ Readiness implication:
 
 - The first-run path is less likely to strand a new user on a deep social callback page or a CTA that was only statically tested.
 - This improves local QA coverage only; production launch still depends on the existing manual gates.
+
+## 2026-07-03 - Channels connect card accessibility polish
+
+Status:
+
+- Channels connect cards now have clearer keyboard focus behavior and safer mobile layout.
+- Decorative platform icons are hidden from assistive technology so users hear the visible platform names instead of implementation IDs.
+
+Readiness implication:
+
+- The Instagram connection entry is a little more production-grade for keyboard and mobile users.
+- This is UI/accessibility polish only and does not change OAuth, provider visibility, tenant scope, or payment behavior.

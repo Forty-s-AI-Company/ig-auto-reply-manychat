@@ -8648,3 +8648,30 @@ Launch impact:
 
 - First-run onboarding is more consistent and better covered by repeatable local smoke.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-03 - Channels connect card accessibility polish
+
+Task:
+
+- Continue the first-run activation path closeout by tightening Channels connect card UX, without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- The connectable platform card was a full-card link but did not expose a visible focus ring for keyboard users.
+- Platform cards used a horizontal layout at all sizes, which was more cramped on narrow mobile viewports.
+- Decorative platform icons exposed technical labels such as `social` to assistive technology.
+
+Changes:
+
+- Added visible focus treatment to connectable platform cards.
+- Made connectable and disabled channel cards stack on mobile and switch to row layout on wider screens.
+- Marked platform icons as decorative and added stable disabled-button test IDs / title text.
+
+Validation:
+
+- `npx vitest run tests/channels-connect-visibility.test.ts tests/activation-path-empty-states.test.ts --reporter=dot`: passed.
+
+Launch impact:
+
+- Product UX / accessibility polish only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
