@@ -3257,3 +3257,18 @@ Remaining:
 
 - `[ ]` After this reaches Preview, run a real browser mobile QA pass against Automations / Sequences / Segments to catch device-specific keyboard and viewport quirks.
 - `[ ]` Simple-release smoke still needs a correctly configured local simple-release environment before it can be counted as a full local pass.
+
+## Latest - 2026-07-02 Billing / PayUNI Sandbox / referral credit UX QA
+
+Current status:
+
+- `[x]` Billing checkout CTA now clearly distinguishes PayUNI Sandbox from production charging.
+- `[x]` Referral credit public copy now consistently describes 7-day pending observation, 30-day expiry, no cash-out, and refund cancellation / clawback.
+- `[x]` Wallet now explains refund-driven cancellation and clawback in the ledger guidance.
+- `[x]` Admin invoice refund dialog is mobile scroll-safe and explicitly says it does not refund credit cards or call PayUNI automatically.
+- `[x]` Admin payout review copy now states approve / reject does not trigger bank transfer, payment gateway transfer, or cash payout.
+
+Remaining:
+
+- `[ ]` PayUNI production go-live remains blocked until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.
+- `[ ]` Referral credit v1 still needs a Preview/Staging browser QA pass with real sandbox checkout and refund simulation evidence before paid launch.

@@ -74,6 +74,9 @@ export default async function AdminPayoutsPage() {
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
             這是內部保留的受控提領面板，不屬於目前公開銷售主線。核准只代表進入批次對帳，不會自動匯款。
           </p>
+          <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+            目前公開產品只提供推薦折抵；這裡的核准 / 退回是營運審核紀錄，不會觸發銀行匯款、金流付款或現金提領。
+          </p>
         </div>
 
         <div className="overflow-x-auto">
@@ -106,17 +109,19 @@ export default async function AdminPayoutsPage() {
                         <form action={`/api/admin/payouts/${request.id}/approve`} method="post">
                           <button
                             type="submit"
-                            className="inline-flex h-8 items-center rounded-md bg-[var(--primary)] px-3 text-xs font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]"
+                            title="核准只會進入內部批次對帳，不會自動匯款。"
+                            className="inline-flex h-8 items-center rounded-md bg-[var(--primary)] px-3 text-xs font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                           >
-                            核准
+                            核准進入批次
                           </button>
                         </form>
                         <form action={`/api/admin/payouts/${request.id}/reject`} method="post">
                           <button
                             type="submit"
-                            className="inline-flex h-8 items-center rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 hover:bg-red-100"
+                            title="退回只會更新內部申請狀態，不會執行金流動作。"
+                            className="inline-flex h-8 items-center rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
                           >
-                            退回
+                            退回申請
                           </button>
                         </form>
                       </div>

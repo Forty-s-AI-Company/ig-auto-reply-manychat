@@ -18,7 +18,10 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("ReferralLinkCopyButton");
     expect(source).toContain('data-testid="referrals-url"');
     expect(source).toContain("7 天退款觀察期");
+    expect(source).toContain("30 天內要使用");
+    expect(source).toContain("formatReferralDate");
     expect(source).not.toContain("<span>{item.status}</span>");
+    expect(source).not.toContain("toLocaleDateString");
   });
 
   it("keeps affiliate cash payout behind a controlled-opening gate", () => {
@@ -38,6 +41,9 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("/approve");
     expect(source).toContain("/reject");
     expect(source).toContain("內部保留的受控提領面板");
+    expect(source).toContain("不會觸發銀行匯款、金流付款或現金提領");
+    expect(source).toContain("核准進入批次");
+    expect(source).toContain("退回申請");
     expect(source).toContain("核准");
     expect(source).toContain("退回");
   });

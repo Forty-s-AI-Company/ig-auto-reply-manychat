@@ -14,8 +14,12 @@ describe("admin invoices refund UI", () => {
     expect(buttonSource).toContain("確認標記退款？");
     expect(buttonSource).toContain('role="dialog"');
     expect(buttonSource).toContain('aria-modal="true"');
+    expect(buttonSource).toContain('data-testid="admin-invoice-refund-dialog"');
     expect(buttonSource).toContain('data-testid="admin-invoice-refund-confirm"');
+    expect(buttonSource).toContain("不會退回使用者信用卡款項");
+    expect(buttonSource).toContain("overscroll-contain");
     expect(buttonSource).not.toContain("window.confirm");
+    expect(buttonSource).not.toContain("處理中...");
     expect(buttonSource).toContain("/api/admin/invoices/${invoiceId}/refund");
   });
 
