@@ -733,4 +733,4 @@ Current decision:
 
 - `[x]` Local Playwright coverage now includes an isolated empty workspace smoke for Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty.
 - `[x]` Dashboard no-data CTA now points a zero-IG workspace to Instagram connection before mock tester flows.
-- `[ ]` Preview / Staging still needs a real empty tenant browser QA pass before paid launch.
+- `[x]` Preview / Staging now has a real empty tenant browser QA pass on desktop/mobile via a fresh staging signup, and the staging branch has been synced with master (`PR #132`) so the same empty-workspace CTA path is live on `staging.carry-digital-nomad.in.net`.

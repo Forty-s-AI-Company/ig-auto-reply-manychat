@@ -3114,8 +3114,8 @@ Remaining:
 
 
 ## [2026-07-02] QA Analysis Complete
-- [x] Staging Àô¹Ò¥þ­¶­±ºÝ¨ìºÝ½]®Ö (UI¤@­P©Ê»P°²«ö¶s±Æ°£)
-- [ ] Analytics ­¶­±¹Ïªí¤Æ (¥¼¨ÓÀu¤Æ¶µ¥Ø)
+- [x] Staging ï¿½ï¿½ï¿½Ò¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¨ï¿½Ý½]ï¿½ï¿½ (UIï¿½@ï¿½Pï¿½Ê»Pï¿½ï¿½ï¿½ï¿½ï¿½sï¿½Æ°ï¿½)
+- [ ] Analytics ï¿½ï¿½ï¿½ï¿½ï¿½Ïªï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½uï¿½Æ¶ï¿½ï¿½ï¿½)
 
 
 ## Latest - 2026-07-02 Analytics Recharts 7-day message trend
@@ -3312,7 +3312,7 @@ Current status:
 
 Remaining:
 
-- `[ ]` A Preview / Staging browser QA pass should still exercise a truly empty workspace because local E2E fixtures intentionally seed data for authenticated flow tests.
+- `[x]` A Preview / Staging browser QA pass now exercises a truly empty workspace with a fresh staging tenant on desktop/mobile.
 - `[ ]` Meta App Review, PayUNI production go-live, and final production deploy remain separate manual gates.
 
 ## Latest - 2026-07-02 Empty workspace activation smoke
@@ -3326,5 +3326,6 @@ Current status:
 
 Remaining:
 
-- `[ ]` Run the same empty-workspace path on Preview / Staging with a real empty test tenant before public paid launch.
+- `[x]` Ran the same empty-workspace path on Preview / Staging with a real empty test tenant before public paid launch.
 - `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.
+

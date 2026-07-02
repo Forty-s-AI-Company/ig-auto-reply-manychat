@@ -8577,3 +8577,45 @@ Launch impact:
 
 - Adds local test coverage and first-run CTA correction only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Staging empty tenant QA parity
+
+Task:
+
+- Compare the new local empty-workspace smoke against a real empty tenant on Preview / Staging, without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- A fresh staging email signup could create a truly empty tenant safely, so no third-party secret or operator login was required.
+- The first browser pass showed `staging` was behind `master`, which explained why the empty-workspace path still looked like the older seeded-product experience.
+- `origin/staging` was 8 commits behind `origin/master`, so the correct fix was branch parity rather than another product-side patch on `master`.
+
+Changes:
+
+- Created and merged `PR #132` (`Sync master into staging for empty-workspace QA parity`) into `staging`.
+- Preserved the staging alias guard while keeping the production-skip protection in `.github/workflows/update-staging-alias.yml`.
+- Re-ran a real staging empty-tenant browser QA after the sync, covering desktop and mobile for Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty.
+
+Validation:
+
+- Fresh staging signup and login worked with a generated empty tenant on `https://staging.carry-digital-nomad.in.net`.
+- Selector-level assertions passed for desktop and mobile:
+  - `dashboard-recent-messages-empty-cta` -> `/channels/connect`
+  - `inbox-empty-onboarding`
+  - `inbox-empty-connect-instagram` -> `/channels/connect`
+  - Contacts empty guidance copy
+  - `automation-list-empty`
+  - `automation-empty-create-cta`
+  - `automation-empty-basic-cta`
+- `PR #132` checks passed:
+  - Vercel Preview
+  - staging alias update
+  - staging CI (`lint-test`, `full-release-auth-smoke`, `simple-release-smoke`)
+- Health checks after merge:
+  - Production `/api/health`: OK
+  - Staging `/api/health/staging`: OK
+
+Launch impact:
+
+- The real empty-tenant staging/browser QA gate is now closed.
+- Remaining public paid launch blockers stay external/manual: Meta App Review, PayUNI production go-live, and final controlled Production launch.
