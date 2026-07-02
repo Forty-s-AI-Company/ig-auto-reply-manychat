@@ -14,6 +14,8 @@ describe("channel client feedback", () => {
 
       expect(source, file).not.toMatch(/\bwindow\.alert\s*\(/);
       expect(source, file).not.toMatch(/[^\w.]alert\s*\(/);
+      expect(source, file).not.toMatch(/\bwindow\.confirm\s*\(/);
+      expect(source, file).not.toMatch(/[^\w.]confirm\s*\(/);
       expect(source, file).toContain('aria-live="polite"');
     }
   });
@@ -24,6 +26,9 @@ describe("channel client feedback", () => {
     expect(source).toContain('setError("重新載入資料失敗，請稍後再試。")');
     expect(source).toContain('setError(typeof data.error === "string" ? data.error : "刪除失敗，請稍後再試。")');
     expect(source).toContain('setFeedback("已刪除資料。")');
+    expect(source).toContain('role="dialog"');
+    expect(source).toContain('aria-modal="true"');
+    expect(source).toContain('data-testid="json-crud-confirm-delete"');
     expect(source).not.toContain('await fetch(`${endpoint}/${id}`, { method: "DELETE" });\n    await reload();');
   });
 
@@ -57,6 +62,9 @@ describe("channel client feedback", () => {
 
     expect(disconnect).toContain('bg-white');
     expect(disconnect).toContain('text-[#b42318]');
+    expect(disconnect).toContain('role="dialog"');
+    expect(disconnect).toContain('aria-modal="true"');
+    expect(disconnect).toContain('data-testid="disconnect-channel-confirm"');
     expect(disconnect).not.toMatch(/red-900|red-950|text-red-300/);
     expect(profileRefresh).toContain('bg-white');
     expect(profileRefresh).toContain('text-[#b54708]');

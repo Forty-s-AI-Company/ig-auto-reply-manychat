@@ -46,6 +46,7 @@ export function SequencesClient({
   const [editingSequenceId, setEditingSequenceId] = useState("");
   const [selectedSequenceId, setSelectedSequenceId] = useState(initialSequences[0]?.id || "");
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || "");
+  const [deleteTargetId, setDeleteTargetId] = useState("");
   const [message, setMessage] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -170,7 +171,6 @@ export function SequencesClient({
   }
 
   async function deleteSequence(id: string) {
-    if (!confirm("確定要刪除這個序列？")) return;
     setMessage("");
     const response = await fetch(`/api/sequences/${id}`, { method: "DELETE" });
     if (!response.ok) {
@@ -179,6 +179,7 @@ export function SequencesClient({
       return;
     }
     if (selectedSequenceId === id) setSelectedSequenceId("");
+    setDeleteTargetId("");
     await reload();
   }
 
@@ -228,7 +229,7 @@ export function SequencesClient({
                 </button>
                 <button
                   type="button"
-                  onClick={() => deleteSequence(sequence.id)}
+                  onClick={() => setDeleteTargetId(sequence.id)}
                   className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
                 >
                   刪除
@@ -386,6 +387,40 @@ export function SequencesClient({
           </div>
         </section>
       </aside>
+      {deleteTargetId ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="presentation">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sequence-delete-title"
+            className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+          >
+            <h2 id="sequence-delete-title" className="text-base font-semibold text-[#111827]">
+              確認刪除序列？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#475467]">
+              刪除後，這個序列的步驟與後續訂閱排程會一併移除。若只是暫停發送，請改用「停用序列」再儲存。
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTargetId("")}
+                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc]"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteSequence(deleteTargetId)}
+                data-testid="sequence-confirm-delete"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800"
+              >
+                確認刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

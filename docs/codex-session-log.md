@@ -8251,3 +8251,50 @@ Launch impact:
 
 - Improves the first product path after login without touching production DB, migration flow, Meta review state, or PayUNI production mode.
 - The main remaining sellability gap in this path is now less about dead-end UX and more about deeper product coverage in Automations / Billing / Referral.
+
+# 2026-07-02 - Final release QA destructive-action closeout
+
+Task:
+
+- Run the final release QA pass from a product acceptance perspective and fix the safest P1/P2 issue found during source review.
+
+Findings:
+
+- Product source still had native browser confirmation prompts for several destructive actions: channel disconnect, admin invoice refund / referral credit clawback, shared JSON CRUD delete, and sequence delete.
+- Native browser prompts made these flows feel unfinished and did not provide enough domain-specific warning copy.
+
+Changes:
+
+- Replaced channel disconnect, admin refund, shared JSON CRUD delete, and sequence delete native confirmations with in-app confirmation dialogs.
+- Added regression coverage to prevent these flows from returning to `window.confirm()` / `confirm()`.
+- Added final release QA docs: route/API checklist, release checklist, QA report, and manual QA script.
+
+Validation:
+
+- `npx vitest run tests/channel-client-feedback.test.ts tests/admin-invoices-page.test.ts tests/sequences-form-state.test.ts --reporter=dot`: passed.
+- `npx eslint src/components/DisconnectChannelButton.tsx src/components/AdminInvoiceRefundButton.tsx src/components/JsonCrudClient.tsx src/components/SequencesClient.tsx tests/channel-client-feedback.test.ts tests/admin-invoices-page.test.ts tests/sequences-form-state.test.ts`: passed.
+- Full `npm run lint`, `npm run build`, and `npm test` still need final run after docs are written.
+
+Launch impact:
+
+- Product UX and operator safety improvement only.
+- No production DB, Production deployment, migration, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Final release QA validation update
+
+Validation update:
+
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed. Windows Vitest batch `3221225477` occurred once; the project runner reran affected files individually and all passed.
+- `npm run e2e:admin:ensure`: passed.
+- `npm run test:e2e:auth`: passed after refreshing local E2E admin fixtures. Result: 27 passed, 1 skipped.
+- `npm run test:e2e:inbox`: passed. Result: 2 passed.
+- `npm run test:e2e:contacts`: passed. Result: 8 passed.
+- `npm run test:e2e:simple`: skipped by current simple-release smoke guard in this local environment; not counted as passed.
+
+Notes:
+
+- A stale Next dev server on port 3041 caused an initial false public landing failure; stopping it let Playwright restart the current branch and pass.
+- React Flow still logs a style warning on Automations route during auth smoke. CSS is imported from root layout now, but the warning remains a P2 follow-up because the smoke itself passes.
+- Hydration mismatch output references `cz-shortcut-listen`, consistent with a local browser extension attribute.

@@ -11,7 +11,11 @@ describe("admin invoices refund UI", () => {
     expect(pageSource).toContain("它不會自動向 PayUNI 發起退款");
     expect(pageSource).toContain("只有已付款帳單可標記退款");
     expect(pageSource).toContain('invoice.status === "paid"');
-    expect(buttonSource).toContain("確認要將這張帳單標記為已退款");
+    expect(buttonSource).toContain("確認標記退款？");
+    expect(buttonSource).toContain('role="dialog"');
+    expect(buttonSource).toContain('aria-modal="true"');
+    expect(buttonSource).toContain('data-testid="admin-invoice-refund-confirm"');
+    expect(buttonSource).not.toContain("window.confirm");
     expect(buttonSource).toContain("/api/admin/invoices/${invoiceId}/refund");
   });
 

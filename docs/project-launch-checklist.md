@@ -720,3 +720,11 @@ Current decision:
 - `[x]` 小型 UI / 文案 / disabled UX 修正先累積成同一主題閉環，再送 Vercel Preview。
 - `[x]` 大功能、完整驗證或需要交付時才推進 Preview / deployment，避免頻繁觸發 build rate limit。
 - `[x]` AI_TEAM / 交付流程文件已寫明 preview/build 額度限制與交付節奏。
+
+## 2026-07-02 - Final release QA checklist added
+
+- `[x]` Added `docs/final-release-qa-checklist.md` for route/API/role/viewport QA coverage.
+- `[x]` Added `docs/final-release-checklist.md` for engineering, product, security, operations, and launch hold gates.
+- `[x]` Added `docs/manual-qa-script.md` for staging/local human QA.
+- `[x]` Added `docs/final-release-qa-report.md` for this final QA pass.
+- `[ ]` Run the manual QA script after this PR merges and before any controlled Production deployment.
