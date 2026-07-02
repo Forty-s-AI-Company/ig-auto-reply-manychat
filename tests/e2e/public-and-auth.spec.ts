@@ -167,7 +167,7 @@ test.describe("authenticated route smoke", () => {
 
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByTestId("automation-header-create-cta").click();
     await page.getByRole("button", { name: "從空白開始" }).click();
     await expect(page.getByTestId("automation-canvas-editor-hint")).toBeVisible();
     await expect(page.getByTestId("automation-canvas-editor-hint")).toContainText("點選節點即可編輯");

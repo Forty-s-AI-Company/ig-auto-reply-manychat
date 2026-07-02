@@ -1659,3 +1659,16 @@ Readiness implication:
 
 - The public pre-payment path is less likely to mislead users into expecting affiliate cash payout or losing referral attribution during signup.
 - PayUNI production, Meta App Review, and final Preview/Staging browser QA remain separate launch gates.
+
+## 2026-07-02 - New-user activation path empty states
+
+Status:
+
+- Dashboard, Inbox, Contacts, and Automations now provide clearer next steps for a new authenticated user with little or no data.
+- Inbox no longer treats a completely empty workspace as a filter-only failure state.
+- Automations now gives a direct first-run CTA from the empty card.
+
+Readiness implication:
+
+- The first-run product path is less likely to feel broken before Instagram data exists.
+- A final browser QA pass against an empty Preview/Staging workspace is still recommended before public paid launch.
