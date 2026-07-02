@@ -3342,3 +3342,15 @@ Remaining:
 
 - `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.
 - `[ ]` Meta App Review, PayUNI production go-live, and final controlled Production launch remain separate manual gates.
+
+## Latest - 2026-07-03 Channels connect card accessibility polish
+
+Current status:
+
+- `[x]` Connectable platform cards now have visible keyboard focus treatment.
+- `[x]` Connect / disabled platform cards stack on mobile and use row layout on wider screens.
+- `[x]` Decorative platform icons no longer expose technical icon IDs to assistive technology.
+
+Remaining:
+
+- `[ ]` Continue product walkthroughs for any remaining visible-but-unusable controls in onboarding, Inbox, Contacts, Automations, Billing, and Referrals.

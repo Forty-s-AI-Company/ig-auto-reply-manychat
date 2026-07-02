@@ -83,7 +83,7 @@ export default async function ChannelConnectionPage() {
               <Link
                 key={channel.name}
                 href={channel.href}
-                className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,24,40,0.12)]"
+                className="flex min-h-[132px] flex-col items-start gap-4 rounded-md bg-white px-5 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,24,40,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:flex-row sm:items-center sm:gap-6 sm:px-8"
               >
                 <ChannelIcon type={channel.icon} />
                 <div className="min-w-0 flex-1">
@@ -106,7 +106,7 @@ export default async function ChannelConnectionPage() {
             />
             <div className="space-y-3">
               {disabledChannels.map((channel) => (
-                <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
+                <div key={channel.name} className="flex min-h-[132px] flex-col items-start gap-4 rounded-md bg-white px-5 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] sm:flex-row sm:items-center sm:gap-6 sm:px-8">
                   <ChannelIcon type={channel.icon} />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -121,6 +121,8 @@ export default async function ChannelConnectionPage() {
                       type="button"
                       disabled
                       aria-disabled="true"
+                      title={channel.uiState.disabledReason || "此平台目前受控開通，暫時不會打開授權流程。"}
+                      data-testid={`channels-connect-${channel.id}-disabled`}
                       className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
                     >
                       {channel.id === "mock" ? "僅限本機 / QA 使用" : channel.uiState.statusLabel || "受控開通"}
@@ -152,7 +154,7 @@ function ChannelIcon({ type }: { type: string }) {
     <span
       className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
       style={{ backgroundColor: item.background }}
-      aria-label={type}
+      aria-hidden="true"
     >
       <Icon className="h-6 w-6 text-white" />
     </span>

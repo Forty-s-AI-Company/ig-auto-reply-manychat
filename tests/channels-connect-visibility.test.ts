@@ -99,7 +99,12 @@ describe("channel connect visibility", () => {
     const source = readFileSync("src/app/channels/connect/page.tsx", "utf8");
 
     expect(source).toContain("受控開通入口");
+    expect(source).toContain("focus-visible:ring-[#006fe6]");
+    expect(source).toContain("sm:flex-row");
+    expect(source).toContain("data-testid={`channels-connect-${channel.id}-disabled`}");
+    expect(source).toContain('aria-hidden="true"');
     expect(source).not.toContain("disabled 入口");
+    expect(source).not.toContain("aria-label={type}");
   });
 
   it("keeps social connect and success pages aligned with settings terminology", () => {
