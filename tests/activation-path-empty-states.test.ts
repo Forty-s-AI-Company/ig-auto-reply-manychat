@@ -39,6 +39,9 @@ describe("new-user activation empty states", () => {
     expect(contactsSource).toContain('data-testid={action.testId}');
     expect(contactsSource).toContain("focus-visible:ring-[#006fe6]");
     expect(contactsSource).toContain("前往標籤管理");
+    expect(contactsSource).toContain("flex min-h-[calc(100vh-100px)] overflow-hidden");
+    expect(contactsSource).toContain("flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap");
+    expect(contactsSource).toContain('data-testid="contacts-create-segment-button"');
   });
 
   it("gives Automations first-run empty state a next step and a safer fallback path", () => {
