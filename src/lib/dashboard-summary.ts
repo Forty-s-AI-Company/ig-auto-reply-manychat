@@ -69,6 +69,12 @@ export function getDashboardSummary(input: SummaryInput) {
       where: { workspaceId: input.workspaceId, type: "instagram", enabled: true },
       select: { configJson: true, name: true },
     });
+    const selectedChannel = input.selectedChannelId
+      ? await db.channel.findFirst({
+          where: { id: input.selectedChannelId, workspaceId: input.workspaceId, type: "instagram", enabled: true },
+          select: { name: true, configJson: true },
+        })
+      : null;
     const recentMessages = await db.message.findMany({
       where: channelWhere,
       orderBy: { createdAt: "desc" },
@@ -93,6 +99,12 @@ export function getDashboardSummary(input: SummaryInput) {
         _count: { select: { steps: true } },
       },
     });
+    const selectedChannelConfig = selectedChannel ? getMetaChannelConfig(selectedChannel.configJson) : null;
+    const selectedChannelDisplayName =
+      selectedChannelConfig?.instagramName ||
+      selectedChannelConfig?.instagramUsername ||
+      selectedChannel?.name ||
+      null;
 
     return {
       contacts,
@@ -100,6 +112,7 @@ export function getDashboardSummary(input: SummaryInput) {
       openConversations,
       automations,
       connectedInstagramChannelRows,
+      selectedChannelDisplayName,
       recentMessages,
       recentAutomations,
     };

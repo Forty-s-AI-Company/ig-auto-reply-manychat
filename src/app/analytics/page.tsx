@@ -179,7 +179,13 @@ export default async function AnalyticsPage() {
                   scopeDetail={analyticsState.scopeDetail}
                 />
               ) : (
-                <EmptyState title={analyticsState.recentMessagesTitle} body={analyticsState.recentMessagesBody} />
+                <EmptyState
+                  title={analyticsState.recentMessagesTitle}
+                  body={analyticsState.recentMessagesBody}
+                  actionHref={analytics.connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect"}
+                  actionLabel={analytics.connectedInstagramChannels > 0 ? "查看收件匣" : "連接 Instagram"}
+                  testId="analytics-empty-messages-cta"
+                />
               )}
             </div>
           </div>
@@ -196,7 +202,13 @@ export default async function AnalyticsPage() {
                   <p>如果流程數量本來就少，顯示 0 不代表壞掉，只是目前還沒累積到太多資料。</p>
                 </div>
               ) : (
-                <EmptyState title={analyticsState.recentAutomationsTitle} body={analyticsState.recentAutomationsBody} />
+                <EmptyState
+                  title={analyticsState.recentAutomationsTitle}
+                  body={analyticsState.recentAutomationsBody}
+                  actionHref="/automations"
+                  actionLabel="建立第一個流程"
+                  testId="analytics-empty-automations-cta"
+                />
               )}
             </div>
           </div>
@@ -228,11 +240,33 @@ function Stat({ label, value, hint }: { label: string; value: number | string; h
   );
 }
 
-function EmptyState({ title, body }: { title: string; body: string }) {
+function EmptyState({
+  title,
+  body,
+  actionHref,
+  actionLabel,
+  testId,
+}: {
+  title: string;
+  body: string;
+  actionHref?: string;
+  actionLabel?: string;
+  testId?: string;
+}) {
   return (
     <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]">
       <p className="font-semibold text-[var(--text-primary)]">{title}</p>
       <p className="mt-1">{body}</p>
+      {actionHref && actionLabel ? (
+        <Link
+          href={actionHref}
+          data-testid={testId}
+          className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+        >
+          {actionLabel}
+          <Compass className="h-4 w-4" />
+        </Link>
+      ) : null}
     </div>
   );
 }

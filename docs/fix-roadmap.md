@@ -3143,3 +3143,19 @@ Current status:
 Remaining:
 
 - `[ ]` 後續可再用瀏覽器完整 QA Dashboard / Inbox / Analytics 的桌機與手機視覺細節，但目前沒有新增 production launch gate。
+
+## Latest - 2026-07-02 Dashboard / Inbox / Contacts / Analytics path closure
+
+Current status:
+
+- `[x]` Dashboard 帳號連線卡片已改成以目前 Instagram scope 與下一步 CTA 為主，不再混入誤導性的方案用量文案。
+- `[x]` Contacts 空狀態現在能分辨「整個 workspace 還沒有聯絡人」與「目前選定的 Instagram 帳號還沒有聯絡人」。
+- `[x]` Analytics 最近訊息 / 最近自動化空狀態現在都有直接 CTA，而不是把使用者留在死巷子。
+- `[x]` 左側 IG 帳號切換器 trigger 現在會顯示副標，multi-account / partial-metadata 狀況更容易辨識。
+- `[x]` Authenticated Playwright smoke 已覆蓋 Dashboard -> Inbox -> Contacts -> Analytics 這條主要使用路徑的 scope 與空狀態引導。
+
+Remaining:
+
+- `[ ]` Automations 仍是下一輪最值得切入的可販售缺口，尤其是 scope clarity、空狀態引導與破壞性操作 dialog 一致性。
+- `[ ]` Billing / Referral 仍需要收斂成更完整的可販售制度與頁面路徑，不在本輪處理。
+- `[ ]` 全量 `npm run lint` 目前仍被 pre-existing 的 `AI_TEAM/scripts/qa-staging.js` CommonJS 寫法卡住；本輪變更檔案的 targeted ESLint 已通過。

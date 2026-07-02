@@ -41,4 +41,27 @@ describe("contacts empty state", () => {
       },
     ]);
   });
+
+  it("explains when the current IG account is empty even though the workspace already has contacts", () => {
+    const state = getContactsEmptyState({
+      activeFilterLabels: [],
+      isChannelScoped: true,
+      workspaceContactCount: 8,
+    });
+
+    expect(state.heading).toBe("目前選定的 Instagram 帳號還沒有聯絡人。");
+    expect(state.description).toContain("左側切到的 IG 帳號");
+    expect(state.actions).toEqual([
+      {
+        label: "前往收件匣確認",
+        href: "/inbox",
+        testId: "contacts-empty-open-inbox",
+      },
+      {
+        label: "檢查 IG 連線",
+        href: "/channels/connect",
+        testId: "contacts-empty-check-channels",
+      },
+    ]);
+  });
 });

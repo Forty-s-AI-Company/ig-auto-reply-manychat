@@ -33,6 +33,8 @@ type ContactsListClientProps = {
   subscribedCount: number;
   unknownCount: number;
   filteredContactCount: number;
+  workspaceContactCount: number;
+  isChannelScoped: boolean;
   q: string;
   status: string;
   tagId: string;
@@ -61,6 +63,8 @@ export function ContactsListClient({
   subscribedCount,
   unknownCount,
   filteredContactCount,
+  workspaceContactCount,
+  isChannelScoped,
   q,
   status,
   tagId,
@@ -95,7 +99,11 @@ export function ContactsListClient({
   }, [q, status, activeStatusLabel, activeTag]);
   const hasActiveFilters = activeFilterLabels.length > 0;
   const resetFiltersHref = buildContactHref(pathname, {});
-  const emptyState = getContactsEmptyState({ activeFilterLabels });
+  const emptyState = getContactsEmptyState({
+    activeFilterLabels,
+    isChannelScoped,
+    workspaceContactCount,
+  });
 
   useEffect(() => {
     queueMicrotask(() => setIsHydrated(true));

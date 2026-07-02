@@ -15,9 +15,17 @@ describe("dashboard recent message empty state", () => {
 
   it("gives the recent automation empty state a real next-step CTA", () => {
     expect(source).toContain('data-testid="dashboard-recent-automations-empty"');
+    expect(source).toContain('data-testid="dashboard-recent-automations-empty-cta"');
     expect(source).toContain("還沒有最近自動化");
     expect(source).toContain('href="/automations"');
     expect(source).toContain("建立自動化");
     expect(source).not.toContain("還沒有自動化。從預設回覆或私訊關鍵字回覆開始最順。");
+  });
+
+  it("keeps the account connection card focused on channel scope instead of mixing in contact quota wording", () => {
+    expect(source).toContain("目前左側切到");
+    expect(source).toContain("管理 IG 連線");
+    expect(source).toContain("查看目前帳號的收件匣");
+    expect(source).not.toContain("免費方案聯絡人用量");
   });
 });
