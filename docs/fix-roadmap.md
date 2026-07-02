@@ -3299,3 +3299,18 @@ Remaining:
 
 - `[ ]` Preview / Staging browser QA should still exercise the full public path: Pricing -> Signup with `?ref=` -> Billing Sandbox -> Referrals / Wallet copy.
 - `[ ]` PayUNI production go-live remains a separate manual gate.
+
+## Latest - 2026-07-02 New-user activation path empty-state QA
+
+Current status:
+
+- `[x]` Dashboard empty CTAs have visible focus treatment and decorative arrow icons are hidden from assistive tech.
+- `[x]` Inbox zero-conversation state now guides users to connect Instagram, return to Dashboard, or prepare contact tags instead of showing only filter reset UX.
+- `[x]` Inbox filtered-empty state still preserves the clear-filter path.
+- `[x]` Automations first-run empty state now offers direct CTA paths to create an automation or inspect basic flows.
+- `[x]` Contacts empty-state CTAs have visible focus rings.
+
+Remaining:
+
+- `[ ]` A Preview / Staging browser QA pass should still exercise a truly empty workspace because local E2E fixtures intentionally seed data for authenticated flow tests.
+- `[ ]` Meta App Review, PayUNI production go-live, and final production deploy remain separate manual gates.

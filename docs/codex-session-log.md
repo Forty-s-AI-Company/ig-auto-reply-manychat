@@ -8518,3 +8518,33 @@ Launch impact:
 
 - Product UX and public pricing clarity only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - New-user activation path empty-state QA
+
+Task:
+
+- Review the first authenticated activation path after signup/login: Dashboard -> Instagram connection prompt -> Inbox empty state -> Contacts empty state -> Automations first CTA, without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Dashboard empty CTAs were useful but lacked the same visible keyboard focus treatment used elsewhere.
+- Inbox had a single empty state that treated a completely new workspace like a filter miss, pushing users toward clearing filters instead of connecting Instagram or returning to onboarding steps.
+- Automations empty state said there were no automations but did not provide an immediate first-run CTA in the empty card itself.
+- Contacts empty-state actions were functionally correct, but the visible focus treatment was weaker than the rest of the launch surface.
+
+Changes:
+
+- Dashboard recent-message and recent-automation empty CTAs now have visible focus rings and decorative icons marked as hidden from assistive tech.
+- Inbox now separates the zero-conversation onboarding state from the filtered-empty state, with CTAs for connecting Instagram, returning to Dashboard, and preparing contact tags.
+- Automations first-run empty state now includes CTAs to create an automation or inspect basic flows.
+- Contacts empty-state links now have visible focus rings.
+- Added source-level regression coverage for the activation-path empty states.
+
+Validation:
+
+- `npx vitest run tests/activation-path-empty-states.test.ts tests/dashboard-empty-state.test.ts tests/contacts-empty-state.test.ts`: passed.
+
+Launch impact:
+
+- Product UX / accessibility polish only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.

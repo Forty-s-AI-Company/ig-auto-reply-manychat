@@ -551,7 +551,7 @@ export function ContactsListClient({
                                   key={action.testId}
                                   href={action.href || resetFiltersHref}
                                   data-testid={action.testId}
-                                  className={`inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium ${
+                                  className={`inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
                                     index === 0 ? "bg-[#006fe6] text-white hover:bg-[#0057b8]" : "border border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
                                   }`}
                                 >
@@ -559,7 +559,7 @@ export function ContactsListClient({
                                 </Link>
                               ),
                             )}
-                            <Link href="/tags" className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
+                            <Link href="/tags" className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                               前往標籤管理
                             </Link>
                           </div>

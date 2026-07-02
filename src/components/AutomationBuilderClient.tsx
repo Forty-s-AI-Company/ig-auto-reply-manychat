@@ -1829,6 +1829,7 @@ function FlowBuilderInner({
             <button
               type="button"
               onClick={() => setTemplateDialogOpen(true)}
+              data-testid="automation-header-create-cta"
               className="ip-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold"
             >
               <Plus className="h-4 w-4" />
@@ -2030,10 +2031,37 @@ function FlowBuilderInner({
                     className="rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] p-8 text-center text-lg text-[var(--ip-text)] shadow-sm"
                     data-testid="automation-list-empty"
                   >
-                    {search || triggerFilter !== "all" || statusFilter !== "all" ? "目前沒有符合篩選條件的自動化" : emptyMessage}
                     {search || triggerFilter !== "all" || statusFilter !== "all" ? (
-                      <p className="mt-2 text-sm font-normal text-[var(--ip-muted)]">請調整搜尋、觸發條件或狀態篩選。</p>
-                    ) : null}
+                      <>
+                        <p>{emptyMessage === "尚未建立自動化" ? "目前沒有符合篩選條件的自動化" : emptyMessage}</p>
+                        <p className="mt-2 text-sm font-normal text-[var(--ip-muted)]">請調整搜尋、觸發條件或狀態篩選。</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>{emptyMessage}</p>
+                        <p className="mx-auto mt-2 max-w-xl text-sm font-normal leading-6 text-[var(--ip-muted)]">
+                          新工作區可以先從 Instagram 預設回覆或空白流程開始；建立後會出現在這裡，也會同步到首頁的最近自動化。
+                        </p>
+                        <div className="mt-5 flex flex-wrap justify-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setTemplateDialogOpen(true)}
+                            data-testid="automation-empty-create-cta"
+                            className="inline-flex h-10 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                          >
+                            新增自動化
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("basic")}
+                            data-testid="automation-empty-basic-cta"
+                            className="inline-flex h-10 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-4 text-sm font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                          >
+                            查看基礎流程
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>

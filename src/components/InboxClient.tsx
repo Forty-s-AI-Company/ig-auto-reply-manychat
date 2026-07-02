@@ -927,23 +927,57 @@ export function InboxClient({
                   </div>
                 ))}
                 {filteredConversations.length === 0 ? (
-                  <div className="px-4 py-8 text-sm text-[#667085]">
-                    <p>目前沒有符合條件的對話。</p>
-                    {activeFilterDescriptions.length > 0 ? (
-                      <p className="mt-2 text-xs leading-5" data-testid="inbox-empty-filter-summary">
-                        目前套用：{activeFilterDescriptions.join("、")}。你可以清除篩選，或換一個關鍵字再找一次。
-                      </p>
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        resetFilters("已清除 Inbox 篩選條件，重新顯示全部對話。");
-                      }}
-                      className="mt-3 rounded-md border border-[#d7dbe0] px-3 py-1.5 text-xs text-[#344054] hover:bg-[#f8fafc]"
-                      data-testid="inbox-empty-reset-filters"
-                    >
-                      清除篩選並重新查看
-                    </button>
+                  <div className="px-4 py-8 text-sm text-[#667085]" data-testid={conversations.length === 0 ? "inbox-empty-onboarding" : "inbox-filter-empty"}>
+                    {conversations.length === 0 ? (
+                      <>
+                        <p className="font-semibold text-[#111827]">還沒有任何對話</p>
+                        <p className="mt-2 text-xs leading-5">
+                          先連接 Instagram 帳號；收到第一則私訊或留言同步後，這裡會顯示可回覆、備註、指派與加標籤的對話。
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <Link
+                            href="/channels/connect"
+                            data-testid="inbox-empty-connect-instagram"
+                            className="inline-flex h-9 items-center justify-center rounded-md bg-[#006fe6] px-3 text-xs font-semibold text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          >
+                            連接 Instagram
+                          </Link>
+                          <Link
+                            href="/dashboard"
+                            data-testid="inbox-empty-open-dashboard"
+                            className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-xs font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          >
+                            回首頁看下一步
+                          </Link>
+                          <Link
+                            href="/contacts"
+                            data-testid="inbox-empty-manage-tags"
+                            className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-xs font-semibold text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          >
+                            建立聯絡人標籤
+                          </Link>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p>目前沒有符合條件的對話。</p>
+                        {activeFilterDescriptions.length > 0 ? (
+                          <p className="mt-2 text-xs leading-5" data-testid="inbox-empty-filter-summary">
+                            目前套用：{activeFilterDescriptions.join("、")}。你可以清除篩選，或換一個關鍵字再找一次。
+                          </p>
+                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            resetFilters("已清除 Inbox 篩選條件，重新顯示全部對話。");
+                          }}
+                          className="mt-3 rounded-md border border-[#d7dbe0] px-3 py-1.5 text-xs text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                          data-testid="inbox-empty-reset-filters"
+                        >
+                          清除篩選並重新查看
+                        </button>
+                      </>
+                    )}
                   </div>
                 ) : null}
               </div>
