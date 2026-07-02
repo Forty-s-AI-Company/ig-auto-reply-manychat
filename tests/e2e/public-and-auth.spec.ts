@@ -272,16 +272,37 @@ test.describe("authenticated route smoke", () => {
     await page.goto("/channels", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("channels-notifications-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-notifications-disabled")).toContainText("Email 通知受控開通");
+    await expect(page.getByTestId("channels-notifications-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "channels-notifications-disabled-reason",
+    );
+    await expect(page.locator("#channels-notifications-disabled-reason")).toContainText("退訂");
     await expect(page.getByTestId("channels-display-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-display-disabled")).toContainText("主題與語言受控開通");
+    await expect(page.getByTestId("channels-display-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "channels-display-disabled-reason",
+    );
     await expect(page.getByTestId("channels-logs-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-logs-disabled")).toContainText("稽核紀錄受控開通");
+    await expect(page.getByTestId("channels-logs-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "channels-logs-disabled-reason",
+    );
     await expect(page.locator("body")).toContainText("AI 設定");
     await expect(page.locator("body")).toContainText(/前往 AI 設定|完整版測試站可設定/);
     await expect(page.getByTestId("channels-sequence-settings-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-sequence-settings-disabled")).toContainText("序列設定受控開通");
+    await expect(page.getByTestId("channels-sequence-settings-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "channels-sequence-settings-disabled-reason",
+    );
     await expect(page.getByTestId("channels-conversion-events-disabled")).toBeDisabled();
     await expect(page.getByTestId("channels-conversion-events-disabled")).toContainText("轉換事件受控開通");
+    await expect(page.getByTestId("channels-conversion-events-disabled")).toHaveAttribute(
+      "aria-describedby",
+      "channels-conversion-events-disabled-reason",
+    );
   });
 
   test("shows billing sandbox gate guidance", async ({ page }) => {

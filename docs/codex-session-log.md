@@ -1,3 +1,9 @@
+## 2026-07-03 05:40 +08:00 - Channels settings disabled controls reason linkage
+
+- Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.
+- Updated Channels settings disabled controls so planned notification, logs, display, sequence, conversion, and AI settings actions expose visible controlled-opening reasons.
+- Connected disabled controls to their reason text with aria-describedby and expanded auth smoke coverage.
+- Validation target: focused auth smoke, lint, build, npm test.
 ## 2026-07-03 - Social connect disabled provider reason linkage
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Channels settings disabled reason linkage
+
+Current status:
+
+- [x] Channels settings disabled controls now expose visible controlled-opening reasons.
+- [x] Disabled setting buttons reference their reason text with aria-describedby.
+- [x] Auth smoke coverage checks the reason linkage for notification, display, logs, sequence, and conversion controls.
+
+Remaining:
+
+- [ ] Continue local-only product sweeps while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Social connect disabled provider reason linkage
 
 Current status:

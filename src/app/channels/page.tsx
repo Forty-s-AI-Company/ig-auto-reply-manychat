@@ -277,7 +277,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel id="notifications" icon={<Bell className="h-5 w-5" />} title="通知設定">
               Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率完成權限與退訂規則後再開放。
               <div>
-                <DisabledFeatureButton testId="channels-notifications-disabled">Email 通知受控開通</DisabledFeatureButton>
+                <DisabledFeatureButton
+                  testId="channels-notifications-disabled"
+                  reason="Email 通知需要完成退訂、頻率與寄送紀錄規則後才會開放。"
+                >
+                  Email 通知受控開通
+                </DisabledFeatureButton>
               </div>
             </SettingPanel>
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
@@ -286,13 +291,23 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
               設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
               <div>
-                <DisabledFeatureButton testId="channels-logs-disabled">稽核紀錄受控開通</DisabledFeatureButton>
+                <DisabledFeatureButton
+                  testId="channels-logs-disabled"
+                  reason="稽核紀錄會等登入、權限刷新與設定變更事件都接上後再開放查看。"
+                >
+                  稽核紀錄受控開通
+                </DisabledFeatureButton>
               </div>
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
               目前介面固定使用繁體中文與 InboxPilot 淺色版面；主題與語言切換會在設定穩定後開放。
               <div>
-                <DisabledFeatureButton testId="channels-display-disabled">主題與語言受控開通</DisabledFeatureButton>
+                <DisabledFeatureButton
+                  testId="channels-display-disabled"
+                  reason="主題與語言切換會在設計語言與多語系文案穩定後再開放。"
+                >
+                  主題與語言受控開通
+                </DisabledFeatureButton>
               </div>
             </SettingPanel>
           </section>
@@ -405,7 +420,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
               <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
                 序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
                 <div>
-                  <DisabledFeatureButton testId="channels-sequence-settings-disabled">序列設定受控開通</DisabledFeatureButton>
+                  <DisabledFeatureButton
+                    testId="channels-sequence-settings-disabled"
+                    reason="序列推播設定會等排程、退訂與發送限制驗證完成後再開放。"
+                  >
+                    序列設定受控開通
+                  </DisabledFeatureButton>
                 </div>
               </SettingPanel>
             </div>
@@ -421,7 +441,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
               Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
               <div>
-                <DisabledFeatureButton testId="channels-conversion-events-disabled">轉換事件受控開通</DisabledFeatureButton>
+                <DisabledFeatureButton
+                  testId="channels-conversion-events-disabled"
+                  reason="轉換事件需要完成 Meta CAPI、購買事件與重送保護後再開放。"
+                >
+                  轉換事件受控開通
+                </DisabledFeatureButton>
               </div>
             </SettingPanel>
           </section>
@@ -439,7 +464,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
               AI 供應商、模型、API Key 與本機 CLI 橋接集中在 AI 設定頁管理。
               <div className="mt-3">
                 {simpleRelease ? (
-                  <DisabledFeatureButton testId="channels-ai-settings-disabled">完整版測試站可設定</DisabledFeatureButton>
+                  <DisabledFeatureButton
+                    testId="channels-ai-settings-disabled"
+                    reason="正式簡版暫不開放 AI 供應商設定；完整版測試站可先驗證模型與 API Key。"
+                  >
+                    完整版測試站可設定
+                  </DisabledFeatureButton>
                 ) : (
                   <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/ai-settings">
                     前往 AI 設定
@@ -568,16 +598,34 @@ function EmptyState({ children }: { children: ReactNode }) {
   return <div className="rounded-lg border border-dashed border-[#d7dbe0] bg-white p-6 text-sm text-[#667085]">{children}</div>;
 }
 
-function DisabledFeatureButton({ children, testId }: { children: ReactNode; testId?: string }) {
+function DisabledFeatureButton({
+  children,
+  testId,
+  reason,
+}: {
+  children: ReactNode;
+  testId?: string;
+  reason?: string;
+}) {
+  const reasonId = testId && reason ? `${testId}-reason` : undefined;
+
   return (
-    <button
-      type="button"
-      disabled
-      aria-disabled="true"
-      data-testid={testId}
-      className="mt-4 inline-flex cursor-not-allowed items-center rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
-    >
-      {children}
-    </button>
+    <span className="mt-4 inline-flex max-w-full flex-col items-start gap-1">
+      <button
+        type="button"
+        disabled
+        aria-disabled="true"
+        aria-describedby={reasonId}
+        data-testid={testId}
+        className="inline-flex cursor-not-allowed items-center rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+      >
+        {children}
+      </button>
+      {reasonId ? (
+        <span id={reasonId} className="max-w-sm text-xs leading-5 text-[#98a2b3]">
+          {reason}
+        </span>
+      ) : null}
+    </span>
   );
 }
