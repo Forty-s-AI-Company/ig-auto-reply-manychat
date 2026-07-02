@@ -3189,3 +3189,17 @@ Remaining:
 
 - `[ ]` Simple-release smoke was skipped by its current local guard; it should be verified in an environment configured for simple-release smoke before public launch.
 - `[ ]` Automations route still logs a React Flow style warning during auth smoke; UI smoke passes, but this should be handled in the next automation editor polish pass.
+
+## Latest - 2026-07-02 Automations React Flow editor polish
+
+Current status:
+
+- `[x]` Automations auth smoke no longer triggers the React Flow "styles not loaded" warning from the editor canvas.
+- `[x]` Root cause was a local `.react-flow__pane { z-index: 0; }` override rather than a missing `@xyflow/react/dist/style.css` import.
+- `[x]` The editor canvas now has a dedicated smoke hook (`automation-flow-canvas`) and a focused Playwright spec guarding style load, canvas visibility, and browser-console regressions.
+- `[x]` `npm run lint` no longer fails when `test-results/` or `playwright-report/` are absent.
+
+Remaining:
+
+- `[ ]` The next Automations pass should focus on higher-level editor/product polish: mobile expectations, empty-state teaching, and any remaining controlled-open feature wording.
+- `[ ]` Simple-release smoke still needs a correctly configured local simple-release environment before it can be counted as a full local pass.

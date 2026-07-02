@@ -8298,3 +8298,32 @@ Notes:
 - A stale Next dev server on port 3041 caused an initial false public landing failure; stopping it let Playwright restart the current branch and pass.
 - React Flow still logs a style warning on Automations route during auth smoke. CSS is imported from root layout now, but the warning remains a P2 follow-up because the smoke itself passes.
 - Hydration mismatch output references `cz-shortcut-listen`, consistent with a local browser extension attribute.
+
+# 2026-07-02 - Automations React Flow editor polish
+
+Findings:
+
+- The remaining React Flow style warning was not caused by a missing CSS import. `@xyflow/react` was already imported from the root layout.
+- The actual trigger was a local override in `src/app/globals.css` that changed `.react-flow__pane` from the library default `z-index: 1` to `z-index: 0`.
+- React Flow's dev warning checks the computed `z-index` of `.react-flow__pane`; lowering it made auth smoke report a false style-load warning even though the editor rendered.
+
+Changes:
+
+- Restored `.react-flow__pane` to `z-index: 1` and documented why that override must stay aligned with the library default.
+- Added `data-testid="automation-flow-canvas"` so the editor canvas can be verified directly in smoke tests.
+- Added `tests/e2e/automations-editor.spec.ts` to assert the editor opens, the flow canvas is visible, `.react-flow__pane` computes to `z-index: 1`, and no React Flow style warning appears in browser console.
+- Updated ESLint global ignores to skip `playwright-report/**` and `test-results/**`, so `npm run lint` no longer breaks on missing generated folders.
+
+Validation:
+
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/automations-editor.spec.ts`: passed (2 passed).
+- `npm run lint`: passed.
+- `npm run build`: passed.
+- `npm test`: passed.
+- `npm run test:e2e:auth`: passed after refreshing local E2E admin fixtures again. Result: 27 passed, 1 skipped.
+
+Launch impact:
+
+- Automations editor warning cleaned up; no schema, production DB, production deploy, migration, Meta App Review, or PayUNI production changes.
+- This reduces noisy QA output and adds a direct regression guard around the React Flow editor surface.
