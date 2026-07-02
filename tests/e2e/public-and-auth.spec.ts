@@ -207,6 +207,55 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("請先選擇要訂閱的序列。");
   });
 
+  test("uses a confirmation dialog before removing sequence draft steps", async ({ page }) => {
+    await page.goto("/sequences", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "序列", exact: true })).toBeVisible();
+
+    await page.getByRole("button", { name: "新增步驟" }).click();
+    await expect(page.getByText("第 2 封", { exact: true })).toBeVisible();
+
+    await page.getByTestId("sequence-step-remove-1").click();
+    await expect(page.getByRole("dialog", { name: "移除序列步驟？" })).toBeVisible();
+    await page.getByRole("button", { name: "取消" }).click();
+    await expect(page.getByRole("dialog", { name: "移除序列步驟？" })).toHaveCount(0);
+    await expect(page.getByText("第 2 封", { exact: true })).toBeVisible();
+
+    await page.getByTestId("sequence-step-remove-1").click();
+    await page.getByTestId("sequence-step-confirm-remove").click();
+    await expect(page.getByRole("dialog", { name: "移除序列步驟？" })).toHaveCount(0);
+    await expect(page.getByText("已從草稿移除第 2 封")).toBeVisible();
+    await expect(page.getByTestId("sequence-step-remove-1")).toHaveCount(0);
+  });
+
+  test("keeps Segments create and delete actions explicit", async ({ page }, testInfo) => {
+    const segmentName = `Playwright 分群確認 ${testInfo.project.name} ${Date.now()}`;
+
+    await page.goto("/segments", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "受眾分群" })).toBeVisible();
+
+    await expect(page.getByTestId("segments-save-button")).toBeEnabled();
+    await page.locator('input[name="segment-name"]').fill("");
+    await expect(page.getByTestId("segments-save-button")).toBeDisabled();
+    await expect(page.getByTestId("segments-save-button")).toHaveAttribute("title", "請先輸入分群名稱。");
+    await expect(page.locator("body")).toContainText("請先輸入分群名稱，才能儲存這組篩選條件。");
+
+    await page.locator('input[name="segment-name"]').fill(segmentName);
+    await page.getByTestId("segments-save-button").click();
+    await expect(page.locator("body")).toContainText(segmentName);
+
+    const segmentCard = page.locator("article").filter({ hasText: segmentName }).first();
+    await segmentCard.getByRole("button", { name: "刪除" }).click();
+    await expect(page.getByRole("dialog", { name: "刪除分眾名單？" })).toBeVisible();
+    await expect(page.locator("body")).toContainText("刪除前請確認沒有正在排程或準備中的廣播依賴這個分眾。");
+    await page.getByRole("button", { name: "取消" }).click();
+    await expect(page.getByRole("dialog", { name: "刪除分眾名單？" })).toHaveCount(0);
+
+    await segmentCard.getByRole("button", { name: "刪除" }).click();
+    await page.getByTestId("segments-confirm-delete").click();
+    await expect(page.getByRole("dialog", { name: "刪除分眾名單？" })).toHaveCount(0);
+    await expect(segmentCard).toHaveCount(0);
+  });
+
   test("shows Channels planned settings as explicit disabled controls", async ({ page }) => {
     await page.goto("/channels", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("channels-notifications-disabled")).toBeDisabled();

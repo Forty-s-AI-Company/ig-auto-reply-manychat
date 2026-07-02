@@ -3229,3 +3229,17 @@ Current status:
 Remaining:
 
 - `[ ]` PR CI should rerun full-release-auth-smoke and confirm the desktop Sequence disabled-state flake is gone.
+
+## Latest - 2026-07-02 Automations / Sequences / Segments closeout follow-up
+
+Current status:
+
+- `[x]` Sequence draft step removal now uses an in-app confirmation dialog instead of immediately removing the step.
+- `[x]` The confirmation copy explains that removal only changes the current draft until the sequence is saved.
+- `[x]` Authenticated Playwright smoke now covers sequence step removal confirmation and Segments create/delete clarity.
+- `[x]` Source regression coverage prevents Sequences from falling back to direct `removeStep(index)` on click.
+
+Remaining:
+
+- `[ ]` Staging mobile browser QA should still inspect Automations / Sequences / Segments after Preview deployment.
+- `[ ]` If future sequence step editing grows more complex, consider an undo toast for draft-only operations.

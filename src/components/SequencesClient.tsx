@@ -47,6 +47,7 @@ export function SequencesClient({
   const [selectedSequenceId, setSelectedSequenceId] = useState(initialSequences[0]?.id || "");
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || "");
   const [deleteTargetId, setDeleteTargetId] = useState("");
+  const [pendingRemoveStepIndex, setPendingRemoveStepIndex] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [hasHydrated, setHasHydrated] = useState(false);
   const nameInputRef = useRef<HTMLInputElement | null>(null);
@@ -123,6 +124,19 @@ export function SequencesClient({
         .filter((_, itemIndex) => itemIndex !== index)
         .map((step, itemIndex) => ({ ...step, order: itemIndex + 1 })),
     );
+  }
+
+  function requestRemoveStep(index: number) {
+    setMessage("");
+    setPendingRemoveStepIndex(index);
+  }
+
+  function confirmRemoveStep() {
+    if (pendingRemoveStepIndex === null) return;
+    const removedOrder = pendingRemoveStepIndex + 1;
+    removeStep(pendingRemoveStepIndex);
+    setPendingRemoveStepIndex(null);
+    setMessage(`已從草稿移除第 ${removedOrder} 封，儲存後才會套用。`);
   }
 
   function editSequence(sequence: SequenceItem) {
@@ -311,7 +325,12 @@ export function SequencesClient({
                 <div className="mb-2 flex items-center justify-between">
                   <p className="text-sm font-medium text-[#111827]">第 {index + 1} 封</p>
                   {steps.length > 1 ? (
-                    <button type="button" onClick={() => removeStep(index)} className="text-xs text-red-600">
+                    <button
+                      type="button"
+                      onClick={() => requestRemoveStep(index)}
+                      data-testid={`sequence-step-remove-${index}`}
+                      className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+                    >
                       移除
                     </button>
                   ) : null}
@@ -437,6 +456,58 @@ export function SequencesClient({
           </div>
         </div>
       ) : null}
+      {pendingRemoveStepIndex !== null ? (
+        <SequenceStepRemoveDialog
+          stepOrder={pendingRemoveStepIndex + 1}
+          onCancel={() => setPendingRemoveStepIndex(null)}
+          onConfirm={confirmRemoveStep}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function SequenceStepRemoveDialog({
+  stepOrder,
+  onCancel,
+  onConfirm,
+}: {
+  stepOrder: number;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sequence-step-remove-title"
+        className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+      >
+        <h2 id="sequence-step-remove-title" className="text-base font-semibold text-[#111827]">
+          移除序列步驟？
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-[#475467]">
+          你即將從目前草稿移除第 {stepOrder} 封訊息。這只會先修改草稿，按下「建立序列」或「更新序列」後才會套用。
+        </p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            data-testid="sequence-step-confirm-remove"
+            className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+          >
+            確認移除
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
