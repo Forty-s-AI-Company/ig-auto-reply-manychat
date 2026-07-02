@@ -13,6 +13,9 @@ describe("billing page status copy", () => {
     expect(source).toContain("退款，推薦折抵會依規則取消或沖回");
     expect(source).toContain("前往 PayUNI Sandbox 月繳");
     expect(source).toContain("這會前往 PayUNI Sandbox 測試站，不會進入正式扣款。");
+    expect(source).toContain("客製方案需要由管理員手動開通；請先聯絡我們確認用量、折抵與付款安排。");
+    expect(source).toContain("aria-describedby={checkoutReasonId}");
+    expect(source).toContain("id={checkoutReasonId}");
     expect(source).toContain("待確認折抵會取消");
     expect(source).toContain("已使用後才退款，會以沖回紀錄抵銷");
     expect(source).not.toContain("<span>{invoice.status}</span>");

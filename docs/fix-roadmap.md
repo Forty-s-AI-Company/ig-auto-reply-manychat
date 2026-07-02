@@ -3387,6 +3387,19 @@ Remaining:
 - `[ ]` Preview / Staging browser QA should still exercise the full public path: Pricing -> Signup with `?ref=` -> Billing Sandbox -> Referrals / Wallet copy.
 - `[ ]` PayUNI production go-live remains a separate manual gate.
 
+## 2026-07-03 - Billing custom-plan disabled UX polish
+
+Current status:
+
+- `[x]` Agency / custom-sales checkout now shows a visible disabled reason instead of relying only on hover `title`.
+- `[x]` The disabled checkout reason is connected with `aria-describedby`, so touch/mobile and assistive-tech users can understand why the CTA is unavailable.
+- `[x]` Billing source-level coverage now guards the custom-plan disabled copy.
+
+Remaining:
+
+- `[ ]` PayUNI production go-live remains a separate manual gate; local product polish does not deploy or switch gateway mode.
+- `[ ]` Continue local-mode product sweeps for any remaining visible-but-unusable Billing / Wallet / Referral controls.
+
 ## Latest - 2026-07-02 New-user activation path empty-state QA
 
 Current status:

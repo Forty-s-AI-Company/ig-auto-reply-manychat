@@ -1,3 +1,9 @@
+## 2026-07-03 - Billing custom-plan disabled UX polish
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Changed Billing custom-sales checkout from title-only explanation to visible disabled reason with aria-describedby.
+- Added source-level coverage in billing-page-status-copy.test.ts.
+- Next: continue local-mode Billing / Wallet / Referral sweep for any remaining visible-but-unusable controls.
 # 2026-07-03 - Contacts batch tag disabled reason polish
 
 Task:

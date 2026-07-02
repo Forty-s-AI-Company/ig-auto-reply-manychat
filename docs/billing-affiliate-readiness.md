@@ -481,3 +481,9 @@ Billing launch implication:
 - `[x]` Public Signup now preserves referral attribution from invitation links for both email signup and Google signup.
 - `[x]` The public path now states referral credits are not cash-out, wait through refund observation, expire after 30 days, and may reduce a bill to 0.
 - `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.
+
+# 2026-07-03 - Billing custom-plan disabled UX polish
+
+- `[x]` Custom-sales / Agency checkout remains disabled for self-serve purchase, but now explains the reason visibly instead of only through a hover title.
+- `[x]` The explanation is connected to the disabled CTA with `aria-describedby` for mobile and assistive-tech users.
+- `[ ]` PayUNI production remains Hold; this change only improves local product UX and does not enable production checkout.

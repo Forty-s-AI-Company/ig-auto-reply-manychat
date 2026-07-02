@@ -154,38 +154,48 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
         </section>
 
         <section className="grid gap-4 lg:grid-cols-5">
-          {billingPlans.filter((plan) => plan.key !== "trial").map((plan) => (
-            <article key={plan.key} className="rounded-lg border border-[var(--border-soft)] bg-white p-5">
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{plan.name}</h3>
-              <p className="mt-1 min-h-[60px] text-sm leading-6 text-[var(--text-secondary)]">{plan.description}</p>
-              <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">{plan.customSales ? "客製" : formatTwd(plan.priceMonthly || 0)}</p>
-              <form action="/api/billing/payuni/checkout" method="post" className="mt-4 space-y-3">
-                <input type="hidden" name="planKey" value={plan.key} />
-                <input type="hidden" name="interval" value="month" />
-                <button
-                  type="submit"
-                  disabled={plan.customSales || !payuniStatus.checkoutEnabled}
-                  data-testid={`billing-checkout-${plan.key}`}
-                  title={
-                    plan.customSales
-                      ? "客製方案需要由管理員手動開通。"
-                      : payuniStatus.checkoutDisabledReason || (payuniStatus.sandbox ? "這會前往 PayUNI Sandbox 測試站，不會進入正式扣款。" : undefined)
-                  }
-                  className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
-                >
-                  {checkoutButtonLabel(plan, payuniStatus)}
-                </button>
-              </form>
-              {!plan.customSales && payuniStatus.checkoutEnabled && payuniStatus.sandbox ? (
-                <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
-                  目前會導向 PayUNI Sandbox 測試站；正式扣款需等營運人員切換 production gate。
-                </p>
-              ) : null}
-              {!plan.customSales && !payuniStatus.checkoutEnabled ? (
-                <p className="mt-2 text-xs leading-5 text-amber-800">{payuniStatus.checkoutDisabledReason}</p>
-              ) : null}
-            </article>
-          ))}
+          {billingPlans.filter((plan) => plan.key !== "trial").map((plan) => {
+            const checkoutDisabledReason = plan.customSales
+              ? "客製方案需要由管理員手動開通；請先聯絡我們確認用量、折抵與付款安排。"
+              : !payuniStatus.checkoutEnabled
+                ? payuniStatus.checkoutDisabledReason
+                : "";
+            const checkoutReasonId = checkoutDisabledReason ? `billing-checkout-${plan.key}-reason` : undefined;
+
+            return (
+              <article key={plan.key} className="rounded-lg border border-[var(--border-soft)] bg-white p-5">
+                <h3 className="text-lg font-semibold text-[var(--text-primary)]">{plan.name}</h3>
+                <p className="mt-1 min-h-[60px] text-sm leading-6 text-[var(--text-secondary)]">{plan.description}</p>
+                <p className="mt-4 text-2xl font-bold text-[var(--text-primary)]">{plan.customSales ? "客製" : formatTwd(plan.priceMonthly || 0)}</p>
+                <form action="/api/billing/payuni/checkout" method="post" className="mt-4 space-y-3">
+                  <input type="hidden" name="planKey" value={plan.key} />
+                  <input type="hidden" name="interval" value="month" />
+                  <button
+                    type="submit"
+                    disabled={plan.customSales || !payuniStatus.checkoutEnabled}
+                    data-testid={`billing-checkout-${plan.key}`}
+                    aria-describedby={checkoutReasonId}
+                    title={
+                      checkoutDisabledReason ||
+                      (payuniStatus.sandbox ? "這會前往 PayUNI Sandbox 測試站，不會進入正式扣款。" : undefined)
+                    }
+                    className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
+                  >
+                    {checkoutButtonLabel(plan, payuniStatus)}
+                  </button>
+                </form>
+                {checkoutDisabledReason ? (
+                  <p id={checkoutReasonId} className="mt-2 text-xs leading-5 text-amber-800">
+                    {checkoutDisabledReason}
+                  </p>
+                ) : payuniStatus.checkoutEnabled && payuniStatus.sandbox ? (
+                  <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
+                    目前會導向 PayUNI Sandbox 測試站；正式扣款需等營運人員切換 production gate。
+                  </p>
+                ) : null}
+              </article>
+            );
+          })}
         </section>
 
         <section className="ip-dashboard-card p-5">

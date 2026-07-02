@@ -1662,6 +1662,18 @@ Readiness implication:
 - Referral credit v1 remains the launch-safe direction: no cash-out, 7-day pending observation, 30-day expiry, refund cancellation / clawback.
 - Public paid launch still requires PayUNI production go-live approval and final sandbox-to-production evidence.
 
+## 2026-07-03 - Billing custom-plan disabled UX polish
+
+Status:
+
+- Custom-sales checkout is still intentionally disabled for self-serve checkout.
+- The disabled state now has visible explanatory copy and `aria-describedby`, so mobile users are not left with a grey button that only explains itself on hover.
+
+Readiness implication:
+
+- Billing is less likely to feel broken when a user reaches the Agency / custom plan card.
+- This does not change PayUNI gateway behavior, pricing, subscription activation, or production launch gates.
+
 ## 2026-07-02 - New-user pre-payment clarity
 
 Status:
