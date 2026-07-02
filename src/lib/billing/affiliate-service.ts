@@ -182,8 +182,8 @@ export async function getAffiliateDashboard(userId: string, db: DbOrTx = getDb()
   const payoutBlockedReasons: string[] = [];
   if (!profile) payoutBlockedReasons.push("尚未申請聯盟夥伴。");
   if (profile && profile.status !== "approved") payoutBlockedReasons.push("聯盟夥伴資格尚未通過審核。");
-  if (profile && !payoutProfileComplete) payoutBlockedReasons.push("提領資料尚未完整送審。");
-  if (available < MIN_PAYOUT_AMOUNT_TWD) payoutBlockedReasons.push(`可提領佣金尚未達 ${MIN_PAYOUT_AMOUNT_TWD.toLocaleString("zh-TW")} 元門檻。`);
+  if (profile && !payoutProfileComplete) payoutBlockedReasons.push("受控聯盟付款資料尚未完整送審。");
+  if (available < MIN_PAYOUT_AMOUNT_TWD) payoutBlockedReasons.push(`內部可審核佣金尚未達 ${MIN_PAYOUT_AMOUNT_TWD.toLocaleString("zh-TW")} 元門檻。`);
 
   return {
     profile,

@@ -1,3 +1,14 @@
+# Latest - 2026-07-02 Affiliate payout blocker copy hardening
+
+Current status:
+
+- [x] Affiliate payout blocker reasons now use 內部可審核 / 受控聯盟 wording instead of 可提領佣金.
+- [x] Regression coverage guards the service path from reintroducing withdrawable-commission copy.
+
+Remaining:
+
+- [ ] Cash payout remains gated behind legal, tax, anti-fraud, payout-profile, refund / clawback, and provider reconciliation approval.
+
 # Latest - 2026-07-02 Affiliate public title credit-first wording
 
 Current status:
