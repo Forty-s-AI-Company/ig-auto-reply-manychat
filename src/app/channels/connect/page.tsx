@@ -2,47 +2,70 @@ import Link from "next/link";
 import { Bot, FlaskConical, Link2 } from "lucide-react";
 import { ChannelConnectionShell, GiftVisual } from "@/components/ChannelConnectionShell";
 import { requireUser } from "@/lib/auth";
+import { getChannelConnectOptionState } from "@/lib/channels/channel-connect-visibility";
+import type { ChannelConnectOptionId } from "@/lib/channels/channel-connect-visibility";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
 import { isSimpleRelease } from "@/lib/release-mode";
 
-const channels = [
+const channels: Array<{
+  id: ChannelConnectOptionId;
+  name: string;
+  description: string;
+  href: string;
+  icon: string;
+}> = [
   {
+    id: "instagram",
     name: "Instagram",
     description: "正式站先只開放 Instagram 連線，收件匣、聯絡人、自動化都會以 IG 為主。",
     href: "/channels/connect/social",
     icon: "social",
   },
   {
+    id: "telegram-bot",
     name: "Telegram Bot",
     description: "若只需要 Bot Token，會在同一套 provider 架構內完成驗證與儲存。",
     href: "/channels/connect/social",
     icon: "tg",
   },
   {
+    id: "mock",
     name: "Mock OAuth Provider",
     description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
     href: "/channels/connect/social",
     icon: "mock",
   },
   {
+    id: "tiktok",
     name: "TikTok",
     description: "正式開放後會在這裡接入對應 provider。",
     href: "/channels/connect/tiktok",
     icon: "tt",
-    disabled: true,
   },
   {
+    id: "whatsapp",
     name: "WhatsApp",
     description: "WhatsApp Business 連線入口會集中在這裡。",
     href: "/channels/connect/whatsapp",
     icon: "wa",
-    disabled: true,
   },
 ];
 
 export default async function ChannelConnectionPage() {
   await requireUser();
   const simpleRelease = await isSimpleRelease();
-  const visibleChannels = simpleRelease ? channels.filter((channel) => channel.name === "Instagram") : channels;
+  const deploymentEnv = getInboxPilotDeploymentEnv();
+  const visibleChannels = channels
+    .map((channel) => ({
+      ...channel,
+      uiState: getChannelConnectOptionState(channel.id, {
+        simpleRelease,
+        deploymentEnv,
+      }),
+    }))
+    .filter((channel) => channel.uiState.visible);
+  const connectableChannels = visibleChannels.filter((channel) => channel.uiState.enabled);
+  const disabledChannels = visibleChannels.filter((channel) => !channel.uiState.enabled);
 
   return (
     <ChannelConnectionShell
@@ -53,30 +76,61 @@ export default async function ChannelConnectionPage() {
       visual={<GiftVisual />}
     >
       <div className="space-y-6">
-        {visibleChannels.map((channel) =>
-          channel.disabled ? (
-            <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 opacity-70 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
-              <ChannelIcon type={channel.icon} />
-              <div>
-                <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
-                <p className="mt-2 text-xs font-medium text-amber-700">尚未開放</p>
-              </div>
+        <section className="space-y-3">
+          <SectionHeading title="目前可連線" description="這些入口會直接打開授權流程，完成後會回到社群帳號頁。" />
+          <div className="space-y-3">
+            {connectableChannels.map((channel) => (
+              <Link
+                key={channel.name}
+                href={channel.href}
+                className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,24,40,0.12)]"
+              >
+                <ChannelIcon type={channel.icon} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
+                    <ConnectionStateBadge tone="success">{channel.uiState.statusLabel || "可連線"}</ConnectionStateBadge>
+                  </div>
+                  <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {disabledChannels.length > 0 ? (
+          <section className="space-y-3">
+            <SectionHeading
+              title="規劃中與受控開通"
+              description="這些平台保留成清楚的受控開通入口，但不會打開授權流程，避免看起來像壞掉的按鈕。"
+            />
+            <div className="space-y-3">
+              {disabledChannels.map((channel) => (
+                <div key={channel.name} className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)]">
+                  <ChannelIcon type={channel.icon} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
+                      <ConnectionStateBadge tone="warning">{channel.uiState.statusLabel || "暫停中"}</ConnectionStateBadge>
+                    </div>
+                    <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
+                    {channel.uiState.disabledReason ? (
+                      <p className="mt-2 max-w-[420px] text-xs leading-6 text-[#b54708]">{channel.uiState.disabledReason}</p>
+                    ) : null}
+                    <button
+                      type="button"
+                      disabled
+                      aria-disabled="true"
+                      className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+                    >
+                      {channel.id === "mock" ? "僅限本機 / QA 使用" : channel.uiState.statusLabel || "受控開通"}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ) : (
-            <Link
-              key={channel.name}
-              href={channel.href}
-              className="flex min-h-[132px] items-center gap-6 rounded-md bg-white px-8 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,24,40,0.12)]"
-            >
-              <ChannelIcon type={channel.icon} />
-              <div>
-                <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
-              </div>
-            </Link>
-          ),
-        )}
+          </section>
+        ) : null}
       </div>
     </ChannelConnectionShell>
   );
@@ -103,4 +157,26 @@ function ChannelIcon({ type }: { type: string }) {
       <Icon className="h-6 w-6 text-white" />
     </span>
   );
+}
+
+function SectionHeading({ title, description }: { title: string; description: string }) {
+  return (
+    <div className="space-y-1">
+      <h2 className="text-lg font-semibold text-[#17191c]">{title}</h2>
+      <p className="text-sm leading-6 text-[#596170]">{description}</p>
+    </div>
+  );
+}
+
+function ConnectionStateBadge({
+  tone,
+  children,
+}: {
+  tone: "success" | "warning";
+  children: string;
+}) {
+  const toneClasses =
+    tone === "success" ? "border-green-200 bg-green-50 text-green-700" : "border-amber-200 bg-amber-50 text-amber-700";
+
+  return <span className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${toneClasses}`}>{children}</span>;
 }

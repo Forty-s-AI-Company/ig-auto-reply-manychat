@@ -112,8 +112,12 @@ export function GlobalBusyIndicator() {
       <div className="h-1 overflow-hidden bg-[#dbeafe]">
         <div className="inboxpilot-progress-bar h-full w-1/2 bg-[#006fe6]" />
       </div>
-      <div className="fixed bottom-4 right-4 rounded-md border border-[#d7dbe0] bg-white px-4 py-3 text-sm font-medium text-[#344054] shadow-[0_14px_34px_rgba(16,24,40,0.16)]">
-        正在更新，請稍候...
+      <div
+        className="fixed bottom-4 right-4 rounded-md border border-[#d7dbe0] bg-white px-4 py-3 text-sm font-medium text-[#344054] shadow-[0_14px_34px_rgba(16,24,40,0.16)]"
+        role="status"
+        aria-live="polite"
+      >
+        正在更新，請稍候…
       </div>
     </div>
   );

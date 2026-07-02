@@ -1,8 +1,16 @@
 import { spawn } from "node:child_process";
 
-async function runGeminiCli(prompt: string, model: string) {
-  const timeoutMs = Number(process.env.ANTIGRAVITY_CLI_TIMEOUT_MS || process.env.GEMINI_CLI_TIMEOUT_MS || 45000);
-  const command = process.env.ANTIGRAVITY_CLI_COMMAND || process.env.GEMINI_CLI_COMMAND || "antigravity";
+export function getGeminiCliCommandCandidates() {
+  return [
+    process.env.ANTIGRAVITY_CLI_COMMAND,
+    process.env.GEMINI_CLI_COMMAND,
+    "agy",
+    "gemini",
+    "antigravity",
+  ].filter((value): value is string => Boolean(value && value.trim()));
+}
+
+function runGeminiCliOnce(prompt: string, model: string, command: string, timeoutMs: number) {
   const args = model && model !== "auto" ? ["-m", model, "-p", prompt] : ["-p", prompt];
   const child = spawn(command, args, { stdio: ["ignore", "pipe", "pipe"] });
 
@@ -29,6 +37,27 @@ async function runGeminiCli(prompt: string, model: string) {
       }
     });
   });
+}
+
+function isMissingCommandError(error: unknown) {
+  return Boolean(error && typeof error === "object" && "code" in error && (error as NodeJS.ErrnoException).code === "ENOENT");
+}
+
+async function runGeminiCli(prompt: string, model: string) {
+  const timeoutMs = Number(process.env.ANTIGRAVITY_CLI_TIMEOUT_MS || process.env.GEMINI_CLI_TIMEOUT_MS || 45000);
+  const commands = getGeminiCliCommandCandidates();
+  let lastError: unknown = null;
+
+  for (const command of commands) {
+    try {
+      return await runGeminiCliOnce(prompt, model, command, timeoutMs);
+    } catch (error) {
+      if (!isMissingCommandError(error)) throw error;
+      lastError = error;
+    }
+  }
+
+  throw lastError ?? new Error("Antigravity CLI is not available.");
 }
 
 export async function generateGeminiCliReply(prompt: string, model: string) {

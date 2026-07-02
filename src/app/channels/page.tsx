@@ -6,7 +6,6 @@ import {
   Camera,
   CreditCard,
   Inbox,
-  KeyRound,
   MessageCircle,
   Plug,
   Settings,
@@ -20,8 +19,11 @@ import { DisconnectChannelButton } from "@/components/DisconnectChannelButton";
 import { InstagramChannelActions } from "@/components/InstagramChannelActions";
 import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProfileButton";
 import { requireUser } from "@/lib/auth";
+import { getChannelConnectOptionState } from "@/lib/channels/channel-connect-visibility";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
+import { getSafeInstagramProfileRefreshError } from "@/lib/channels/instagram-profile-errors";
 import { getDb } from "@/lib/db";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
 import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -47,7 +49,7 @@ const settingsGroups = [
     ],
   },
   {
-    title: "帳務",
+    title: "方案與用量",
     items: [
       { label: "訂閱方案", href: "#billing" },
       { label: "發票紀錄", href: "#billing" },
@@ -62,7 +64,7 @@ const settingsGroups = [
     ],
   },
   {
-    title: "連線渠道",
+    title: "平台連線",
     items: [
       { label: "Instagram", href: "#instagram" },
       { label: "其他平台", href: "#platform-connect" },
@@ -82,6 +84,7 @@ const settingsGroups = [
   {
     title: "擴充整合",
     items: [
+      { label: "AI 設定", href: "#ai-settings" },
       { label: "API 存取", href: "#extensions" },
       { label: "應用程式", href: "#extensions" },
       { label: "第三方整合", href: "#extensions" },
@@ -93,14 +96,52 @@ const settingsGroups = [
 ];
 
 const channelCards = [
-  ["Instagram", "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。", true, "/channels/connect/social"],
-  ["Telegram Bot", "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。", true, "/channels/connect/social"],
-  ["Mock OAuth Provider", "本機測試用 provider，完整走 popup、callback、postMessage 流程。", true, "/channels/connect/social"],
-  ["TikTok", "可先規劃平台入口，正式連線開放後會顯示授權按鈕。", false, ""],
-  ["WhatsApp", "WhatsApp Business 連線入口會集中在此管理。", false, ""],
-  ["簡訊", "簡訊供應商與地區規則會集中在此管理。", false, ""],
-  ["電子郵件", "寄件網域與寄件者驗證會集中在此管理。", false, ""],
-] as const;
+  {
+    kind: "connect" as const,
+    id: "instagram" as const,
+    name: "Instagram",
+    description: "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "telegram-bot" as const,
+    name: "Telegram Bot",
+    description: "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "mock" as const,
+    name: "Mock OAuth Provider",
+    description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
+    href: "/channels/connect/social",
+  },
+  {
+    kind: "connect" as const,
+    id: "tiktok" as const,
+    name: "TikTok",
+    description: "可先規劃平台入口，正式連線開放後會顯示授權按鈕。",
+    href: "",
+  },
+  {
+    kind: "connect" as const,
+    id: "whatsapp" as const,
+    name: "WhatsApp",
+    description: "WhatsApp Business 連線入口會集中在此管理。",
+    href: "",
+  },
+  {
+    kind: "static" as const,
+    name: "簡訊",
+    description: "簡訊供應商與地區規則會集中在此管理。",
+  },
+  {
+    kind: "static" as const,
+    name: "電子郵件",
+    description: "寄件網域與寄件者驗證會集中在此管理。",
+  },
+];
 
 function statusLabel(enabled: boolean) {
   return enabled ? "已啟用" : "已停用";
@@ -123,6 +164,7 @@ function sanitizeConfig(configJson: unknown) {
   const config = getMetaChannelConfig(configJson);
   const hasStoredToken = Boolean(config.pageAccessToken || config.userAccessToken);
   return {
+    hasStoredToken,
     loginProvider: config.loginProvider || "facebook",
     pageId: config.pageId,
     pageName: config.pageName,
@@ -130,7 +172,9 @@ function sanitizeConfig(configJson: unknown) {
     instagramOauthUserId: config.instagramOauthUserId,
     instagramUsername: config.instagramUsername,
     instagramName: config.instagramName,
-    profileReadWarning: config.profileReadWarning,
+    profileReadWarning: config.profileReadWarning
+      ? getSafeInstagramProfileRefreshError(config.profileReadWarning)
+      : undefined,
     tokenSource: hasStoredToken ? "channel" : config.tokenEnv || undefined,
     connectedAt: config.connectedAt,
     userTokenExpiresAt: config.userTokenExpiresAt,
@@ -142,6 +186,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
   const simpleRelease = await isSimpleRelease();
+  const deploymentEnv = getInboxPilotDeploymentEnv();
   const [channels, tagCount, contactCount, automationCount, teamCount] = await Promise.all([
     getDb().channel.findMany({
       where: { workspaceId },
@@ -157,7 +202,18 @@ export default async function ChannelsPage({ searchParams }: Props) {
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
   });
-  const visibleChannelCards = simpleRelease ? channelCards.filter(([name]) => name === "Instagram") : channelCards;
+  const visibleChannelCards = channelCards
+    .map((card) => {
+      if (card.kind === "static") {
+        return card;
+      }
+
+      return {
+        ...card,
+        uiState: getChannelConnectOptionState(card.id, { simpleRelease, deploymentEnv }),
+      };
+    })
+    .filter((entry) => (entry.kind === "static" ? true : entry.uiState.visible));
 
   return (
     <AdminShell title="設定">
@@ -187,9 +243,9 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[#d7dbe0] pb-5">
             <div>
               <p className="text-sm font-medium text-[#006fe6]">設定</p>
-              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">帳號、渠道與自動化設定</h1>
+              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">工作區、Instagram 與自動化設定</h1>
               <p className="mt-2 max-w-3xl text-sm text-[#667085]">
-                管理工作區、通知、收件匣行為、平台連線、帳務與整合。低頻設定集中在這裡，主選單保留日常操作。
+                管理工作區、通知、收件匣行為、平台連線、方案與整合。低頻設定集中在這裡，主選單保留日常操作。
               </p>
             </div>
             <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
@@ -219,37 +275,61 @@ export default async function ChannelsPage({ searchParams }: Props) {
 
           <section className="grid gap-3 lg:grid-cols-2">
             <SettingPanel id="notifications" icon={<Bell className="h-5 w-5" />} title="通知設定">
-              Inbox 新訊息、指派、提醒與系統通知集中管理。瀏覽器音效與 Email 通知目前保留設定入口。
+              Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率完成權限與退訂規則後再開放。
+              <div>
+                <DisabledFeatureButton testId="channels-notifications-disabled">Email 通知受控開通</DisabledFeatureButton>
+              </div>
             </SettingPanel>
             <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
               目前共有 {teamCount} 位成員。Inbox 已支援將對話指派給團隊成員。
             </SettingPanel>
-            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="設定入口">
+            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
               設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
+              <div>
+                <DisabledFeatureButton testId="channels-logs-disabled">稽核紀錄受控開通</DisabledFeatureButton>
+              </div>
             </SettingPanel>
             <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
-              目前介面固定使用繁體中文與 InboxPilot 淺色版面。
+              目前介面固定使用繁體中文與 InboxPilot 淺色版面；主題與語言切換會在設定穩定後開放。
+              <div>
+                <DisabledFeatureButton testId="channels-display-disabled">主題與語言受控開通</DisabledFeatureButton>
+              </div>
             </SettingPanel>
           </section>
 
           <section id="platform-connect" className="space-y-3">
             <SectionTitle title="新增平台帳號" description="依照平台授權流程整理成：先選擇平台，再登入授權，成功後回到本頁顯示已連結帳號。" />
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {visibleChannelCards.map(([name, description, ready, href]) => (
-                <div key={name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
+              {visibleChannelCards.map((entry) => (
+                <div key={entry.name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-medium text-[#111827]">{name}</h3>
-                      <p className="mt-1 text-sm leading-6 text-[#667085]">{description}</p>
+                      <h3 className="font-medium text-[#111827]">{entry.name}</h3>
+                      <p className="mt-1 text-sm leading-6 text-[#667085]">{entry.description}</p>
                     </div>
-                    <Plug className="h-5 w-5 text-[#98a2b3]" />
+                    <div className="flex flex-col items-end gap-2">
+                      <ConnectionStateBadge tone={entry.kind === "static" ? "neutral" : entry.uiState.enabled ? "success" : "warning"}>
+                        {entry.kind === "static" ? "規劃中" : entry.uiState.statusLabel || "暫停中"}
+                      </ConnectionStateBadge>
+                      <Plug className="h-5 w-5 text-[#98a2b3]" />
+                    </div>
                   </div>
-                  {ready ? (
-                    <Link href={href} className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+                  {entry.kind === "static" ? (
+                    <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
+                  ) : entry.uiState.enabled ? (
+                    <Link
+                      href={entry.href}
+                      className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]"
+                    >
                       登入並連線
                     </Link>
                   ) : (
-                    <StatusBadge>未啟用</StatusBadge>
+                    <>
+                      <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-[#b54708]">
+                        {entry.uiState.disabledReason}
+                      </div>
+                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : entry.uiState.statusLabel || "受控開通"}</DisabledFeatureButton>
+                    </>
                   )}
                 </div>
               ))}
@@ -277,7 +357,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={channel.enabled ? "text-sm text-green-700" : "text-sm text-[#667085]"}>{statusLabel(channel.enabled)}</span>
-                        <RefreshInstagramProfileButton channelId={channel.id} />
+                        <RefreshInstagramProfileButton channelId={channel.id} hasStoredToken={config.hasStoredToken} />
                         <DisconnectChannelButton channelId={channel.id} channelName={channel.name} />
                       </div>
                     </div>
@@ -292,7 +372,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
                         {config.profileReadWarning}
                       </Notice>
                     ) : null}
-                    <InstagramChannelActions channelId={channel.id} />
+                    <InstagramChannelActions
+                      channelId={channel.id}
+                      hasStoredToken={config.hasStoredToken}
+                      loginProvider={config.loginProvider}
+                    />
                   </article>
                 );
               })}
@@ -318,8 +402,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
               <SettingPanel icon={<Bot className="h-5 w-5" />} title="基礎規則">
                 預設回覆、關鍵字、留言觸發、延遲、公開回覆與按讚設定已接在自動化流程中。
               </SettingPanel>
-              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="設定入口">
+              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
                 序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
+                <div>
+                  <DisabledFeatureButton testId="channels-sequence-settings-disabled">序列設定受控開通</DisabledFeatureButton>
+                </div>
               </SettingPanel>
             </div>
           </section>
@@ -331,33 +418,46 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<Tags className="h-5 w-5" />} title="標籤">
               目前有 {tagCount} 個標籤，可用於分眾、條件判斷與 Inbox 快速分類。
             </SettingPanel>
-            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="設定入口">
+            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
               Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
+              <div>
+                <DisabledFeatureButton testId="channels-conversion-events-disabled">轉換事件受控開通</DisabledFeatureButton>
+              </div>
             </SettingPanel>
           </section>
 
           <section id="billing" className="grid gap-3 md:grid-cols-2">
-            <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="帳務">
-              方案、發票與付款方式集中在帳務頁管理。
+            <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="方案與用量">
+              方案、發票與付款方式集中在方案頁管理。
               <div className="mt-3">
                 <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/billing">
-                  前往帳務頁
+                  前往方案頁
                 </Link>
               </div>
             </SettingPanel>
-            <SettingPanel icon={<KeyRound className="h-5 w-5" />} title="API / 第三方整合" badge="設定入口">
-              API、應用程式、第三方整合、付款整合、已安裝模板、追蹤像素先集中保留入口。
+            <SettingPanel id="ai-settings" icon={<Bot className="h-5 w-5" />} title="AI 設定" badge={simpleRelease ? "測試站開放" : undefined}>
+              AI 供應商、模型、API Key 與本機 CLI 橋接集中在 AI 設定頁管理。
+              <div className="mt-3">
+                {simpleRelease ? (
+                  <DisabledFeatureButton testId="channels-ai-settings-disabled">完整版測試站可設定</DisabledFeatureButton>
+                ) : (
+                  <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/ai-settings">
+                    前往 AI 設定
+                  </Link>
+                )}
+              </div>
             </SettingPanel>
           </section>
 
           <section id="extensions" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-semibold text-[#111827]">擴充整合</h2>
-              <StatusBadge>設定入口</StatusBadge>
+              <StatusBadge>規劃中</StatusBadge>
             </div>
             <p className="mt-1 text-sm leading-6 text-[#667085]">
               API、應用程式、第三方整合、付款整合、模板與追蹤像素統一放在同一組，避免低頻工具擠在左側主選單。
             </p>
+            <DisabledFeatureButton>第三方整合受控開通</DisabledFeatureButton>
           </section>
         </div>
       </div>
@@ -427,6 +527,27 @@ function StatusBadge({ children }: { children: ReactNode }) {
   );
 }
 
+function ConnectionStateBadge({
+  tone,
+  children,
+}: {
+  tone: "success" | "warning" | "neutral";
+  children: ReactNode;
+}) {
+  const toneClasses =
+    tone === "success"
+      ? "border-green-200 bg-green-50 text-green-700"
+      : tone === "warning"
+        ? "border-amber-200 bg-amber-50 text-amber-700"
+        : "border-slate-200 bg-slate-50 text-slate-600";
+
+  return (
+    <span className={`inline-flex shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${toneClasses}`}>
+      {children}
+    </span>
+  );
+}
+
 function Notice({
   title,
   tone,
@@ -445,4 +566,18 @@ function Notice({
 
 function EmptyState({ children }: { children: ReactNode }) {
   return <div className="rounded-lg border border-dashed border-[#d7dbe0] bg-white p-6 text-sm text-[#667085]">{children}</div>;
+}
+
+function DisabledFeatureButton({ children, testId }: { children: ReactNode; testId?: string }) {
+  return (
+    <button
+      type="button"
+      disabled
+      aria-disabled="true"
+      data-testid={testId}
+      className="mt-4 inline-flex cursor-not-allowed items-center rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+    >
+      {children}
+    </button>
+  );
 }

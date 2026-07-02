@@ -1,5 +1,623 @@
 # Meta App Review Checklist
 
+## 2026-07-02 - Channels Instagram action disabled-reason clarity
+
+- Channels Instagram action controls now show per-action disabled reasons for media, comments, and token refresh prerequisites.
+- This is a UI clarity improvement only; it does not add new Meta scopes, submit App Review, change OAuth callback behavior, or alter token storage.
+
+App Review implication:
+
+- Reviewer-facing UX is clearer when permissions or token state are insufficient.
+- Actual App Review remains Hold until Meta dashboard submission, reviewer assets, requested permission proof, and final redaction review are complete.
+
+## 2026-06-26 - Autopilot Meta boundary
+
+- InboxPilot Autopilot may prepare docs, run code checks, and review Meta readiness evidence.
+- Autopilot must not log in to Meta Dashboard.
+- Autopilot must not submit App Review.
+- Autopilot must not upload reviewer videos, screenshots, or test assets.
+- Autopilot must not print OAuth codes, callback query strings, access tokens, app secrets, or reviewer credentials.
+- Missing Meta dashboard/test-user/reviewer actions are written to `reports/human-required.md`.
+
+App Review implication:
+
+- The overnight runner can keep the package organized, but actual Meta submission remains a human controlled step.
+## 2026-06-26 - Instagram connect CI smoke
+
+- Authenticated route smoke now covers the Instagram connect entry route in CI and nightly automation.
+- The smoke verifies the internal Social Accounts page renders the Instagram OAuth provider.
+- The smoke does not click OAuth, log in to Meta, open Meta Dashboard, or submit App Review.
+- App Review remains Hold until real reviewer assets, recording, screenshots, permission proof, and dashboard submission are complete.
+
+## 2026-06-26 - Submission package prepared
+
+- Added [Meta App Review Submission Package](./meta-app-review-submission-package.md).
+- Added [Meta Reviewer Recording Shot List](./meta-reviewer-recording-shot-list.md).
+- Added [Meta App Review Screenshot and Redaction Checklist](./meta-app-review-screenshot-redaction-checklist.md).
+- Added [Meta Reviewer-Safe Test Asset Handoff Checklist](./meta-reviewer-test-asset-handoff-checklist.md).
+- The package defines production URLs, permission matrix, reviewer recording scenes, screenshot list, test asset requirements, dashboard fields, redaction gate, submission draft text, and Go / Hold criteria.
+- No Meta submission was performed.
+- No Meta Dashboard settings were changed.
+- No secrets, tokens, authorization codes, or reviewer credentials were recorded.
+
+Current decision:
+
+- App Review submission preparation is improved.
+- Actual submission remains Hold until reviewer test assets, recording/screenshots, permission matrix, redaction review, Business Verification / Advanced Access status, and product/security sign-off are complete.
+
+## 2026-06-26 - PR #2 production deployment delta
+
+- PR #2 production Meta fallback hardening is deployed to the production target.
+- Production runtime no longer uses global Meta env fallback for channel token or Instagram business account id resolution.
+- Production webhook channel config no longer writes global fallback token markers.
+- Production health is ok after deployment.
+
+Remaining App Review gates:
+
+- Record final reviewer walkthrough for the production-like flow.
+- Confirm requested permissions and Advanced Access requirements.
+- Confirm Business Verification status.
+- Prepare test Instagram / Facebook assets and account access instructions.
+- Verify redirect URI, callback URL, data deletion URL, Terms, and Privacy Policy URLs.
+- Complete evidence redaction review so no token, authorization code, secret, customer data, or internal URL leaks into the submission package.
+- Run an authenticated reconnect smoke for a workspace/channel that uses real tenant-scoped credentials.
+
+## 2026-06-26 - Production Meta global fallback hardening
+
+- Production code now disables global Meta env fallback for channel tokens and Instagram business account ids.
+- Production webhook channel updates no longer write global fallback token markers.
+- Production token refresh via `scripts/refresh-meta-token.mjs` is blocked by runtime markers.
+- Staging and development can still use fallback behavior for controlled smoke tests, but public production must use workspace/channel OAuth credentials.
+- Added regression tests for production fallback disablement.
+
+App Review implication:
+
+- This closes one multi-tenant production safety gate.
+- App Review itself is still not complete: final reviewer recording, permission proof, test asset proof, redirect URI review, Advanced Access / Business Verification evidence, and redaction review are still required.
+
+## 2026-06-16 - Internal Beta Real Evidence Execution Plan Status
+
+Status: real evidence execution plan documented / internal beta Hold / App Review submission preparation Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-real-evidence-execution-plan.md
+```
+
+Current App Review implication:
+
+- Real artifact evidence execution now has a plan covering artifact inventory, owner/version/redaction gates, reviewer recording, screenshots, permission proof, test asset proof, redaction execution, access controls, rollback, production write guard, token exchange guard, and template backfill.
+- Internal beta remains Hold until the plan is executed against real artifacts and every gate is Pass.
+- App Review submission preparation remains Hold.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Internal Beta Document Index Status
+
+Status: internal beta document index documented / internal beta Hold / App Review submission preparation Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-doc-index.md
+```
+
+Current App Review implication:
+
+- The internal beta documentation set now has a single index covering file purpose, reading order, evidence-to-closeout decision path, template / draft status, open gates, internal beta Hold reasons, App Review submission preparation status, and production No-Go reasons.
+- Internal beta remains Hold because the package assembly, redaction report, reviewer recording, screenshots, permission proof, test asset proof, scope reconciliation, access controls, rollback, guards, and sign-off have not been executed against real artifacts.
+- App Review submission preparation remains Hold.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Internal Beta Closeout Report Template Status
+
+Status: closeout report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-closeout-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta closeout now has a report template for closeout metadata, monitoring summary, access / redaction / guard / UX / fallback result summary, issue / pause trigger / remediation status, final beta conclusion, App Review submission preparation decision, missing production evidence, and next-stage Go / Hold.
+- A successful closeout can only move to App Review submission preparation, not production implementation.
+- Production implementation remains No-Go until App Review approval, Business Verification / Advanced Access confirmation, production security review, token lifecycle approval, tenant isolation review, rollback plan, and required Supabase project confirmation are complete.
+- Supabase migration / `db push` remains out of scope.
+
+## 2026-06-16 - Internal Beta Monitoring Report Template Status
+
+Status: monitoring report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-monitoring-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta monitoring now has a report template for beta run metadata, access monitoring, redaction / logging / audit / evidence artifact monitoring, production write guard, token exchange guard, account selection UX, consent, callback evidence, rollback / fallback health, issue / pause triggers, and continue / pause / end decisions.
+- Internal beta remains Hold until launch gates pass; if launched later, any critical monitoring failure pauses beta.
+- A clean monitoring report still does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
+## 2026-06-16 - Internal Beta Launch Checklist Status
+
+Status: launch checklist documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-launch-checklist.md
+```
+
+Current App Review implication:
+
+- Internal beta launch now has a checklist for release memo sign-off, launch preconditions, allowlist / role / internal-only entry point, redaction / logging / audit / evidence artifacts, production write guard, token exchange guard, rollback / fallback, monitoring, pause conditions, and post-launch backfill.
+- Internal beta cannot launch unless the release decision memo records Go and every launch gate passes.
+- A launch decision remains internal-only and does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
+## 2026-06-16 - Internal Beta Release Decision Memo Template Status
+
+Status: release decision memo template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-release-decision-memo-template.md
+```
+
+Current App Review implication:
+
+- Internal beta release now has a decision memo template summarizing evidence execution, package assembly, redaction, recording, screenshots, permission proof, test asset proof, internal-only access, rollback / fallback, production write guard, token exchange guard, and sign-off.
+- Internal beta can only become Go when every gate is Pass and product owner sign-off is recorded.
+- A Go decision remains internal-only and does not approve production implementation.
+- Supabase migration / `db push` remains out of scope.
+
+## 2026-06-16 - Internal Beta Evidence Execution Report Template Status
+
+Status: evidence execution report template documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-evidence-execution-report-template.md
+```
+
+Current App Review implication:
+
+- Internal beta evidence execution now has a report template for run metadata, package assembly result, redaction report result, reviewer recording / screenshots result, permission proof / test asset proof result, access-control result, rollback / fallback result, production write guard, token exchange guard, and final go / hold decision.
+- Internal beta remains Hold until this report is executed with every gate recorded as Pass and product owner sign-off is complete.
+- Supabase migration / `db push` remains out of scope.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Internal Beta Evidence Collection Runbook Status
+
+Status: evidence collection runbook documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-evidence-collection-runbook.md
+```
+
+Current App Review implication:
+
+- Evidence collection now has a documented process for package assembly evidence, redaction report execution, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, and token exchange guard.
+- Internal beta remains Hold until the runbook is executed against the real final package and every final go / hold record field is Pass.
+- Supabase migration / `db push` remains out of scope.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Internal Beta Final Preflight Checklist Status
+
+Status: internal beta final preflight checklist documented / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-internal-beta-final-preflight-checklist.md
+```
+
+Current App Review implication:
+
+- Internal beta cannot release Hold until package assembly, final redaction report, reviewer recording, screenshots, permission proof, test asset proof, internal-only access controls, rollback / fallback, production write guard, token exchange guard, and sign-off are Pass.
+- The checklist explicitly keeps Supabase migration / `db push` out of scope.
+- Production implementation remains No-Go even if internal beta later becomes Go.
+
+## 2026-06-16 - Final App Review Package Assembly Checklist Status
+
+Status: package assembly checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-app-review-package-assembly-checklist.md
+```
+
+Current App Review implication:
+
+- Final App Review package assembly now has a gate for reviewer recording, screenshots, permission proof, redaction report, test asset proof, scope reconciliation, callback evidence, workspace linking dry-run, channel sync dry-run, and rollback / fallback proof.
+- Files cannot enter the package until redaction search, visual redaction, scope reconciliation, no-secret, no-unmasked-ID, no-real-customer-data, rollback, and sign-off gates pass.
+- Internal beta remains Hold until the actual package is assembled and every gate passes.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Final Redaction Search Execution Report Template Status
+
+Status: redaction search execution report template documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-redaction-search-execution-report-template.md
+```
+
+Current App Review implication:
+
+- Final redaction search execution now has a structured template covering App Review docs, recording files, screenshots, test output, server logs, audit records, browser console evidence, network exports, and the final upload package.
+- The template defines searches for tokens, authorization codes, secrets, raw state, raw nonce, full callback URLs, and unmasked Meta asset IDs.
+- Internal beta remains Hold until this template is executed against the actual final package and all findings are resolved.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Final Reviewer Recording Shot List Status
+
+Status: reviewer recording shot list documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-reviewer-recording-shot-list.md
+```
+
+Current App Review implication:
+
+- Reviewer recording segments are now mapped to permissions, product screens, account selection, consent, redacted callback evidence, workspace linking dry-run, and channel sync dry-run.
+- The recording must not show raw authorization code, raw state, raw nonce, full callback URL, token, secret, cookies, localStorage, sessionStorage, or unmasked Business / Page / IG IDs.
+- Internal beta remains Hold until the recording is captured, final redaction search passes, scopes are reconciled with Meta Dashboard, and access / rollback sign-off is complete.
+- Production implementation remains No-Go.
+
+## 2026-06-16 - Final Permission Usage Proof Matrix Status
+
+Status: permission matrix documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-permission-usage-proof-matrix.md
+```
+
+Current App Review implication:
+
+- Permission-by-permission proof requirements are now documented for current Instagram Business Login scopes, current Facebook / Page-linked scopes, and candidate Dashboard-generated scopes.
+- Recommended minimum Instagram Business Login set remains `instagram_business_basic`, `instagram_business_manage_messages`, and `instagram_business_manage_comments`.
+- `instagram_business_content_publish` and `instagram_business_manage_insights` should be removed or deferred until InboxPilot has product-screen evidence and reviewer demo proof.
+- Facebook Login for Business scopes remain Hold until the selected flow, Business / Page / IG asset proof, and reviewer recording are reconciled.
+- App Review readiness remains Hold until final recording, current Meta Dashboard scope reconciliation, test asset proof, redaction search, rollback proof, and sign-off are complete.
+
+## 2026-06-16 - Final App Review Demo Package Checklist Status
+
+Status: final demo package checklist documented / App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-final-app-review-demo-package-checklist.md
+```
+
+Current App Review implication:
+
+- Reviewer demo recording checklist is now documented.
+- Permission usage proof checklist is now documented.
+- Business / Page / IG test asset checklist is now documented.
+- Account selection UX, redacted callback, workspace linking dry-run, and channel sync dry-run evidence are documented.
+- Final App Review package remains Hold until the actual reviewer recording, permission reconciliation, test asset package, redaction search, beta access controls, rollback proof, and sign-off are complete.
+
+## 2026-06-16 - Internal Beta Access / Rollback Runbook Status
+
+Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md
+```
+
+Current App Review implication:
+
+- Internal beta access and rollback requirements are now documented.
+- Final App Review demo package is still not complete.
+- Permission usage proof must still be reconciled with current Meta App Dashboard settings.
+- Internal beta should remain blocked until reviewer demo materials, workspace allowlist, tester permissions, redaction search, and rollback disable path are approved.
+
+## 2026-06-16 - Internal Beta Go/No-Go Review Status
+
+Status: App Review readiness Hold / internal beta Hold / production implementation No-Go.
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md
+```
+
+Current App Review conclusion:
+
+- Account selection UX evidence is present.
+- Consent screen evidence is present.
+- Redacted callback evidence is present.
+- Workspace linking and channel sync dry-run evidence is present.
+- Final reviewer-facing demo package is not complete.
+- Permission-by-permission proof still needs final reconciliation with the current Meta App Dashboard.
+- Internal beta should not start until reviewer demo materials, internal-only access controls, and rollback procedures are finalized.
+
+## 2026-06-16 - Meta Business Login sandbox SBL-12 callback capture gate
+
+Status: helper Pass / route integration Hold.
+
+- Added sandbox-only callback capture helper and tests.
+- Callback evidence can now be represented as redacted evidence with hash-only code / state references and all production write flags blocked at helper level.
+- Production callback route remains unchanged and real callback evidence is still missing.
+- App Review remains Hold because reviewer demo, real callback, workspace linking, channel sync, and rollback evidence are not complete.
+
+## 2026-06-16 - Meta Business Login sandbox controlled callback prompt
+
+Status: documented next step.
+
+- Added `docs/meta-business-login-sandbox-next-controlled-callback-prompt.md`.
+- Callback evidence is still missing and must not be collected by blindly retrying the OAuth URL against the production callback.
+- Before App Review readiness, callback capture must prove redaction, state / workspace validation, no raw code storage, no unintended token exchange, and no unintended ConnectedAccount / Channel writes.
+- Internal beta remains Hold; production implementation remains No-Go.
+
+## 2026-06-16 - Meta Business Login sandbox OAuth profile selection evidence
+
+Status: Partial Pass / Hold.
+
+- Evidence file: `docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md`.
+- Instagram Business Login showed profile account selection after Facebook login.
+- Available choices included `ling.yun.energy`, `carry.digital.nomad`, and `使用其他個人檔案`.
+- `carry.digital.nomad` was selected, and Instagram loaded the selected profile's home page.
+- Final OAuth consent, callback payload, workspace linking, channel sync, reviewer demo recording, and App Review submission evidence remain missing.
+- Internal beta remains Hold; production implementation remains No-Go.
+
+## 2026-06-15 - Meta Business Login sandbox authenticated browser evidence
+
+Status: Partial Pass / Hold.
+
+- Evidence file: `docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md`.
+- Captured InboxPilot App Dashboard evidence, Instagram API setup evidence, Instagram Business Login URL evidence, business login settings, and permissions evidence.
+- Meta-provided Instagram Business Login URL uses `force_reauth=true` and `response_type=code`.
+- Instagram account selection UX was partially captured: two IG profiles and "use another profile" were shown after Facebook login.
+- Callback evidence, workspace linking evidence, channel sync evidence, reviewer demo recording, and App Review submission evidence remain missing.
+- Internal beta remains Hold; production implementation remains No-Go.
+
+## 2026-06-15 - Meta Business Login sandbox browser evidence run
+
+Status: Hold.
+
+- Browser evidence file: `docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md`.
+- In-app Browser reached the Facebook login page for Meta Developers but did not have an authenticated Meta developer session.
+- No Meta App Dashboard, Facebook Login for Business dialog, Instagram Business Login dialog, Business / Page / IG account selection UX, real callback evidence, or reviewer demo recording was captured.
+- No credentials, OTP, token, authorization code, app secret, raw state, raw nonce, full callback URL, or browser storage was read or entered.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox external evidence handoff
+
+Status: Hold.
+
+- Chrome reached `https://developers.facebook.com/apps/` with page title `所有應用程式 - Meta for Developers`.
+- Automation could not inspect the page DOM because another Chrome extension UI was blocking the page.
+- This is not App Review evidence. Real Meta App Dashboard settings, Meta dialog UX, account selection UX, redacted callback evidence, and reviewer demo evidence are still missing.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-11 evidence packet review gate
+
+Status: targeted local evidence packet test passed.
+
+- Added local dry-run evidence packet generation for redacted authorize / callback payloads, production write guard evidence, and gate status output.
+- This is still not App Review evidence because no real Meta dialog, account selection UX recording, Business / Page / IG asset evidence, callback evidence, reviewer demo, or redacted screen recording has been collected.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox production isolation review gate
+
+Status: targeted production isolation test passed.
+
+- Added an automated regression test confirming sandbox provider ids, sandbox helpers, and `/api/internal/oauth` are not referenced by existing production OAuth routes or UI entry points.
+- This strengthens the sandbox boundary but still does not provide App Review evidence: no real Meta dialog, reviewer demo, account selection UX recording, Business / Page / IG evidence, callback evidence, or redacted screen recording has been collected yet.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox route integration review gate
+
+Status: targeted route integration tests passed.
+
+- Internal sandbox routes now produce richer dry-run evidence for state / nonce, code exchange classification, callback evidence, workspace spoofing guard, and production write guard.
+- This remains internal dry-run scaffold evidence only; no real Meta dialog, account selection UX recording, Business / Page / IG evidence, real callback evidence, or redacted reviewer recording exists yet.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-06 to SBL-08 review gate
+
+Status: targeted helper tests passed.
+
+- SBL-06 to SBL-08 complete dry-run payload, workspace allowlist, and production write guard helper coverage.
+- This still does not satisfy App Review because no real Meta dialog, reviewer demo, account selection UX recording, Business / Page / IG evidence, callback evidence, or redacted screen recording exists yet.
+- Internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-05 redaction review gate
+
+Status: targeted helper tests passed.
+
+- SBL-05 adds sandbox-only redaction and audit helpers for future evidence collection.
+- This still does not satisfy App Review because no real reviewer demo, Meta dialog evidence, account selection UX recording, Business / Page / IG evidence, callback evidence, or redacted screen recording exists yet.
+- SBL-06 may start next; internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-04 code exchange review gate
+
+Status: targeted helper tests passed.
+
+- SBL-04 adds sandbox-only code exchange classification and redaction, but does not perform real Meta token exchange.
+- This still does not provide App Review evidence because no real Meta dialog, account selection UX evidence, Business / Page / IG evidence, callback evidence, token evidence, or redacted recording exists yet.
+- SBL-05 redacted logging helper may start next; internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-03 state nonce review gate
+
+Status: targeted helper tests passed.
+
+- SBL-03 adds sandbox-only state / nonce helpers for callback security preparation.
+- This still does not provide App Review evidence because no real Meta dialog, account selection UX evidence, Business / Page / IG evidence, callback evidence, or redacted recording exists yet.
+- SBL-04 may start next as a safe code exchange stub / classifier; internal beta and production implementation remain blocked.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-01 route skeleton review gate
+
+Status: targeted skeleton tests passed.
+
+- SBL-01 adds internal-only dry-run route skeletons but does not produce App Review evidence yet.
+- No real Meta dialog, reviewer demo, account selection UX recording, Business / Page / IG asset evidence, callback evidence, or redacted screen recording exists yet.
+- SBL-03 state / nonce helpers may start next; internal beta and production implementation remain blocked.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 test scaffold review gate
+
+Status: targeted scaffold tests passed.
+
+- SBL-09 test scaffold now validates redacted fixtures, dry-run callback payload shape, unsafe fixture detection, raw callback / authorize URL rejection, and production write guard expectations.
+- This is not App Review evidence yet because no real Meta dialog, reviewer demo, account selection UX recording, Business / Page / IG asset evidence, or sandbox callback evidence has been collected.
+- SBL-01 may start only as an internal-only dry-run route skeleton; internal beta and production implementation remain blocked.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 coding readiness review gate
+
+Status: documented only.
+
+- Added SBL-09 coding readiness checklist confirming only sandbox test scaffold coding may begin.
+- This checklist does not satisfy App Review evidence because no real reviewer demo, account selection UX evidence, Business / Page / IG evidence, callback evidence, or redacted screen recording exists yet.
+- SBL-01, internal beta, and production implementation remain blocked; production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 fixture redaction review gate
+
+Status: documented only.
+
+- Added SBL-09 fixture and redaction assertion spec to keep future App Review evidence free of raw token, code, secret, state, nonce, callback URL, authorize URL, and unmasked Meta asset ids.
+- This spec does not provide reviewer demo evidence, account selection UX evidence, Business / Page / IG test asset evidence, or redacted screen recording evidence.
+- Internal beta and production implementation remain blocked until App Review, UX, callback security, workspace linking, channel sync, redaction, and rollback gates pass with execution evidence.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox SBL-09 test suite review gate
+
+Status: documented only.
+
+- Added SBL-09 minimum test suite specification as a prerequisite before any SBL-01 internal-only route work.
+- App Review remains Not passed because this spec does not provide reviewer demo evidence, Business / Page / IG test asset evidence, account selection UX evidence, or redacted recording evidence.
+- Internal beta and production implementation remain blocked until App Review, UX, callback security, workspace linking, channel sync, redaction, and rollback gates pass with execution evidence.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox coding kickoff review gate
+
+Status: documented only.
+
+- Added a sandbox coding kickoff checklist confirming SBL-09 may only prepare test scaffolding and SBL-01 remains blocked until redaction and dry-run standards exist.
+- Internal beta and production implementation remain blocked until App Review evidence, UX evidence, callback security, workspace linking, channel sync, redaction, and rollback gates are passed with execution evidence.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox final readiness review gate
+
+Status: documented only.
+
+- Added final readiness review confirming App Review remains Not passed.
+- Reviewer demo flow, permission usage table, Business / Page / IG test assets, redacted screen recording, Business Verification / Advanced Access status, and actual sandbox evidence are still required before internal beta or production implementation.
+- Production fallback remains the existing `meta-instagram` flow.
+
+## 2026-06-15 - Meta Business Login sandbox coding task breakdown review gate
+
+Status: documented only.
+
+- Added a sandbox coding task breakdown that keeps App Review evidence as a prerequisite for internal beta and production implementation.
+- Any future sandbox coding must backfill runbook / report / go-no-go evidence and cannot be treated as App Review readiness by itself.
+- Production fallback remains the existing `meta-instagram` flow until App Review, UX, callback security, workspace linking, channel sync, redaction, and rollback gates pass.
+
+## 2026-06-15 - Meta Business Login sandbox doc index review gate
+
+Status: documented only.
+
+- Added a sandbox document index and decision path that places App Review evidence before internal beta or production implementation.
+- App Review remains unpassed: reviewer demo, permission usage table, test assets, screen recording, Business Verification / Advanced Access status, and redaction proof still require execution evidence.
+- Production fallback remains the existing `meta-instagram` flow until the full sandbox decision path reaches a documented production go decision.
+
+## 2026-06-15 - Meta Business Login sandbox coding risk test plan review gate
+
+Status: documented only.
+
+- Added a sandbox coding risk and test plan that keeps App Review evidence as a prerequisite before any internal beta or production implementation.
+- App Review-related minimum checks include demo script, permission table, reviewer assets, redacted authorize URL evidence, redacted callback payload evidence, and no sensitive data in screenshots or recordings.
+- Production fallback remains the existing `meta-instagram` flow; sandbox coding is still blocked unless the go/no-go checklist explicitly reaches `Go to sandbox coding`.
+
+## 2026-06-15 - Meta Business Login sandbox coding spec review gate
+
+Status: documented only.
+
+- Added a pre-coding sandbox technical spec draft that keeps Facebook Login for Business / Instagram Business Login behind internal-only, dry-run-first constraints.
+- App Review evidence remains required before internal beta or production implementation; sandbox coding may only proceed after demo script, permission table, redaction rules, and reviewer asset requirements are understood.
+- Production fallback remains the existing `meta-instagram` flow. Any production implementation still requires a separate ADR and final App Review / security / rollback checklist.
+
+## 2026-06-15 - Meta Business Login sandbox go/no-go review gate
+
+Status: documented only.
+
+- Added a go/no-go checklist that requires App Review readiness before internal beta or production implementation of Facebook Login for Business / Instagram Business Login.
+- App Review go conditions include reviewer demo flow, permission usage table, test workspace, test Business / Page / IG assets, screen recording script, redaction proof, fallback explanation, Business Verification status, and Advanced Access status.
+- Production fallback remains the existing `meta-instagram` flow until every go/no-go gate passes and a separate production implementation ADR is created.
+
+## 2026-06-15 - Meta Business Login sandbox report review gate
+
+Status: documented only.
+
+- Added a sandbox experiment report template for summarizing App Review readiness, account selection UX evidence, callback safety, workspace linking, channel sync, redaction checks, and final go / hold / no-go decision.
+- App Review readiness must include reviewer demo flow, permission usage table, test workspace, test Business / Page / IG assets, screen recording script, redaction proof, and fallback explanation.
+- Production fallback remains the existing `meta-instagram` flow unless sandbox evidence proves reviewer-ready UX, safe callback handling, workspace isolation, channel sync correctness, and redaction success.
+
+## 2026-06-15 - Meta Business Login sandbox runbook review gate
+
+Status: documented only.
+
+- Added a sandbox runbook template to capture reviewer-ready evidence without exposing token, code, secret, raw state, raw nonce, full callback URL, or reusable authorize URL.
+- App Review preparation should use the runbook to record Meta App Dashboard configuration, permission status, account selection UX, redacted callback payload, and go / no-go decision.
+- Production fallback remains the existing `meta-instagram` flow until sandbox runbook results show App Review readiness, acceptable account selection UX, safe callback handling, redaction success, workspace isolation, and channel sync correctness.
+
+## 2026-06-15 - Meta Business Login sandbox plan review gate
+
+Status: documented only.
+
+- Added a sandbox-only implementation plan that keeps Facebook Login for Business / Instagram Business Login behind App Review and sandbox validation gates.
+- App Review readiness now requires reviewer assets, redacted authorize URL / callback payload samples, permission usage proof, account selection UX observations, and rollback criteria before any beta rollout.
+- Production fallback remains the existing `meta-instagram` flow until App Review, account selection matrix, redaction checks, workspace linking, and channel sync validation all pass.
+
+## 2026-06-15 - Meta Business Login ADR review gate
+
+Status: documented only.
+
+- Added a pre-implementation ADR requiring sandbox-only validation before Facebook Login for Business or Instagram Business Login can replace the current Instagram OAuth flow.
+- App Review readiness remains a required gate: reviewer demo flow, permission usage table, screen recording script, test workspace, test Business / Page / IG assets, and redaction proof must be ready before production rollout.
+- If App Review fails or account selection UX is not materially better than the current flow, the production fallback remains the existing Instagram OAuth flow.
+
+## 2026-06-15：Account Selection 測試矩陣
+
+- 新增 `docs/meta-business-login-account-selection-test-matrix.md`，作為 App Review 前的 Business / Page / IG account selection 測試紀錄模板。
+- 測試矩陣要求記錄 Meta dialog 是否只顯示「允許 / 取消」、是否可選 Business / Page / IG、callback 結果與 workspace linking 結果。
+- 測試截圖與紀錄不得包含 token、authorization code、state raw value、secret 或未遮罩個資。
+
+## 2026-06-15：Business Login Demo Script
+
+- 新增 `docs/meta-business-login-app-review-demo-script.md`，整理 Facebook Login for Business / Instagram Business Login 的 reviewer demo 流程、permission usage table、資料使用位置與 redaction checklist。
+- 尚未修改產品功能程式碼、OAuth flow、callback route、登入按鈕或 env。
+- 送審前需以實際 Meta App Dashboard 設定再次核對 redirect URI、login configuration / `config_id`、Advanced Access 與 Business Verification 狀態。
+- Demo 影片不得露出 token、authorization code、state raw value、app secret、client secret 或 webhook verify token。
+
+## 2026-06-15：Business Login 研究規格補充
+
+- 新增 `docs/meta-business-login-experiment-spec.md`，先以文件任務評估 Facebook Login for Business / Instagram Business Login 是否能取代或補強目前 Instagram OAuth。
+- 尚未修改 OAuth flow、callback route、登入按鈕或 env。
+- 後續 App Review 文件需補：reviewer demo script、permission usage table、Business / Page / IG account selection 錄影流程、token / code / secret redaction 檢查清單。
+- 若導入 login configuration / `config_id`，需重新確認 Advanced Access、Business Verification、redirect URI 與測試帳號需求。
+
 更新日期：2026-06-10
 
 ## 目前使用的 Meta / Instagram 登入流程
@@ -153,3 +771,110 @@ scopes：
 2. 若偵測到同 workspace 已有既有 IG 綁定，提醒使用者是否覆蓋 / 新增
 3. 提供一鍵解除綁定與重新連接入口
 4. production 模式禁用 env fallback，避免誤以為綁定成功其實用的是舊 token
+## 2026-06-16 - Sandbox Callback Capture Evidence Status
+
+Current sandbox evidence status:
+
+- Account selection UX: observed in browser, multiple Instagram profile options were shown.
+- Callback capture route guard: implemented as signed-state read-only guard.
+- Real callback evidence: still Hold.
+- Workspace linking: dry-run only.
+- Channel sync: dry-run only.
+- Internal beta: Hold.
+- Production implementation: No-Go.
+
+Reviewer demo safety requirement:
+
+- Do not show raw authorization code, raw state, raw nonce, access token, app secret, client secret, or full callback URL in recording, logs, audit records, reports, screenshots, or documentation.
+- If a callback evidence response is shown, only show the redacted JSON fields and hashed evidence markers.
+- Do not present sandbox callback capture as a production user-facing feature.
+
+## 2026-06-16 - Controlled Consent Run App Review Status
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md
+```
+
+Reviewer demo readiness:
+
+- Account/profile selection screen: observed.
+- Consent screen with app name: observed.
+- Privacy policy and terms links on consent screen: observed.
+- Real callback evidence: captured after the user clicked allow; response body was redacted sandbox evidence.
+
+App Review implication:
+
+- The demo can show that Instagram Business Login can present a ManyChat-like account/profile selection step.
+- The demo can show that the callback capture guard returns redacted evidence without token exchange or production writes.
+- The demo cannot yet claim workspace linking or channel sync is validated.
+- Before submitting App Review, workspace linking and channel sync dry-run evidence still need to be captured.
+
+## 2026-06-16 - SBL-13 Dry-Run Linking / Sync App Review Status
+
+Evidence:
+
+```text
+docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md
+```
+
+Reviewer demo readiness:
+
+- Callback evidence can be mapped to a sandbox workspace linking draft.
+- Channel sync can be represented as a dry-run draft.
+- No production ConnectedAccount / Channel write occurs in the dry-run.
+- No token, raw code, raw state, raw nonce, full callback URL, secret, or unmasked asset ID appears in the tested dry-run payload.
+
+App Review implication:
+
+- Dry-run evidence is now sufficient for internal review of the intended linking and sync behavior.
+- App Review submission still needs a final reviewer-facing demo script and permission evidence review before internal beta.
+- Production implementation remains blocked.
+
+## 2026-06-26 - Operator submission workbook
+
+- Added `docs/meta-app-review-operator-submission-workbook.md`.
+- The workbook consolidates the launch control room, submission package, recording shot list, screenshot redaction checklist, and reviewer-safe asset handoff into one manual operator workflow.
+- It covers reviewer-safe asset preparation, 4-6 minute recording order, screenshot capture list, Meta Dashboard field checklist, permission evidence mapping, safe submission text draft, final redaction review, upload manifest template, and Go / Hold rules.
+
+App Review implication:
+
+- Submission preparation is now operationally ready for a human operator.
+- Actual Meta Dashboard login, upload, App Review submission, Business Verification, Advanced Access approval, and reviewer credential handoff are still manual gates.
+
+## 2026-06-26 - Day-of recording run card
+
+- Added `docs/meta-app-review-day-of-recording-run-card.md`.
+- The run card condenses the operator workbook into day-of steps: recording prep, recording sequence, screenshot capture, Dashboard fill checklist, and pre-submit review.
+- It keeps the same hard boundaries: no Meta Dashboard login from Codex, no submission, no secrets, no raw OAuth values, and no real customer data.
+
+App Review implication:
+
+- The human operator now has both a full workbook and a short day-of checklist.
+- App Review remains Hold until the operator records real artifacts, fills Meta Dashboard manually, and submits for approval.
+
+## 2026-06-27 - Meta OAuth failure feedback
+
+- OAuth callback failures now redirect back to `/channels/connect/social` with a safe Chinese `meta_error` and support-oriented `meta_error_code`.
+- Missing Instagram messaging permissions and no usable Instagram channel cases now surface actionable copy about App Review, Sandbox/test accounts, Professional/Business Account status, and Facebook Page linkage.
+- The social connect page renders these errors in a red alert instead of silently returning to the connection screen.
+- Simple release keeps only the Instagram provider visible and blocks explicit Facebook MBS mode.
+- Playwright simple-release smoke now verifies the red error alert and confirms Facebook / Meta Login and `meta-facebook` entry points are not visible.
+- CI now runs this simple-release smoke in a dedicated `simple-release-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+
+App Review implication:
+
+- This improves operator and user diagnosis while App Review is still pending.
+- It does not complete App Review, Advanced Access, Business Verification, reviewer asset recording, or final submission.
+
+## 2026-06-27 - Instagram profile metadata refresh hardening
+
+- Instagram profile refresh no longer exposes raw Meta Graph errors or `fbtrace_id` values to operators.
+- Instagram Login channels now prefer Instagram Graph profile reads before Facebook Graph object reads.
+- ID-only Instagram channels remain visible with partial metadata fallback, so App Review/test operators can still identify and switch accounts before Meta returns username/avatar metadata.
+
+App Review implication:
+
+- This improves reviewer/operator diagnostics only.
+- It does not submit Meta App Review, grant Advanced Access, change requested permissions, or bypass Meta platform requirements.

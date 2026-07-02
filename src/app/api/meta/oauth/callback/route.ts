@@ -15,6 +15,10 @@ import { getDb } from "@/lib/db";
 import { clearPopupState, readPopupState } from "@/lib/oauth/state";
 import { getPopupBridgeUrl } from "@/lib/oauth/utils";
 import { getClientIp } from "@/lib/security";
+import {
+  buildSandboxCallbackCaptureEvidence,
+  parseSandboxCallbackCaptureState,
+} from "@/lib/meta-business-sandbox-callback-capture";
 import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -123,6 +127,72 @@ function requiredAnyEnv(...names: string[]) {
   const value = getOptionalEnv(...names);
   if (!value) throw new Error(`${names.join(" or ")} is not configured.`);
   return value;
+}
+
+function safeErrorReason(reason: string) {
+  return reason
+    .replace(/\b(access[_-]?token|refresh[_-]?token|client[_-]?secret|app[_-]?secret|authorization[_-]?code|code|state|secret)\b/gi, "[redacted]")
+    .replace(/([?&](?:code|state|access_token|refresh_token|client_secret|app_secret)=)[^&\s]+/gi, "$1[redacted]")
+    .slice(0, 500);
+}
+
+export function getMetaOauthErrorCode(reason: string) {
+  const normalized = reason.toLowerCase();
+  if (normalized === "invalid_state" || normalized.includes("state verification")) return "invalid_state";
+  if (normalized.includes("access_denied") || normalized.includes("user_denied") || normalized.includes("cancel")) {
+    return "access_denied";
+  }
+  if (
+    normalized.includes("permission") ||
+    normalized.includes("scope") ||
+    normalized.includes("manage_messages") ||
+    normalized.includes("messaging") ||
+    normalized.includes("advanced access") ||
+    normalized.includes("app review")
+  ) {
+    return "missing_permissions";
+  }
+  if (
+    normalized.includes("usable instagram channels") ||
+    normalized.includes("no usable") ||
+    normalized.includes("instagram channels") ||
+    normalized.includes("business accounts")
+  ) {
+    return "no_instagram_channel";
+  }
+  if (normalized.includes("not configured") || normalized.includes("redirect_uri") || normalized.includes("redirect uri")) {
+    return "meta_configuration";
+  }
+  return "meta_oauth_failed";
+}
+
+export function getMetaOauthUserMessage(reason: string, mode: MetaOauthMode) {
+  const code = getMetaOauthErrorCode(reason);
+  if (code === "invalid_state") {
+    return "連接失敗：登入驗證已失效或來源不一致，請回到連接頁重新發起 Instagram 授權。";
+  }
+  if (code === "access_denied") {
+    return "連接已取消：你在 Meta 或 Instagram 授權頁取消了連接，請重新點擊 Instagram 連接。";
+  }
+  if (code === "missing_permissions") {
+    return "連接失敗：Meta 未核發 Instagram 訊息讀取權限，請確認您的 Meta 應用是否已通過 App Review，或使用的是否為測試 Sandbox 帳號。";
+  }
+  if (code === "no_instagram_channel") {
+    return "連接失敗：Meta 沒有回傳可用的 Instagram 專業帳號，請確認帳號已連結 Facebook Page、已切換為 Professional/Business Account，並具備必要權限。";
+  }
+  if (code === "meta_configuration") {
+    return "連接失敗：Meta 應用設定不完整，請確認 App ID、App Secret 與 OAuth Redirect URI 是否和目前環境一致。";
+  }
+  return mode === "instagram"
+    ? "連接失敗：Instagram 授權沒有完成，請重新連接；若持續失敗，請確認帳號權限與 App Review 狀態。"
+    : "連接失敗：Meta 授權沒有完成，請改用 Instagram 連接或確認 Meta App 權限設定。";
+}
+
+function buildMetaErrorRedirectUrl(request: Request, reason: string, mode: MetaOauthMode) {
+  const redirectUrl = new URL("/channels/connect/social", getAppUrl(request));
+  redirectUrl.searchParams.set("meta_error", getMetaOauthUserMessage(reason, mode));
+  redirectUrl.searchParams.set("meta_error_code", getMetaOauthErrorCode(reason));
+  return redirectUrl.toString();
 }
 
 export function getInstagramAppSecret() {
@@ -611,10 +681,7 @@ async function recordMetaOauthFailure(params: {
   reason: string;
   transport?: "popup" | "redirect";
 }) {
-  const sanitizedReason = params.reason
-    .replace(/\b(access[_-]?token|refresh[_-]?token|client[_-]?secret|app[_-]?secret|authorization[_-]?code|code|state|secret)\b/gi, "[redacted]")
-    .replace(/([?&](?:code|state|access_token|refresh_token|client_secret|app_secret)=)[^&\s]+/gi, "$1[redacted]")
-    .slice(0, 500);
+  const sanitizedReason = safeErrorReason(params.reason);
 
   await recordAuditEvent({
     action: "oauth_callback_failed",
@@ -651,6 +718,27 @@ export async function GET(request: Request) {
   cookieStore.delete(META_OAUTH_WORKSPACE_COOKIE);
   cookieStore.delete(META_OAUTH_MODE_COOKIE);
 
+  const sandboxCaptureState = parseSandboxCallbackCaptureState(state);
+  if (sandboxCaptureState) {
+    const evidence = buildSandboxCallbackCaptureEvidence({
+      providerId: sandboxCaptureState.providerId,
+      requestId: request.headers.get("x-request-id") || sandboxCaptureState.requestId,
+      sessionWorkspaceId: workspaceId,
+      stateWorkspaceId: sandboxCaptureState.workspaceId,
+      sandboxHeader: request.headers.get("x-inboxpilot-sandbox-callback-capture"),
+      signedStateMarker: true,
+      callbackUrl: request.url,
+      code,
+      state,
+      expectedState: state,
+    });
+
+    return NextResponse.json(evidence, {
+      status: evidence.status === "success" ? 200 : 400,
+      headers: { "cache-control": "no-store" },
+    });
+  }
+
   if (providerError) {
     await recordMetaOauthFailure({
       request,
@@ -671,7 +759,7 @@ export async function GET(request: Request) {
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(providerError)}`);
+    return NextResponse.redirect(buildMetaErrorRedirectUrl(request, providerError, mode));
   }
 
   if (!code || !state || !expectedState || state !== expectedState) {
@@ -694,7 +782,7 @@ export async function GET(request: Request) {
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=invalid_state`);
+    return NextResponse.redirect(buildMetaErrorRedirectUrl(request, "invalid_state", mode));
   }
 
   try {
@@ -766,6 +854,6 @@ export async function GET(request: Request) {
         }),
       );
     }
-    return NextResponse.redirect(`${getAppUrl(request)}/channels/connect/social?meta_error=${encodeURIComponent(message)}`);
+    return NextResponse.redirect(buildMetaErrorRedirectUrl(request, message, mode));
   }
 }

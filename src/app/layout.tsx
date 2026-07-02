@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { GlobalBusyIndicator } from "@/components/GlobalBusyIndicator";
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 const geistSans = Geist({

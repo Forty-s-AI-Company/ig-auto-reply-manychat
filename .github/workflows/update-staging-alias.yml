@@ -27,7 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'deployment_status'
+      (
+        github.event_name == 'deployment_status' &&
+        github.event.deployment_status.state == 'success'
+      )
     env:
       DEPLOYMENT_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.deployment_url || github.event.deployment_status.target_url }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -68,6 +71,12 @@ jobs:
 
           INSPECT_OUTPUT="$(npx --yes vercel@latest inspect "${DEPLOYMENT_URL}" --token "${VERCEL_TOKEN}" "${VERCEL_ARGS[@]}" 2>&1)"
           echo "${INSPECT_OUTPUT}"
+
+          if grep -Eq "target[[:space:]]+production" <<< "${INSPECT_OUTPUT}"; then
+            echo "Skipping Production deployment: ${HOST}"
+            echo "should_update=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
 
           if ! grep -Fq "https://${STAGING_BRANCH_ALIAS}" <<< "${INSPECT_OUTPUT}"; then
             echo "Skipping non-staging branch Preview deployment: ${HOST}"

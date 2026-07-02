@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
+import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
@@ -25,6 +26,21 @@ function directionLabel(direction: string) {
   return { inbound: "用戶訊息", outbound: "自動回覆" }[direction] || direction;
 }
 
+const gatedFeatureLabels: Record<string, string> = {
+  billing: "金流",
+  broadcasts: "廣播",
+  "ai-settings": "AI 設定",
+  "knowledge-base": "知識庫",
+  segments: "分眾",
+  sequences: "序列",
+  tags: "標籤管理",
+  wallet: "錢包",
+  admin: "管理後台",
+  affiliate: "聯盟行銷",
+  templates: "範本",
+  "mock-tester": "測試工具",
+};
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("zh-TW", {
     month: "2-digit",
@@ -34,8 +50,13 @@ function formatDate(value: Date) {
   }).format(value);
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ alert?: string; feature?: string }>;
+}) {
   await requireUser();
+  const params = searchParams ? await searchParams : {};
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const simpleRelease = await isSimpleRelease();
@@ -46,6 +67,7 @@ export default async function DashboardPage() {
     openConversations,
     automations,
     connectedInstagramChannelRows,
+    selectedChannelDisplayName,
     recentMessages,
     recentAutomations,
   } = await getDashboardSummary({ workspaceId, selectedChannelId });
@@ -94,9 +116,27 @@ export default async function DashboardPage() {
     {
       done: messages > 0,
       title: simpleRelease ? "查看收件匣與最近訊息" : "送一則測試訊息並查看收件匣",
-      href: simpleRelease ? "/inbox" : "/mock-tester",
+      href: connectedInstagramChannels > 0 ? (simpleRelease ? "/inbox" : "/mock-tester") : "/channels/connect",
     },
   ];
+  const recentMessagesEmptyState = simpleRelease
+    ? {
+        title: "目前還沒有最近訊息",
+        body: connectedInstagramChannels > 0
+          ? "先從收件匣確認是否已有新對話；如果還沒有資料，請用已連接的 Instagram 帳號實際互動一則訊息。"
+          : "先連接 Instagram 帳號，收到第一則訊息後，這裡就會開始顯示最近對話。",
+        href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect",
+        label: connectedInstagramChannels > 0 ? "查看收件匣" : "連接 Instagram",
+      }
+    : {
+        title: "目前還沒有最近訊息",
+        body:
+          connectedInstagramChannels > 0
+            ? "可以先用測試工具送一則測試訊息，再回到收件匣確認對話流程。"
+            : "先連接 Instagram 帳號，再用測試工具或真實互動產生第一則訊息。",
+        href: connectedInstagramChannels > 0 ? "/mock-tester" : "/channels/connect",
+        label: connectedInstagramChannels > 0 ? "送一則測試訊息" : "連接 Instagram",
+      };
   const healthItems = [
     { label: "IG 連線", value: `${connectedInstagramChannels} 個帳號`, ok: connectedInstagramChannels > 0 },
     { label: "自動化", value: `${automations} 個流程`, ok: automations > 0 },
@@ -112,6 +152,17 @@ export default async function DashboardPage() {
   return (
     <AdminShell title="首頁">
       <div className="space-y-6">
+        {params.alert === "feature_gated" ? (
+          <DismissibleNoticeToast title="此功能目前受控開通" tone="warning">
+            {`此功能${params.feature ? `（${gatedFeatureLabels[params.feature] || params.feature}）` : ""}在正式營運版中受控開通。若您是白名單測試用戶或想體驗完整版，請使用我們的 Staging 測試站台：`}
+            <a
+              href="https://staging.carry-digital-nomad.in.net"
+              className="font-semibold text-[#0057b8] underline underline-offset-2"
+            >
+              https://staging.carry-digital-nomad.in.net
+            </a>
+          </DismissibleNoticeToast>
+        ) : null}
         <section className="grid gap-5 xl:grid-cols-[1fr_340px]">
           <div className="space-y-4">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -171,17 +222,33 @@ export default async function DashboardPage() {
               </span>
             </div>
             <div className="mt-5 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-secondary)]">已連線 IG 帳號</span>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <span className="text-sm text-[var(--text-secondary)]">已連線 IG 帳號</span>
+                  <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">
+                    {selectedChannelDisplayName
+                      ? `目前左側切到「${selectedChannelDisplayName}」，首頁、收件匣、聯絡人與分析都會跟著切換資料範圍。`
+                      : "目前看的是整個工作區；如果想縮小到單一 IG 帳號，請從左側帳號切換器選擇對應項目。"}
+                  </p>
+                </div>
                 <span className="text-lg font-semibold text-[var(--text-primary)]">{connectedInstagramChannels}</span>
               </div>
-              <div className="mt-4 h-2 rounded-full bg-[#d9eef1]">
-                <div
-                  className="h-2 rounded-full bg-[var(--primary)]"
-                  style={{ width: `${Math.min(100, (contacts / 1000) * 100)}%` }}
-                />
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/channels/connect"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+                >
+                  <PlugZap className="h-4 w-4" />
+                  {connectedInstagramChannels > 0 ? "管理 IG 連線" : "連接 Instagram"}
+                </Link>
+                <Link
+                  href="/inbox"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)]"
+                >
+                  <Inbox className="h-4 w-4" />
+                  查看目前帳號的收件匣
+                </Link>
               </div>
-              <p className="mt-2 text-xs text-[var(--text-muted)]">免費方案聯絡人用量：{contacts}/1000</p>
             </div>
             <div className="mt-4 flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-white px-3 py-2 text-sm">
               <span className="text-[var(--text-secondary)]">系統健康</span>
@@ -278,9 +345,18 @@ export default async function DashboardPage() {
                 </div>
               ))}
               {recentMessages.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-[var(--text-muted)]">
-                  還沒有訊息。可以先用測試工具送一則測試訊息。
-                </p>
+                <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]" data-testid="dashboard-recent-messages-empty">
+                  <p className="font-semibold text-[var(--text-primary)]">{recentMessagesEmptyState.title}</p>
+                  <p className="mt-1">{recentMessagesEmptyState.body}</p>
+                  <Link
+                    href={recentMessagesEmptyState.href}
+                    data-testid="dashboard-recent-messages-empty-cta"
+                    className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                  >
+                    {recentMessagesEmptyState.label}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </div>
               ) : null}
             </div>
           </div>
@@ -310,9 +386,18 @@ export default async function DashboardPage() {
                 </Link>
               ))}
               {recentAutomations.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-[var(--text-muted)]">
-                  還沒有自動化。從預設回覆或私訊關鍵字回覆開始最順。
-                </p>
+                <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]" data-testid="dashboard-recent-automations-empty">
+                  <p className="font-semibold text-[var(--text-primary)]">還沒有最近自動化</p>
+                  <p className="mt-1">從 Instagram 預設回覆或私訊關鍵字回覆開始最順，建立後這裡會顯示最近更新的流程。</p>
+                  <Link
+                    href="/automations"
+                    data-testid="dashboard-recent-automations-empty-cta"
+                    className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                  >
+                    建立自動化
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </div>
               ) : null}
             </div>
           </div>

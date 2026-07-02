@@ -1,5 +1,194 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
+
+- `[x]` Admin payout management now uses internal commission review language instead of public-facing cash withdrawal wording.
+- `[x]` Payout batches are described as reconciliation batches; CSV export is for internal review and does not execute payment.
+- `[x]` Admin invoice / payout / batch tables now include mobile scroll guidance and wrapping for long IDs / emails.
+- `[x]` Referral rows handle long referred-user names and emails without mobile overflow.
+- `[ ]` Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are explicitly approved.
+
+Billing launch implication:
+
+- Referral credit v1 remains the launch-safe public direction.
+- Internal payout surfaces are less likely to imply that cash payout or PayUNI production refund automation is already active.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, or Meta App Review action was performed.
+
+# 2026-07-02 - Referral link copy action
+
+- `[x]` Referral URL now has a visible copy action so the referral credit flow is easier to share and verify.
+- `[x]` Copy success / fallback messages are explicit and do not imply unavailable cash payout behavior.
+- `[ ]` Click tracking remains deferred until event storage, de-duplication, fraud, and privacy rules are implemented.
+
+# 2026-07-02 - Affiliate controlled cash copy polish
+
+- `[x]` Affiliate UI wording now treats cash commission amounts as internal review / controlled operations data.
+- `[x]` Wallet fallback labels no longer imply self-service cash withdrawal.
+- `[x]` Public product direction remains referral credits first; cash payout remains Hold.
+- `[ ]` Cash affiliate payout still requires legal, tax, anti-fraud, refund / clawback, payout reconciliation, and final operations approval.
+
+# 2026-07-02 - Admin invoice refund operator UI
+
+- `[x]` Internal admins now have a controlled `/admin/invoices` surface for paid invoice refund marking.
+- `[x]` The operator UI makes clear that InboxPilot reconciliation does not automatically initiate PayUNI refunds.
+- `[x]` Refund marking is constrained to paid invoices and calls the protected admin-only reconciliation route.
+- `[ ]` Provider-driven refund automation remains blocked until PayUNI production operations and callback semantics are finalized.
+
+# 2026-07-02 - Billing invoice status copy polish
+
+- `[x]` Billing invoice history no longer exposes raw status enums to users.
+- `[x]` Recent PayUNI order status labels are localized.
+- `[x]` Refund-related Billing copy now explains that referral credits can be cancelled or clawed back after refund.
+- `[ ]` PayUNI production go-live remains blocked until final merchant approval and manual low-value production smoke.
+
+# 2026-07-02 - Referral credit v1 as the primary launch direction
+
+- `[x]` Public referral / affiliate direction is now being narrowed to `推薦折抵制度 v1`, not public cash payout.
+- `[x]` Referral credit now enters `pending` first, waits 7 days, then becomes `available`.
+- `[x]` Available referral credit is now intended to expire after 30 days if unused.
+- `[x]` Refund reconciliation service can cancel pending referral credits and create idempotent clawback debits for available credits.
+- `[x]` Admin-only refund reconciliation route can invoke the service for controlled operator handling.
+- `[x]` Billing, Referrals, Wallet, Pricing, and Affiliate copy now explains `待確認 -> 可用 -> 失效 / 沖回` more clearly.
+- `[x]` Affiliate cash payout UI remains visible only as a controlled future capability, not as the current public product promise.
+- `[ ]` A real PayUNI refund callback still needs to call the refund reconciliation service before this becomes fully automatic in production operations.
+- `[ ]` Public cash payout launch remains Hold until legal / fraud / reconciliation / payout ops are explicitly approved.
+
+Billing launch implication:
+
+- Current launch-safe direction is recommendation credits that offset subscription fees only.
+- No production DB action, production deployment, PayUNI production switch, or Meta App Review action was performed in this change.
+
+# 2026-07-01 - Affiliate / Referral MVP closeout
+
+- `[x]` Referral page now separates general referral rewards from reviewed affiliate cash commissions.
+- `[x]` Referral metrics now show only verifiable states: signup attribution, activation, paid conversion, and confirmed credits.
+- `[x]` Click tracking is explicitly marked as controlled-opening instead of showing fake numbers before a click-event table and de-duplication rules exist.
+- `[x]` Affiliate page now shows pending / available / payout-requested / paid commission buckets and clear payout blockers.
+- `[x]` Self-service payout remains disabled until payout profile, reconciliation, tax / bank review, and operator approval are complete.
+- `[x]` Admin payout requests now expose approve / reject controls and clarify that approval does not automatically transfer money.
+- `[x]` Affiliate application API now has same-origin and rate-limit protection.
+
+Affiliate launch implication:
+
+- The affiliate surface is now a safer MVP for pre-launch validation.
+- Public cash payout remains Hold until affiliate terms, fraud review, refund / clawback policy, payout reconciliation, and final operations approval are signed off.
+- No production DB action, production deployment, PayUNI production switch, or Meta App Review action was performed.
+
+# 2026-07-01 - Referrals light theme polish
+
+- `[x]` Referrals page now uses the same light admin workspace styling as Dashboard, Billing, Analytics, and Channels.
+- `[x]` Simple release copy remains conservative: referral links and trial bonuses are visible, affiliate cash rewards stay out of the launch surface.
+- `[x]` Added route smoke coverage for the Referrals hero, referral URL, and records card.
+
+Affiliate launch implication:
+
+- Referral UX is clearer for beta usage, but full affiliate / cash reward launch remains gated until business rules, legal copy, and payout operations are explicitly approved.
+
+# 2026-07-01 - PayUNI gateway status without checkout secrets
+
+- `[x]` Billing page can now describe PayUNI sandbox / production gate state without requiring merchant/hash secrets at render time.
+- `[x]` Checkout creation still requires `PAYUNI_MERCHANT_ID`、`PAYUNI_HASH_KEY`、`PAYUNI_HASH_IV`，沒有放寬真正付款流程的安全邊界。
+- `[x]` Added regression coverage for missing billing secrets during gateway-state display.
+- `[x]` `npm run lint`、`npm test`、`npm run build` passed locally.
+
+Billing launch implication:
+
+- CI and preview smoke can verify the Billing surface without live merchant credentials.
+- Public paid launch remains Hold until PayUNI production merchant approval, controlled enablement, and first low-value production smoke are manually approved.
+
+# 2026-06-30 - Billing checkout gate clarity
+
+- `[x]` Billing 頁現在會在 PayUNI 仍停留在正式站且 `PAYUNI_ALLOW_PRODUCTION` 尚未開啟時，先把付款按鈕停用並說明原因。
+- `[x]` sandbox 仍可直接驗證付款流程，正式站 gate 不會再像可直接送出的假按鈕。
+- `[x]` `tests/payuni-billing.test.ts`、`npm run lint`、`npm test`、`npm run build` 已通過。
+- `[ ]` `npm run test:e2e:auth` 本機目前卡在既有 e2e admin / DB 狀態，等環境修好後再補一次 billing smoke。
+
+Billing launch implication:
+
+- sandbox / production gate 的體感更清楚，少一個「按了才知道不能用」的誤導點。
+- Public paid launch 仍維持 Hold；production merchant approval 與 controlled enablement 還是必要門檻。
+
+## 2026-06-26 - Autopilot PayUNI sandbox refresh
+
+- `npm run payuni:smoke` now passes locally against sandbox behavior.
+- Vercel Production and Preview env-name inspection confirms PayUNI-related env names exist, but values were not printed.
+- PayUNI production remains disabled in the unattended path.
+- No production checkout, live card transaction, production callback verification, or `PAYUNI_ALLOW_PRODUCTION=true` switch was performed.
+
+Billing launch implication:
+
+- Sandbox regression is now available for unattended checks.
+- Public paid launch remains Hold until PayUNI production merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency verification, and refund/settlement owner sign-off are completed manually.
+
+## 2026-06-26 - Autopilot PayUNI sandbox boundary
+
+- InboxPilot Autopilot is allowed to run `npm run payuni:smoke`.
+- Autopilot must keep PayUNI in sandbox.
+- Autopilot must not set `PAYUNI_ALLOW_PRODUCTION=true`.
+- Autopilot must not run a real production checkout or production card transaction.
+- If PayUNI sandbox merchant/signing values are missing, Autopilot writes `HUMAN_REQUIRED` and continues other safe work.
+
+Billing launch implication:
+
+- Sandbox regression can be part of unattended overnight checks.
+- Production PayUNI go-live remains a separate controlled operator task.
+## 2026-06-26 - Billing CI authenticated smoke
+
+- Authenticated route smoke now covers the Billing page in CI and nightly automation.
+- The smoke renders the Billing page only and does not submit PayUNI checkout.
+- The smoke runs against `TEST_DATABASE_URL` and refuses Production DB markers.
+- PayUNI production remains disabled until the controlled production go-live checklist is approved.
+
+## 2026-06-27 - Simple-release Billing gate smoke
+
+- Playwright simple-release smoke now verifies that `/billing` is gated to `/dashboard?alert=feature_gated&feature=billing`.
+- Dashboard shows the feature-gated notice and points full-version testers to the Staging site.
+- This is a product-surface smoke only; no PayUNI checkout, PayUNI production credential, live card transaction, or production DB action was used.
+- CI now runs this check in the dedicated `simple-release-smoke` job with `INBOXPILOT_RELEASE_CHANNEL=simple`.
+
+## 2026-06-26 - PayUNI production go-live checklist prepared
+
+- Added [PayUNI Production Go-Live Checklist](./payuni-production-go-live-checklist.md).
+- The checklist defines required Vercel Production env names, PAYUNi dashboard checks, pre-go-live validation, controlled enablement, callback verification, rollback, and Go / Hold criteria.
+- No `PAYUNI_ALLOW_PRODUCTION=true` switch was performed.
+- No production checkout or live card transaction was executed.
+- No PayUNI secret, Hash Key, Hash IV, Merchant ID value, or transaction credential was recorded.
+
+Current decision:
+
+- PayUNI production readiness is operationally clearer.
+- Public paid launch remains Hold until merchant approval, operator-approved low-value production smoke, callback/idempotency evidence, and refund/settlement ownership are complete.
+
+## 2026-06-26 - PR #2 post-deploy PayUNI delta
+
+- PR #2 billing/legal copy and PayUNI Production SOP are now deployed to the production target.
+- Production `/api/health` is ok after deployment.
+- Added route-level regression coverage confirming PayUNI checkout idempotency lookup and invoice creation are scoped to the current workspace and user.
+- No PayUNI production checkout was executed in this delta.
+- No DB commands, Prisma commands, SQL, migrations, schema changes, or secret output were used.
+
+Remaining PayUNI production gates:
+
+- Confirm PayUNI production merchant approval and final production credentials in Vercel Production.
+- Keep production checkout blocked until the SOP explicitly enables `PAYUNI_ALLOW_PRODUCTION=true`.
+- Run one low-value production checkout after the controlled switch.
+- Verify notify/return idempotency using real production callbacks.
+- Assign an owner for refunds, settlement reconciliation, failed payment support, and customer billing copy review.
+
+## 2026-06-26 - PayUNI production SOP and billing copy cleanup
+
+- Added [PayUNI Production SOP](./payuni-production-sop.md).
+- Billing page now labels PayUNI production as controlled until `PAYUNI_ALLOW_PRODUCTION=true`.
+- Terms now state that card number, CVV, OTP, and 3-D Secure data are handled by PayUNI/bank pages, not stored by InboxPilot.
+- Terms now include refund/cancellation and workspace data-boundary language.
+- Privacy policy now describes payment metadata retention and workspace/channel data isolation.
+- Data Deletion page now clarifies Meta channel token deletion and payment/audit record retention boundaries.
+
+Billing launch implication:
+
+- Documentation and customer-facing copy are improved enough for private beta and whitelist customers.
+- Public paid launch remains Hold until production merchant review, first low-value production checkout smoke, notify/return idempotency evidence, and refund/settlement owner assignment.
+
 更新日期：2026-06-10
 
 ## PayUNI 目前狀態
@@ -204,3 +393,17 @@
 
 - `npm test` 第一次遇到既有的 Vitest 子程序 crash（Windows / Node 24 / Vitest 既有不穩定），第二次完整通過
 - `npm run build` 成功，但仍有既有 Prisma engine DLL lock `EPERM` 噪音；`prisma-generate-safe` 已 fallback 成功
+
+# 2026-07-02 - Billing / PayUNI Sandbox / referral credit UX QA
+
+- `[x]` Billing checkout CTA now explicitly labels PayUNI Sandbox when the configured gateway is sandbox.
+- `[x]` Referral credit copy now consistently states: no cash-out, credit can reduce an invoice to 0, pending waits 7 days, available expires after 30 days, refunds cancel pending credits or create clawback / debit records.
+- `[x]` Admin invoice refund and payout review surfaces now say clearly that internal marking/review does not trigger PayUNI refunds, card refunds, bank transfers, or cash payout.
+- `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.
+
+# 2026-07-02 - Prepaid onboarding referral credit clarity
+
+- `[x]` Public Pricing now positions referral credits as non-cash bill credits, not cash commission or payout.
+- `[x]` Public Signup now preserves referral attribution from invitation links for both email signup and Google signup.
+- `[x]` The public path now states referral credits are not cash-out, wait through refund observation, expire after 30 days, and may reduce a bill to 0.
+- `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.

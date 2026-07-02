@@ -6,7 +6,11 @@ import {
   calculateReferralCredit,
 } from "@/lib/billing/calculations";
 import { affiliateCommissionRatePercent } from "@/lib/billing/affiliate-service";
-import { MIN_PAYOUT_AMOUNT_TWD } from "@/lib/billing/plans";
+import {
+  MIN_PAYOUT_AMOUNT_TWD,
+  REFERRAL_CREDIT_EXPIRES_DAYS,
+  REFERRAL_CREDIT_PENDING_DAYS,
+} from "@/lib/billing/plans";
 
 describe("billing calculations", () => {
   it("does not allow credits to make invoice total negative", () => {
@@ -35,5 +39,10 @@ describe("billing calculations", () => {
 
   it("keeps minimum payout at NT$1000", () => {
     expect(MIN_PAYOUT_AMOUNT_TWD).toBe(1000);
+  });
+
+  it("keeps referral credits pending for 7 days and expiring after 30 days once available", () => {
+    expect(REFERRAL_CREDIT_PENDING_DAYS).toBe(7);
+    expect(REFERRAL_CREDIT_EXPIRES_DAYS).toBe(30);
   });
 });

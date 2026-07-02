@@ -342,7 +342,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             className="flex items-center gap-2 rounded-md border border-[#00b8d9] bg-white px-4 py-2 text-sm font-medium text-[#006d85] hover:bg-[#ecfeff] disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]"
           >
             <TestTube2 className="h-4 w-4" />
-            {testing ? "測試中..." : "測試模型"}
+            {testing ? "測試中…" : "測試模型"}
           </button>
           <button
             type="button"
@@ -351,7 +351,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             className="flex items-center gap-2 rounded-md bg-[#00b8d9] px-4 py-2 text-sm font-medium text-[#111827] hover:bg-[#0098b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
             <Save className="h-4 w-4" />
-            {saving ? "儲存中..." : "儲存設定"}
+            {saving ? "儲存中…" : "儲存設定"}
           </button>
         </div>
       </div>
@@ -472,7 +472,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                   onClick={saveApiKey}
                   className={secondaryButtonClass}
                 >
-                  {savingKey ? "儲存中..." : apiKey.trim() ? "加密儲存" : "清除 Key"}
+                  {savingKey ? "儲存中…" : apiKey.trim() ? "加密儲存" : "清除 Key"}
                 </button>
               </div>
               <p className="mt-2 text-xs text-[#667085]">

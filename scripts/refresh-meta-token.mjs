@@ -24,6 +24,21 @@ function requiredEnv(name) {
   return value;
 }
 
+function isProductionRuntime() {
+  return (
+    process.env.INBOXPILOT_DEPLOYMENT_ENV === "production" ||
+    process.env.INBOXPILOT_DB_ENV === "production" ||
+    process.env.VERCEL_ENV === "production"
+  );
+}
+
+function assertNonProductionRuntime() {
+  if (!isProductionRuntime()) return;
+  throw new Error(
+    "scripts/refresh-meta-token.mjs is disabled in production. Use workspace/channel OAuth reconnect so tokens stay tenant-scoped.",
+  );
+}
+
 function daysToMilliseconds(days) {
   return days * 24 * 60 * 60 * 1000;
 }
@@ -298,6 +313,8 @@ async function disableMockChannelWhenInstagramIsReady() {
 }
 
 async function main() {
+  assertNonProductionRuntime();
+
   const version = process.env.META_GRAPH_API_VERSION || DEFAULT_GRAPH_API_VERSION;
   const appId = requiredEnv("META_APP_ID");
   const appSecret = requiredEnv("META_APP_SECRET");

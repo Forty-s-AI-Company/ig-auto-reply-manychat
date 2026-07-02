@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { Prisma } from "@prisma/client";
 import type { ChannelAdapter } from "@/lib/channels";
 import { getDb } from "@/lib/db";
+import { isProductionDeploymentEnv } from "@/lib/deployment-env";
 import { encryptSecret, tryDecryptSecret } from "@/lib/secrets";
 
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
@@ -97,7 +98,16 @@ function getGraphVersion() {
 }
 
 function getPageAccessToken() {
+  if (!isMetaGlobalEnvFallbackEnabled()) return "";
   return process.env.META_PAGE_ACCESS_TOKEN || "";
+}
+
+export function isMetaGlobalEnvFallbackEnabled() {
+  return !isProductionDeploymentEnv();
+}
+
+export function getMetaGlobalInstagramBusinessAccountId() {
+  return isMetaGlobalEnvFallbackEnabled() ? process.env.META_INSTAGRAM_BUSINESS_ACCOUNT_ID || "" : "";
 }
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -173,7 +183,7 @@ async function getChannelMetaConfig(channelId: string) {
 }
 
 function getInstagramBusinessAccountId(config?: MetaChannelConfig) {
-  return config?.instagramBusinessAccountId || process.env.META_INSTAGRAM_BUSINESS_ACCOUNT_ID || "";
+  return config?.instagramBusinessAccountId || getMetaGlobalInstagramBusinessAccountId();
 }
 
 function getChannelType(object: string | undefined): "instagram" | "messenger" | null {

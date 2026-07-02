@@ -4,8 +4,10 @@ import { ChannelConnectionShell, InstagramVisual } from "@/components/ChannelCon
 import { OAuthPopupConnectButton } from "@/components/oauth/OAuthPopupConnectButton";
 import { ResyncConnectedAccountButton } from "@/components/oauth/ResyncConnectedAccountButton";
 import { requireUser } from "@/lib/auth";
+import { getOAuthProviderUiState } from "@/lib/channels/channel-connect-visibility";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
+import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
 import { listOAuthProviders } from "@/lib/oauth/registry";
 import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
@@ -40,6 +42,7 @@ type SocialConnectPageProps = {
     oauth_message?: string;
     oauth_display_name?: string;
     meta_error?: string;
+    meta_error_code?: string;
   }>;
 };
 
@@ -118,6 +121,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
   const simpleRelease = await isSimpleRelease();
+  const deploymentEnv = getInboxPilotDeploymentEnv();
   const [accounts, providers, channels] = await Promise.all([
     getDb().connectedAccount.findMany({
       where: { workspaceId },
@@ -133,14 +137,19 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
 
   const channelSummaries = buildChannelSummaries(channels);
   const visibleAccounts = simpleRelease ? accounts.filter((account) => account.provider === "meta-instagram") : accounts;
-  const visibleProviders = simpleRelease ? providers.filter((provider) => provider.id === "meta-instagram") : providers;
+  const visibleProviders = providers
+    .map((provider) => ({
+      provider,
+      uiState: getOAuthProviderUiState(provider.id, { simpleRelease, deploymentEnv }),
+    }))
+    .filter((entry) => entry.uiState.visible);
 
   return (
     <ChannelConnectionShell
-      title="連接 Social Accounts"
-      description="這一頁是可重用的 OAuth Popup 模組入口。Meta、Telegram 與 Mock provider 都走同一套授權與回傳協定。"
+      title="連接社群帳號"
+      description="從這裡連接 Instagram 帳號，完成授權後會同步到目前工作區的設定。"
       backHref="/channels/connect"
-      backLabel="返回連接渠道"
+      backLabel="返回設定"
       visual={<InstagramVisual />}
     >
       <div className="space-y-6">
@@ -171,35 +180,46 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
           </div>
         ) : null}
         {params.meta_error ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{params.meta_error}</div>
+          <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+              <div className="space-y-1 leading-6">
+                <p className="font-semibold text-red-900">連接失敗</p>
+                <p>{params.meta_error}</p>
+                {params.meta_error_code ? (
+                  <p className="text-xs text-red-700">錯誤代碼：{params.meta_error_code}</p>
+                ) : null}
+              </div>
+            </div>
+          </div>
         ) : null}
 
         <div className="rounded-lg border border-[#d7dbe0] bg-white p-5">
           <h2 className="text-lg font-semibold text-[#17191c]">已連接帳號</h2>
           <p className="mt-2 text-sm text-[#596170]">
-            目前工作區有 {visibleAccounts.length} 個 ConnectedAccount，以及 {channelSummaries.length} 個 Instagram channel。
+            目前工作區有 {visibleAccounts.length} 個社群登入連接，以及 {channelSummaries.length} 個 Instagram 帳號。
           </p>
 
           <div className="mt-4 space-y-3">
             {visibleAccounts.length === 0 ? (
               <>
                 <div className="rounded-md border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#596170]">
-                  還沒有任何 Social Login 連接。下面任選一個 provider 開始測。
+                  還沒有任何社群登入連接。請從下方選擇可用的登入方式開始授權。
                 </div>
                 {channelSummaries.length > 0 ? (
                   <div className="rounded-md border border-[#d7dbe0] bg-white p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold text-[#17191c]">目前已綁定的 Instagram channels</p>
+                        <p className="text-sm font-semibold text-[#17191c]">目前已綁定的 Instagram 帳號</p>
                         <p className="mt-1 text-xs text-[#596170]">
-                          這些 channel 已經存在工作區。若懷疑綁錯帳號，可以先解除綁定再重新連接。
+                          這些帳號已經存在工作區。若懷疑綁錯帳號，可以先解除綁定再重新連接。
                         </p>
                       </div>
                       <Link
                         href="/channels#instagram"
                         className="inline-flex items-center gap-1 text-xs font-medium text-[#006fe6] hover:text-[#005fd0]"
                       >
-                        前往 Channels 檢查
+                        前往設定檢查
                         <ExternalLink className="h-3.5 w-3.5" />
                       </Link>
                     </div>
@@ -257,7 +277,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                     <div className="mt-4 rounded-md border border-[#d7dbe0] bg-white p-3">
                       <div className="flex items-center gap-2 text-sm font-medium text-[#17191c]">
                         <Link2 className="h-4 w-4 text-[#006fe6]" />
-                        同步到 Channel
+                        同步到 Instagram 帳號
                       </div>
 
                       {syncedChannels.length > 0 ? (
@@ -267,7 +287,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                               <div>
                                 <p className="text-sm font-medium text-[#17191c]">{channel.name}</p>
                                 <p className="mt-1 text-xs text-[#596170]">
-                                  channelId: {channel.id}
+                                  帳號 ID：{channel.id}
                                   {channel.instagramUsername ? ` · @${channel.instagramUsername}` : ""}
                                 </p>
                               </div>
@@ -284,9 +304,19 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                           ))}
                         </div>
                       ) : (
-                        <p className="mt-3 text-sm text-[#b54708]">
-                          目前還沒有找到對應的 channel。這通常代表 provider 不會同步 channel，或這筆連接尚未完成同步。
-                        </p>
+                        <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-[#b54708]">
+                          <p>目前還沒有找到對應的 Instagram 帳號。這通常代表這筆授權尚未完成同步，或目前登入方式不會直接建立可用帳號。</p>
+                          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                            <Link
+                              href="/channels#instagram"
+                              className="inline-flex items-center gap-1 font-medium text-[#9a3412] hover:text-[#7c2d12]"
+                            >
+                              前往設定檢查綁定狀態
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </Link>
+                            <span className="text-[#b54708]">如果是 Meta / Instagram 帳號，請嘗試重新同步或重新連接一次。</span>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -297,7 +327,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
         </div>
 
         <div className="grid gap-4">
-          {visibleProviders.map((provider) => {
+          {visibleProviders.map(({ provider, uiState }) => {
             const copy = providerCopy[provider.id];
             const Icon = copy.icon;
             const authorizeHref = buildAuthorizeHref(provider.id);
@@ -317,18 +347,34 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
                     {isMetaProvider ? (
                       <div className="mt-3 rounded-md bg-[#f8fafc] p-3 text-xs leading-6 text-[#596170]">
                         <p>若目前瀏覽器已登入別的 Meta / Instagram 帳號，請先切換帳號後再授權。</p>
-                        <p>綁錯帳號時，可到 Channels 解除綁定，再回來重新連接。</p>
+                        <p>綁錯帳號時，可到設定解除綁定，再回來重新連接。</p>
+                      </div>
+                    ) : null}
+                    {!uiState.enabled ? (
+                      <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-6 text-[#b54708]">
+                        {uiState.disabledReason}
                       </div>
                     ) : null}
                     <div className="mt-4 flex flex-wrap gap-3">
-                      <OAuthPopupConnectButton
-                        provider={provider.id}
-                        href={authorizeHref.primary}
-                        className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
-                      >
-                        連接帳號
-                      </OAuthPopupConnectButton>
-                      {authorizeHref.secondary ? (
+                      {uiState.enabled ? (
+                        <OAuthPopupConnectButton
+                          provider={provider.id}
+                          href={authorizeHref.primary}
+                          className="inline-flex h-11 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0]"
+                        >
+                          連接帳號
+                        </OAuthPopupConnectButton>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          aria-disabled="true"
+                          className="inline-flex h-11 cursor-not-allowed items-center justify-center rounded-md border border-[#d0d5dd] bg-[#f3f4f6] px-4 text-sm font-semibold text-[#98a2b3]"
+                        >
+                          {provider.id === "mock" ? "僅限本機 / QA 使用" : "目前不可連接"}
+                        </button>
+                      )}
+                      {uiState.enabled && authorizeHref.secondary ? (
                         <OAuthPopupConnectButton
                           provider={provider.id}
                           href={authorizeHref.secondary}

@@ -33,6 +33,15 @@ export type PayuniResult = {
   [key: string]: string | undefined;
 };
 
+export type PayuniGatewayStatus = {
+  label: string;
+  detail: string;
+  sandbox: boolean;
+  productionEnabled: boolean;
+  checkoutEnabled: boolean;
+  checkoutDisabledReason: string | null;
+};
+
 function requiredEnv(name: string) {
   const value = process.env[name]?.trim();
   if (!value) throw new Error(`${name} is required for PayUNI integration.`);
@@ -41,6 +50,10 @@ function requiredEnv(name: string) {
 
 function appUrl() {
   return process.env.APP_URL?.replace(/\/$/, "") || "http://localhost:3041";
+}
+
+function payuniGatewayUrl() {
+  return (process.env.PAYUNI_GATEWAY_URL?.trim() || "https://sandbox-api.payuni.com.tw/api").replace(/\/$/, "");
 }
 
 function resolveGatewayAction(rawGatewayUrl: string) {
@@ -59,9 +72,33 @@ export function getPayuniConfig(): PayuniConfig {
     hashKey: requiredEnv("PAYUNI_HASH_KEY"),
     hashIv: requiredEnv("PAYUNI_HASH_IV"),
     version: process.env.PAYUNI_VERSION?.trim() || "1.0",
-    gatewayUrl: (process.env.PAYUNI_GATEWAY_URL?.trim() || "https://sandbox-api.payuni.com.tw/api").replace(/\/$/, ""),
+    gatewayUrl: payuniGatewayUrl(),
     returnUrl: process.env.PAYUNI_RETURN_URL?.trim() || `${appUrl()}/api/billing/payuni/return`,
     notifyUrl: process.env.PAYUNI_NOTIFY_URL?.trim() || `${appUrl()}/api/billing/payuni/notify`,
+  };
+}
+
+export function getPayuniGatewayStatus(
+  config: Pick<PayuniConfig, "gatewayUrl"> = { gatewayUrl: payuniGatewayUrl() },
+  productionEnabled = process.env.PAYUNI_ALLOW_PRODUCTION === "true",
+): PayuniGatewayStatus {
+  const sandbox = isPayuniSandboxGateway(config.gatewayUrl);
+  const checkoutEnabled = sandbox || productionEnabled;
+  const checkoutDisabledReason = checkoutEnabled
+    ? null
+    : "目前付款按鈕先停用，因為正式金流尚未開通。請先切回測試站驗證流程，等 merchant review 與營運開關完成後再切正式站。";
+
+  return {
+    label: sandbox ? "PayUNI 測試站" : "PayUNI 正式站",
+    detail: sandbox
+      ? "目前付款會先走 sandbox，不會影響正式帳務。"
+      : productionEnabled
+        ? "正式站已受控開通，仍建議先用小額與對帳流程確認。"
+        : "正式站尚未開通自動扣款，先用測試站驗證流程。付款按鈕已先停用，避免送出後才知道不能用。",
+    sandbox,
+    productionEnabled,
+    checkoutEnabled,
+    checkoutDisabledReason,
   };
 }
 

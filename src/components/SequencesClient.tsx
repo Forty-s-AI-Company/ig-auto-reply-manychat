@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { FormEvent } from "react";
 
 type SequenceStep = {
   id: string;
@@ -45,12 +46,53 @@ export function SequencesClient({
   const [editingSequenceId, setEditingSequenceId] = useState("");
   const [selectedSequenceId, setSelectedSequenceId] = useState(initialSequences[0]?.id || "");
   const [selectedContactId, setSelectedContactId] = useState(contacts[0]?.id || "");
+  const [deleteTargetId, setDeleteTargetId] = useState("");
+  const [pendingRemoveStepIndex, setPendingRemoveStepIndex] = useState<number | null>(null);
   const [message, setMessage] = useState("");
+  const [hasHydrated, setHasHydrated] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
 
+  const trimmedName = name.trim();
   const selectedSequence = useMemo(
     () => sequences.find((sequence) => sequence.id === selectedSequenceId),
     [selectedSequenceId, sequences],
   );
+  const invalidStep = steps.find((step) => {
+    const delaySeconds = Number(step.delaySeconds);
+    return !step.text.trim() || !Number.isFinite(delaySeconds) || delaySeconds < 0;
+  });
+  const canSaveSequence = hasHydrated && Boolean(trimmedName) && steps.length > 0 && !invalidStep;
+  const saveDisabledReason = !hasHydrated
+    ? "序列表單正在載入，請稍候。"
+    : !trimmedName
+    ? "請先填寫序列名稱。"
+    : invalidStep
+      ? "每個步驟都需要填寫訊息，延遲秒數也不能小於 0。"
+      : "";
+  const subscribeDisabledReason = !selectedSequenceId
+    ? "請先選擇要訂閱的序列。"
+    : !selectedContactId
+      ? "請先選擇要加入序列的聯絡人。"
+      : "";
+
+  useEffect(() => {
+    const hydrationTimer = window.setTimeout(() => setHasHydrated(true), 0);
+    return () => window.clearTimeout(hydrationTimer);
+  }, []);
+
+  useEffect(() => {
+    const element = nameInputRef.current;
+    if (!element) return;
+
+    const syncNameFromDom = () => setName(element.value);
+    element.addEventListener("input", syncNameFromDom);
+    element.addEventListener("change", syncNameFromDom);
+
+    return () => {
+      element.removeEventListener("input", syncNameFromDom);
+      element.removeEventListener("change", syncNameFromDom);
+    };
+  }, []);
 
   async function reload() {
     const response = await fetch("/api/sequences");
@@ -58,7 +100,9 @@ export function SequencesClient({
       const next = await response.json();
       setSequences(next);
       if (!selectedSequenceId && next[0]) setSelectedSequenceId(next[0].id);
+      return;
     }
+    setMessage("重新載入序列失敗，請稍後再試。");
   }
 
   function updateStep(index: number, patch: Partial<StepDraft>) {
@@ -82,6 +126,19 @@ export function SequencesClient({
     );
   }
 
+  function requestRemoveStep(index: number) {
+    setMessage("");
+    setPendingRemoveStepIndex(index);
+  }
+
+  function confirmRemoveStep() {
+    if (pendingRemoveStepIndex === null) return;
+    const removedOrder = pendingRemoveStepIndex + 1;
+    removeStep(pendingRemoveStepIndex);
+    setPendingRemoveStepIndex(null);
+    setMessage(`已從草稿移除第 ${removedOrder} 封，儲存後才會套用。`);
+  }
+
   function editSequence(sequence: SequenceItem) {
     setEditingSequenceId(sequence.id);
     setSelectedSequenceId(sequence.id);
@@ -103,7 +160,15 @@ export function SequencesClient({
     setSteps([emptyStep]);
   }
 
+  function syncNameFromInput(event: FormEvent<HTMLInputElement>) {
+    setName(event.currentTarget.value);
+  }
+
   async function createSequence() {
+    if (!canSaveSequence) {
+      setMessage(saveDisabledReason || "請先完成序列內容。");
+      return;
+    }
     setMessage("");
     const payload = {
       name: name.trim(),
@@ -135,15 +200,21 @@ export function SequencesClient({
   }
 
   async function deleteSequence(id: string) {
-    if (!confirm("確定要刪除這個序列？")) return;
-    await fetch(`/api/sequences/${id}`, { method: "DELETE" });
+    setMessage("");
+    const response = await fetch(`/api/sequences/${id}`, { method: "DELETE" });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setMessage(data.error || "刪除序列失敗，請稍後再試。");
+      return;
+    }
     if (selectedSequenceId === id) setSelectedSequenceId("");
+    setDeleteTargetId("");
     await reload();
   }
 
   async function subscribe() {
-    if (!selectedSequenceId || !selectedContactId) {
-      setMessage("請先選擇序列與聯絡人。");
+    if (subscribeDisabledReason) {
+      setMessage(subscribeDisabledReason);
       return;
     }
     const response = await fetch(`/api/sequences/${selectedSequenceId}/subscribe`, {
@@ -187,7 +258,7 @@ export function SequencesClient({
                 </button>
                 <button
                   type="button"
-                  onClick={() => deleteSequence(sequence.id)}
+                  onClick={() => setDeleteTargetId(sequence.id)}
                   className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
                 >
                   刪除
@@ -212,7 +283,11 @@ export function SequencesClient({
       </section>
 
       <aside className="space-y-4">
-        {message ? <p className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#344054]">{message}</p> : null}
+        {message ? (
+          <p className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#344054]" role="status" aria-live="polite">
+            {message}
+          </p>
+        ) : null}
 
         <section className="rounded-lg border border-[#d7dbe0] bg-white p-4">
           <div className="flex items-center justify-between gap-3">
@@ -226,7 +301,20 @@ export function SequencesClient({
           <div className="mt-4 space-y-3">
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">名稱</span>
-              <input value={name} onChange={(event) => setName(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2" />
+              <input
+                ref={nameInputRef}
+                name="sequenceName"
+                required
+                autoComplete="off"
+                aria-invalid={!trimmedName}
+                value={name}
+                onChange={syncNameFromInput}
+                onChangeCapture={syncNameFromInput}
+                onInput={syncNameFromInput}
+                onInputCapture={syncNameFromInput}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                data-testid="sequence-name-input"
+              />
             </label>
             <label className="flex items-center gap-2 text-sm text-[#344054]">
               <input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
@@ -237,7 +325,12 @@ export function SequencesClient({
                 <div className="mb-2 flex items-center justify-between">
                   <p className="text-sm font-medium text-[#111827]">第 {index + 1} 封</p>
                   {steps.length > 1 ? (
-                    <button type="button" onClick={() => removeStep(index)} className="text-xs text-red-600">
+                    <button
+                      type="button"
+                      onClick={() => requestRemoveStep(index)}
+                      data-testid={`sequence-step-remove-${index}`}
+                      className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+                    >
                       移除
                     </button>
                   ) : null}
@@ -247,27 +340,38 @@ export function SequencesClient({
                   <input
                     type="number"
                     min="0"
+                    name={`sequence-step-delay-${index}`}
+                    inputMode="numeric"
                     value={step.delaySeconds}
                     onChange={(event) => updateStep(index, { delaySeconds: event.target.value })}
-                    className="w-full rounded-md border border-[#d7dbe0] px-3 py-2"
+                    className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
                 <label className="mt-2 block text-sm">
                   <span className="mb-1 block text-[#667085]">訊息</span>
                   <textarea
+                    name={`sequence-step-message-${index}`}
                     value={step.text}
                     onChange={(event) => updateStep(index, { text: event.target.value })}
-                    className="h-24 w-full resize-none rounded-md border border-[#d7dbe0] px-3 py-2"
+                    className="h-24 w-full resize-none rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                   />
                 </label>
               </div>
             ))}
-            <button type="button" onClick={addStep} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054]">
+            <button type="button" onClick={addStep} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2">
               新增步驟
             </button>
-            <button type="button" onClick={createSequence} className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white">
+            <button
+              type="button"
+              onClick={createSequence}
+              disabled={!canSaveSequence}
+              title={saveDisabledReason || undefined}
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              data-testid="sequence-save-button"
+            >
               {editingSequenceId ? "更新序列" : "建立序列"}
             </button>
+            {!canSaveSequence ? <p className="text-xs leading-5 text-[#667085]">{saveDisabledReason}</p> : null}
           </div>
         </section>
 
@@ -276,7 +380,13 @@ export function SequencesClient({
           <div className="mt-4 space-y-3">
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">序列</span>
-              <select value={selectedSequenceId} onChange={(event) => setSelectedSequenceId(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2">
+              <select
+                value={selectedSequenceId}
+                name="sequence-subscribe-sequence"
+                onChange={(event) => setSelectedSequenceId(event.target.value)}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                data-testid="sequence-subscribe-sequence-select"
+              >
                 <option value="">選擇序列</option>
                 {sequences.map((sequence) => (
                   <option key={sequence.id} value={sequence.id}>{sequence.name}</option>
@@ -285,16 +395,30 @@ export function SequencesClient({
             </label>
             <label className="block text-sm">
               <span className="mb-1 block text-[#667085]">聯絡人</span>
-              <select value={selectedContactId} onChange={(event) => setSelectedContactId(event.target.value)} className="w-full rounded-md border border-[#d7dbe0] px-3 py-2">
+              <select
+                value={selectedContactId}
+                name="sequence-subscribe-contact"
+                onChange={(event) => setSelectedContactId(event.target.value)}
+                className="w-full rounded-md border border-[#d7dbe0] px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                data-testid="sequence-subscribe-contact-select"
+              >
                 <option value="">選擇聯絡人</option>
                 {contacts.map((contact) => (
                   <option key={contact.id} value={contact.id}>{contact.displayName || contact.externalId}</option>
                 ))}
               </select>
             </label>
-            <button type="button" onClick={subscribe} className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white">
+            <button
+              type="button"
+              onClick={subscribe}
+              disabled={Boolean(subscribeDisabledReason)}
+              title={subscribeDisabledReason || undefined}
+              className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              data-testid="sequence-subscribe-button"
+            >
               加入序列
             </button>
+            {subscribeDisabledReason ? <p className="text-xs leading-5 text-[#667085]">{subscribeDisabledReason}</p> : null}
             {selectedSequence ? (
               <p className="text-xs leading-5 text-[#667085]">
                 目前選取：{selectedSequence.name}。加入後，worker 會依每個步驟的延遲時間建立排程訊息。
@@ -303,6 +427,94 @@ export function SequencesClient({
           </div>
         </section>
       </aside>
+      {deleteTargetId ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="presentation">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sequence-delete-title"
+            data-testid="sequence-delete-dialog"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+          >
+            <h2 id="sequence-delete-title" className="text-base font-semibold text-[#111827]">
+              確認刪除序列？
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#475467]">
+              刪除後，這個序列的步驟與後續訂閱排程會一併移除。若只是暫停發送，請改用「停用序列」再儲存。
+            </p>
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTargetId("")}
+                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteSequence(deleteTargetId)}
+                data-testid="sequence-confirm-delete"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+              >
+                確認刪除
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {pendingRemoveStepIndex !== null ? (
+        <SequenceStepRemoveDialog
+          stepOrder={pendingRemoveStepIndex + 1}
+          onCancel={() => setPendingRemoveStepIndex(null)}
+          onConfirm={confirmRemoveStep}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function SequenceStepRemoveDialog({
+  stepOrder,
+  onCancel,
+  onConfirm,
+}: {
+  stepOrder: number;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="presentation">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sequence-step-remove-title"
+        data-testid="sequence-step-remove-dialog"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+      >
+        <h2 id="sequence-step-remove-title" className="text-base font-semibold text-[#111827]">
+          移除序列步驟？
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-[#475467]">
+          你即將從目前草稿移除第 {stepOrder} 封訊息。這只會先修改草稿，按下「建立序列」或「更新序列」後才會套用。
+        </p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            data-testid="sequence-step-confirm-remove"
+            className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+          >
+            確認移除
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

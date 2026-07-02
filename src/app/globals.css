@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "@xyflow/react/dist/style.css";
 
 :root {
   --primary: #19d3d8;
@@ -372,7 +371,8 @@ a {
 }
 
 .react-flow__pane {
-  z-index: 0;
+  /* React Flow dev warning checks for the library default z-index on pane. */
+  z-index: 1;
 }
 
 .react-flow__nodes {

@@ -5,6 +5,7 @@ import {
   encryptMetaConfigJson,
   getMetaChannelConfig,
 } from "@/lib/channels/meta";
+import { getSafeInstagramProfileRefreshError } from "@/lib/channels/instagram-profile-errors";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
@@ -24,7 +25,11 @@ type InstagramProfileResponse = {
   };
 };
 
-async function readInstagramProfile(accessToken: string, instagramUserId?: string) {
+async function readInstagramProfile(
+  accessToken: string,
+  instagramUserId?: string,
+  loginProvider?: "instagram" | "facebook",
+) {
   const version = process.env.META_GRAPH_API_VERSION || "v25.0";
   const graphAttempts = instagramUserId
     ? [
@@ -45,9 +50,9 @@ async function readInstagramProfile(accessToken: string, instagramUserId?: strin
   ];
 
   let lastError = "Instagram profile request failed.";
-  for (const attempt of graphAttempts) {
-    const url = new URL(attempt.base);
-    url.searchParams.set("fields", attempt.fields);
+  for (const fields of fieldAttempts) {
+    const url = new URL(`https://graph.instagram.com/${version}/me`);
+    url.searchParams.set("fields", fields);
     url.searchParams.set("access_token", accessToken);
 
     const response = await fetch(url);
@@ -58,9 +63,13 @@ async function readInstagramProfile(accessToken: string, instagramUserId?: strin
     lastError = `${data.error?.message || lastError}${trace}`;
   }
 
-  for (const fields of fieldAttempts) {
-    const url = new URL(`https://graph.instagram.com/${version}/me`);
-    url.searchParams.set("fields", fields);
+  if (loginProvider === "instagram") {
+    throw new Error(lastError);
+  }
+
+  for (const attempt of graphAttempts) {
+    const url = new URL(attempt.base);
+    url.searchParams.set("fields", attempt.fields);
     url.searchParams.set("access_token", accessToken);
 
     const response = await fetch(url);
@@ -96,7 +105,7 @@ export async function POST(_request: Request, { params }: Params) {
 
   try {
     const existingInstagramId = config.instagramBusinessAccountId || config.instagramOauthUserId;
-    const profile = await readInstagramProfile(accessToken, existingInstagramId);
+    const profile = await readInstagramProfile(accessToken, existingInstagramId, config.loginProvider);
     const instagramId = String(profile.user_id || profile.id || config.instagramBusinessAccountId || "");
     if (!instagramId) {
       return NextResponse.json({ error: "Instagram 未回傳帳號 ID，請重新登入 Instagram。" }, { status: 400 });
@@ -144,10 +153,7 @@ export async function POST(_request: Request, { params }: Params) {
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Meta 目前仍未允許讀取帳號名稱。請確認已接受 Instagram 測試員邀請後再試一次。",
+        error: getSafeInstagramProfileRefreshError(error),
       },
       { status: 400 },
     );

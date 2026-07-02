@@ -17,11 +17,11 @@ function listen(server: ReturnType<typeof createServer>) {
 
 describe("email channel", () => {
   afterEach(async () => {
-    vi.unstubAllEnvs();
     await db.message.deleteMany();
     await db.conversation.deleteMany();
     await db.contact.deleteMany();
     await db.channel.deleteMany({ where: { type: "email" } });
+    vi.unstubAllEnvs();
   });
 
   it("builds a UTF-8 plain text email message", () => {
