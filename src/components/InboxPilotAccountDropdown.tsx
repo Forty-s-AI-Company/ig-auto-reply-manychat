@@ -112,6 +112,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
 
   const currentChannel = selectedChannel || sortedChannels[0];
   const currentName = currentChannel?.displayName || currentChannel?.name || "尚未連接平台帳號";
+  const currentSubtitle = currentChannel?.subtitle || (currentChannel?.username ? `@${currentChannel.username}` : "尚未取得帳號資料");
   return (
     <div ref={rootRef} className="relative z-50" data-testid="account-dropdown">
       <button
@@ -126,6 +127,9 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
         <InstagramAvatar channel={currentChannel} size="sm" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-medium text-white">{currentName}</p>
+          <p className="mt-0.5 truncate text-[11px] leading-4 text-[#c6f3f5]" data-testid="account-dropdown-trigger-subtitle">
+            {currentSubtitle}
+          </p>
         </div>
         <ChevronDown className={`h-4 w-4 shrink-0 text-[#9bd6d9] transition ${open ? "rotate-180" : ""}`} />
       </button>

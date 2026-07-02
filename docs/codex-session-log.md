@@ -8213,3 +8213,41 @@ Validation:
 Launch impact:
 
 - Product UX clarity only. No production DB, Production deployment, migration, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-02 - Dashboard / Inbox / Contacts / Analytics path closure
+
+Task:
+
+- Audit the post-login product path for a new user: Dashboard -> switch Instagram account -> Inbox -> Contacts -> Analytics.
+- Fix 2-3 safe, high-signal gaps inside the same path instead of only polishing another isolated empty state.
+
+Findings:
+
+- Dashboard's account connection card still mixed channel-scope information with plan-usage wording, which made the card read like billing copy instead of product guidance.
+- Contacts empty state did not distinguish between "this workspace has no contacts" and "the currently selected Instagram account has no contacts", so account switching could feel broken.
+- Analytics empty states explained the lack of data but did not give users a direct next step back into Inbox / Channels / Automations.
+- Inbox account switching worked, but the current-account trigger did not show subtitle context, so partial-metadata accounts remained harder to distinguish during multi-account use.
+
+Changes:
+
+- Reworked the Dashboard account connection card to focus on current Instagram scope, connected status, and next-step CTAs instead of misleading plan-usage wording.
+- Added Contacts channel-scoped empty-state guidance so users can tell whether the issue is missing contacts overall or just the currently selected Instagram account.
+- Added Analytics empty-state CTAs for messages and automations, routing users back to Inbox / Channels connect / Automations instead of leaving them at a dead end.
+- Added the current account subtitle to the left-side Instagram switcher trigger to improve multi-account clarity.
+- Hardened authenticated Inbox Playwright switching selectors so account-scope smoke remains stable with desktop/mobile variants.
+
+Validation:
+
+- `npx vitest run tests/account-channel-list.test.ts tests/contacts-empty-state.test.ts tests/dashboard-empty-state.test.ts tests/analytics-empty-state.test.ts --reporter=dot`: passed.
+- `npx eslint src/lib/contacts-empty-state.ts src/app/contacts/page.tsx src/components/ContactsListClient.tsx src/lib/dashboard-summary.ts src/app/dashboard/page.tsx src/app/analytics/page.tsx tests/contacts-empty-state.test.ts tests/dashboard-empty-state.test.ts tests/analytics-empty-state.test.ts`: passed.
+- `npx eslint src/components/InboxPilotAccountDropdown.tsx tests/e2e/inbox-auth.spec.ts`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/inbox-auth.spec.ts tests/e2e/contacts-auth.spec.ts tests/e2e/public-and-auth.spec.ts --grep "loads, scopes by Instagram channel, filters, selects a conversation, and shows clear send feedback|shows filtered empty-state guidance and clears filters back to the full list|renders authenticated launch routes on mobile without horizontal overflow|shows analytics scope and data-state guidance"`: passed.
+- `npm run lint`: still blocked by pre-existing untracked `AI_TEAM/scripts/qa-staging.js` using CommonJS `require()`. That file was not created by this task and is not part of the intended PR scope.
+- `npm test`: rerun in progress at the time of logging; this branch had already been passing through the project batch rerun flow.
+
+Launch impact:
+
+- Improves the first product path after login without touching production DB, migration flow, Meta review state, or PayUNI production mode.
+- The main remaining sellability gap in this path is now less about dead-end UX and more about deeper product coverage in Automations / Billing / Referral.

@@ -67,6 +67,7 @@ export default async function DashboardPage({
     openConversations,
     automations,
     connectedInstagramChannelRows,
+    selectedChannelDisplayName,
     recentMessages,
     recentAutomations,
   } = await getDashboardSummary({ workspaceId, selectedChannelId });
@@ -218,17 +219,33 @@ export default async function DashboardPage({
               </span>
             </div>
             <div className="mt-5 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-[var(--text-secondary)]">已連線 IG 帳號</span>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <span className="text-sm text-[var(--text-secondary)]">已連線 IG 帳號</span>
+                  <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">
+                    {selectedChannelDisplayName
+                      ? `目前左側切到「${selectedChannelDisplayName}」，首頁、收件匣、聯絡人與分析都會跟著切換資料範圍。`
+                      : "目前看的是整個工作區；如果想縮小到單一 IG 帳號，請從左側帳號切換器選擇對應項目。"}
+                  </p>
+                </div>
                 <span className="text-lg font-semibold text-[var(--text-primary)]">{connectedInstagramChannels}</span>
               </div>
-              <div className="mt-4 h-2 rounded-full bg-[#d9eef1]">
-                <div
-                  className="h-2 rounded-full bg-[var(--primary)]"
-                  style={{ width: `${Math.min(100, (contacts / 1000) * 100)}%` }}
-                />
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/channels/connect"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+                >
+                  <PlugZap className="h-4 w-4" />
+                  {connectedInstagramChannels > 0 ? "管理 IG 連線" : "連接 Instagram"}
+                </Link>
+                <Link
+                  href="/inbox"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)]"
+                >
+                  <Inbox className="h-4 w-4" />
+                  查看目前帳號的收件匣
+                </Link>
               </div>
-              <p className="mt-2 text-xs text-[var(--text-muted)]">免費方案聯絡人用量：{contacts}/1000</p>
             </div>
             <div className="mt-4 flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-white px-3 py-2 text-sm">
               <span className="text-[var(--text-secondary)]">系統健康</span>
@@ -330,6 +347,7 @@ export default async function DashboardPage({
                   <p className="mt-1">{recentMessagesEmptyState.body}</p>
                   <Link
                     href={recentMessagesEmptyState.href}
+                    data-testid="dashboard-recent-messages-empty-cta"
                     className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
                   >
                     {recentMessagesEmptyState.label}
@@ -370,6 +388,7 @@ export default async function DashboardPage({
                   <p className="mt-1">從 Instagram 預設回覆或私訊關鍵字回覆開始最順，建立後這裡會顯示最近更新的流程。</p>
                   <Link
                     href="/automations"
+                    data-testid="dashboard-recent-automations-empty-cta"
                     className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
                   >
                     建立自動化

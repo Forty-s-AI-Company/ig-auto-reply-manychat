@@ -48,7 +48,7 @@ export default async function ContactsPage({
     ...(status ? { consentStatus: status as "opted_in" | "opted_out" | "unknown" } : {}),
     ...(tagId ? { tags: { some: { tagId } } } : {}),
   };
-  const [contacts, tags, totalContacts, subscribedCount, unknownCount] = await Promise.all([
+  const [contacts, tags, totalContacts, subscribedCount, unknownCount, workspaceContactCount] = await Promise.all([
     getDb().contact.findMany({
       where: contactWhere,
       orderBy: [{ lastInboundAt: "desc" }, { updatedAt: "desc" }],
@@ -63,6 +63,7 @@ export default async function ContactsPage({
     getDb().contact.count({ where: channelWhere }),
     getDb().contact.count({ where: { ...channelWhere, consentStatus: "opted_in" } }),
     getDb().contact.count({ where: { ...channelWhere, consentStatus: "unknown" } }),
+    getDb().contact.count({ where: { channel: { workspaceId } } }),
   ]);
 
   return (
@@ -85,6 +86,8 @@ export default async function ContactsPage({
         subscribedCount={subscribedCount}
         unknownCount={unknownCount}
         filteredContactCount={contacts.length}
+        workspaceContactCount={workspaceContactCount}
+        isChannelScoped={Boolean(selectedChannelId)}
         q={q}
         status={status}
         tagId={tagId}

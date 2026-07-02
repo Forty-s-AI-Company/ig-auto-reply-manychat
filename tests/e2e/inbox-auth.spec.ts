@@ -29,9 +29,15 @@ test.describe("inbox authenticated smoke", () => {
   });
 
   async function selectSidebarInstagramChannel(page: import("@playwright/test").Page, channelName: string, excludeText?: string) {
-    await page.locator('[data-testid="account-dropdown-trigger"]:visible').click();
+    const trigger = page.locator('[data-testid="account-dropdown-trigger"]:visible').first();
+    await expect(trigger).toBeVisible();
+    await trigger.click();
     const option = page.locator('[data-testid="account-channel-option"]:visible').filter({ hasText: channelName });
-    await (excludeText ? option.filter({ hasNotText: excludeText }) : option).click();
+    const targetOption = excludeText ? option.filter({ hasNotText: excludeText }).first() : option.first();
+    await expect(targetOption).toBeVisible();
+    await targetOption.click();
+    await expect(page.locator("body")).not.toContainText("正在更新，請稍候…", { timeout: 15_000 });
+    await page.waitForLoadState("networkidle").catch(() => {});
   }
 
   test("loads, scopes by Instagram channel, filters, selects a conversation, and shows clear send feedback", async ({ page }, testInfo) => {
@@ -39,11 +45,14 @@ test.describe("inbox authenticated smoke", () => {
 
     await page.goto("/inbox", { waitUntil: "domcontentloaded" });
     await expect(page.getByTestId("inbox-client")).toHaveAttribute("data-ready", "true");
-    if (isMobileProject) await page.getByRole("button", { name: "開啟選單" }).click();
+    if (isMobileProject) {
+      await page.getByRole("button", { name: "開啟選單" }).click();
+      await expect(page.getByTestId("admin-mobile-nav-link-inbox")).toBeVisible();
+    }
     await selectSidebarInstagramChannel(page, "E2E", "Alt");
     if (isMobileProject) await page.getByRole("button", { name: "關閉選單", exact: true }).click().catch(() => {});
-    await expect(page.locator("body")).toContainText("E2E 測試聯絡人 A");
-    await expect(page.locator("body")).not.toContainText("E2E 第二 IG 帳號聯絡人");
+    await expect(page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E 測試聯絡人 A" }).first()).toBeVisible();
+    await expect(page.getByTestId("inbox-conversation-row").filter({ hasText: "E2E 第二 IG 帳號聯絡人" })).toHaveCount(0);
 
     const searchInput = isMobileProject ? page.getByTestId("inbox-mobile-search") : page.getByPlaceholder("搜尋收件匣對話");
     if (isMobileProject) {
