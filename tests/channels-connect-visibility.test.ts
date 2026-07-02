@@ -102,6 +102,8 @@ describe("channel connect visibility", () => {
     expect(source).toContain("focus-visible:ring-[#006fe6]");
     expect(source).toContain("sm:flex-row");
     expect(source).toContain("data-testid={`channels-connect-${channel.id}-disabled`}");
+    expect(source).toContain("const disabledReasonId = `channels-connect-${channel.id}-disabled-reason`");
+    expect(source).toContain("aria-describedby={channel.uiState.disabledReason ? disabledReasonId : undefined}");
     expect(source).toContain('aria-hidden="true"');
     expect(source).not.toContain("disabled 入口");
     expect(source).not.toContain("aria-label={type}");

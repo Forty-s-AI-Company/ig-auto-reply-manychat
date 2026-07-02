@@ -105,31 +105,38 @@ export default async function ChannelConnectionPage() {
               description="這些平台保留成清楚的受控開通入口，但不會打開授權流程，避免看起來像壞掉的按鈕。"
             />
             <div className="space-y-3">
-              {disabledChannels.map((channel) => (
-                <div key={channel.name} className="flex min-h-[132px] flex-col items-start gap-4 rounded-md bg-white px-5 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] sm:flex-row sm:items-center sm:gap-6 sm:px-8">
-                  <ChannelIcon type={channel.icon} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
-                      <ConnectionStateBadge tone="warning">{channel.uiState.statusLabel || "暫停中"}</ConnectionStateBadge>
+              {disabledChannels.map((channel) => {
+                const disabledReasonId = `channels-connect-${channel.id}-disabled-reason`;
+
+                return (
+                  <div key={channel.name} className="flex min-h-[132px] flex-col items-start gap-4 rounded-md bg-white px-5 py-6 shadow-[0_8px_28px_rgba(16,24,40,0.08)] sm:flex-row sm:items-center sm:gap-6 sm:px-8">
+                    <ChannelIcon type={channel.icon} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-2xl font-bold text-[#17191c]">{channel.name}</h2>
+                        <ConnectionStateBadge tone="warning">{channel.uiState.statusLabel || "暫停中"}</ConnectionStateBadge>
+                      </div>
+                      <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
+                      {channel.uiState.disabledReason ? (
+                        <p id={disabledReasonId} className="mt-2 max-w-[420px] text-xs leading-6 text-[#b54708]">
+                          {channel.uiState.disabledReason}
+                        </p>
+                      ) : null}
+                      <button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        aria-describedby={channel.uiState.disabledReason ? disabledReasonId : undefined}
+                        title={channel.uiState.disabledReason || "此平台目前受控開通，暫時不會打開授權流程。"}
+                        data-testid={`channels-connect-${channel.id}-disabled`}
+                        className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+                      >
+                        {channel.id === "mock" ? "僅限本機 / QA 使用" : channel.uiState.statusLabel || "受控開通"}
+                      </button>
                     </div>
-                    <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#596170]">{channel.description}</p>
-                    {channel.uiState.disabledReason ? (
-                      <p className="mt-2 max-w-[420px] text-xs leading-6 text-[#b54708]">{channel.uiState.disabledReason}</p>
-                    ) : null}
-                    <button
-                      type="button"
-                      disabled
-                      aria-disabled="true"
-                      title={channel.uiState.disabledReason || "此平台目前受控開通，暫時不會打開授權流程。"}
-                      data-testid={`channels-connect-${channel.id}-disabled`}
-                      className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
-                    >
-                      {channel.id === "mock" ? "僅限本機 / QA 使用" : channel.uiState.statusLabel || "受控開通"}
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         ) : null}

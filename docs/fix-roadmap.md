@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Channels connect disabled reason linkage
+
+Current status:
+
+- [x] Channels connect controlled / disabled platform cards now connect their visible disabled reason to the disabled button with aria-describedby.
+- [x] Regression coverage guards against the connect page returning to title-only disabled platform explanations.
+
+Remaining:
+
+- [ ] Continue local-only sweeps for visible-but-unusable controls while Vercel Preview quota is conserved.
+
 # Latest - 2026-07-03 Analytics simple-release broadcast gate visible reason
 
 Current status:

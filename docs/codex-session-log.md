@@ -1,3 +1,9 @@
+## 2026-07-03 - Channels connect disabled reason linkage
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: Channels connect disabled / controlled platform cards.
+- Change: connected visible disabled platform reasons to their disabled buttons with aria-describedby.
+- Validation planned: focused channel-connect visibility test, lint, build, npm test.
 ## 2026-07-03 - Analytics simple-release broadcast gate visible reason
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
