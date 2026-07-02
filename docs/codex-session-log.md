@@ -1,3 +1,8 @@
+## 2026-07-03 - Instagram profile refresh accessibility polish
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Connected Instagram profile refresh status / disabled helper text to the refresh button with aria-describedby.
+- Next: continue local-mode sweeps for Channels and onboarding controls.
 ## 2026-07-03 - AI Settings disabled UX polish
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

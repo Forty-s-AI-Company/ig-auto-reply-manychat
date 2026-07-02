@@ -3398,6 +3398,7 @@ Current status:
 - `[x]` Referrals simple-release view now explains that the Wallet ledger is a full-release surface instead of silently hiding the link.
 - `[x]` Sequences save / subscribe disabled reasons are now connected with `aria-describedby` instead of being only adjacent helper copy.
 - `[x]` AI Settings model test / refresh disabled states now expose visible helper copy and `aria-describedby` when API keys are missing.
+- `[x]` Instagram profile refresh status text is now connected to the refresh control with `aria-describedby`.
 
 Remaining:
 

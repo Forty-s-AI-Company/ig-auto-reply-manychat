@@ -68,6 +68,8 @@ describe("channel client feedback", () => {
     expect(disconnect).not.toMatch(/red-900|red-950|text-red-300/);
     expect(profileRefresh).toContain('bg-white');
     expect(profileRefresh).toContain('text-[#b54708]');
+    expect(profileRefresh).toContain('aria-describedby={disabledReason || message ? "instagram-profile-refresh-status" : undefined}');
+    expect(profileRefresh).toContain('id="instagram-profile-refresh-status"');
     expect(profileRefresh).not.toMatch(/text-amber-100|bg-amber-900/);
     expect(instagramActions).toContain('bg-[#f0f9ff]');
     expect(instagramActions).toContain('text-[#0b4a6f]');
