@@ -1,15 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+
+function subscribeToUrlReferral() {
+  return () => {};
+}
+
+function getUrlReferralCode() {
+  return new URLSearchParams(window.location.search).get("ref")?.trim() || "";
+}
+
+function getServerUrlReferralCode() {
+  return "";
+}
 
 export function SignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [referralCodeInput, setReferralCodeInput] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const urlReferralCode = useSyncExternalStore(subscribeToUrlReferral, getUrlReferralCode, getServerUrlReferralCode);
+  const visibleReferralCode = referralCodeInput ?? urlReferralCode;
+  const effectiveReferralCode = visibleReferralCode.trim();
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,7 +39,7 @@ export function SignupForm() {
           workspaceName: `${name || email || "InboxPilot"} Workspace`,
           email,
           password,
-          referralCode: referralCode || new URLSearchParams(window.location.search).get("ref"),
+          referralCode: effectiveReferralCode || null,
         }),
       });
 
@@ -43,7 +58,7 @@ export function SignupForm() {
   }
 
   const googleSignupHref = `/api/auth/google/start${
-    referralCode ? `?ref=${encodeURIComponent(referralCode)}` : ""
+    effectiveReferralCode ? `?ref=${encodeURIComponent(effectiveReferralCode)}` : ""
   }`;
 
   return (
@@ -79,6 +94,11 @@ export function SignupForm() {
           autoComplete="name"
           className="mt-1 w-full rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f766e] focus-visible:ring-offset-2"
         />
+        <span className="mt-1 block text-xs leading-5 text-[#667085]" data-testid="signup-referral-helper">
+          {urlReferralCode
+            ? "已從邀請連結帶入推薦碼。折抵會在有效付費並超過退款觀察期後才可用，不可提現。"
+            : "有推薦碼可填在這裡；折抵只能用於方案費，不可提現。"}
+        </span>
       </label>
       <label className="block text-sm font-medium text-[#475467]" htmlFor="signup-email">
         Email
@@ -110,8 +130,8 @@ export function SignupForm() {
         <input
           id="signup-referral-code"
           name="referralCode"
-          value={referralCode}
-          onChange={(event) => setReferralCode(event.target.value)}
+          value={visibleReferralCode}
+          onChange={(event) => setReferralCodeInput(event.target.value)}
           autoComplete="off"
           spellCheck={false}
           className="mt-1 w-full rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f766e] focus-visible:ring-offset-2"

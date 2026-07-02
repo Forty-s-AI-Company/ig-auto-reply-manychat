@@ -1646,3 +1646,16 @@ Readiness implication:
 - Billing / PayUNI Sandbox copy is clearer for public beta users.
 - Referral credit v1 remains the launch-safe direction: no cash-out, 7-day pending observation, 30-day expiry, refund cancellation / clawback.
 - Public paid launch still requires PayUNI production go-live approval and final sandbox-to-production evidence.
+
+## 2026-07-02 - New-user pre-payment clarity
+
+Status:
+
+- Pricing and Signup now make referral-credit behavior clearer before a user pays.
+- Referral attribution from public invitation links is visible in Signup and preserved into Google signup.
+- Referral credits are explicitly described as non-cash bill credits that can reduce a bill to 0 after the refund observation period.
+
+Readiness implication:
+
+- The public pre-payment path is less likely to mislead users into expecting affiliate cash payout or losing referral attribution during signup.
+- PayUNI production, Meta App Review, and final Preview/Staging browser QA remain separate launch gates.

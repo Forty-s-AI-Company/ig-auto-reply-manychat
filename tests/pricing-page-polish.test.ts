@@ -31,4 +31,15 @@ describe("public pricing page polish", () => {
     expect(source).toContain("PayUNI Sandbox 已驗證");
     expect(source).not.toMatch(/tracking-\[0\.18em\]|tracking-\[-0\.05em\]/);
   });
+
+  it("explains referral credits as non-cash bill credits before signup", () => {
+    const source = readFileSync(pricingClient, "utf8");
+
+    expect(source).toContain('data-testid="pricing-referral-credit-rules"');
+    expect(source).toContain("推薦折抵可用於方案費");
+    expect(source).toContain("推薦折抵不可提現、不可轉讓");
+    expect(source).toContain("超過 7 天退款觀察期才可用");
+    expect(source).toContain("30 天內使用");
+    expect(source).not.toContain('推薦折抵 {plan.affiliateCashPayoutEligible ? "可查看成效" : "可使用"}');
+  });
 });

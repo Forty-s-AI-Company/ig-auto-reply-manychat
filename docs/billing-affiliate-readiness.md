@@ -400,3 +400,10 @@ Billing launch implication:
 - `[x]` Referral credit copy now consistently states: no cash-out, credit can reduce an invoice to 0, pending waits 7 days, available expires after 30 days, refunds cancel pending credits or create clawback / debit records.
 - `[x]` Admin invoice refund and payout review surfaces now say clearly that internal marking/review does not trigger PayUNI refunds, card refunds, bank transfers, or cash payout.
 - `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.
+
+# 2026-07-02 - Prepaid onboarding referral credit clarity
+
+- `[x]` Public Pricing now positions referral credits as non-cash bill credits, not cash commission or payout.
+- `[x]` Public Signup now preserves referral attribution from invitation links for both email signup and Google signup.
+- `[x]` The public path now states referral credits are not cash-out, wait through refund observation, expire after 30 days, and may reduce a bill to 0.
+- `[ ]` PayUNI production remains Hold until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.

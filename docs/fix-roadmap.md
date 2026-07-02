@@ -3285,3 +3285,17 @@ Remaining:
 
 - `[ ]` PayUNI production go-live remains blocked until merchant approval, controlled production enablement, first low-value live smoke, callback/idempotency evidence, and refund/settlement owner sign-off.
 - `[ ]` Referral credit v1 still needs a Preview/Staging browser QA pass with real sandbox checkout and refund simulation evidence before paid launch.
+
+## Latest - 2026-07-02 Prepaid onboarding referral credit clarity
+
+Current status:
+
+- `[x]` Signup invitation links now surface the `ref` code in the form instead of silently hiding it.
+- `[x]` Google signup preserves the effective referral code from the invitation link or manual field.
+- `[x]` Public Pricing now describes referral credits as non-cash bill credits, not affiliate payout.
+- `[x]` Pricing explains no cash-out, no transfer, 7-day refund observation, 30-day usage window, and invoice reduction to 0.
+
+Remaining:
+
+- `[ ]` Preview / Staging browser QA should still exercise the full public path: Pricing -> Signup with `?ref=` -> Billing Sandbox -> Referrals / Wallet copy.
+- `[ ]` PayUNI production go-live remains a separate manual gate.
