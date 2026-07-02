@@ -32,6 +32,10 @@ describe("channel client feedback", () => {
 
     expect(source).toContain('"刪除自動化失敗，請稍後再試。"');
     expect(source).toContain('if (!response.ok)');
+    expect(source).toContain("DeleteAutomationDialog");
+    expect(source).toContain('role="dialog"');
+    expect(source).toContain('data-testid="automation-confirm-delete"');
+    expect(source).not.toContain('confirm("確定要刪除這個自動化嗎？")');
     expect(source).not.toContain('await fetch(`/api/automations/${id}`, { method: "DELETE" });\n    await reload();');
   });
 

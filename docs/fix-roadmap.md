@@ -3070,3 +3070,17 @@ Remaining:
 
 - `[ ]` 若確認 `IgAccountSwitcher` 已完全不再被任何頁面使用，可後續移除 legacy component，降低維護面。
 - `[ ]` Vercel Preview 目前遇到 build rate limit；後續小修應先累積成較大主題再送 PR。
+
+## Latest - 2026-07-02 Automation delete confirmation dialog
+
+Current status:
+
+- `[x]` Automations 刪除流程不再使用原生 `confirm()`。
+- `[x]` Overview list 與 editor sidebar 的刪除入口都會先打開頁內確認 dialog。
+- `[x]` Dialog 會顯示要刪除的自動化名稱，並提醒先確認沒有正在使用中的留言或私訊活動。
+- `[x]` Source regression 覆蓋 `DeleteAutomationDialog`、`role="dialog"` 與確認刪除按鈕。
+
+Remaining:
+
+- `[ ]` 後續可把 folder delete / sequence delete 等破壞性動作也逐步換成同一套確認 dialog pattern。
+- `[ ]` 若要提供刪除後復原，需要先設計 soft-delete、restore 與 audit log，不在本輪打開。
