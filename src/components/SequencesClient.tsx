@@ -371,12 +371,17 @@ export function SequencesClient({
               onClick={createSequence}
               disabled={!canSaveSequence}
               title={saveDisabledReason || undefined}
+              aria-describedby={!canSaveSequence ? "sequence-save-disabled-reason" : undefined}
               className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               data-testid="sequence-save-button"
             >
               {editingSequenceId ? "更新序列" : "建立序列"}
             </button>
-            {!canSaveSequence ? <p className="text-xs leading-5 text-[#667085]">{saveDisabledReason}</p> : null}
+            {!canSaveSequence ? (
+              <p id="sequence-save-disabled-reason" className="text-xs leading-5 text-[#667085]">
+                {saveDisabledReason}
+              </p>
+            ) : null}
           </div>
         </section>
 
@@ -418,12 +423,17 @@ export function SequencesClient({
               onClick={subscribe}
               disabled={Boolean(subscribeDisabledReason)}
               title={subscribeDisabledReason || undefined}
+              aria-describedby={subscribeDisabledReason ? "sequence-subscribe-disabled-reason" : undefined}
               className="w-full rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               data-testid="sequence-subscribe-button"
             >
               加入序列
             </button>
-            {subscribeDisabledReason ? <p className="text-xs leading-5 text-[#667085]">{subscribeDisabledReason}</p> : null}
+            {subscribeDisabledReason ? (
+              <p id="sequence-subscribe-disabled-reason" className="text-xs leading-5 text-[#667085]">
+                {subscribeDisabledReason}
+              </p>
+            ) : null}
             {selectedSequence ? (
               <p className="text-xs leading-5 text-[#667085]">
                 目前選取：{selectedSequence.name}。加入後，worker 會依每個步驟的延遲時間建立排程訊息。

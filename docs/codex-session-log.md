@@ -1,3 +1,8 @@
+## 2026-07-03 - Sequences disabled reason accessibility polish
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Connected Sequences save and subscribe disabled helper text to the disabled buttons with aria-describedby.
+- Next: continue local-mode sweeps for remaining visible-but-unusable or unclear disabled controls.
 ## 2026-07-03 - Referrals simple-release wallet gate clarity
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

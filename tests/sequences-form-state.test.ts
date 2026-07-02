@@ -19,6 +19,10 @@ describe("sequences form state", () => {
     expect(source).toContain('data-testid="sequence-save-button"');
     expect(source).toContain("disabled={!canSaveSequence}");
     expect(source).toContain('title={saveDisabledReason || undefined}');
+    expect(source).toContain('aria-describedby={!canSaveSequence ? "sequence-save-disabled-reason" : undefined}');
+    expect(source).toContain('id="sequence-save-disabled-reason"');
+    expect(source).toContain('aria-describedby={subscribeDisabledReason ? "sequence-subscribe-disabled-reason" : undefined}');
+    expect(source).toContain('id="sequence-subscribe-disabled-reason"');
     expect(source).toContain("重新載入序列失敗，請稍後再試。");
     expect(source).toContain("刪除序列失敗，請稍後再試。");
     expect(source).toContain('role="dialog"');
