@@ -25,6 +25,7 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "admin:ensure": "tsx scripts/ensure-admin.ts",
     "e2e:admin:ensure": "tsx scripts/ensure-e2e-admin.ts",
+    "e2e:empty:ensure": "tsx scripts/ensure-empty-e2e-admin.ts",
     "data:import-legacy": "node scripts/import-legacy-sqlite.mjs",
     "payuni:smoke": "tsx scripts/payuni-smoke-test.mjs",
     "ai-models:refresh": "tsx scripts/refresh-ai-models.ts",

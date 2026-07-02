@@ -208,3 +208,16 @@ npx playwright install chromium
 ```bash
 npm run prisma:generate
 ```
+
+## Empty Workspace Activation Smoke
+
+本專案除了 seeded E2E admin，也保留一組真正空 workspace 測試路徑，避免只測到已經有 channel / contact / conversation 的漂亮資料。
+
+這組測試只應使用 `TEST_DATABASE_URL`，不要指向 staging / production：
+
+```powershell
+npm run e2e:empty:ensure
+npx playwright test tests/e2e/empty-workspace-activation.spec.ts --project=chromium --workers=1
+```
+
+`npm run e2e:empty:ensure` 會重建 `empty-e2e-workspace`，並建立一個可登入但沒有 Instagram channel、聯絡人、對話、自動化的 E2E admin。這條 smoke 會走 Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty。

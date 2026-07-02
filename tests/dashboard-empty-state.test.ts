@@ -8,7 +8,8 @@ describe("dashboard recent message empty state", () => {
   it("uses release-aware CTAs instead of sending simple-release users to the mock tester", () => {
     expect(source).toContain("recentMessagesEmptyState = simpleRelease");
     expect(source).toContain('href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect"');
-    expect(source).toContain('href: "/mock-tester"');
+    expect(source).toContain('href: connectedInstagramChannels > 0 ? "/mock-tester" : "/channels/connect"');
+    expect(source).toContain('label: connectedInstagramChannels > 0 ? "送一則測試訊息" : "連接 Instagram"');
     expect(source).toContain('data-testid="dashboard-recent-messages-empty"');
     expect(source).not.toContain("還沒有訊息。可以先用測試工具送一則測試訊息。");
   });

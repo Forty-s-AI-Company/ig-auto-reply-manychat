@@ -3314,3 +3314,17 @@ Remaining:
 
 - `[ ]` A Preview / Staging browser QA pass should still exercise a truly empty workspace because local E2E fixtures intentionally seed data for authenticated flow tests.
 - `[ ]` Meta App Review, PayUNI production go-live, and final production deploy remain separate manual gates.
+
+## Latest - 2026-07-02 Empty workspace activation smoke
+
+Current status:
+
+- `[x]` Added an isolated `empty-e2e-workspace` fixture that uses `TEST_DATABASE_URL` only.
+- `[x]` Added a repeatable Playwright smoke for Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty.
+- `[x]` Dashboard no-data CTA now sends a workspace with zero connected Instagram accounts to `/channels/connect` before suggesting mock tester flows.
+- `[x]` Local validation passed for the focused empty-workspace Chromium smoke.
+
+Remaining:
+
+- `[ ]` Run the same empty-workspace path on Preview / Staging with a real empty test tenant before public paid launch.
+- `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.

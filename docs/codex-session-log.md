@@ -8548,3 +8548,32 @@ Launch impact:
 
 - Product UX / accessibility polish only.
 - No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
+
+# 2026-07-02 - Empty workspace activation smoke
+
+Task:
+
+- Add a repeatable local alternative to Preview/Staging empty-tenant browser QA for the path Dashboard -> Channels connect -> Inbox empty -> Contacts empty -> Automations empty, without touching production DB, Production deployment, migrations, Meta App Review, or PayUNI production.
+
+Findings:
+
+- Existing authenticated E2E fixtures intentionally seed channels, contacts, conversations, and messages, so they cannot prove the first-run empty workspace experience.
+- Source-level empty-state tests existed, but they did not log in as a real empty workspace user and navigate the product.
+- The first true empty-workspace smoke found that Dashboard full-release recent-message CTA still pointed to `/mock-tester` before any Instagram account was connected.
+
+Changes:
+
+- Added `scripts/ensure-empty-e2e-admin.ts` and `npm run e2e:empty:ensure` to create an isolated empty workspace in `TEST_DATABASE_URL`.
+- Added `tests/e2e/empty-workspace-activation.spec.ts` to walk Dashboard, Channels connect, Inbox, Contacts, and Automations empty states.
+- Adjusted Dashboard empty-message CTA so a zero-Instagram workspace goes to `/channels/connect`; full-release mock tester is only suggested after an Instagram account exists.
+- Documented the empty-workspace local QA path in installation and readiness docs.
+
+Validation:
+
+- `npm run e2e:empty:ensure`: passed.
+- `npx playwright test tests/e2e/empty-workspace-activation.spec.ts --project=chromium --workers=1`: passed.
+
+Launch impact:
+
+- Adds local test coverage and first-run CTA correction only.
+- No production DB, Production deployment, migration/db push, Meta App Review, PayUNI production switch, or secret output.
