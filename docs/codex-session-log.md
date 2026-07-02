@@ -8921,3 +8921,10 @@ Launch impact:
 - 變更：送出按鈕在空回覆與空內部備註時顯示對應 title、aria-describedby 與可讀說明文字；送出 icon 標為 decorative，並補 focus-visible ring。
 - 驗證：補 inbox authenticated Playwright smoke 斷言；後續跑 lint、build、npm test 與 inbox smoke。
 - 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - AI model cache refresh automation
+
+- 目標：執行每日 `npm run ai-models:refresh`，刷新 ChatGPT、Gemini、DeepSeek、XAI 與 local CLI provider 模型快取狀態。
+- 結果：刷新成功；`failed-workspace`、`available-refund-workspace`、`default-workspace` 都回傳 `chatgpt=10`、`gemini=7`、`deepseek=2`、`xai=2`。
+- 備註：`codex_cli` / `antigravity_cli` 未出現在 refresh payload，延續 `AI_ENABLE_LOCAL_CLI` 未啟用時的 local CLI opt-in gating；未判定為 provider API 失敗。
+- 安全：未修改產品程式碼、未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production、未執行 Meta App Review 動作。

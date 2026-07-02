@@ -3545,3 +3545,15 @@ Remaining:
 
 - 已完成：Inbox 回覆/備註 composer 在空內容時顯示明確 disabled reason、title 與 aria-describedby，不再只是灰色不可按。
 - 下一步：繼續檢查 Inbox / Dashboard / Automations 是否還有可見但不可理解的 disabled controls。
+
+# Latest - 2026-07-03 AI model cache refresh automation
+
+Current status:
+
+- [x] `npm run ai-models:refresh` completed successfully.
+- [x] Refreshed API provider model counts for `failed-workspace`, `available-refund-workspace`, and `default-workspace`: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- [x] No provider failure was reported by the script.
+
+Remaining:
+
+- [ ] `codex_cli` / `antigravity_cli` remain local opt-in providers and are not refreshed unless `AI_ENABLE_LOCAL_CLI` is enabled on this machine.
