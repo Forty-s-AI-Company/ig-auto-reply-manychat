@@ -550,17 +550,22 @@ export function ContactsListClient({
                           <div className="mt-5 flex flex-wrap gap-2">
                             {emptyState.actions.map((action, index) =>
                               action.disabledReason ? (
-                                <button
-                                  key={action.testId}
-                                  type="button"
-                                  disabled
-                                  aria-disabled="true"
-                                  title={action.disabledReason}
-                                  data-testid={action.testId}
-                                  className="inline-flex h-9 cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-white px-3 text-sm text-[#98a2b3]"
-                                >
-                                  {action.label}
-                                </button>
+                                <span key={action.testId} className="inline-flex max-w-full flex-col gap-1">
+                                  <button
+                                    type="button"
+                                    disabled
+                                    aria-disabled="true"
+                                    aria-describedby={`${action.testId}-reason`}
+                                    title={action.disabledReason}
+                                    data-testid={action.testId}
+                                    className="inline-flex h-9 cursor-not-allowed items-center justify-center rounded-md border border-dashed border-[#d7dbe0] bg-white px-3 text-sm text-[#98a2b3]"
+                                  >
+                                    {action.label}
+                                  </button>
+                                  <span id={`${action.testId}-reason`} className="max-w-xs text-left text-xs leading-5 text-[#b54708]">
+                                    {action.disabledReason}
+                                  </span>
+                                </span>
                               ) : (
                                 <Link
                                   key={action.testId}

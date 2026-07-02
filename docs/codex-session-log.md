@@ -1,3 +1,8 @@
+## 2026-07-03 - Contacts empty-state disabled action clarity
+
+- Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.
+- Contacts empty-state disabled actions now show their disabled reason visibly and connect it with aria-describedby.
+- Next: continue local-mode sweeps for remaining onboarding and contacts controls.
 ## 2026-07-03 - Instagram profile refresh accessibility polish
 
 - Mode: local development validation only; no Production deploy, no Production DB, no Vercel Preview push.

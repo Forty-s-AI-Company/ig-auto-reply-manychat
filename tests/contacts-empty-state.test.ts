@@ -73,5 +73,7 @@ describe("contacts empty state", () => {
     expect(source).toContain("請先建立標籤，才能批次加入或移除標籤。");
     expect(source).toContain("請先選擇要套用的標籤。");
     expect(source).toContain("aria-describedby={batchActionDisabledReason ? \"contacts-batch-disabled-reason\" : undefined}");
+    expect(source).toContain('aria-describedby={`${action.testId}-reason`}');
+    expect(source).toContain('id={`${action.testId}-reason`}');
   });
 });

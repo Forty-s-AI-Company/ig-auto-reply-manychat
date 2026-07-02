@@ -3399,6 +3399,7 @@ Current status:
 - `[x]` Sequences save / subscribe disabled reasons are now connected with `aria-describedby` instead of being only adjacent helper copy.
 - `[x]` AI Settings model test / refresh disabled states now expose visible helper copy and `aria-describedby` when API keys are missing.
 - `[x]` Instagram profile refresh status text is now connected to the refresh control with `aria-describedby`.
+- `[x]` Contacts empty-state disabled actions now show their disabled reason visibly instead of relying only on hover titles.
 
 Remaining:
 
