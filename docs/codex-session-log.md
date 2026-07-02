@@ -8181,3 +8181,35 @@ Validation update:
 - `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
 - `npm test`: passed. The known Windows Vitest `3221225477` batch-level crash appeared in some batches, then every affected file passed when rerun individually by the project test runner.
 - `npm run lint`: blocked by pre-existing untracked `AI_TEAM/scripts/qa-staging.js` using CommonJS `require()`; this file is not included in the PR and the changed files passed targeted ESLint.
+
+# 2026-07-02 - Dashboard recent automation empty-state CTA
+
+Task:
+
+- Continue product completeness cleanup for Dashboard / Inbox / Analytics after Analytics Recharts and Dashboard message empty-state work.
+
+Findings:
+
+- Analytics already has a real Recharts 7-day message trend and clear state guidance.
+- Inbox search, filters, composer, disabled media controls, contact actions, and mobile panes are already covered by authenticated smoke.
+- Dashboard recent automation empty state still provided guidance as plain text without a direct next-step CTA, making the empty state weaker than the recently improved message empty state.
+
+Changes:
+
+- Replaced the Dashboard recent automation text-only empty state with a structured empty state.
+- Added a direct `建立自動化` CTA to `/automations`.
+- Added source regression coverage so the empty state does not regress to plain text without an action.
+
+Validation:
+
+- `npx vitest run tests/dashboard-empty-state.test.ts --reporter=dot`: passed.
+- `npx eslint src/app/dashboard/page.tsx tests/dashboard-empty-state.test.ts`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm test`: passed.
+- `npm run e2e:admin:ensure`: passed.
+- `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "renders authenticated launch routes on mobile without horizontal overflow|shows analytics scope and data-state guidance" --project=mobile-chrome`: passed after refreshing local E2E fixtures.
+- `npm run lint`: blocked by pre-existing untracked `AI_TEAM/scripts/qa-staging.js` using CommonJS `require()`; changed files passed targeted ESLint and that untracked file is not included in this PR.
+
+Launch impact:
+
+- Product UX clarity only. No production DB, Production deployment, migration, Meta App Review, or PayUNI production change was performed.

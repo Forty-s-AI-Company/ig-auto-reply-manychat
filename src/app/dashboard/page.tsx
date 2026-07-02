@@ -365,9 +365,17 @@ export default async function DashboardPage({
                 </Link>
               ))}
               {recentAutomations.length === 0 ? (
-                <p className="px-4 py-6 text-sm text-[var(--text-muted)]">
-                  還沒有自動化。從預設回覆或私訊關鍵字回覆開始最順。
-                </p>
+                <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]" data-testid="dashboard-recent-automations-empty">
+                  <p className="font-semibold text-[var(--text-primary)]">還沒有最近自動化</p>
+                  <p className="mt-1">從 Instagram 預設回覆或私訊關鍵字回覆開始最順，建立後這裡會顯示最近更新的流程。</p>
+                  <Link
+                    href="/automations"
+                    className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+                  >
+                    建立自動化
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               ) : null}
             </div>
           </div>
