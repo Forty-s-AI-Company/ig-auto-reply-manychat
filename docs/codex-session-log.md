@@ -8074,3 +8074,33 @@ Validation:
 Launch impact:
 
 - Product UX hardening only. No production DB, Production deployment, Meta App Review, or PayUNI production change was performed.
+
+# 2026-07-02 - Segment delete confirmation dialog
+
+Task:
+
+- Continue product completeness cleanup across Contacts / Inbox / Automations by removing the clearest remaining native confirmation from the Contacts-adjacent audience segment workflow.
+
+Findings:
+
+- Inbox bulk actions and sequence subscription controls already have clear feedback or disabled UX.
+- Contacts bulk tagging and contact-filter segment creation already use in-app controls.
+- The Segments page still used the native `confirm("確定要刪除這個分群？")` flow for a destructive action, which did not explain downstream broadcast / audience impact.
+
+Changes:
+
+- Replaced the native segment delete confirmation in `src/components/SegmentsClient.tsx` with an in-app confirmation dialog.
+- The dialog names the segment, clarifies that contacts are not deleted, and warns operators to confirm no scheduled broadcast depends on the segment.
+- Added loading state for the destructive confirmation button and kept delete failures visible through the existing inline error area.
+- Added source regression coverage in `tests/channel-client-feedback.test.ts`.
+
+Validation:
+
+- `npx vitest run tests/channel-client-feedback.test.ts --reporter=dot`: passed.
+- `npm run lint`: passed.
+- `npm run build`: passed. Windows Prisma DLL lock appeared, and the existing safe generate fallback reused the generated client.
+- `npm test`: passed. One Windows Vitest batch hit the known `3221225477` batch-level crash, then every file in that batch passed when rerun individually by the project test runner.
+
+Launch impact:
+
+- Product UX hardening only. No production DB, Production deployment, Meta App Review, or PayUNI production change was performed.

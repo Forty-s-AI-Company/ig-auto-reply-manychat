@@ -80,6 +80,8 @@ export function SegmentsClient({
   const [segments, setSegments] = useState(initialSegments);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [error, setError] = useState("");
+  const [pendingDeleteSegment, setPendingDeleteSegment] = useState<Segment | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const isEditing = Boolean(draft.id);
   const canSave = Boolean(draft.name.trim());
 
@@ -120,17 +122,30 @@ export function SegmentsClient({
     await reload();
   }
 
-  async function remove(id: string) {
-    if (!confirm("確定要刪除這個分群？")) return;
+  function requestRemove(segment: Segment) {
     setError("");
-    const response = await fetch(`/api/segments/${id}`, { method: "DELETE" });
-    if (!response.ok) {
-      const data = await response.json().catch(() => ({}));
-      setError(data.error || "刪除分群失敗，請稍後再試。");
-      return;
+    setPendingDeleteSegment(segment);
+  }
+
+  async function confirmRemove() {
+    if (!pendingDeleteSegment) return;
+
+    setError("");
+    setDeleting(true);
+    try {
+      const response = await fetch(`/api/segments/${pendingDeleteSegment.id}`, { method: "DELETE" });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(typeof data.error === "string" ? data.error : "刪除分群失敗，請稍後再試。");
+      }
+      if (draft.id === pendingDeleteSegment.id) setDraft(emptyDraft);
+      setPendingDeleteSegment(null);
+      await reload();
+    } catch (caughtError) {
+      setError(caughtError instanceof Error ? caughtError.message : "刪除分群失敗，請稍後再試。");
+    } finally {
+      setDeleting(false);
     }
-    if (draft.id === id) setDraft(emptyDraft);
-    await reload();
   }
 
   return (
@@ -173,7 +188,7 @@ export function SegmentsClient({
                   </button>
                   <button
                     type="button"
-                    onClick={() => remove(segment.id)}
+                    onClick={() => requestRemove(segment)}
                     className="rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-[#b42318] hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
                   >
                     刪除
@@ -307,6 +322,68 @@ export function SegmentsClient({
           </div>
         </aside>
       </section>
+      {pendingDeleteSegment ? (
+        <SegmentDeleteDialog
+          segment={pendingDeleteSegment}
+          deleting={deleting}
+          onCancel={() => setPendingDeleteSegment(null)}
+          onConfirm={confirmRemove}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function SegmentDeleteDialog({
+  segment,
+  deleting,
+  onCancel,
+  onConfirm,
+}: {
+  segment: Segment;
+  deleting: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 px-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="segment-delete-title"
+    >
+      <div className="w-full max-w-md rounded-lg border border-[#d7dbe0] bg-white shadow-xl">
+        <div className="border-b border-[#d7dbe0] px-5 py-4">
+          <p id="segment-delete-title" className="text-base font-semibold text-[#111827]">
+            刪除分眾名單？
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[#667085]">
+            你即將刪除「{segment.name}」。這不會刪除聯絡人，但已使用這個分眾的廣播或分析條件可能需要重新選擇受眾。
+          </p>
+        </div>
+        <div className="bg-[#fff8f6] px-5 py-3 text-sm leading-6 text-[#b42318]">
+          刪除前請確認沒有正在排程或準備中的廣播依賴這個分眾。
+        </div>
+        <div className="flex items-center justify-end gap-2 px-5 py-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={deleting}
+            className="rounded-md border border-[#d7dbe0] bg-white px-4 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            取消
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={deleting}
+            data-testid="segments-confirm-delete"
+            className="rounded-md bg-[#b42318] px-4 py-2 text-sm font-semibold text-white hover:bg-[#912018] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#fecdca] disabled:text-[#912018]"
+          >
+            {deleting ? "刪除中…" : "確認刪除"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
