@@ -27,6 +27,9 @@ describe("admin invoices refund UI", () => {
     expect(pageSource).toContain("paymentStatusLabel");
     expect(pageSource).toContain("付款失敗");
     expect(pageSource).toContain("狀態待確認");
+    expect(pageSource).toContain("返回分潤審核");
+    expect(pageSource).toContain("表格可左右滑動查看付款紀錄、折抵與操作");
+    expect(pageSource).toContain("break-all");
     expect(pageSource).not.toContain("latestOrder.status}</p>");
     expect(profileMenuSource).toContain('href="/admin/invoices"');
     expect(profileMenuSource).toContain("帳單退款處理");

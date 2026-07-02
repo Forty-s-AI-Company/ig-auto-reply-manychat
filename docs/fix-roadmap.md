@@ -1,3 +1,16 @@
+# Latest - 2026-07-02 Financial surfaces mobile and cash-payout wording QA
+
+Current status:
+
+- `[x]` Admin payout wording now uses internal commission review / reconciliation language instead of implying public cash payout execution.
+- `[x]` Payout batch UI now describes internal reconciliation batches and CSV export, not payment batches.
+- `[x]` Admin financial tables include mobile scroll guidance and long ID / email wrapping.
+- `[x]` Referral record rows now handle long names and emails without overflowing.
+
+Remaining:
+
+- `[ ]` Keep public cash payout, PayUNI production refunds, production DB changes, and production deploy behind human launch gates.
+- `[ ]` If cash payout is ever re-enabled, add legal / tax / anti-fraud / payout-profile and provider reconciliation flows before exposing self-service actions.
 # Latest - 2026-07-02 Account dropdown scope switch failure feedback
 
 Current status:

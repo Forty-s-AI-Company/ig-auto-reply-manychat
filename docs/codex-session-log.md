@@ -1,3 +1,24 @@
+# 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
+
+Task:
+
+- Tighten Billing / Referrals / Wallet / Admin financial surfaces after referral-credit v1 became the public product direction.
+
+Changes:
+
+- Renamed admin payout copy toward internal reconciliation / controlled commission review instead of payment execution.
+- Clarified payout batch labels as internal reconciliation batches, not cash-payment batches.
+- Added mobile scroll guidance and long ID / email wrapping on admin financial tables.
+- Kept referral record rows resilient to long names and emails.
+
+Validation:
+
+- Focused regression tests were updated for admin payout / batch wording and mobile safeguards.
+- No production DB, production deployment, migration / db push, Meta App Review, or PayUNI production switch was performed.
+
+Launch impact:
+
+- Reduces the chance that internal affiliate payout surfaces look like public cash payout is enabled. Public launch direction remains non-cash referral credit.
 # 2026-07-02 - Account dropdown scope switch failure feedback
 
 Task:

@@ -1,5 +1,19 @@
 # Billing / Affiliate Readiness
 
+# 2026-07-02 - Financial surfaces mobile and cash-payout wording QA
+
+- `[x]` Admin payout management now uses internal commission review language instead of public-facing cash withdrawal wording.
+- `[x]` Payout batches are described as reconciliation batches; CSV export is for internal review and does not execute payment.
+- `[x]` Admin invoice / payout / batch tables now include mobile scroll guidance and wrapping for long IDs / emails.
+- `[x]` Referral rows handle long referred-user names and emails without mobile overflow.
+- `[ ]` Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are explicitly approved.
+
+Billing launch implication:
+
+- Referral credit v1 remains the launch-safe public direction.
+- Internal payout surfaces are less likely to imply that cash payout or PayUNI production refund automation is already active.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, or Meta App Review action was performed.
+
 # 2026-07-02 - Referral link copy action
 
 - `[x]` Referral URL now has a visible copy action so the referral credit flow is easier to share and verify.

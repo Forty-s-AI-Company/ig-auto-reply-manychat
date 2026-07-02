@@ -73,9 +73,9 @@ export default async function AdminInvoicesPage() {
       headerRight={
         <Link
           href="/admin/payouts"
-          className="inline-flex h-10 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+          className="inline-flex h-10 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
         >
-          返回提領管理
+          返回分潤審核
         </Link>
       }
     >
@@ -85,6 +85,9 @@ export default async function AdminInvoicesPage() {
           <p className="mt-1 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
             這是內部受控操作。標記退款只會更新 InboxPilot 帳單狀態，並執行推薦折抵取消 / 沖回；它不會自動向 PayUNI 發起退款。
             實際退款仍需依 PayUNI 後台與客服流程人工確認。
+          </p>
+          <p className="mt-2 text-xs leading-5 text-[var(--text-muted)] sm:hidden">
+            表格可左右滑動查看付款紀錄、折抵與操作。
           </p>
         </div>
 
@@ -112,12 +115,14 @@ export default async function AdminInvoicesPage() {
                   <tr key={invoice.id} className="align-top">
                     <td className="px-4 py-3">
                       <p className="font-mono text-xs text-[var(--text-muted)]">{invoice.invoiceNumber}</p>
-                      <p className="mt-1 text-xs text-[var(--text-muted)]">{invoice.id}</p>
+                      <p className="mt-1 max-w-44 break-all text-xs text-[var(--text-muted)]">{invoice.id}</p>
                     </td>
-                    <td className="px-4 py-3 text-[var(--text-secondary)]">{invoice.workspace.name}</td>
+                    <td className="px-4 py-3 text-[var(--text-secondary)]">
+                      <span className="block max-w-48 break-words">{invoice.workspace.name}</span>
+                    </td>
                     <td className="px-4 py-3">
                       <p className="font-medium text-[var(--text-primary)]">{invoice.user.name || "未命名使用者"}</p>
-                      <p className="text-xs text-[var(--text-muted)]">{invoice.user.email}</p>
+                      <p className="max-w-56 break-all text-xs text-[var(--text-muted)]">{invoice.user.email}</p>
                     </td>
                     <td className="px-4 py-3 font-semibold text-[var(--text-primary)]">{formatTwd(invoice.totalAmount)}</td>
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{formatTwd(invoice.creditUsedAmount)}</td>
@@ -130,7 +135,7 @@ export default async function AdminInvoicesPage() {
                       {latestOrder ? (
                         <div>
                           <p>{latestOrder.provider} / {paymentStatusLabel(latestOrder.status)}</p>
-                          <p className="font-mono text-xs text-[var(--text-muted)]">{latestOrder.tradeNo || latestOrder.merTradeNo}</p>
+                          <p className="max-w-56 break-all font-mono text-xs text-[var(--text-muted)]">{latestOrder.tradeNo || latestOrder.merTradeNo}</p>
                         </div>
                       ) : (
                         "尚無付款紀錄"

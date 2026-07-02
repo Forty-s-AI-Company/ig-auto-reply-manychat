@@ -108,8 +108,8 @@ export default async function ReferralsPage() {
           <div className="border-b border-[var(--border-soft)] px-4 py-3 font-medium text-[var(--text-primary)]">推薦紀錄</div>
           {dashboard.attributions.map((item) => (
             <div key={item.id} className="grid gap-2 border-b border-[var(--border-soft)] px-4 py-3 text-sm text-[var(--text-secondary)] md:grid-cols-4">
-              <span className="font-medium text-[var(--text-primary)]">{item.referred.name}</span>
-              <span>{item.referred.email}</span>
+              <span className="min-w-0 break-words font-medium text-[var(--text-primary)]">{item.referred.name}</span>
+              <span className="min-w-0 break-all">{item.referred.email}</span>
               <span>{referralStatusLabel(item.status)}</span>
               <span>{formatReferralDate(item.createdAt)}</span>
             </div>
