@@ -66,6 +66,8 @@ describe("marketing info page polish", () => {
     expect(templatesSource).not.toContain("LINE OA 導流");
     expect(aboutSource).toContain("PayUNI 付款");
     expect(statusSource).toContain("PayUNI 付款流程");
+    expect(statusSource).toContain("Sandbox 測試站驗證");
+    expect(statusSource).toContain("正式金流不會在未確認前啟用");
     expect(officialV3Source).toContain("連接 Instagram 與 Meta 相關權限");
     expect(officialV3Source).toContain("Connect Instagram and Meta permissions");
     expect(officialV3Source).not.toContain("siFacebook");

@@ -554,3 +554,9 @@ Billing launch implication:
 - `[x]` Billing referral-credit CTAs now have keyboard-visible focus treatment aligned with Wallet and Referrals.
 - `[x]` The change keeps PayUNI Sandbox, production gate, referral-credit lifecycle, and invoice logic unchanged.
 - `[ ]` PayUNI production remains Hold; this only improves the self-serve billing page UX.
+
+# 2026-07-03 - Public status PayUNI Sandbox clarity
+
+- `[x]` Public Status page now describes PayUNI as the current Sandbox validation lane instead of saying only that callback positions are reserved.
+- `[x]` Public copy now states production payment enablement requires controlled Return URL / Notify URL / signature / idempotency checks first.
+- `[ ]` PayUNI production remains Hold; no gateway, env, callback, settlement, refund, or production DB behavior changed.

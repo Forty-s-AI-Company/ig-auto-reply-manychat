@@ -25,7 +25,7 @@ export default function StatusPage() {
         },
         {
           title: "付款與方案",
-          body: "PayUNI 付款流程已保留 Return URL 與 Notify URL 的串接位置。若商店後台只提供一組網址，InboxPilot 會以同一個商店對應目前的方案付款流程。",
+          body: "PayUNI 付款流程目前維持 Sandbox 測試站驗證，Return URL、Notify URL、簽章與 idempotency 都會在正式切換前再做一次受控檢查；正式金流不會在未確認前啟用。",
         },
         {
           title: "平台支援範圍",

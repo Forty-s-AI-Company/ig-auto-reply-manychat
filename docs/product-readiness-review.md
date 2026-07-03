@@ -2254,3 +2254,9 @@ Readiness implication:
 - Readiness update：Dashboard 最近自動化列表的可點擊項目現在有鍵盤可見焦點。
 - Result：首頁回到自動化工作流的路徑更完整，不只依賴滑鼠 hover。
 - Remaining risk：仍建議用 desktop/mobile Playwright smoke 重新走 Dashboard -> Automations -> Inbox activation path。
+
+## 2026-07-03 - Public status PayUNI Sandbox clarity
+
+- Readiness update：公開 Status 頁的付款狀態不再像金流只是預留位置，而是清楚標示目前使用 PayUNI Sandbox 驗證。
+- Result：付費前使用者、reviewer 或營運人員看到狀態頁時，比較不會誤判正式金流已開或尚未實作。
+- Remaining risk：PayUNI production 仍需正式切換 SOP、低額 live smoke、退款 / 對帳 owner sign-off 後才能啟用。

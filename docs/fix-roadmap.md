@@ -4399,6 +4399,12 @@ Remaining:
 - 已完成：保留既有首頁 summary、channel scope、空狀態 CTA 與 quick automation 行為不變。
 - 下一步：若沒有人工阻塞，繼續掃 Dashboard / Inbox / Contacts activation path 的 mobile smoke，或切到 Help Center / Settings 低頻頁的可用性缺口。
 
+## 2026-07-03 - Public status PayUNI Sandbox clarity
+
+- 已完成：Status 頁付款與方案文案從「保留串接位置」更新為 PayUNI Sandbox 已作為目前驗證主線。
+- 已完成：公開狀態頁明確說明正式金流會在 Return URL / Notify URL / 簽章 / idempotency 受控檢查後才啟用。
+- 下一步：若沒有人工阻塞，繼續掃 About / Contact / Billing / Pricing 對外 PayUNI wording 是否一致。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

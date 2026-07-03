@@ -10722,3 +10722,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Public status PayUNI Sandbox clarity
+
+- 目標：接續 public support / status page audit，修正系統狀態頁仍把 PayUNI 描述成「保留串接位置」的過期體感。
+- 產品修補：
+  - `status` 頁付款與方案區改為說明 PayUNI 目前維持 Sandbox 測試站驗證。
+  - 明確寫出 Return URL、Notify URL、簽章與 idempotency 會在正式切換前受控檢查，正式金流不會在未確認前啟用。
+  - 保留 PayUNI checkout / return / notify 實作與 Sandbox 設定不變。
+- 測試：
+  - `tests/marketing-info-page-polish.test.ts` 補 status page PayUNI Sandbox wording guard。
+- 安全：
+  - 純公開頁文案修補，未改 payment API、PayUNI env、schema 或 webhook
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
