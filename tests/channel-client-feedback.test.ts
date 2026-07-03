@@ -30,6 +30,8 @@ describe("channel client feedback", () => {
     expect(source).toContain('setError("重新載入資料失敗，請稍後再試。")');
     expect(source).toContain('setError(typeof data.error === "string" ? data.error : "刪除失敗，請稍後再試。")');
     expect(source).toContain('setFeedback("已刪除資料。")');
+    expect(source).toContain('role="alert"');
+    expect(source).toContain('role="status"');
     expect(source).toContain('role="dialog"');
     expect(source).toContain('aria-modal="true"');
     expect(source).toContain('aria-describedby="json-crud-delete-description"');

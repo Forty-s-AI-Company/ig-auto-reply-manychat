@@ -10287,3 +10287,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Segments and JSON CRUD error alert semantics
+
+- 目標：接續 Automations / Segments / shared CRUD audit，補齊設定型操作失敗的錯誤語意。
+- 產品修補：
+  - `SegmentsClient` 的重新載入 / 儲存 / 刪除失敗提示改用 `role="alert"`。
+  - `JsonCrudClient` 的建立 / 預覽 / 排程 / 刪除失敗提示改用 `role="alert"`，成功回饋維持 `role="status"`。
+  - 維持既有 API、刪除確認 Dialog、廣播預覽與分群篩選邏輯不變。
+- 測試：
+  - `tests/segments-light-theme.test.ts` 與 `tests/channel-client-feedback.test.ts` 補錯誤 alert semantics guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 CRUD endpoint、segment query、broadcast queue 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

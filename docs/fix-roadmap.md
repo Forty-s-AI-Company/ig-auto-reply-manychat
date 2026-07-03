@@ -4223,6 +4223,11 @@ Remaining:
 - 已完成：Social connect popup error 與 token fallback error 改用 `role="alert"`，避免連接失敗只被當作一般狀態文字。
 - 下一步：若沒有人工阻塞，繼續掃 OAuth popup bridge / channel resync 的錯誤語意，或切回 reviewer-safe staging evidence lane。
 
+## 2026-07-03 - Segments and JSON CRUD error alert semantics
+
+- 已完成：Segments 與 shared JSON CRUD 的錯誤提示改用 `role="alert"`，成功回饋維持 `role="status"`。
+- 下一步：若沒有人工阻塞，繼續掃 Sequences / Broadcasts 的錯誤語意與 mobile smoke，或切回 Inbox / Contacts 實際操作路徑。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

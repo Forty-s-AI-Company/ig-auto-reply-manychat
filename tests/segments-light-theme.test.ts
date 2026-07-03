@@ -20,7 +20,7 @@ describe("segments light-theme polish", () => {
     expect(source).toContain('name="segment-search"');
     expect(source).toContain('name="segment-tag"');
     expect(source).toContain('name="segment-last-inbound-days"');
-    expect(source).toContain('aria-live="polite"');
+    expect(source).toContain('role="alert"');
     expect(source).toContain("focus-visible:ring");
     expect(source).toContain('data-testid="segments-save-button"');
     expect(source).toContain('id="segment-save-disabled-reason"');
