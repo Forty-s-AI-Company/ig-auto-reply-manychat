@@ -43,14 +43,14 @@ export default async function ProfilePage() {
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
           <section className="rounded-lg border border-[#d7dbe0] bg-white p-5">
             <div className="mb-4 flex items-center gap-2">
-              <UserRound className="h-5 w-5 text-[#667085]" />
+              <UserRound className="h-5 w-5 text-[#667085]" aria-hidden="true" />
               <h3 className="font-semibold text-[#111827]">基本資料</h3>
             </div>
             <div className="space-y-4">
-              <Field label="顯示名稱" value={user.name || "管理員"} />
-              <Field label="電子郵件" value={user.email} />
-              <Field label="角色" value={(teamRole?.role || user.role) === "admin" ? "管理員" : "客服人員"} />
-              <Field label="介面語言" value="繁體中文" />
+              <ProfileFact label="顯示名稱" value={user.name || "管理員"} />
+              <ProfileFact label="電子郵件" value={user.email} />
+              <ProfileFact label="角色" value={(teamRole?.role || user.role) === "admin" ? "管理員" : "客服人員"} />
+              <ProfileFact label="介面語言" value="繁體中文" />
               <p className="rounded-md bg-[#f9fafb] px-3 py-2 text-sm text-[#667085]">目前介面語言：繁體中文</p>
             </div>
           </section>
@@ -58,7 +58,7 @@ export default async function ProfilePage() {
           <aside className="space-y-5">
             <section className="rounded-lg border border-[#d7dbe0] bg-white p-5">
               <div className="mb-4 flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5 text-[#667085]" />
+                <ShieldCheck className="h-5 w-5 text-[#667085]" aria-hidden="true" />
                 <h3 className="font-semibold text-[#111827]">登入與安全</h3>
               </div>
               <p className="text-sm leading-6 text-[#667085]">
@@ -68,7 +68,7 @@ export default async function ProfilePage() {
 
             <section className="rounded-lg border border-[#d7dbe0] bg-white p-5">
               <div className="mb-4 flex items-center gap-2">
-                <Mail className="h-5 w-5 text-[#667085]" />
+                <Mail className="h-5 w-5 text-[#667085]" aria-hidden="true" />
                 <h3 className="font-semibold text-[#111827]">通知</h3>
               </div>
               <p className="text-sm leading-6 text-[#667085]">
@@ -84,7 +84,10 @@ export default async function ProfilePage() {
               <h3 className="font-semibold text-[#111827]">已連結平台帳號</h3>
               <p className="mt-1 text-sm text-[#667085]">目前平台登入會集中顯示在這裡；新增帳號請從左上角或設定頁選擇平台後授權。</p>
             </div>
-            <Link href="/channels/connect" className="rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+            <Link
+              href="/channels/connect"
+              className="rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+            >
               + 新增平台帳號
             </Link>
           </div>
@@ -93,7 +96,7 @@ export default async function ProfilePage() {
               <div key={channel.id} className="flex items-center justify-between py-3 text-sm">
                 <div>
                   <p className="flex items-center gap-2 font-medium text-[#111827]">
-                    <Camera className="h-4 w-4 text-pink-500" />
+                    <Camera className="h-4 w-4 text-pink-500" aria-hidden="true" />
                     {channel.name}
                   </p>
                   <p className="text-[#667085]">{channel.type === "instagram" ? "Instagram" : channel.type}</p>
@@ -113,15 +116,11 @@ export default async function ProfilePage() {
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function ProfileFact({ label, value }: { label: string; value: string }) {
   return (
-    <label className="block">
-      <span className="text-sm text-[#667085]">{label}</span>
-      <input
-        value={value}
-        readOnly
-        className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-[#f9fafb] px-3 text-sm text-[#111827]"
-      />
-    </label>
+    <div className="rounded-md border border-[#d7dbe0] bg-[#f9fafb] px-3 py-2.5">
+      <p className="text-xs font-medium text-[#667085]">{label}</p>
+      <p className="mt-1 break-words text-sm font-medium text-[#111827]">{value}</p>
+    </div>
   );
 }

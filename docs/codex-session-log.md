@@ -9501,3 +9501,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Profile page read-only affordance polish
+
+- 目標：接續 Profile / Settings IA audit，移除個人檔案頁「看起來可以編輯但實際不能編輯」的 readonly input 體感。
+- 產品修補：
+  - `src/app/profile/page.tsx` 的基本資料從 readonly input 改為唯讀資訊列，避免使用者誤以為欄位可直接編輯。
+  - 「新增平台帳號」CTA 補齊 keyboard-visible focus ring。
+  - Profile 頁裝飾 icon 補 `aria-hidden`，降低輔助科技噪音。
+- 測試：
+  - `tests/profile-menu-ia.test.ts` 補 guard，避免 Profile 頁再把唯讀帳號資訊呈現成 input。
+  - Profile menu mobile authenticated smoke 通過。
+- 安全：
+  - 未改 auth、workspace、channel、OAuth 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

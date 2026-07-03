@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const profileMenuSource = readFileSync("src/components/InboxPilotProfileMenu.tsx", "utf8");
+const profilePageSource = readFileSync("src/app/profile/page.tsx", "utf8");
 const accountChannelListSource = readFileSync("src/lib/account-channel-list.ts", "utf8");
 const inboxSource = readFileSync("src/components/InboxClient.tsx", "utf8");
 
@@ -28,6 +29,13 @@ describe("profile menu and settings IA copy", () => {
     expect(profileMenuSource).toContain("登出失敗，請確認網路連線後再試一次。");
     expect(profileMenuSource).toContain("disabled={loggingOut}");
     expect(profileMenuSource).toContain('aria-live="polite"');
+  });
+
+  it("keeps the profile page from presenting read-only account facts as editable inputs", () => {
+    expect(profilePageSource).toContain("function ProfileFact");
+    expect(profilePageSource).not.toContain("readOnly");
+    expect(profilePageSource).not.toContain("<input");
+    expect(profilePageSource).toContain("focus-visible:ring-[#006fe6]");
   });
 
   it("uses settings language for account metadata recovery and simple-release feature gates", () => {
