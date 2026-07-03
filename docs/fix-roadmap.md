@@ -1,3 +1,18 @@
+# Latest - 2026-07-03 Dashboard / Inbox onboarding CTA polish
+
+Current status:
+
+- `[x]` Dashboard 在已連接 Instagram 但尚無對話時，最近訊息空狀態已改成先導向 `收件匣`，不再把 `/mock-tester` 當成主要 first-run CTA。
+- `[x]` Full release 仍保留測試工具，但已降級為次要文字 CTA，避免新工作區把內部驗證工具誤認成產品主流程。
+- `[x]` Dashboard 右上主 CTA 現在會依 onboarding 階段切換：未連線時 `連接 IG`、零訊息或 simple release 時 `查看收件匣`、有資料後才回到 `新增廣播`。
+- `[x]` Inbox 頁首移除沒有動作的假 `設定` 圖示，避免新使用者看到像可點擊但其實沒作用的控制項。
+- `[x]` Focused source tests、`npm run lint`、`npm run build -- --webpack`、`npm test`、`tests/e2e/empty-workspace-activation.spec.ts` 都已在本機通過。
+
+Remaining:
+
+- `[ ]` 繼續檢查新使用者啟用路徑後段的 `Contacts / Automations`，收掉剩餘空狀態 dead end、假入口與 mobile CTA 擠壓。
+- `[ ]` 先維持 `/mock-tester` 為 internal/reviewer 輔助工具定位，不要再讓它回到公開 onboarding 主線。
+
 # Latest - 2026-07-03 Financial surfaces CTA polish
 
 Current status:

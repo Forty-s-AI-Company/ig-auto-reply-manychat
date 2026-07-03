@@ -1,3 +1,19 @@
+# 2026-07-03 - Dashboard / Inbox onboarding CTA polish
+
+Status: improved for the first authenticated activation path; launch still depends on later-stage empty-state and mobile QA.
+
+What changed:
+
+- Dashboard recent-message empty state now treats `收件匣` as the primary first-run destination once an Instagram account is connected, instead of leading a new workspace straight into the internal mock tester flow.
+- Full release keeps `/mock-tester` available as a secondary verification aid, so reviewer/internal QA workflows still exist without confusing ordinary onboarding.
+- The top-right Dashboard primary CTA now follows onboarding stage: `連接 IG` before connection, `查看收件匣` when the workspace has no messages yet, and `新增廣播` only after the workspace is actually active.
+- Inbox no longer renders a decorative-but-useless settings icon in the header.
+
+Readiness implication:
+
+- The authenticated first-run path is less likely to feel like an unfinished internal toolchain before the user has received a first message.
+- Remaining launch risk is now concentrated further down the activation path: Contacts / Automations empty-state continuity, mobile CTA density, and any residual disabled-UX ambiguity.
+
 # 2026-07-03 - Financial surfaces CTA path polish
 
 Status: improved for Billing / Referrals / Wallet handoff clarity; public paid launch remains Hold.

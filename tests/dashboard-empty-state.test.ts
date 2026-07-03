@@ -5,11 +5,12 @@ import { describe, expect, it } from "vitest";
 describe("dashboard recent message empty state", () => {
   const source = readFileSync(join(process.cwd(), "src/app/dashboard/page.tsx"), "utf8");
 
-  it("uses release-aware CTAs instead of sending simple-release users to the mock tester", () => {
+  it("uses release-aware CTAs without making mock-tester the primary onboarding path", () => {
     expect(source).toContain("recentMessagesEmptyState = simpleRelease");
     expect(source).toContain('href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect"');
-    expect(source).toContain('href: connectedInstagramChannels > 0 ? "/mock-tester" : "/channels/connect"');
-    expect(source).toContain('label: connectedInstagramChannels > 0 ? "送一則測試訊息" : "連接 Instagram"');
+    expect(source).toContain('label: connectedInstagramChannels > 0 ? "查看收件匣" : "連接 Instagram"');
+    expect(source).toContain('data-testid="dashboard-recent-messages-empty-secondary-cta"');
+    expect(source).toContain("需要快速驗證時，改用測試工具");
     expect(source).toContain('data-testid="dashboard-recent-messages-empty"');
     expect(source).not.toContain("還沒有訊息。可以先用測試工具送一則測試訊息。");
   });
@@ -28,5 +29,16 @@ describe("dashboard recent message empty state", () => {
     expect(source).toContain("管理 IG 連線");
     expect(source).toContain("查看目前帳號的收件匣");
     expect(source).not.toContain("免費方案聯絡人用量");
+  });
+
+  it("keeps the top primary CTA aligned with onboarding stage instead of defaulting straight to broadcasts", () => {
+    expect(source).toContain("const primaryDashboardAction =");
+    expect(source).toContain('href: "/channels/connect"');
+    expect(source).toContain('label: "連接 IG"');
+    expect(source).toContain('href: "/inbox"');
+    expect(source).toContain('label: "查看收件匣"');
+    expect(source).toContain('href: "/broadcasts"');
+    expect(source).toContain('label: "新增廣播"');
+    expect(source).toContain("PrimaryDashboardActionIcon");
   });
 });

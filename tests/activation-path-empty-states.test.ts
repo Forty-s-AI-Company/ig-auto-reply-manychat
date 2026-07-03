@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const dashboardSource = readFileSync("src/app/dashboard/page.tsx", "utf8");
+const inboxPageSource = readFileSync("src/app/inbox/page.tsx", "utf8");
 const inboxSource = readFileSync("src/components/InboxClient.tsx", "utf8");
 const contactsSource = readFileSync("src/components/ContactsListClient.tsx", "utf8");
 const automationsSource = readFileSync("src/components/AutomationBuilderClient.tsx", "utf8");
@@ -16,6 +17,7 @@ describe("new-user activation empty states", () => {
   });
 
   it("turns a totally empty Inbox into an onboarding path instead of a filter dead end", () => {
+    expect(inboxPageSource).not.toContain("headerRight={<Settings");
     expect(inboxSource).toContain('data-testid={conversations.length === 0 ? "inbox-empty-onboarding" : "inbox-filter-empty"}');
     expect(inboxSource).toContain("還沒有任何對話");
     expect(inboxSource).toContain("先連接 Instagram 帳號");

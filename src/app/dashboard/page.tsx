@@ -115,8 +115,8 @@ export default async function DashboardPage({
     },
     {
       done: messages > 0,
-      title: simpleRelease ? "查看收件匣與最近訊息" : "送一則測試訊息並查看收件匣",
-      href: connectedInstagramChannels > 0 ? (simpleRelease ? "/inbox" : "/mock-tester") : "/channels/connect",
+      title: connectedInstagramChannels > 0 ? "查看收件匣並確認第一則訊息" : "連接 Instagram 並開始收訊",
+      href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect",
     },
   ];
   const recentMessagesEmptyState = simpleRelease
@@ -132,10 +132,10 @@ export default async function DashboardPage({
         title: "目前還沒有最近訊息",
         body:
           connectedInstagramChannels > 0
-            ? "可以先用測試工具送一則測試訊息，再回到收件匣確認對話流程。"
+            ? "先到收件匣確認是否已有新對話；如果目前仍沒有資料，再用測試工具送一則測試訊息做流程驗證。"
             : "先連接 Instagram 帳號，再用測試工具或真實互動產生第一則訊息。",
-        href: connectedInstagramChannels > 0 ? "/mock-tester" : "/channels/connect",
-        label: connectedInstagramChannels > 0 ? "送一則測試訊息" : "連接 Instagram",
+        href: connectedInstagramChannels > 0 ? "/inbox" : "/channels/connect",
+        label: connectedInstagramChannels > 0 ? "查看收件匣" : "連接 Instagram",
       };
   const healthItems = [
     { label: "IG 連線", value: `${connectedInstagramChannels} 個帳號`, ok: connectedInstagramChannels > 0 },
@@ -148,6 +148,25 @@ export default async function DashboardPage({
       ok: !health.checks.redis.configured || health.checks.redis.ok,
     },
   ];
+  const primaryDashboardAction =
+    connectedInstagramChannels === 0
+      ? {
+          href: "/channels/connect",
+          label: "連接 IG",
+          icon: PlugZap,
+        }
+      : messages === 0 || simpleRelease
+        ? {
+            href: "/inbox",
+            label: "查看收件匣",
+            icon: Inbox,
+          }
+        : {
+            href: "/broadcasts",
+            label: "新增廣播",
+            icon: Megaphone,
+          };
+  const PrimaryDashboardActionIcon = primaryDashboardAction.icon;
 
   return (
     <AdminShell title="首頁">
@@ -175,17 +194,10 @@ export default async function DashboardPage({
                   <Inbox className="h-4 w-4" />
                   查看收件匣
                 </Link>
-                {simpleRelease ? (
-                  <Link href="/channels/connect" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
-                    <PlugZap className="h-4 w-4" />
-                    連接 IG
-                  </Link>
-                ) : (
-                  <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
-                    <Megaphone className="h-4 w-4" />
-                    新增廣播
-                  </Link>
-                )}
+                <Link href={primaryDashboardAction.href} className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
+                  <PrimaryDashboardActionIcon className="h-4 w-4" />
+                  {primaryDashboardAction.label}
+                </Link>
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -356,6 +368,15 @@ export default async function DashboardPage({
                     {recentMessagesEmptyState.label}
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
+                  {!simpleRelease && connectedInstagramChannels > 0 ? (
+                    <Link
+                      href="/mock-tester"
+                      data-testid="dashboard-recent-messages-empty-secondary-cta"
+                      className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)]"
+                    >
+                      需要快速驗證時，改用測試工具
+                    </Link>
+                  ) : null}
                 </div>
               ) : null}
             </div>

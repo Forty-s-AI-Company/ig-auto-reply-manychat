@@ -1,3 +1,21 @@
+## 2026-07-03 13:35 +08:00 - Dashboard / Inbox onboarding CTA polish
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: `src/app/dashboard/page.tsx`, `src/app/inbox/page.tsx`, `tests/dashboard-empty-state.test.ts`, `tests/activation-path-empty-states.test.ts`.
+- Dashboard recent-message empty state now sends a connected-but-empty workspace to `收件匣` first, instead of making `/mock-tester` the main onboarding route.
+- Full release keeps `/mock-tester` only as a secondary text CTA for fast internal verification.
+- Dashboard top-right primary CTA now follows onboarding stage: `連接 IG` -> `查看收件匣` -> `新增廣播`.
+- Inbox header no longer renders a visible `設定` icon with no attached action.
+- Added / updated source guards in `tests/dashboard-empty-state.test.ts` and `tests/activation-path-empty-states.test.ts`.
+- Local validation passed:
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests/dashboard-empty-state.test.ts tests/activation-path-empty-states.test.ts`
+  - `npx eslint src/app/dashboard/page.tsx src/app/inbox/page.tsx tests/dashboard-empty-state.test.ts tests/activation-path-empty-states.test.ts`
+  - `npm run e2e:empty:ensure && npx playwright test tests/e2e/empty-workspace-activation.spec.ts --workers=1`
+  - `npm run lint`
+  - `npm run build -- --webpack`
+  - `npm test`
+  - `npm test` 仍會碰到既知 Windows Vitest multi-file batch crash `3221225477`，但 `scripts/run-tests.mjs` 已自動逐檔診斷，所有檔案皆 individually passed。
+
 ## 2026-07-03 13:10 +08:00 - Financial surfaces CTA and localization polish
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.

@@ -1,4 +1,3 @@
-import { Settings } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { InboxHeaderSearch } from "@/components/InboxHeaderSearch";
 import { InboxClient } from "@/components/InboxClient";
@@ -23,7 +22,7 @@ export default async function InboxPage() {
   const { tags, teamMembers, contactFields } = referenceData;
 
   return (
-    <AdminShell title="收件匣" headerCenter={<InboxHeaderSearch />} headerRight={<Settings className="h-5 w-5 text-[#667085]" />}>
+    <AdminShell title="收件匣" headerCenter={<InboxHeaderSearch />}>
       <InboxClient
         initialConversations={JSON.parse(JSON.stringify(conversations.map((conversation) => ({
           ...conversation,
