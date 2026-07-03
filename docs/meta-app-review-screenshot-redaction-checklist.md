@@ -25,6 +25,13 @@ The screenshot package should let Meta reviewers quickly verify:
 5. Privacy Policy, Data Deletion, and Terms are public and accessible.
 6. Screenshots contain no secret or real customer data.
 
+Current evidence readiness:
+
+- `S01`, `S02`, `S04`, `S11`, `S12`, and `S13` are already realistic targets once a reviewer-safe user is available.
+- `S06` depends on a reviewer-safe Instagram asset completing OAuth.
+- `S07`, `S08`, `S09`, and `S10` depend on synthetic demo data prepared outside the repo.
+- `S09` and `S10` should be treated as configuration proof, not live webhook-delivery proof, until Meta webhook setup is complete.
+
 ## Capture Rules
 
 - Use only reviewer-safe test accounts and demo data.

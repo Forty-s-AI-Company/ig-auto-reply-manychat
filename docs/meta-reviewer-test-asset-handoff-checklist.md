@@ -13,6 +13,9 @@ Related documents:
 - `docs/meta-app-review-submission-package.md`
 - `docs/meta-reviewer-recording-shot-list.md`
 - `docs/meta-app-review-screenshot-redaction-checklist.md`
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
+- `docs/meta-reviewer-staging-rehearsal-gap-audit.md`
+- `docs/meta-reviewer-staging-tenant-sop.md`
 
 ## Handoff Principles
 
@@ -26,6 +29,9 @@ Related documents:
 ## Asset Inventory
 
 Fill this table with safe labels only. Do not paste secrets.
+
+Use `docs/meta-reviewer-demo-data-prep-runbook.md` before filling this checklist, so the operator knows which assets can be rehearsed from existing local fixtures and which must still be prepared manually.
+Use `docs/meta-reviewer-staging-tenant-sop.md` when the reviewer-safe lane moves to staging, so login prep, tenant validation, and cleanup follow the same manual standard.
 
 | Asset | Safe label to record | Required? | Owner | Status | Notes |
 | --- | --- | --- | --- | --- | --- |

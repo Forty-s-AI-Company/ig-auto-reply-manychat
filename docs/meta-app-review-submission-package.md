@@ -1,6 +1,45 @@
 # Meta App Review Submission Package
 
-Last updated: 2026-06-26.
+Last updated: 2026-07-03.
+
+## 2026-07-03 Preflight Snapshot
+
+Current Meta Developers observations for the correct app:
+
+- App name: `InboxPilot`
+- App ID: `924285843989683`
+- Dashboard status: `已發佈`
+- Required actions: none currently shown on the dashboard
+- Instagram use case permissions currently observed as `可供測試`
+- Webhooks callback / verify token: configured in Meta Developers against the production webhook callback URL
+
+Preflight conclusion:
+
+- The package can be prepared.
+- The app is not ready for final App Review submission yet.
+- The main blockers are reviewer-safe proof assets and exact permission-evidence alignment.
+
+## Reviewer-Safe Evidence Matrix
+
+Use this matrix to separate what the product can already show from what still depends on safe demo assets or manual Meta setup.
+
+| Evidence chain item | Current repo / product support | Current bucket | Why it is in this bucket | What is still needed |
+| --- | --- | --- | --- | --- |
+| Instagram OAuth connect entry | `src/app/channels/connect/social/page.tsx` already renders a clear Instagram connect CTA and readable failure alert. | 已可直接錄 | Reviewer can understand where the connect flow starts without any dashboard secret or internal tooling. | Reviewer-safe login and workspace only. |
+| Instagram OAuth success + connected channel | Connected channel state is rendered in `src/app/channels/connect/social/page.tsx` and `src/app/channels/page.tsx`. | 已可直接錄 | A real staging connect now completes with a reviewer-safe Instagram session, and the connected channel is visible in Channels plus the sidebar account dropdown. | Final redaction pass and reviewer credential handoff only. |
+| Inbox message read / reply | Inbox page and reply surfaces are real product flows. | 已可直接錄 | The reviewer-safe staging lane now shows a visible synthetic conversation in Inbox under the connected Instagram workspace. | Final redaction pass and secure credential handoff only. |
+| Contacts workspace scope | Contacts page is real and channel-scoped in code. | 已可直接錄 | The reviewer-safe staging lane now shows a visible synthetic contact under the same reviewer-safe connected Instagram workspace. | Final redaction pass and secure credential handoff only. |
+| Automations keyword / comment configuration | Automations builder exists and can show trigger/response setup. | 已可直接錄 | A reviewer-safe staging draft named `Meta Review Keyword Reply` has been created and saved through the real staging UI. | Final redaction pass only. |
+| Automations live comment / keyword proof | Product has automation surfaces, but live proof depends on Meta event delivery. | 目前無法安全證明 | Webhook verification is configured, but reviewer-safe remote assets and a safe end-to-end rehearsal are still missing. | Reviewer-safe connected Instagram asset plus safe end-to-end rehearsal. |
+| Privacy Policy | `src/app/privacy-policy/page.tsx` is public. | 已可直接錄 | Public policy page is already reviewer-safe. | Final redaction pass only. |
+| Terms of Service | `src/app/terms-of-service/page.tsx` is public. | 已可直接錄 | Public terms page is already reviewer-safe. | Final redaction pass only. |
+| Data Deletion | `src/app/data-deletion/page.tsx` is public. | 已可直接錄 | Public deletion instructions are already reviewer-safe. | Final redaction pass only. |
+
+Current interpretation:
+
+- The product already supports the reviewer narrative for connection entry, connected-channel UX, Inbox/Contacts/Automations surfaces, and public policy URLs.
+- The missing pieces are mostly operational reviewer prep: secure credential handoff, final redaction, permission/access confirmation, and any live webhook-backed evidence still outside the safe rehearsal lane.
+- Do not describe live webhook-backed message/comment proof as already available until the webhook blocker is closed.
 
 ## Purpose
 
@@ -50,6 +89,12 @@ Out of first submission scope:
 
 Use the production custom domain unless a reviewer-specific staging flow is explicitly approved.
 
+Important callback-path note:
+
+- The current product-side Instagram OAuth provider still uses the legacy callback path `/api/instagram/oauth/callback`.
+- Do not tell Meta the primary callback is `/api/oauth/meta-instagram/callback` unless product code is intentionally migrated and re-verified first.
+- The generic `/api/oauth/meta-instagram/callback` path exists in the codebase and docs ecosystem, but it is not the current reviewer-facing Instagram Login callback used by `src/lib/oauth/providers/meta-instagram.ts`.
+
 ```text
 App URL:
 https://inboxpilot.carry-digital-nomad.in.net
@@ -69,11 +114,11 @@ https://inboxpilot.carry-digital-nomad.in.net/api/meta/data-deletion
 Meta Webhook Callback:
 https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta
 
-Instagram OAuth Callback:
-https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback
-
-Legacy-compatible Instagram Callback:
+Current Instagram OAuth Callback:
 https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback
+
+Generic provider callback path (do not submit as primary unless flow is migrated and re-verified):
+https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback
 ```
 
 Before submission, confirm the exact callback URLs used in the Meta Dashboard match the app's production env values.
@@ -84,10 +129,10 @@ Fill this table with the exact permission names shown in Meta Dashboard before u
 
 | Permission | InboxPilot user action | Product screen evidence | API / route evidence | Status |
 | --- | --- | --- | --- | --- |
-| Instagram login / basic account identity | User clicks Connect Instagram and authorizes the account. | Channels connect screen and connected channel result. | `/api/oauth/meta-instagram/authorize`, `/api/oauth/meta-instagram/callback` | Prepare |
-| Instagram messaging permission | User receives/sends IG messages from Inbox. | Inbox conversation view and reply action. | `/api/webhooks/meta`, Meta send message path | Prepare |
-| Instagram comments permission | User syncs/comments automation for owned media. | Automation/comment keyword setup and comment sync result. | `/api/instagram/comments/sync`, comment webhook parsing | Prepare |
-| Webhook subscription / event delivery | Meta delivers message/comment events to InboxPilot. | Webhook verification and event processing evidence. | `/api/webhooks/meta` | Prepare |
+| instagram_business_basic | User clicks Connect Instagram and authorizes the account. | Channels connect screen and connected channel result. | `/api/oauth/meta-instagram/authorize`, `/api/instagram/oauth/callback` | Testable only |
+| instagram_business_manage_messages | User receives/sends IG messages from Inbox. | Inbox conversation view and reply action. | `/api/webhooks/meta`, message reply flow | Testable only |
+| instagram_business_manage_comments | User syncs/comments automation for owned media. | Automation/comment keyword setup and comment sync result. | `/api/instagram/comments/sync`, comment webhook parsing | Testable only |
+| Webhook subscription / event delivery | Meta delivers message/comment events to InboxPilot. | Webhook verification and event processing evidence. | `/api/webhooks/meta` | Verification step is configured; still needs reviewer-safe remote evidence |
 
 Do not request permissions that are not shown in the reviewer walkthrough.
 
@@ -139,11 +184,23 @@ Required screenshots:
 
 Every screenshot needs a redaction pass before upload.
 
+Evidence readiness note:
+
+- `Login`, `Privacy Policy`, `Data Deletion`, and `Terms` are already directly recordable.
+- `Channels connect` is directly recordable after reviewer-safe login.
+- `Connected Instagram channel` is now directly recordable from staging after the reviewer-safe Instagram OAuth connect succeeds.
+- `Inbox`, `Contacts`, and the saved `Automation` draft are now directly recordable from the reviewer-safe staging tenant.
+- `Automation` screenshots alone still do not prove live webhook delivery.
+- Local reviewer rehearsal still matters for dry-runs, but the reviewer-safe staging tenant now covers the connected-channel, Inbox, Contacts, and automation-draft evidence lane.
+
 ### Reviewer Test Assets
 
 Detailed handoff plan:
 
 - `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
+- `docs/meta-reviewer-staging-rehearsal-gap-audit.md`
+- `docs/meta-reviewer-staging-tenant-sop.md`
 
 Prepare these outside this file; never paste credentials here.
 
@@ -152,8 +209,15 @@ Prepare these outside this file; never paste credentials here.
 - Test workspace name.
 - Test Instagram Business / Creator account.
 - Connected Facebook Page, if required by the selected Meta flow.
+- Synthetic test Inbox conversation.
+- Synthetic test Contact scoped to the same workspace/channel.
+- Simple reviewer-safe keyword/comment automation draft.
 - App role access instructions if the app is still not public.
 - Exact steps to reproduce the reviewer flow.
+
+Preparation note:
+
+- Use `docs/meta-reviewer-demo-data-prep-runbook.md` to decide which local seed / fixture / smoke assets are reusable and which reviewer-safe assets still need manual preparation.
 
 ### Dashboard Fields To Check
 
@@ -163,11 +227,18 @@ Confirm in Meta Developer Dashboard:
 - Privacy Policy URL.
 - Terms URL if requested.
 - User Data Deletion callback or instruction URL.
-- Valid OAuth redirect URIs.
+- Valid OAuth redirect URIs. For the current product flow, use `/api/instagram/oauth/callback` as the primary Instagram callback unless the product is intentionally migrated first.
 - Webhook callback URL and verify token.
 - Requested permissions match the permission matrix.
 - Business Verification status.
 - Advanced Access status for every required permission.
+
+Current known gap from the 2026-07-03 preflight read:
+
+- Webhook callback URL / verify token are configured in the Instagram API setup screen.
+- Permissions visible in the use case are still `可供測試`, not confirmed Advanced Access.
+- The app dashboard shows a technical provider / access verification prompt, which should be reviewed before submission.
+- Reviewer-safe proof assets for Inbox, Contacts, and Automations still need to be assembled outside the repository.
 
 ## Redaction Gate
 
@@ -228,6 +299,8 @@ Hold if any of these are true:
 - Any artifact leaks secrets or raw OAuth values.
 - Requested permission lacks a visible product reason.
 - Data deletion URL/callback is missing or incorrect.
+- Reviewer-safe remote evidence for live webhook-backed message/comment flows is still not ready.
+- The callback path written in Meta Dashboard does not match the real product flow.
 
 ## Final Operator Steps
 

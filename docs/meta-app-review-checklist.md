@@ -1,5 +1,20 @@
 # Meta App Review Checklist
 
+## 2026-07-03 - Meta App Review preflight gap audit
+
+- Verified the correct Meta app is `InboxPilot` (`App ID: 924285843989683`) in Meta Developers.
+- Dashboard status is published and currently shows no required actions.
+- Basic Settings already contain the production domain, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL.
+- Instagram Business use case still shows the required messaging/comment permissions as `可供測試`, not confirmed Advanced Access / approved review state.
+- Instagram API setup Webhooks step is now configured against the production callback URL and verifies successfully in Meta Developers.
+- The generated Instagram login setup in Meta currently points to the legacy production callback path `/api/instagram/oauth/callback`.
+- Repo submission docs previously treated `/api/oauth/meta-instagram/callback` as the main callback; this must stay aligned with the real product flow before submission.
+
+App Review implication:
+
+- Documentation-only preparation can continue.
+- Final submission remains Hold until reviewer-safe assets, final permission evidence, and callback-path alignment are confirmed.
+
 ## 2026-07-02 - Channels Instagram action disabled-reason clarity
 
 - Channels Instagram action controls now show per-action disabled reasons for media, comments, and token refresh prerequisites.
@@ -44,6 +59,14 @@ Current decision:
 
 - App Review submission preparation is improved.
 - Actual submission remains Hold until reviewer test assets, recording/screenshots, permission matrix, redaction review, Business Verification / Advanced Access status, and product/security sign-off are complete.
+
+Reviewer-safe evidence status:
+
+- Can already be recorded from the current product: connect entry CTA, public Privacy Policy, public Terms, public Data Deletion.
+- Can now also be recorded from the current reviewer-safe staging lane: successful Instagram OAuth completion, connected channel proof, reviewer-safe Inbox proof, reviewer-safe Contacts workspace-scope proof, and the saved Automations draft proof.
+- Still needs reviewer-safe manual assets: secure staging credential handoff, final screenshot/video redaction pass, and any reviewer-safe Facebook/Page linkage that may be required by the final Meta flow.
+- Still not safe to claim as live proof: webhook-backed message/comment event delivery before reviewer-safe remote assets and end-to-end rehearsal are ready.
+- Reviewer-safe asset rehearsal and synthetic demo-data planning now has a dedicated runbook: `docs/meta-reviewer-demo-data-prep-runbook.md`.
 
 ## 2026-06-26 - PR #2 production deployment delta
 

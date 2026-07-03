@@ -1,6 +1,12 @@
 # Meta Reviewer Recording Shot List
 
-Last updated: 2026-06-26.
+Last updated: 2026-07-03.
+
+## 2026-07-03 Preflight Notes
+
+- Keep the reviewer walkthrough aligned with the current product path: Instagram OAuth currently returns through `/api/instagram/oauth/callback`.
+- Do not narrate or imply that Meta webhook delivery is fully live unless the webhook callback URL and verify token have been configured in Meta Dashboard.
+- Message and comment permission proof should stay in Hold until reviewer-safe message/comment evidence is ready.
 
 ## Purpose
 
@@ -13,6 +19,7 @@ Related documents:
 - `docs/meta-app-review-submission-package.md`
 - `docs/meta-app-review-screenshot-redaction-checklist.md`
 - `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
 
 ## Recording Goal
 
@@ -37,6 +44,12 @@ Prepare these items without placing credentials in this file:
 - Reviewer-safe Facebook Page if the selected Meta flow requires it.
 - At least one safe test conversation, contact, or manually prepared demo data.
 - A simple automation draft using a keyword or comment trigger.
+
+Evidence readiness summary:
+
+- Directly recordable now: production entry, login, Channels connect entry, successful OAuth return, connected Instagram channel, reviewer-safe Inbox, reviewer-safe Contacts, reviewer-safe Automations draft, Privacy Policy, Data Deletion, Terms.
+- Recordable only after reviewer-safe assets are prepared: secure staging credential handoff, final redaction-safe reviewer session, and any Facebook/Page linkage the final Meta flow still needs.
+- Do not record or narrate live webhook-backed message/comment proof until Meta webhook callback / verify token are configured and rehearsed safely.
 
 Browser setup:
 
@@ -73,7 +86,7 @@ Pause and restart if any of these appear:
 | 4 | Channels | Show where Instagram connection starts. | "The Instagram connection starts from Channels." | Connect Instagram entry point. | Do not show non-submission features. |
 | 5 | Connect Instagram | Show user action for permission request. | "The user clicks Connect Instagram to authorize a test Instagram asset." | OAuth start action. | Stop before exposing raw callback URL. |
 | 6 | Meta / Instagram consent | Show consent intent if safe. | "The consent screen asks for the permissions needed for messaging and comments." | Permission consent screen. | Mask account IDs and browser URL if needed. |
-| 7 | Return to InboxPilot | Show successful connection. | "After authorization, InboxPilot returns to the workspace and shows the connected channel." | Connected Instagram channel. | Mask IG username if not reviewer-safe. |
+| 7 | Return to InboxPilot | Show successful connection. | "After authorization, InboxPilot returns to the workspace and shows the connected channel." | Connected Instagram channel. | Mask IG username if not reviewer-safe. Current callback path is `/api/instagram/oauth/callback`; hide the callback URL during redirect. |
 | 8 | Inbox | Show message management. | "The user can view Instagram conversations in the workspace inbox." | Conversation list/detail. | Use test data only. |
 | 9 | Contacts | Show tenant/workspace-scoped contacts. | "Contacts are shown inside the same workspace/channel context." | Contact list/detail. | Use test data only. |
 | 10 | Automations | Show product use for requested permission. | "The user can configure a simple Instagram keyword or comment automation." | Automation trigger and response setup. | Do not show unfinished/internal features. |
@@ -324,5 +337,6 @@ Hold if:
 - The reviewer cannot reproduce the flow.
 - The recording demonstrates a feature outside the requested permission scope.
 - The recording depends on staging, mock provider, DB dashboard, or manual backend edits.
+- The walkthrough claims webhook, live message proof, or comment proof that the current test assets cannot actually reproduce.
 
 This document intentionally stops before Meta Dashboard upload or App Review submission.

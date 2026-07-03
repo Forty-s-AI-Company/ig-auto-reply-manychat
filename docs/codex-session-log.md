@@ -10062,3 +10062,17 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Meta App Review evidence package alignment
+
+- 目標：收斂 Meta App Review 送審前文件，讓 reviewer-safe evidence、目前 OAuth callback path、webhook configured 狀態與人工阻塞點一致。
+- 文件修補：
+  - Meta App Review checklist / submission package / operator workbook 補上正確 App ID、目前 callback path、permission testable 狀態與 reviewer-safe evidence matrix。
+  - Recording shot list / screenshot redaction / handoff checklist 補上 staging rehearsal SOP 與 demo data runbook 連結。
+  - 明確標示 live webhook-backed message/comment proof 仍不可過度宣稱，直到 reviewer-safe remote evidence 完成。
+- 安全：
+  - 純文件修補，未按 Submit、未改 Meta Dashboard、未改 OAuth/Webhook code、未碰 DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

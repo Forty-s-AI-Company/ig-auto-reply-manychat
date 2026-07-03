@@ -1,6 +1,12 @@
 # Meta App Review Day-of Recording Run Card
 
-Last updated: 2026-06-26.
+Last updated: 2026-07-03.
+
+## 2026-07-03 Preflight Notes
+
+- The current Instagram reviewer-facing OAuth callback path is `/api/instagram/oauth/callback`.
+- Do not fill or narrate `/api/oauth/meta-instagram/callback` as the main callback unless the product flow is intentionally migrated and re-verified first.
+- Meta webhook callback URL / verify token are configured; keep submission in Hold only for the remaining reviewer-safe evidence and permission-access blockers.
 
 ## Purpose
 
@@ -13,6 +19,7 @@ Use it alongside:
 - `docs/meta-reviewer-recording-shot-list.md`
 - `docs/meta-app-review-screenshot-redaction-checklist.md`
 - `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
 
 This card intentionally stops before Meta Dashboard login, upload, or submission.
 
@@ -153,8 +160,8 @@ Use this checklist while filling Meta Dashboard manually. Do not paste secret va
 
 ### OAuth / Callback Fields
 
-- `[ ]` OAuth callback includes `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`.
-- `[ ]` Legacy-compatible callback is included only if the selected flow still requires it: `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[ ]` Current Instagram OAuth callback in Meta Dashboard is `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[ ]` Generic provider callback `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback` is only referenced if the product flow is intentionally migrated and re-verified.
 - `[ ]` No localhost, preview, staging, or temporary callback is submitted for public review unless explicitly required and explained.
 - `[ ]` Recording/screenshots do not show callback query parameters.
 

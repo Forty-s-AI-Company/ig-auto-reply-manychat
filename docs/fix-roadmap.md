@@ -4147,6 +4147,12 @@ Remaining:
 - 已完成：新增 `npm run test:e2e:reviewer`，把 Dashboard -> Channels -> Inbox -> Contacts -> Automations 的 reviewer rehearsal 串成可重跑 smoke。
 - 下一步：若沒有人工阻塞，將這組 smoke 對照未來真正 reviewer-safe staging tenant，再補一份實機驗證 SOP。
 
+## 2026-07-03 - Meta App Review evidence package alignment
+
+- 已完成：Meta App Review 文件重新對齊目前正確 app、callback path、webhook configured 狀態、reviewer-safe staging evidence 與 Hold/Go 判斷。
+- 已完成：文件明確標示可錄製 evidence 與仍需人工完成的 reviewer-safe remote / live webhook proof。
+- 下一步：若要進入真實送審，先完成安全錄製、截圖 redaction、reviewer credential handoff，並由人工確認 Meta Dashboard 權限狀態；送審前仍不可自動 Submit。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
