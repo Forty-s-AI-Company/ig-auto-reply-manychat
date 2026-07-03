@@ -4419,6 +4419,12 @@ Remaining:
 - 已完成：`npm run test:e2e:reviewer` 通過，reviewer-safe local demo lane 可重複走主要 reviewer evidence path。
 - 下一步：若仍維持本機模式，建議切到 admin / settings 低頻頁或 API error surface source-level scan；若要進 reviewer staging lane，需使用 staging-safe tenant 與 reviewer-safe Instagram asset，但仍不可碰 production DB。
 
+## 2026-07-03 - Instagram API error surface source-level audit
+
+- 已完成：掃描 Instagram media / comments / token refresh 相關 route 與 helper，確認使用者可見錯誤已走 safe mapper，不直接回傳 raw provider error、`fbtrace_id` 或 token 類細節。
+- 已完成：focused tests 覆蓋 `normalizeInstagramMediaError`、`getSafeInstagramCommentSyncError`、`getSafeChannelActionMessage` 與 token refresh route safe copy。
+- 下一步：本機模式可切到 admin / settings / low-frequency surfaces 的逐頁 smoke，或回到產品主線掃 profile menu、settings IA 與非核心頁 CTA。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

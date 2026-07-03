@@ -1458,3 +1458,21 @@ Security properties:
 Residual risk:
 
 - These flows still perform hard deletes or irreversible state changes where the backend already did so before this UX pass. If undo is required, design soft-delete / restore / audit-log semantics in a separate schema-aware task.
+
+## 2026-07-03 - Instagram API error surface redaction check
+
+Scope:
+
+- Reviewed browser-facing Instagram media, comments sync, and token refresh error handling.
+- Confirmed existing route-level mappers return user-readable Chinese guidance instead of raw Meta Graph messages.
+- Re-ran focused tests for media, comments, token refresh, and channel action feedback redaction.
+
+Security properties:
+
+- `fbtrace_id`, raw `Unsupported request`, and raw `access token` provider strings are not returned by the tested user-facing error helpers.
+- No token, secret, callback code, production database value, or Meta Dashboard value was printed or modified.
+- No production DB access, migration, `db push`, Production deployment, or Meta App Review submission was performed.
+
+Residual risk:
+
+- This is a source-level and unit-level redaction check, not a staging Meta Graph live run. Final reviewer evidence still needs staging-safe Instagram assets and manual pre-submission verification.

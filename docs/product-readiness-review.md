@@ -2272,3 +2272,9 @@ Readiness implication:
 - Readiness update：公開官網、價格、說明、系統狀態、法務與資料刪除頁已在本機 desktop / mobile 快速驗證可讀、無水平 overflow、無 console warning / error。
 - Result：上線前信任面與 Meta reviewer local rehearsal path 更穩，reviewer-safe demo data 可以在本機證明 Dashboard、Channels、Inbox、Contacts、Automations 的最小證據鏈。
 - Remaining risk：staging / real asset lane 仍需要 staging-safe tenant、reviewer-safe Instagram account/channel 與人工錄影前檢查；本輪沒有送審，也沒有動 production。
+
+## 2026-07-03 - Instagram API error surface source-level audit
+
+- Readiness update：Instagram media、comments sync、token refresh 的使用者可見錯誤面已確認有 safe mapper 與 focused tests，不會把 raw Meta provider 訊息直接丟到產品 UI。
+- Result：Meta / Instagram 相關的失敗體感更接近正式 SaaS，reviewer 或使用者遇到權限 / token / Graph 限制時會看到可讀中文指引。
+- Remaining risk：此輪沒有做 staging live Meta Graph call。真實 reviewer-safe channel、webhook 與 App Review evidence 仍需依 staging asset lane 完成。

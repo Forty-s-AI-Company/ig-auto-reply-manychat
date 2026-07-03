@@ -10778,3 +10778,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Instagram API error surface source-level audit
+
+- 目標：接續本機產品驗證模式，掃描 Instagram / Meta 相關 API 與 provider helper 是否仍可能把 raw provider error、`fbtrace_id`、token 類訊息直接回傳到使用者介面。
+- Audit 結果：
+  - `/api/instagram/media` 已使用 `normalizeInstagramMediaError` 將 unsupported request、permission 與 token 類錯誤轉成 reviewer-safe 中文訊息。
+  - `/api/instagram/comments/sync` 已使用 `getSafeInstagramCommentSyncError`，同步留言觸發失敗不會回傳 raw Meta Graph 訊息。
+  - `/api/instagram/token/refresh` 已使用 `getSafeChannelActionMessage("token", error)`，token refresh 失敗不會顯示 provider 原文。
+  - 既有 focused tests 已覆蓋 media、comments、token、channel action feedback 的 raw error redaction。
+- 驗證：
+  - `npx vitest run tests/instagram-media-errors.test.ts tests/instagram-comment-sync-errors.test.ts tests/instagram-token-refresh-route.test.ts tests/channel-action-feedback.test.ts --reporter=dot` 通過，4 files / 11 tests passed。
+- 安全：
+  - 未改產品 source code
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
