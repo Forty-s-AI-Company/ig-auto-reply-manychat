@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handlePayuniCallback } from "@/lib/billing/payuni-callback";
 import { completeInternalInvoicePaymentOrder } from "@/lib/billing/payment-service";
 import { getDb } from "@/lib/db";
-import { createPayuniCheckout, getPayuniGatewayStatus } from "@/lib/payuni";
+import { createPayuniCheckout, getPayuniGatewayStatus, renderAutoSubmitForm } from "@/lib/payuni";
 import { loadProjectEnv } from "../scripts/load-env.mjs";
 
 loadProjectEnv();
@@ -92,6 +92,19 @@ describe("PayUNI billing callback", () => {
     expect(status.checkoutEnabled).toBe(false);
     expect(status.checkoutDisabledReason).toContain("正式金流尚未開通");
     expect(status.detail).toContain("正式站尚未開通自動扣款");
+  });
+
+  it("renders a localized PayUNI redirect fallback page", () => {
+    const html = renderAutoSubmitForm("https://sandbox-api.payuni.com.tw/api/upp", {
+      MerID: "TEST_MERCHANT",
+      MerTradeNo: "PAYUNI_ORDER_LOCALIZED",
+    });
+
+    expect(html).toContain('<html lang="zh-Hant">');
+    expect(html).toContain("<title>正在前往 PayUNI</title>");
+    expect(html).toContain("前往 PayUNI 付款頁");
+    expect(html).not.toContain("Redirecting to PayUNI");
+    expect(html).not.toContain("Continue to PayUNI");
   });
 
   it("marks invoice paid and activates subscription once", async () => {

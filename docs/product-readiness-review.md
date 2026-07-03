@@ -1,3 +1,17 @@
+# 2026-07-03 - PayUNI redirect fallback localization
+
+Status: improved for payment flow polish; no gateway behavior change.
+
+What changed:
+
+- The PayUNI auto-submit fallback page now uses `zh-Hant` and Traditional Chinese title / submit button copy.
+- Unit coverage prevents the fallback page from drifting back to English wording.
+
+Readiness implication:
+
+- Users who briefly see the redirect fallback get a localized payment handoff instead of an English technical page.
+- PayUNI encryption, hash validation, callback handling, Sandbox mode, and production gate behavior remain unchanged.
+
 # 2026-07-03 - Inbox setup reply launch-scope wording
 
 Status: improved for operator-visible reply suggestions; no behavior change.

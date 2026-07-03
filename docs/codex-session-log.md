@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - PayUNI redirect fallback localization
+
+- 目標：補齊 PayUNI 付款轉址 fallback 頁面的中文化，避免使用者在轉址瞬間看到英文技術頁。
+- 產品修補：
+  - `renderAutoSubmitForm()` 改成 `lang="zh-Hant"`。
+  - 頁面標題改成 `正在前往 PayUNI`。
+  - fallback submit button 改成 `前往 PayUNI 付款頁`。
+- 測試：
+  - `tests/payuni-billing.test.ts` 補 PayUNI redirect fallback localization guard。
+- 安全：
+  - 純 HTML fallback 文案修補，未改 PayUNI 加密、HashInfo、callback、invoice、推薦折抵、Sandbox / production gate 或付款狀態
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Inbox setup reply launch-scope wording
 
 - 目標：讓 Inbox 的設定協助回覆草稿更貼近 Instagram-first launch scope，避免操作員看到 `Meta / Facebook 資產` 後誤以為 Messenger / Facebook 也是目前主線。

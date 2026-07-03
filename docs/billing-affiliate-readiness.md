@@ -1,3 +1,14 @@
+# 2026-07-03 - PayUNI redirect fallback localization
+
+- [x] PayUNI auto-submit fallback HTML now uses `zh-Hant` and Traditional Chinese title/button copy.
+- [x] Regression coverage prevents the redirect fallback from drifting back to English wording.
+- [ ] PayUNI production remains a manual launch gate; this does not switch gateway mode or trigger live charges.
+
+Billing launch implication:
+
+- Users who briefly see the payment redirect fallback now get a localized handoff to PayUNI.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, or PR action was performed.
+
 # 2026-07-03 - Financial surfaces CTA and localization polish
 
 - [x] Billing now links directly to `推薦活動` and `折抵金錢包` from the referral-credit guidance block.

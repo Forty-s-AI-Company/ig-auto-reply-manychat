@@ -191,15 +191,15 @@ export function renderAutoSubmitForm(action: string, fields: Record<string, stri
     .join("\n");
 
   return `<!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="utf-8" />
-    <title>Redirecting to PayUNI</title>
+    <title>正在前往 PayUNI</title>
   </head>
   <body>
     <form id="payuni-form" method="post" action="${safeAction}">
       ${inputs}
-      <button type="submit">Continue to PayUNI</button>
+      <button type="submit">前往 PayUNI 付款頁</button>
     </form>
     <script>document.getElementById("payuni-form").submit();</script>
   </body>

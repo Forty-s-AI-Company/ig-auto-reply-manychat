@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 PayUNI redirect fallback localization
+
+Current status:
+
+- `[x]` PayUNI auto-submit fallback page now uses `zh-Hant` and Traditional Chinese title/button copy.
+- `[x]` Unit coverage guards against English fallback copy returning to the payment redirect surface.
+
+Remaining:
+
+- `[ ]` Keep PayUNI production gateway switching as a manual launch gate.
+- `[ ]` Final browser QA should still verify the Sandbox redirect page with real sandbox credentials.
+
 # Latest - 2026-07-03 Inbox setup reply launch-scope wording
 
 Current status:
