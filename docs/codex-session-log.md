@@ -9646,6 +9646,18 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Inbox E2E seed preflight
+
+- 目標：修正本機 `test:e2e:inbox` 在沒有先 seed E2E admin 時，還沒進 Inbox 就因 login 401 失敗的問題。
+- 發現：
+  - 直接跑 `npm run test:e2e:inbox` 時，desktop / mobile 都在登入階段回 401。
+  - 這是測試前置資料問題，不是 Inbox route 或 UI assertion 失敗。
+- 修補：
+  - `test:e2e:inbox` script 改成先執行 `npm run e2e:admin:ensure` 再跑 Playwright Inbox smoke。
+- 安全：
+  - 只影響本機 / TEST_DATABASE_URL 的 E2E 前置資料流程，未改 Inbox 產品邏輯、登入 API、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。

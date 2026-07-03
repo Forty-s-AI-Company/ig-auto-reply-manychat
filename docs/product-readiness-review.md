@@ -1,3 +1,17 @@
+# 2026-07-03 - Inbox E2E seed preflight
+
+Status: improved for local Inbox QA reliability; no product behavior change.
+
+What changed:
+
+- `npm run test:e2e:inbox` now seeds the local E2E admin before running the authenticated Inbox smoke.
+- The observed Inbox smoke failure was HTTP 401 during login before page assertions, so the fix is test setup, not Inbox UI logic.
+
+Readiness implication:
+
+- Local Inbox smoke is now less likely to fail before reaching the actual product path.
+- This does not change Inbox behavior, auth behavior, production data, production deployment, or Meta / PayUNI gates.
+
 # 2026-07-03 - Authenticated E2E seed preflight
 
 Status: improved for local QA reliability; no product behavior change.

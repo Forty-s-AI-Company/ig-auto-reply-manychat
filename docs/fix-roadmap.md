@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Inbox E2E seed preflight
+
+Current status:
+
+- `[x]` `npm run test:e2e:inbox` now runs `e2e:admin:ensure` before the authenticated Inbox smoke.
+- `[x]` The prior Inbox smoke failure was narrowed to missing local E2E admin seed, not a product route failure.
+
+Remaining:
+
+- `[ ]` Continue checking other authenticated Playwright scripts for missing TEST_DATABASE_URL seed preflight.
+- `[ ]` Keep all E2E seed helpers away from production DB.
+
 # Latest - 2026-07-03 Authenticated E2E seed preflight
 
 Current status:
