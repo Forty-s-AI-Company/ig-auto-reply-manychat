@@ -2284,3 +2284,9 @@ Readiness implication:
 - Readiness update：Profile、AI Settings、Billing、Wallet、Referrals、Affiliate、Channels、Tags、Knowledge Base、Sequences、Segments 與 Admin financial / audit surfaces 已完成本機 desktop / mobile 快速 smoke。
 - Result：低頻但正式營運會碰到的頁面目前都有可讀 heading、沒有水平 overflow，也沒有 console warning / error。
 - Remaining risk：這仍是本機 smoke，不等於 staging / production sign-off。Admin financial surfaces 仍需維持內部受控使用，對外推薦制度仍以折抵、不提現為準。
+
+## 2026-07-03 - Final local readiness gate sweep
+
+- Readiness update：本機標準 gates 已重新通過：lint、build、npm test。
+- Result：以本機可驗證範圍來看，核心產品路徑、公開信任面、reviewer rehearsal、低頻 settings/admin surfaces 與 Instagram error redaction 已經收斂到沒有新發現 P0/P1 visible-but-unusable 缺口。
+- Remaining risk：產品仍未等於正式可公開販售。剩餘 gate 主要是 Meta App Review / Advanced Access、staging reviewer-safe real asset evidence、PayUNI production go-live、Production deploy 與 production DB / live payment 的人工受控驗證。

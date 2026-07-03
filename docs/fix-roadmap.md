@@ -4431,6 +4431,13 @@ Remaining:
 - 已完成：desktop / mobile 均可讀、沒有水平 overflow，未捕捉 console warning / error。
 - 下一步：若仍維持本機模式，建議切到可販售前 final local sweep：比對 product-readiness / launch checklist，找出是否只剩 staging/production/Meta/PayUNI 人工 gate；若還要產品修補，優先從實際頁面 smoke 發現的具體缺口處理。
 
+## 2026-07-03 - Final local readiness gate sweep
+
+- 已完成：`npm run lint`、`npm run build`、`npm test` 全部通過。
+- 已完成：本機模式下已覆蓋核心產品主線與低頻營運面，暫未發現新的 P0/P1 假按鈕、raw error、空白頁或 mobile overflow。
+- 剩餘：Meta App Review / Advanced Access / Business Verification、staging reviewer-safe real asset lane、PayUNI production go-live、Production deploy、production DB 變更與正式低額金流 smoke 仍是人工 gate。
+- 下一步：若仍不推遠端，建議停止本機亂修，改為整理 batch delivery diff；若要繼續產品 QA，需用 staging-safe tenant / reviewer-safe IG asset 做實機 evidence，但不可碰 production DB。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

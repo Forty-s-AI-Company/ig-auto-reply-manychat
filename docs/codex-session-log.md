@@ -10820,3 +10820,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Final local readiness gate sweep
+
+- 目標：在暫停 push / PR / Vercel Preview 的本機開發驗證模式下，重新跑標準 gates，並整理目前剩餘缺口是否仍屬本機可安全修補。
+- 驗證結果：
+  - `npm run lint` 通過。
+  - `npm run build` 通過；Prisma generate 一開始因本機 Node process 鎖住 query engine 而 fallback 使用既有 generated client，Next build 後續成功完成。
+  - `npm test` 通過，16 batches 全部 completed；既有 `meta-webhook` audit mock stderr 仍出現但測試為 pass。
+- 產品判斷：
+  - 本機已覆蓋核心啟用路徑、Inbox、Contacts、Automations、Billing / Referrals、public/legal/reviewer rehearsal、低頻 settings / admin surfaces 與 Instagram error redaction。
+  - 目前沒有新發現可安全自動修補的 P0/P1 visible-but-unusable 缺口。
+  - 主要剩餘 gate 是 staging / real asset / production / Meta / PayUNI 人工流程，不應在本機模式下猜值或硬做。
+- 安全：
+  - 未改 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
