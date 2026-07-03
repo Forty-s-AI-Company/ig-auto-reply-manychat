@@ -10484,3 +10484,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Analytics error alert semantics
+
+- 目標：接續 Dashboard / Analytics 產品完整性 audit，修正分析資料載入失敗時紅色錯誤區塊未以 alert 語意公告的缺口。
+- 產品修補：
+  - `AnalyticsPage` 的分析資料讀取失敗提示補 `role="alert"` 與 `data-testid="analytics-error-alert"`。
+  - 保留既有 analytics summary、Recharts 近 7 天訊息圖、simple release 廣播 gate、空狀態 CTA 與 IG scope 顯示邏輯不變。
+- 測試：
+  - `tests/analytics-empty-state.test.ts` 補 Analytics loading failure alert semantics guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 analytics query、workspace scope、broadcast gate、schema、payment 或 OAuth 邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

@@ -32,4 +32,10 @@ describe("analytics empty state CTA", () => {
     expect(source).toContain('<Megaphone className="h-4 w-4" aria-hidden="true" />');
     expect(source).toContain('<AlertTriangle className="h-4 w-4" aria-hidden="true" />');
   });
+
+  it("announces analytics loading failures as an alert", () => {
+    expect(source).toContain('role="alert"');
+    expect(source).toContain('data-testid="analytics-error-alert"');
+    expect(source).toContain("分析資料暫時無法載入，請稍後再試。");
+  });
 });

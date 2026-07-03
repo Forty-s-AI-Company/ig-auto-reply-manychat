@@ -4287,6 +4287,12 @@ Remaining:
 - 已完成：抓取貼文按鈕補 loading / idle title，避免按鈕 disabled 時只靠 spinner 表示狀態。
 - 下一步：若沒有人工阻塞，繼續掃 Automations editor mobile / Channels reviewer-safe connected-channel UX，或切回 Contacts detail mobile smoke。
 
+## 2026-07-03 - Analytics error alert semantics
+
+- 已完成：Analytics 資料載入失敗提示補 `role="alert"` 與穩定 test id，讓紅色錯誤區塊不只是視覺提示。
+- 已完成：保留既有 Recharts 趨勢圖、simple release 廣播 gate、空狀態 CTA 與 scope badge，不改資料查詢或 workspace scope。
+- 下一步：若沒有人工阻塞，繼續掃 Dashboard / Analytics / Billing / Wallet 的 client-side error feedback，或用 Playwright 跑新使用者 activation route smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
