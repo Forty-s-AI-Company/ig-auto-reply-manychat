@@ -1,3 +1,17 @@
+# 2026-07-03 - Reviewer-safe local rehearsal smoke
+
+Status: improved for Meta App Review rehearsal readiness; no production behavior change.
+
+What changed:
+
+- Local `TEST_DATABASE_URL` can now be seeded with reviewer-safe workspace, channel, contact, conversation, and automation labels.
+- A focused Playwright smoke verifies the reviewer rehearsal path across Dashboard, Channels, Inbox, Contacts, and Automations on desktop and mobile.
+
+Readiness implication:
+
+- The team can rehearse the reviewer evidence chain locally without showing raw E2E labels or customer-like data.
+- This does not submit Meta App Review, change Meta Dashboard settings, write production data, deploy production, or switch PayUNI production.
+
 # 2026-07-03 - Simple release E2E runner
 
 Status: improved for local simple-release QA reliability; no product behavior change.

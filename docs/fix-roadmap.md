@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Reviewer-safe local rehearsal smoke
+
+Current status:
+
+- `[x]` `npm run e2e:reviewer:ensure` creates reviewer-safe local demo data in `TEST_DATABASE_URL`.
+- `[x]` `npm run test:e2e:reviewer` verifies Dashboard, Channels, Inbox, Contacts, and Automations with reviewer-safe labels on desktop and mobile.
+
+Remaining:
+
+- `[ ]` Keep reviewer-safe staging credentials and real Instagram assets as manual handoff items.
+- `[ ]` Do not treat local rehearsal as final Meta App Review evidence.
+
 # Latest - 2026-07-03 Simple release E2E runner
 
 Current status:

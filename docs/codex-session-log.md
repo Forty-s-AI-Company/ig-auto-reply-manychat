@@ -9699,6 +9699,20 @@ Launch impact:
   - 只影響本機測試入口，未改 simple/full release 產品邏輯、production DB、部署、Meta App Review 或 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Reviewer-safe local rehearsal smoke
+
+- 目標：把 Meta App Review 的 reviewer-safe local demo lane 收成可重複本機演練流程。
+- 修補：
+  - 新增 `scripts/ensure-reviewer-demo-data.ts`，只在 `TEST_DATABASE_URL` 建立 reviewer-safe workspace / channel / contact / conversation / automation draft。
+  - 新增 `tests/e2e/meta-reviewer-rehearsal.spec.ts`，覆蓋 Dashboard、Channels、Inbox、Contacts、Automations 的 reviewer-safe walkthrough。
+  - 新增 `e2e:reviewer:ensure` 與 `test:e2e:reviewer` script。
+  - 補 reviewer demo data / staging gap / staging tenant SOP 文件。
+- 驗證：
+  - `npm run test:e2e:reviewer` desktop / mobile 通過。
+- 安全：
+  - 只影響本機 / TEST_DATABASE_URL reviewer rehearsal，不送 Meta App Review、不改 Meta Dashboard、不碰 production DB、不部署 Production、不切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。
