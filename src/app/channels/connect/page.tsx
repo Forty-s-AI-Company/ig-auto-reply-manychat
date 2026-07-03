@@ -24,7 +24,7 @@ const channels: Array<{
   {
     id: "telegram-bot",
     name: "Telegram Bot",
-    description: "若只需要 Bot Token，會在同一套 provider 架構內完成驗證與儲存。",
+    description: "Telegram 屬於後續受控通路；正式開放前不會打開 token 授權或儲存流程。",
     href: "/channels/connect/social",
     icon: "tg",
   },
@@ -38,14 +38,14 @@ const channels: Array<{
   {
     id: "tiktok",
     name: "TikTok",
-    description: "正式開放後會在這裡接入對應 provider。",
+    description: "TikTok 尚未納入本次付費版可用範圍，需完成官方 API、權限與客服流程後才會開放。",
     href: "/channels/connect/tiktok",
     icon: "tt",
   },
   {
     id: "whatsapp",
     name: "WhatsApp",
-    description: "WhatsApp Business 連線入口會集中在這裡。",
+    description: "WhatsApp Business 尚未納入本次付費版可用範圍，正式開放前不會啟動授權流程。",
     href: "/channels/connect/whatsapp",
     icon: "wa",
   },

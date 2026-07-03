@@ -9646,6 +9646,22 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Channels controlled provider copy polish
+
+- 目標：接續 Channels / Connect audit，修正 disabled provider card 的描述仍可能讓使用者以為授權流程已接近可用。
+- 產品修補：
+  - `/channels/connect` 的 Telegram / TikTok / WhatsApp 文案改為後續受控通路，不再暗示會立即驗證 token 或啟動授權。
+  - `/channels` 設定頁同步更新相同語意。
+- 測試：
+  - `tests/channels-connect-visibility.test.ts` 補受控 provider wording guard。
+- 安全：
+  - 純 UI 文案與 source guard 修補，未改 OAuth provider registry、Webhook、token 儲存、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Official v2 launch channel scope polish
 
 - 目標：接續公開頁 audit，修正舊版 `/official/v2` 仍把 Messenger 當成 launch-scope 通路展示的問題。

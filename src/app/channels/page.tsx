@@ -107,7 +107,7 @@ const channelCards = [
     kind: "connect" as const,
     id: "telegram-bot" as const,
     name: "Telegram Bot",
-    description: "若只需要 Bot Token，會透過同一套 provider 架構完成驗證與儲存。",
+    description: "Telegram 屬於後續受控通路；正式開放前不會打開 token 授權或儲存流程。",
     href: "/channels/connect/social",
   },
   {
@@ -121,14 +121,14 @@ const channelCards = [
     kind: "connect" as const,
     id: "tiktok" as const,
     name: "TikTok",
-    description: "可先規劃平台入口，正式連線開放後會顯示授權按鈕。",
+    description: "TikTok 尚未納入本次付費版可用範圍，需完成官方 API、權限與客服流程後才會開放。",
     href: "",
   },
   {
     kind: "connect" as const,
     id: "whatsapp" as const,
     name: "WhatsApp",
-    description: "WhatsApp Business 連線入口會集中在此管理。",
+    description: "WhatsApp Business 尚未納入本次付費版可用範圍，正式開放前不會啟動授權流程。",
     href: "",
   },
   {

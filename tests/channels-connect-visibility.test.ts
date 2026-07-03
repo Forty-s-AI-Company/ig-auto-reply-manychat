@@ -99,6 +99,8 @@ describe("channel connect visibility", () => {
     const source = readFileSync("src/app/channels/connect/page.tsx", "utf8");
 
     expect(source).toContain("受控開通入口");
+    expect(source).toContain("Telegram 屬於後續受控通路");
+    expect(source).toContain("WhatsApp Business 尚未納入本次付費版可用範圍");
     expect(source).toContain("focus-visible:ring-[#006fe6]");
     expect(source).toContain("sm:flex-row");
     expect(source).toContain("data-testid={`channels-connect-${channel.id}-disabled`}");
@@ -138,6 +140,9 @@ describe("channel connect visibility", () => {
     const channelsSource = readFileSync("src/app/channels/page.tsx", "utf8");
 
     expect(channelsSource).toContain("focus-visible:ring-[#006fe6]");
+    expect(channelsSource).toContain("Telegram 屬於後續受控通路");
+    expect(channelsSource).toContain("TikTok 尚未納入本次付費版可用範圍");
+    expect(channelsSource).toContain("WhatsApp Business 尚未納入本次付費版可用範圍");
     expect(channelsSource).toContain("此功能目前受控開通，完成安全、權限與營運規則驗證後才會開放。");
     expect(channelsSource).toContain("完成供應商串接、權限與訊息收發驗證後才會開放");
     expect(channelsSource).toContain("const reasonId = testId && visibleReason ? `${testId}-reason` : undefined");

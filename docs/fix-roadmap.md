@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Channels controlled provider copy polish
+
+Current status:
+
+- `[x]` Channels settings and connect pages now describe Telegram / TikTok / WhatsApp as future controlled channels, not near-ready authorization flows.
+- `[x]` Disabled provider cards keep clear reasons and do not imply token storage or OAuth flow is available before launch.
+- `[x]` Source coverage guards the controlled-provider wording on both `/channels` and `/channels/connect`.
+
+Remaining:
+
+- `[ ]` Continue local-only sweeps for channel connection edge cases, Instagram metadata, and reviewer-safe staging evidence.
+- `[ ]` Keep all non-Instagram providers behind separate security, platform, and support readiness work.
+
 # Latest - 2026-07-03 Official v2 launch channel scope polish
 
 Current status:
