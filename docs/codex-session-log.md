@@ -10500,3 +10500,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contact detail action disabled UX
+
+- 目標：接續 Contacts 詳情頁完整性 audit，修正尚未修改欄位時「取消 / 儲存變更」只灰掉、缺少原因說明的體感問題。
+- 產品修補：
+  - `ContactDetailEditor` 新增 action disabled reason，說明目前沒有未儲存變更，修改使用者名稱、Email 或電話後即可操作。
+  - 取消 / 儲存變更按鈕補 `aria-describedby` 與 `title`，儲存中 / 重新整理中也會顯示請稍候說明。
+  - 保留既有聯絡人 PATCH、標籤新增 / 移除、toast alert semantics 與 workspace scope 不變。
+- 測試：
+  - `tests/contact-detail-editor-ux.test.ts` 補 save / cancel disabled reason linkage guard。
+- 安全：
+  - 純 client UI / accessibility 修補，未改 contacts API、tags API、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

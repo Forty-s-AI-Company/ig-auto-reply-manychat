@@ -4293,6 +4293,12 @@ Remaining:
 - 已完成：保留既有 Recharts 趨勢圖、simple release 廣播 gate、空狀態 CTA 與 scope badge，不改資料查詢或 workspace scope。
 - 下一步：若沒有人工阻塞，繼續掃 Dashboard / Analytics / Billing / Wallet 的 client-side error feedback，或用 Playwright 跑新使用者 activation route smoke。
 
+## 2026-07-03 - Contact detail action disabled UX
+
+- 已完成：Contacts 詳情頁「取消 / 儲存變更」在沒有未儲存變更或正在儲存時，補清楚 disabled reason、`aria-describedby` 與 `title`。
+- 已完成：維持既有聯絡人資料更新、標籤管理、toast alert semantics 與 tenant scope 不變。
+- 下一步：若沒有人工阻塞，繼續掃 Contacts list bulk actions / detail mobile smoke，或切到 Inbox / Dashboard activation route smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

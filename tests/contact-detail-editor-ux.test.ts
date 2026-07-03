@@ -19,6 +19,13 @@ describe("ContactDetailEditor UX affordances", () => {
     expect(source).toContain("focus-visible:ring-white");
   });
 
+  it("explains why save and cancel actions are disabled before edits", () => {
+    expect(source).toContain("contact-detail-action-disabled-reason");
+    expect(source).toContain("目前沒有未儲存的變更");
+    expect(source).toContain('aria-describedby={actionDisabledReason ? "contact-detail-action-disabled-reason" : undefined}');
+    expect(source).toContain("title={actionDisabledReason || undefined}");
+  });
+
   it("announces error toasts as alerts instead of passive status text", () => {
     expect(source).toContain('role={toast.tone === "danger" ? "alert" : "status"}');
     expect(source).toContain('aria-live="polite"');

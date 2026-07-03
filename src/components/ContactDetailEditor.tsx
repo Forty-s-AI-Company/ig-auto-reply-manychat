@@ -69,6 +69,11 @@ export function ContactDetailEditor({
     username !== (contact.username || "") ||
     email !== (contact.email || "") ||
     phone !== (contact.phone || "");
+  const actionDisabledReason = !hasChanges
+    ? "目前沒有未儲存的變更。修改使用者名稱、Email 或電話後，就可以取消或儲存。"
+    : isSaving || isPending
+      ? "正在儲存或重新整理聯絡人資料，請稍候。"
+      : null;
 
   function refreshPage() {
     startTransition(() => router.refresh());
@@ -186,6 +191,8 @@ export function ContactDetailEditor({
               type="button"
               onClick={resetFields}
               disabled={!hasChanges || isSaving || isPending}
+              aria-describedby={actionDisabledReason ? "contact-detail-action-disabled-reason" : undefined}
+              title={actionDisabledReason || undefined}
               className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               取消
@@ -193,12 +200,19 @@ export function ContactDetailEditor({
             <button
               type="submit"
               disabled={!hasChanges || isSaving || isPending}
+              aria-describedby={actionDisabledReason ? "contact-detail-action-disabled-reason" : undefined}
+              title={actionDisabledReason || undefined}
               className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white transition hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSaving || isPending ? "儲存中" : "儲存變更"}
             </button>
           </div>
         </div>
+        {actionDisabledReason ? (
+          <p id="contact-detail-action-disabled-reason" className="-mt-2 text-sm leading-6 text-[#667085] sm:text-right">
+            {actionDisabledReason}
+          </p>
+        ) : null}
 
         <div className="grid gap-4 md:grid-cols-3">
           <label className="block text-sm font-medium text-[#344054]">
