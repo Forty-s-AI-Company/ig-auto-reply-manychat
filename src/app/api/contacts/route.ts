@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     return NextResponse.json(contacts);
   }
 
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const contacts = await getDb().contact.findMany({
     where: {
       ...channelWhere,

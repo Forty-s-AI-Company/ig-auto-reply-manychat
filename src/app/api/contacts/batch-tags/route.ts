@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { assertSameOriginRequest } from "@/lib/security";
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const scopedContacts = await getDb().contact.findMany({
     where: {
       id: { in: contactIds },
-      ...instagramChannelWhere(selectedChannelId, workspaceId),
+      ...inboxChannelWhere(selectedChannelId, workspaceId),
     },
     select: { id: true },
   });
@@ -82,7 +82,7 @@ export async function DELETE(request: Request) {
   const scopedContacts = await getDb().contact.findMany({
     where: {
       id: { in: contactIds },
-      ...instagramChannelWhere(selectedChannelId, workspaceId),
+      ...inboxChannelWhere(selectedChannelId, workspaceId),
     },
     select: { id: true },
   });
