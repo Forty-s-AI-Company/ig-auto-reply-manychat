@@ -89,6 +89,22 @@ export default async function WalletPage() {
               <span>下一筆可用時間：{summary.nextAvailableAt ? formatLedgerDate(summary.nextAvailableAt) : "目前沒有待確認折抵"}</span>
               <span>下一筆到期時間：{summary.nextExpiryAt ? formatLedgerDate(summary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</span>
             </div>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link
+                href="/referrals"
+                data-testid="wallet-open-referrals"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+              >
+                查看推薦活動
+              </Link>
+              <Link
+                href="/billing"
+                data-testid="wallet-open-billing"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+              >
+                查看方案與用量
+              </Link>
+            </div>
           </div>
           {ledger.length > 0 ? (
             <div className="overflow-x-auto">
@@ -122,20 +138,7 @@ export default async function WalletPage() {
           ) : (
             <div className="px-4 py-8 text-sm leading-6 text-[var(--text-muted)]">
               <p>目前還沒有折抵金紀錄。完成推薦活動或帳單折抵後，這裡會顯示入帳與使用明細。</p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href="/referrals"
-                  className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
-                >
-                  前往推薦活動
-                </Link>
-                <Link
-                  href="/billing"
-                  className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
-                >
-                  查看方案與用量
-                </Link>
-              </div>
+              <p className="mt-2">上方保留了「查看推薦活動」與「查看方案與用量」，可以直接回去確認待確認折抵、目前方案與下一步付款安排。</p>
             </div>
           )}
         </section>

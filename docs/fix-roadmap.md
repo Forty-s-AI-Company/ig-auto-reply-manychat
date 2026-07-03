@@ -3694,6 +3694,13 @@ Remaining:
 - 已完成：新增 public Playwright smoke，實際驗證 `/pricing -> /signup?plan=pro` 的承接路徑。
 - 下一步：繼續檢查首次付費前體驗是否還有 CTA 落差、simple/full release 語意混亂，優先看 Pricing / Signup / Billing 的連續性。
 
+## 2026-07-03 - Controlled financial surface clarity
+
+- 已完成：`Affiliate` 在受控聯盟關閉時，會明確導回 `推薦活動 / 折抵金錢包 / 方案與用量`，不再像卡住的死路。
+- 已完成：`Wallet` 的正式下一步 CTA 改成固定可見，而不是只在完全空白時才出現。
+- 已完成：authenticated Playwright smoke 驗證金融面 CTA 在 desktop/mobile 都有正確 href。
+- 下一步：回到 onboarding / empty workspace 主線，繼續檢查新使用者從 Dashboard -> Channels -> Inbox -> Contacts -> Automations 是否還有 CTA 斷點。
+
 ## 2026-07-03 - Contacts mobile activation header polish
 
 - 已完成：Contacts mobile header actions 可換行、focus-visible 可見、空 workspace activation smoke 覆蓋 desktop/mobile。

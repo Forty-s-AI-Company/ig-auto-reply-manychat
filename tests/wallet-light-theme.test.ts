@@ -21,8 +21,11 @@ describe("wallet page light theme", () => {
     expect(source).toContain("內部審核中");
     expect(source).toContain("待確認折抵會取消");
     expect(source).toContain("已使用折抵會以沖回紀錄抵銷");
-    expect(source).toContain("前往推薦活動");
+    expect(source).toContain('data-testid="wallet-open-referrals"');
+    expect(source).toContain('data-testid="wallet-open-billing"');
+    expect(source).toContain("查看推薦活動");
     expect(source).toContain("查看方案與用量");
+    expect(source).toContain("上方保留了「查看推薦活動」與「查看方案與用量」");
     expect(source).not.toContain("提領申請中");
     expect(source).not.toContain("已提領");
     expect(source).not.toContain("Pending");

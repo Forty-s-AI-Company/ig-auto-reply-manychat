@@ -9278,3 +9278,26 @@ Launch impact:
   - 未部署 Production
   - 未送 Meta App Review
   - 未輸出任何 secret
+
+## 2026-07-03 - Billing / Wallet / Affiliate controlled-lane clarity
+
+- 目標：把金融面中已受控關閉的現金分潤入口整理成「清楚導回正式主線」，避免 `Affiliate` 或 `Wallet` 看起來像死路。
+- 產品修補：
+  - `src/app/affiliate/page.tsx` 新增「目前正式可用主線」區塊，明確導回 `推薦活動 / 折抵金錢包 / 方案與用量`。
+  - `src/app/wallet/page.tsx` 將 `查看推薦活動 / 查看方案與用量` CTA 提升為固定可見，不再只在空狀態才出現。
+  - `Wallet` 空狀態文案改成提醒使用者直接用上方 CTA 回去確認待確認折抵、可用折抵與付款安排。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts`
+  - `tests/wallet-light-theme.test.ts`
+  - `tests/e2e/public-and-auth.spec.ts` 補 `affiliate-open-*` 與 `wallet-open-*` 的實際 smoke。
+- 驗證：
+  - `npx eslint src/app/affiliate/page.tsx src/app/wallet/page.tsx tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts tests/e2e/public-and-auth.spec.ts`
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests\\referral-affiliate-mvp-ui.test.ts tests\\wallet-light-theme.test.ts`
+  - `npm run admin:ensure`
+  - `npm run e2e:admin:ensure`
+  - `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "Affiliate cash payout|wallet lifecycle guidance" --workers=1`
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未輸出任何 secret

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AdminShell } from "@/components/AdminShell";
 import { requireUser } from "@/lib/auth";
 import { canApplyAffiliate, getAffiliateDashboard } from "@/lib/billing/affiliate-service";
@@ -91,6 +92,35 @@ export default async function AffiliatePage() {
           <p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">
             推薦制度的正式產品方向是「帳單折抵」，不是現金返現。這個頁面目前只保留後續受控聯盟流程的狀態說明：只有在法務、退款、反作弊、對帳與營運批次流程完整後，才會重新開啟現金型合作。
           </p>
+          <div className="mt-4 rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-4">
+            <p className="text-sm font-semibold text-[var(--text-primary)]">目前正式可用主線</p>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+              若你現在要確認推薦碼、折抵進度或下一筆方案付款，請直接回到目前正式開放的產品面：推薦活動、折抵金錢包與方案與用量。
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <Link
+                href="/referrals"
+                data-testid="affiliate-open-referrals"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+              >
+                查看推薦活動
+              </Link>
+              <Link
+                href="/wallet"
+                data-testid="affiliate-open-wallet"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+              >
+                查看折抵金錢包
+              </Link>
+              <Link
+                href="/billing"
+                data-testid="affiliate-open-billing"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+              >
+                查看方案與用量
+              </Link>
+            </div>
+          </div>
           <form action="/api/affiliate/apply" method="post" className="mt-4">
             <button
               type="submit"

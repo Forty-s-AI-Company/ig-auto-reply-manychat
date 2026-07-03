@@ -43,6 +43,10 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("不代表會自動匯款");
     expect(source).toContain("分潤安全規則");
     expect(source).toContain("內部計算紀錄");
+    expect(source).toContain("目前正式可用主線");
+    expect(source).toContain('data-testid="affiliate-open-referrals"');
+    expect(source).toContain('data-testid="affiliate-open-wallet"');
+    expect(source).toContain('data-testid="affiliate-open-billing"');
     expect(source).not.toContain("現金分潤後續開放");
     expect(source).not.toContain("現金提領後續開放");
     expect(source).not.toContain("重新開啟現金分潤");

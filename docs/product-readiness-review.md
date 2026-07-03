@@ -1819,6 +1819,12 @@ Readiness implication:
 - Result：新使用者的首購前路徑比較不會在 `Pricing -> Signup` 之間失去上下文，也降低「為什麼我剛剛選的方案不見了」的體感落差。
 - Remaining risk：正式付費前仍需持續檢查 Billing / Referrals / Wallet 的 mobile 流程與 Sandbox 文案是否完全一致。
 
+## 2026-07-03 - Financial surface next-step clarity
+
+- Readiness update：`Affiliate` 與 `Wallet` 在現金分潤受控關閉的情況下，現在都能明確把使用者導回正式可用主線，而不是留在像死路的說明頁。
+- Result：新使用者或既有付費使用者在查看推薦折抵、錢包或聯盟頁時，比較不會誤判產品壞掉或以為現金提領已經開放。
+- Remaining risk：仍需繼續檢查 Billing / Referrals / Wallet 在 mobile 下的折抵說明、退款觀察期與 CTA 密度是否完全一致。
+
 ## 2026-07-03 - Contacts mobile activation header polish
 
 - Readiness update：新使用者進入 Contacts 空狀態時，mobile header actions 不再依賴單行擠壓；篩選、標籤與分眾入口保留清楚 focus state。

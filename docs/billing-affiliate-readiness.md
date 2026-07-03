@@ -502,3 +502,10 @@ Billing launch implication:
 - `[x]` The explanation is connected to the disabled CTA with `aria-describedby` for mobile and assistive-tech users.
 - `[x]` Affiliate controlled-payment CTA now says it is informational only and does not submit a payment request.
 - `[ ]` PayUNI production remains Hold; this change only improves local product UX and does not enable production checkout.
+
+# 2026-07-03 - Controlled affiliate lane guidance
+
+- `[x]` Affiliate now shows an explicit “目前正式可用主線” block that routes users back to `推薦活動 / 折抵金錢包 / 方案與用量`.
+- `[x]` Wallet now keeps those next-step CTAs visible even when ledger entries already exist, instead of only exposing them in the empty state.
+- `[x]` Authenticated desktop/mobile smoke now checks these controlled-lane CTAs so the financial surfaces are less likely to regress into dead-end pages.
+- `[ ]` PayUNI production remains Hold; this only clarifies the current product path and does not enable cash payout or production checkout.

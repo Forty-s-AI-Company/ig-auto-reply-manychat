@@ -344,6 +344,9 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("目前不開放受控付款");
     await expect(page.getByRole("button", { name: "受控付款後續開放" })).toBeDisabled();
     await expect(page.locator("body")).toContainText("受控聯盟付款狀態");
+    await expect(page.getByTestId("affiliate-open-referrals")).toHaveAttribute("href", "/referrals");
+    await expect(page.getByTestId("affiliate-open-wallet")).toHaveAttribute("href", "/wallet");
+    await expect(page.getByTestId("affiliate-open-billing")).toHaveAttribute("href", "/billing");
   });
 
   test("shows wallet lifecycle guidance for pending and expiring referral credits", async ({ page }) => {
@@ -352,6 +355,8 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("待確認折抵金");
     await expect(page.locator("body")).toContainText("7 天");
     await expect(page.locator("body")).toContainText("30 天內未使用會自動失效");
+    await expect(page.getByTestId("wallet-open-referrals")).toHaveAttribute("href", "/referrals");
+    await expect(page.getByTestId("wallet-open-billing")).toHaveAttribute("href", "/billing");
   });
 
   test("opens and closes the mobile admin menu", async ({ page }, testInfo) => {
