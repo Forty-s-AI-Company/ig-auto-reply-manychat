@@ -516,3 +516,10 @@ Billing launch implication:
 - `[x]` Custom plan and PayUNI-disabled states still use visible reason text plus `aria-describedby`; no checkout, credit, refund, or payout logic changed.
 - `[x]` Focused billing source test and authenticated desktop/mobile billing smoke passed locally.
 - `[ ]` PayUNI production remains Hold; this does not switch gateway, enable production checkout, or affect production DB.
+
+# 2026-07-03 - Referrals / Wallet / Affiliate next-step CTA focus polish
+
+- `[x]` Referrals, Wallet, and Affiliate next-step CTAs now have keyboard-visible focus treatment.
+- `[x]` Authenticated desktop/mobile smoke still verifies Referrals, Affiliate controlled opening, and Wallet lifecycle guidance.
+- `[x]` Cash payout remains controlled; this only improves navigation back to referral credits, wallet, and billing.
+- `[ ]` PayUNI production and cash payout remain Hold.

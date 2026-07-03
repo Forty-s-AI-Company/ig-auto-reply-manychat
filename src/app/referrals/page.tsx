@@ -98,10 +98,10 @@ export default async function ReferralsPage() {
             </div>
             {!simpleRelease ? (
               <div className="mt-3 flex flex-wrap gap-3">
-                <Link className="inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
+                <Link className="inline-flex rounded-md text-sm font-semibold text-[var(--teal-dark)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2" href="/wallet">
                   前往折抵金錢包
                 </Link>
-                <Link className="inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/billing">
+                <Link className="inline-flex rounded-md text-sm font-semibold text-[var(--teal-dark)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2" href="/billing">
                   查看方案與用量
                 </Link>
               </div>

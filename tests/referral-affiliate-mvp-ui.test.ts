@@ -23,6 +23,7 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("折抵金錢包在完整版本中開放");
     expect(source).toContain("simple release 會先在推薦活動與方案頁顯示");
     expect(source).toContain("查看方案與用量");
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).toContain("若你想確認折抵何時可用");
     expect(source).toContain("formatReferralDate");
     expect(source).toContain("break-all");
@@ -47,6 +48,7 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain('data-testid="affiliate-open-referrals"');
     expect(source).toContain('data-testid="affiliate-open-wallet"');
     expect(source).toContain('data-testid="affiliate-open-billing"');
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).not.toContain("現金分潤後續開放");
     expect(source).not.toContain("現金提領後續開放");
     expect(source).not.toContain("重新開啟現金分潤");

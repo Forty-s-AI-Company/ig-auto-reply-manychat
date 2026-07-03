@@ -3736,6 +3736,12 @@ Remaining:
 - 已完成：focused billing source test 與 authenticated billing smoke 通過。
 - 下一步：若沒有人工阻塞，繼續檢查 Referrals / Wallet / Admin financial surfaces 的 mobile CTA 密度與 disabled UX。
 
+## 2026-07-03 - Referrals / Wallet / Affiliate next-step CTA focus polish
+
+- 已完成：Referrals、Wallet、Affiliate 中導回正式主線的主要 CTA 補齊 keyboard-visible focus ring。
+- 已完成：focused tests 與 authenticated desktop/mobile smoke 通過。
+- 下一步：若沒有人工阻塞，繼續掃 Admin financial surfaces 或回到 Automations / Dashboard 的剩餘 mobile CTA 與 disabled UX。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

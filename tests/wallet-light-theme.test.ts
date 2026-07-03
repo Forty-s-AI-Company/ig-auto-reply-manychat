@@ -25,6 +25,7 @@ describe("wallet page light theme", () => {
     expect(source).toContain('data-testid="wallet-open-billing"');
     expect(source).toContain("查看推薦活動");
     expect(source).toContain("查看方案與用量");
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).toContain("上方保留了「查看推薦活動」與「查看方案與用量」");
     expect(source).not.toContain("提領申請中");
     expect(source).not.toContain("已提領");

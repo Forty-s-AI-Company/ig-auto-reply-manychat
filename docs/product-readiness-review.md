@@ -1847,3 +1847,9 @@ Readiness implication:
 - Readiness update：方案 checkout 主按鈕現在有清楚的 keyboard focus treatment，PayUNI Sandbox 與正式站受控開通文案維持不變。
 - Result：付費前的核心 CTA 更符合可上線產品的可操作性要求，且沒有改動付款、折抵、退款或 production gate 邏輯。
 - Remaining risk：仍需繼續檢查 Wallet / Referrals / Admin financial surfaces 的手機版 CTA 密度與受控功能說明。
+
+## 2026-07-03 - Referrals / Wallet / Affiliate next-step CTA focus polish
+
+- Readiness update：推薦折抵、折抵金錢包與受控聯盟頁面中導回正式主線的 CTA 已補上 keyboard-visible focus treatment。
+- Result：使用者在金融面遇到受控功能時，更容易回到可用的推薦活動、折抵金錢包與方案頁，不會像進入死路。
+- Remaining risk：Admin financial surfaces 仍建議再做一次 mobile / table overflow / destructive action review。

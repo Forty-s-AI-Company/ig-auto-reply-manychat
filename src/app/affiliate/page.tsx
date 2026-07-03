@@ -101,21 +101,21 @@ export default async function AffiliatePage() {
               <Link
                 href="/referrals"
                 data-testid="affiliate-open-referrals"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
                 查看推薦活動
               </Link>
               <Link
                 href="/wallet"
                 data-testid="affiliate-open-wallet"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
                 查看折抵金錢包
               </Link>
               <Link
                 href="/billing"
                 data-testid="affiliate-open-billing"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc]"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
                 查看方案與用量
               </Link>

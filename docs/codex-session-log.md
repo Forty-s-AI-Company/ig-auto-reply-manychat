@@ -9367,3 +9367,22 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Referrals / Wallet / Affiliate next-step CTA focus polish
+
+- 目標：接續金融與推薦折抵路徑 audit，補強 `Referrals / Wallet / Affiliate` 中返回正式主線的主要 CTA 鍵盤可見焦點。
+- 產品修補：
+  - `src/app/referrals/page.tsx` 的 `前往折抵金錢包 / 查看方案與用量` 連結補 `focus-visible` ring。
+  - `src/app/wallet/page.tsx` 的 `查看推薦活動 / 查看方案與用量` 連結補 `focus-visible` ring。
+  - `src/app/affiliate/page.tsx` 的 `查看推薦活動 / 查看折抵金錢包 / 查看方案與用量` 連結補 `focus-visible` ring。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts` 與 `tests/wallet-light-theme.test.ts` 補金融面 CTA focus 覆蓋。
+- 驗證：
+  - `npx vitest run tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`: passed
+  - `npm run e2e:admin:ensure; npx playwright test tests/e2e/public-and-auth.spec.ts --grep "Referrals|Affiliate|wallet" --workers=1`: passed
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
