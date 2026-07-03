@@ -9646,6 +9646,18 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Authenticated E2E seed preflight
+
+- 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。
+- 發現：
+  - 直接跑 Billing / Referrals / Wallet authenticated smoke 時，登入回傳 HTTP 401。
+  - 先跑 `npm run e2e:admin:ensure` 後，同一組 Playwright smoke 在 desktop / mobile 都通過。
+- 修補：
+  - `test:e2e:auth` script 改成先執行 `npm run e2e:admin:ensure` 再跑 Playwright。
+- 安全：
+  - 只影響本機 / TEST_DATABASE_URL 的 E2E 前置資料流程，未改產品登入邏輯、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Instagram channel action status accessibility
 
 - 目標：補齊 Channels / Instagram 功能檢查區的操作結果可達性，避免按下貼文、留言、token 動作後只靠視覺文字變化。

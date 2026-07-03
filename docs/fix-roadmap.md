@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Authenticated E2E seed preflight
+
+Current status:
+
+- `[x]` `npm run test:e2e:auth` now runs `e2e:admin:ensure` before Playwright authenticated route smoke.
+- `[x]` Billing / Referrals / Wallet smoke passed after seeding the local test admin.
+
+Remaining:
+
+- `[ ]` Keep local E2E seed helpers pointed at TEST_DATABASE_URL only.
+- `[ ]` Do not use this script against production DB.
+
 # Latest - 2026-07-03 Instagram channel action status accessibility
 
 Current status:

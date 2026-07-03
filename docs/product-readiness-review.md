@@ -1,3 +1,17 @@
+# 2026-07-03 - Authenticated E2E seed preflight
+
+Status: improved for local QA reliability; no product behavior change.
+
+What changed:
+
+- `npm run test:e2e:auth` now seeds the local E2E admin before running the authenticated route smoke.
+- Billing, Referrals, and Wallet Playwright smoke failed with HTTP 401 before seed and passed after the seed preflight.
+
+Readiness implication:
+
+- Local product QA is less likely to look broken because a test admin was missing from TEST_DATABASE_URL.
+- This does not change auth behavior, production data, production deployment, or user-facing product code.
+
 # 2026-07-03 - Instagram channel action status accessibility
 
 Status: improved for Channels action feedback; no API behavior change.
