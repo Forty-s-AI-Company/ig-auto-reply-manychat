@@ -8751,3 +8751,21 @@ Launch impact:
 - 變更：送出按鈕在空回覆與空內部備註時顯示對應 title、aria-describedby 與可讀說明文字；送出 icon 標為 decorative，並補 focus-visible ring。
 - 驗證：補 inbox authenticated Playwright smoke 斷言；後續跑 lint、build、npm test 與 inbox smoke。
 - 安全：未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production。
+
+## 2026-07-03 - Reviewer-safe staging tenant remote lane unblock
+
+- 目標：把 Meta reviewer-safe staging lane 從純文件規劃推進到可交付的 non-production 修補，避免 synthetic Inbox / Contacts 資料被寫到 default workspace。
+- 變更：
+  - 在 Meta Developers 完成 production webhook callback / verify token 配置，確認 production webhook callback 已可驗證儲存。
+  - 透過 staging app layer signup 建立 reviewer-safe staging tenant，並在 staging Automations 實際建立 Meta Review Keyword Reply draft。
+  - 找出 mock webhook 在 authenticated production/staging path 沒有傳入 current workspace 的缺陷；handleInboundMessage 會退回 default workspace。
+  - 修補 src/app/api/webhooks/mock/route.ts，讓 authenticated mock inbound 先取得 current workspace，再把 workspaceId 傳入 handleInboundMessage。
+  - 新增 tests/mock-webhook-route.test.ts，覆蓋 authenticated production mock inbound 的 workspace scope 與 unauthorized short-circuit。
+- 驗證：
+  - npx vitest run tests/mock-webhook-route.test.ts
+  - npm run lint
+  - npm run build
+  - npm test
+- 安全：
+  - 未碰 production DB、未部署 Production、未跑 migration/db push、未送 Meta App Review。
+  - 仍未在 staging 完成真實 Instagram reviewer-safe OAuth asset lane；那部分依舊需要真實帳號 session。

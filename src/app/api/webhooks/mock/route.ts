@@ -4,6 +4,7 @@ import { handleInboundMessage } from "@/lib/messages";
 import { assertRateLimit, getClientIp } from "@/lib/security";
 import { mockInboundSchema } from "@/lib/validation";
 import { hasValidSharedSecret } from "@/lib/webhook-security";
+import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export async function POST(request: Request) {
   const rateLimitFailure = await assertRateLimit({
@@ -14,9 +15,11 @@ export async function POST(request: Request) {
   if (rateLimitFailure) return rateLimitFailure;
 
   const hasSecret = hasValidSharedSecret(request, "x-mock-webhook-secret", process.env.MOCK_WEBHOOK_SECRET);
+  let workspaceId: string | undefined;
   if (!hasSecret && process.env.NODE_ENV === "production") {
     const auth = await requireApiUser();
     if (auth.response) return auth.response;
+    workspaceId = await getCurrentWorkspaceId();
   }
 
   const parsed = mockInboundSchema.safeParse(await request.json().catch(() => null));
@@ -32,6 +35,7 @@ export async function POST(request: Request) {
     text: parsed.data.text,
     consentStatus: parsed.data.consentStatus,
     deferAutomations: true,
+    workspaceId,
   });
 
   return NextResponse.json({ ok: true, queued: true, conversationId: result.conversation.id }, { status: 202 });

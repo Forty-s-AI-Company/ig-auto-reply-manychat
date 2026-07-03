@@ -3403,3 +3403,19 @@ Remaining:
 
 - 已完成：Inbox 回覆/備註 composer 在空內容時顯示明確 disabled reason、title 與 aria-describedby，不再只是灰色不可按。
 - 下一步：繼續檢查 Inbox / Dashboard / Automations 是否還有可見但不可理解的 disabled controls。
+
+# Latest - 2026-07-03 Reviewer-safe staging remote evidence unblock
+
+Current status:
+
+- [x] Meta Developers production webhook callback / verify token is configured against the production webhook callback URL.
+- [x] A reviewer-safe staging tenant was created through the staging signup flow.
+- [x] A reviewer-safe staging automation draft (Meta Review Keyword Reply) was created and saved.
+- [x] Authenticated mock inbound now resolves the current workspace before writing synthetic inbound data.
+- [x] Regression coverage exists for authenticated mock webhook workspace scoping and unauthorized short-circuit.
+
+Remaining:
+
+- [ ] Deliver this non-production route fix into the remote staging lane so reviewer-safe Inbox / Contacts synthetic data becomes visible remotely.
+- [ ] Finish the reviewer-safe Instagram OAuth asset lane on staging with a real reviewer-safe account session.
+- [ ] Capture final reviewer-safe staging Inbox / Contacts / connected-channel evidence only after the remote lane is green.
