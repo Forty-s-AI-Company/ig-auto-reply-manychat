@@ -10417,3 +10417,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Inbox notice alert semantics
+
+- 目標：接續 Inbox 完整性 audit，修正 Inbox client-side notice 可能包含 danger 錯誤但仍固定使用 `role="status"` 的輔助語意缺口。
+- 產品修補：
+  - `InboxClient` 的 notice 區塊改成 danger tone 使用 `role="alert"`，success / info tone 維持 `role="status"`。
+  - 保留既有 Inbox search / filter / reply / note / tag / assignment / IG scope 流程不變。
+- 測試：
+  - `tests/inbox-focus-affordances.test.ts` 補 danger notice alert semantics guard。
+- 安全：
+  - 純 client UI accessibility 修補，未改 Inbox API、message sending、note、tag、assignment、tenant scope 或 Meta OAuth 邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

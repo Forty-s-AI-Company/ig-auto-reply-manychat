@@ -48,4 +48,11 @@ describe("Inbox focus affordances", () => {
     expect(source).toContain("Meta 商業資產");
     expect(source).not.toContain("Meta / Facebook 資產");
   });
+
+  it("announces inbox error notices as alerts", () => {
+    expect(source).toContain('type InboxNotice = { tone: "success" | "danger" | "info"; message: string }');
+    expect(source).toContain('showNotice("danger"');
+    expect(source).toContain('role={notice.tone === "danger" ? "alert" : "status"}');
+    expect(source).toContain('data-testid="inbox-notice"');
+  });
 });

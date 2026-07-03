@@ -4263,6 +4263,12 @@ Remaining:
 - 已完成：重新載入、建立、刪除、訂閱失敗會走 danger tone 與 `role="alert"`；表單未完成與目前無法訂閱走 warning；成功操作維持 status。
 - 下一步：若沒有人工阻塞，繼續掃 Inbox / Billing / Settings 等剩餘 client-side feedback，或用 Playwright 跑新使用者 activation route smoke。
 
+## 2026-07-03 - Inbox notice alert semantics
+
+- 已完成：Inbox notice 的 danger 錯誤提示改用 `role="alert"`，避免切換 IG scope、重新載入、更新對話、送出回覆、批次操作或標籤操作失敗只被當成一般狀態。
+- 已完成：成功與一般提示仍維持 `role="status"`，不增加非錯誤流程的干擾。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox / Contacts / Billing 的 client-side feedback，或回到新使用者首次啟用路徑做 mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

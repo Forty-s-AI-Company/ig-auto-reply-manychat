@@ -886,7 +886,7 @@ export function InboxClient({
           </header>
           {notice ? (
             <div
-              role="status"
+              role={notice.tone === "danger" ? "alert" : "status"}
               data-testid="inbox-notice"
               className={`mx-5 mt-3 rounded-md border px-3 py-2 text-sm ${NOTICE_STYLES[notice.tone]}`}
             >
