@@ -1,4 +1,5 @@
 import type { MetaChannelConfig } from "@/lib/channels/meta";
+import { getSafeChannelActionMessage } from "@/lib/channels/channel-action-feedback";
 import { getMetaChannelConfig, toPrismaJson } from "@/lib/channels/meta";
 import { getDb } from "@/lib/db";
 
@@ -82,7 +83,7 @@ export async function refreshDueInstagramTokens() {
       results.failures.push({
         channelId: channel.id,
         channelName: channel.name,
-        reason: error instanceof Error ? error.message : "Instagram token refresh failed.",
+        reason: getSafeChannelActionMessage("token", error),
       });
     }
   }

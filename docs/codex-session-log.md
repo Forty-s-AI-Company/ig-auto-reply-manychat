@@ -10501,6 +10501,22 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Instagram token cron summary safe error
+
+- 目標：接續 token refresh error audit，修正受保護 cron token refresh summary 可能把 provider raw error 放入 `failures.reason` 的缺口。
+- 產品修補：
+  - `refreshDueInstagramTokens` 的失敗 reason 改用 `getSafeChannelActionMessage("token", error)`。
+  - 保留既有 cron auth guard、channel scan、token refresh、config update 與 failed count 行為不變。
+- 測試：
+  - `tests/instagram-token-refresh-route.test.ts` 補 cron refresh failure summary guard。
+- 安全：
+  - 純受保護 operator/cron summary wording 修補，未改 token storage、OAuth、schema、tenant scope 或 production cron 設定
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Instagram token refresh safe error
 
 - 目標：接續 Channels / Instagram action feedback audit，修正 `/api/instagram/token/refresh` 失敗時可能把 provider raw error 直接拼回 API response 的缺口。

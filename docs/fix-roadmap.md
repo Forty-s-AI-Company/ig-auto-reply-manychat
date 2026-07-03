@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Instagram token cron summary safe error
+
+Current status:
+
+- `[x]` Protected cron token refresh failure summaries now use safe channel-action wording.
+- `[x]` `failures.reason` no longer echoes raw provider token errors.
+
+Remaining:
+
+- `[ ]` Keep cron outputs out of public screenshots and reviewer evidence unless redacted.
+
 # Latest - 2026-07-03 Instagram token refresh safe error
 
 Current status:
