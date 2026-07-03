@@ -69,4 +69,41 @@ describe("mock inbound webhook flow", () => {
     expect(messages[1].text).toContain("資料連結");
     expect(tags).toHaveLength(1);
   }, 45000);
+
+  it("writes synthetic inbound traffic into an existing instagram channel when channelId is provided", async () => {
+    const workspace = await ensureDefaultWorkspace();
+    const instagramChannel = await db.channel.create({
+      data: {
+        workspaceId: workspace.id,
+        type: "instagram",
+        name: "Instagram @reviewer.safe",
+        enabled: true,
+        configJson: {},
+      },
+    });
+
+    const result = await handleInboundMessage({
+      channelType: "instagram",
+      channelId: instagramChannel.id,
+      externalId: "reviewer-safe-ig-contact",
+      displayName: "Meta Reviewer Test Contact",
+      text: "Hi, I want product information.",
+      consentStatus: "opted_in",
+      workspaceId: workspace.id,
+      skipAutomations: true,
+    });
+
+    const storedConversation = await db.conversation.findUnique({
+      where: { id: result.conversation.id },
+      include: { channel: true, contact: true },
+    });
+    const mockChannels = await db.channel.findMany({
+      where: { workspaceId: workspace.id, type: "mock" },
+    });
+
+    expect(storedConversation?.channelId).toBe(instagramChannel.id);
+    expect(storedConversation?.channel.type).toBe("instagram");
+    expect(storedConversation?.contact.displayName).toBe("Meta Reviewer Test Contact");
+    expect(mockChannels).toHaveLength(1);
+  }, 45000);
 });

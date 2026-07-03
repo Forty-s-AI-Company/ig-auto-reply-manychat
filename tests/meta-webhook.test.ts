@@ -11,7 +11,8 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/db", () => ({ getDb: () => mocks.db }));
 
-import { buildWebhookChannelConfig, POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
+import { POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
+import { buildWebhookChannelConfig } from "@/lib/meta-webhook-config";
 import { metaAdapter, parseMetaWebhookComments, parseMetaWebhookMessages } from "@/lib/channels/meta";
 
 function sign(body: string, secret: string) {

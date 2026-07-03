@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   requireApiUser: vi.fn(),
   getCurrentWorkspaceId: vi.fn(),
+  getSelectedInstagramChannelId: vi.fn(),
+  getDb: vi.fn(),
   handleInboundMessage: vi.fn(),
   assertRateLimit: vi.fn(),
   getClientIp: vi.fn(),
@@ -11,6 +13,8 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/auth", () => ({ requireApiUser: mocks.requireApiUser }));
 vi.mock("@/lib/workspaces", () => ({ getCurrentWorkspaceId: mocks.getCurrentWorkspaceId }));
+vi.mock("@/lib/account-scope", () => ({ getSelectedInstagramChannelId: mocks.getSelectedInstagramChannelId }));
+vi.mock("@/lib/db", () => ({ getDb: mocks.getDb }));
 vi.mock("@/lib/messages", () => ({ handleInboundMessage: mocks.handleInboundMessage }));
 vi.mock("@/lib/security", () => ({
   assertRateLimit: mocks.assertRateLimit,
@@ -37,6 +41,12 @@ describe("mock webhook route", () => {
     mocks.hasValidSharedSecret.mockReturnValue(false);
     mocks.requireApiUser.mockResolvedValue({ user: { id: "user-a" }, response: null });
     mocks.getCurrentWorkspaceId.mockResolvedValue("workspace-reviewer");
+    mocks.getSelectedInstagramChannelId.mockResolvedValue(undefined);
+    mocks.getDb.mockReturnValue({
+      channel: {
+        findMany: vi.fn().mockResolvedValue([]),
+      },
+    });
     mocks.handleInboundMessage.mockResolvedValue({
       conversation: { id: "conversation-a" },
     });
@@ -62,6 +72,57 @@ describe("mock webhook route", () => {
         externalId: "reviewer-contact",
         displayName: "Meta Reviewer Contact",
         text: "hello",
+        workspaceId: "workspace-reviewer",
+      }),
+    );
+  });
+
+  it("targets the selected instagram channel for authenticated deployed reviewer-safe mock inbound writes", async () => {
+    mocks.getSelectedInstagramChannelId.mockResolvedValue("channel-instagram-1");
+
+    const response = await POST(
+      request({
+        externalId: "reviewer-contact",
+        displayName: "Meta Reviewer Contact",
+        text: "hello",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(202);
+    expect(body).toEqual({ ok: true, queued: true, conversationId: "conversation-a" });
+    expect(mocks.handleInboundMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        channelType: "instagram",
+        channelId: "channel-instagram-1",
+        channelName: undefined,
+        workspaceId: "workspace-reviewer",
+      }),
+    );
+  });
+
+  it("falls back to the only enabled instagram channel in the workspace when no cookie-scoped channel is selected", async () => {
+    mocks.getDb.mockReturnValue({
+      channel: {
+        findMany: vi.fn().mockResolvedValue([{ id: "channel-instagram-only" }]),
+      },
+    });
+
+    const response = await POST(
+      request({
+        externalId: "reviewer-contact",
+        displayName: "Meta Reviewer Contact",
+        text: "hello",
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(202);
+    expect(body).toEqual({ ok: true, queued: true, conversationId: "conversation-a" });
+    expect(mocks.handleInboundMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        channelType: "instagram",
+        channelId: "channel-instagram-only",
         workspaceId: "workspace-reviewer",
       }),
     );

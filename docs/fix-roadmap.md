@@ -3328,3 +3328,17 @@ Remaining:
 
 - `[ ]` Run the same empty-workspace path on Preview / Staging with a real empty test tenant before public paid launch.
 - `[ ]` Keep Production deployment and Production DB out of this test path unless a separate controlled launch runbook explicitly authorizes them.
+
+## Latest - 2026-07-03 Reviewer-safe staging remote demo-data lane
+
+Current status:
+
+- [x] Root cause is confirmed: reviewer synthetic inbound on staging was being written into a mock channel, while Inbox / Contacts reviewer surfaces were scoped to enabled Instagram channels only.
+- [x] Deployed authenticated /api/webhooks/mock path now prefers the selected Instagram channel, or the single enabled Instagram channel in the workspace, before falling back to mock.
+- [x] Added regression coverage for selected-Instagram routing and existing-Instagram persistence.
+- [x] Cleaned up existing Next.js 16 route-export blockers that would otherwise fail staging build verification for this lane.
+
+Remaining:
+
+- [ ] Push this staging-only fix through the staging branch and confirm staging.carry-digital-nomad.in.net/mock-tester synthetic reviewer traffic becomes visible in staging Inbox and Contacts.
+- [ ] After UI confirmation, update the Meta reviewer staging SOP to mark connected-channel plus remote Inbox / Contacts evidence as recordable.
