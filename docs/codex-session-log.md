@@ -10321,3 +10321,25 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Automations duplicate create CTA smoke fix
+
+- 目標：接續本機產品驗證，修正 Automations editor Playwright smoke 因兩個同名「新增自動化」CTA 造成的 strict locator failure。
+- 產品修補：
+  - Automations 空狀態的新增 CTA 補 `aria-label="從空狀態新增自動化"`，讓 header CTA 與 empty-state CTA 的用途更清楚。
+  - Automations editor smoke 改以 `automation-header-create-cta` 進入模板 Dialog，避免空狀態 CTA 存在時誤判。
+  - 維持既有建立自動化、模板選擇、React Flow editor、mobile notice 與 destructive dialog 邏輯不變。
+- 驗證：
+  - `npm run e2e:admin:ensure`
+  - `npx playwright test tests/e2e/automations-editor.spec.ts --workers=1`：8 passed
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`：通過；Windows Vitest batch access violation 仍由既有 runner 逐檔重跑確認。
+  - `npm run payuni:smoke`：通過，維持 PayUNI Sandbox。
+- 安全：
+  - 純 UI accessibility / smoke stability 修補，未改 automation API、schema、tenant scope 或 payment / OAuth 邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

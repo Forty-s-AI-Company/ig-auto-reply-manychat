@@ -46,7 +46,7 @@ test.describe("automations editor polish", () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await login(page, testInfo, adminEmail, adminPassword);
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByTestId("automation-header-create-cta").click();
     await page.getByRole("button", { name: "從空白開始" }).click();
 
     const canvas = page.getByTestId("automation-flow-canvas");
@@ -72,7 +72,7 @@ test.describe("automations editor polish", () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await login(page, testInfo, adminEmail, adminPassword);
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByTestId("automation-header-create-cta").click();
     await page.getByRole("button", { name: "從空白開始" }).click();
 
     await page.getByTestId("flow-add-node").click();
@@ -96,7 +96,7 @@ test.describe("automations editor polish", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await login(page, testInfo, adminEmail, adminPassword);
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
-    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByTestId("automation-header-create-cta").click();
     await page.getByRole("button", { name: "從空白開始" }).click();
 
     await expect(page.getByTestId("automation-mobile-canvas-notice")).toBeVisible();
@@ -115,7 +115,7 @@ test.describe("automations editor polish", () => {
     await page.getByRole("button", { name: "取消" }).click();
     await expect(page.getByTestId("automation-folder-dialog")).toHaveCount(0);
 
-    await page.getByRole("button", { name: "新增自動化" }).click();
+    await page.getByTestId("automation-header-create-cta").click();
     await expect(page.getByTestId("automation-template-dialog")).toBeVisible();
     await expectNoHorizontalOverflow(page);
     await page.getByLabel("關閉模板選擇").click();

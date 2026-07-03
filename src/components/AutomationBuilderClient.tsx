@@ -2053,6 +2053,7 @@ function FlowBuilderInner({
                             type="button"
                             onClick={() => setTemplateDialogOpen(true)}
                             data-testid="automation-empty-create-cta"
+                            aria-label="從空狀態新增自動化"
                             className="inline-flex h-10 items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                           >
                             新增自動化

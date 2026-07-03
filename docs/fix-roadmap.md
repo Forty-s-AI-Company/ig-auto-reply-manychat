@@ -4233,6 +4233,12 @@ Remaining:
 - 已完成：`DismissibleNoticeToast` 的 danger tone 改用 `role="alert"`，解除綁定 channel 失敗提示也改用 alert 語意。
 - 下一步：若沒有人工阻塞，繼續掃 Channel resync / Instagram profile refresh 的錯誤文案與 browser smoke。
 
+## 2026-07-03 - Automations duplicate create CTA smoke fix
+
+- 已完成：Automations 空狀態新增 CTA 補更明確的 accessible name，避免與 header「新增自動化」主 CTA 在輔助工具與 Playwright strict locator 中混淆。
+- 已完成：Automations editor smoke 改鎖定 header create CTA，確認 React Flow editor、刪除節點確認、mobile canvas notice 與 mobile dialog scroll-safe 仍通過。
+- 下一步：若沒有人工阻塞，繼續做新使用者啟用路徑或 Inbox / Contacts / Channels 的實際操作 smoke，優先找 visible-but-unusable 控制項。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
