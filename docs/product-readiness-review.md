@@ -1,3 +1,17 @@
+# 2026-07-03 - Empty workspace E2E script entry
+
+Status: improved for local new-user activation QA reliability; no product behavior change.
+
+What changed:
+
+- `npm run test:e2e:empty` now has a stable script entry that seeds an isolated empty E2E workspace before running the activation-path smoke.
+- The smoke covers Dashboard, Channels connect, Inbox empty, Contacts empty, and Automations empty states on desktop and mobile.
+
+Readiness implication:
+
+- Local QA can repeatedly verify the first-run empty workspace path without relying on seeded production-like data.
+- This does not change product behavior, production data, production deployment, or Meta / PayUNI gates.
+
 # 2026-07-03 - Contacts E2E seed preflight
 
 Status: improved for local Contacts QA reliability; no product behavior change.

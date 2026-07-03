@@ -9670,6 +9670,22 @@ Launch impact:
   - 只影響本機 / TEST_DATABASE_URL 的 E2E 前置資料流程，未改 Contacts 產品邏輯、登入 API、production DB、部署、Meta App Review 或 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Empty workspace E2E script entry
+
+- 目標：讓新使用者首次啟用路徑有固定本機 smoke 入口，不再只依賴既有 seeded workspace。
+- 驗證範圍：
+  - Dashboard
+  - Channels connect
+  - Inbox empty state
+  - Contacts empty state
+  - Automations empty state
+  - desktop / mobile
+- 修補：
+  - `test:e2e:empty` script 先執行 `npm run e2e:empty:ensure`，再跑 `empty-workspace-activation` Playwright smoke。
+- 安全：
+  - 只影響本機 / TEST_DATABASE_URL 的 E2E 前置資料流程，未改產品邏輯、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。

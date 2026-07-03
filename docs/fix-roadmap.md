@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Empty workspace E2E script entry
+
+Current status:
+
+- `[x]` `npm run test:e2e:empty` now runs the empty workspace seed helper before the activation-path Playwright smoke.
+- `[x]` The empty workspace path covers Dashboard, Channels connect, Inbox empty, Contacts empty, and Automations empty on desktop and mobile.
+
+Remaining:
+
+- `[ ]` Keep this smoke on TEST_DATABASE_URL only.
+- `[ ]` Use it as the local baseline before any future staging empty-tenant rehearsal.
+
 # Latest - 2026-07-03 Contacts E2E seed preflight
 
 Current status:

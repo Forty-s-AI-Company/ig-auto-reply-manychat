@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "test:e2e:auth": "npm run e2e:admin:ensure && playwright test tests/e2e/public-and-auth.spec.ts",
     "test:e2e:contacts": "npm run e2e:admin:ensure && playwright test tests/e2e/contacts-auth.spec.ts",
+    "test:e2e:empty": "npm run e2e:empty:ensure && playwright test tests/e2e/empty-workspace-activation.spec.ts --workers=1",
     "test:e2e:inbox": "npm run e2e:admin:ensure && playwright test tests/e2e/inbox-auth.spec.ts --workers=1",
     "test:e2e:simple": "playwright test tests/e2e/simple-release.spec.ts",
     "test:coverage": "vitest run tests/unit tests/integration --coverage",
