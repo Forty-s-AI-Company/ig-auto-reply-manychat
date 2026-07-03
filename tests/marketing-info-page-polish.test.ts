@@ -24,4 +24,20 @@ describe("marketing info page polish", () => {
     expect(helpCenterSource).toContain("受控開通的進階節點");
     expect(helpCenterSource).not.toContain("這裡放");
   });
+
+  it("keeps public API docs scoped to launch-safe Instagram and Meta surfaces", () => {
+    const apiDocsSource = readFileSync("src/app/api-docs/page.tsx", "utf8");
+
+    expect(apiDocsSource).toContain("launch-safe API");
+    expect(apiDocsSource).toContain("Instagram OAuth");
+    expect(apiDocsSource).toContain("/api/meta/oauth/start");
+    expect(apiDocsSource).toContain("/api/webhooks/meta");
+    expect(apiDocsSource).toContain("PayUNI Sandbox");
+    expect(apiDocsSource).toContain("其他通路、本機測試 provider");
+    expect(apiDocsSource).not.toContain("/api/oauth/meta-facebook");
+    expect(apiDocsSource).not.toContain("/api/oauth/telegram-bot");
+    expect(apiDocsSource).not.toContain("/api/oauth/mock");
+    expect(apiDocsSource).not.toContain("/api/webhooks/telegram");
+    expect(apiDocsSource).not.toContain("/api/webhooks/whatsapp");
+  });
 });

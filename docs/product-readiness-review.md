@@ -1,3 +1,18 @@
+# 2026-07-03 - Public API docs launch-safe scope
+
+Status: improved for developer-facing expectation setting; launch still depends on final API/security review.
+
+What changed:
+
+- `/api-docs` now lists only launch-safe public surfaces: Instagram OAuth, Meta Webhook, PayUNI Sandbox, and core scoped app APIs.
+- Internal provider routes and not-yet-public channel webhooks are no longer presented as official product APIs.
+- The page now explicitly says other channels and test providers remain controlled testing surfaces.
+
+Readiness implication:
+
+- Developers and early customers should no longer infer that non-Instagram channels are already part of the paid launch promise.
+- Actual provider expansion remains gated by platform review, security checks, and explicit launch readiness.
+
 # 2026-07-03 - Profile controlled settings polish
 
 Status: improved for mainstream account/settings UX; launch still depends on continued product-flow QA.

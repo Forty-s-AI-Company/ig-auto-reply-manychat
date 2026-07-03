@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Public API docs launch-safe scope
+
+Current status:
+
+- `[x]` `/api-docs` no longer lists internal or not-yet-public provider routes as official product APIs.
+- `[x]` API docs now focus on Instagram OAuth, Meta Webhook, PayUNI Sandbox, and scoped core app APIs.
+- `[x]` Public API copy now states that other channels and local test providers stay in controlled testing rather than public launch documentation.
+- `[x]` Source coverage guards against reintroducing Meta Facebook / Telegram / Mock / WhatsApp public API claims.
+
+Remaining:
+
+- `[ ]` Continue local-only product sweeps for public support pages, first-paid experience, and authenticated activation paths.
+- `[ ]` Keep unsupported provider expansion behind manual launch, App Review, and security gates.
+
 # Latest - 2026-07-03 Profile controlled settings polish
 
 Current status:

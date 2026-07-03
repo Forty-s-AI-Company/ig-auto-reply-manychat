@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Public API docs launch-safe scope
+
+- 目標：接續公開頁與 developer-facing surface audit，避免 `/api-docs` 對外宣傳尚未正式交付或僅供內部測試的通路。
+- 產品修補：
+  - `/api-docs` 改為只列出 launch-safe API：Instagram OAuth、Meta Webhook、PayUNI Sandbox 與核心 app APIs。
+  - 移除公開文件中的 Meta Facebook OAuth、Telegram、Mock、WhatsApp webhook 路由清單。
+  - 明確說明其他通路、本機測試 provider 與內部驗證路由保留在受控測試流程，不在正式產品文件中宣傳。
+- 測試：
+  - `tests/marketing-info-page-polish.test.ts` 補 API docs launch-safe scope guard。
+- 安全：
+  - 純公開文件頁文案修補，未改 API route、OAuth、Webhook、PayUNI、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Profile page controlled account settings polish
 
 - 目標：接續 Profile / Settings IA audit，收斂個人檔案頁內容易讓使用者誤會的登入方式與通知設定提示。
