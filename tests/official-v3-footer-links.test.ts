@@ -12,3 +12,15 @@ describe("official v3 footer links", () => {
     expect(source).not.toContain('href="#" className="hover:text-white"');
   });
 });
+
+describe("official v2 launch channel scope", () => {
+  it("does not advertise Messenger as an active launch-scope channel", () => {
+    const source = readFileSync("src/components/official/OfficialV2LandingPage.tsx", "utf8");
+
+    expect(source).toContain("Meta OAuth 和 Webhook");
+    expect(source).toContain("Meta OAuth, and webhooks");
+    expect(source).not.toContain("siFacebook");
+    expect(source).not.toContain('label: "Messenger"');
+    expect(source).not.toContain("Messenger permissions");
+  });
+});

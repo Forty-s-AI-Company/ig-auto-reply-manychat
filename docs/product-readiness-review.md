@@ -1,3 +1,17 @@
+# 2026-07-03 - Official v2 launch channel scope polish
+
+Status: improved for older public landing route consistency; launch remains gated by full user-path QA.
+
+What changed:
+
+- `/official/v2` no longer displays Messenger in the animated channel badges or integration wall.
+- Integration copy now talks about IG comments, Meta OAuth, and Webhooks without implying Messenger is launch-ready.
+
+Readiness implication:
+
+- Users who land on the older official v2 URL should see the same launch-scope promise as the active official page.
+- Messenger remains a future controlled expansion rather than a current paid-launch promise.
+
 # 2026-07-03 - Public marketing launch-scope copy polish
 
 Status: improved for pre-signup expectation setting; launch remains gated by full product-path QA.

@@ -9646,6 +9646,22 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Official v2 launch channel scope polish
+
+- 目標：接續公開頁 audit，修正舊版 `/official/v2` 仍把 Messenger 當成 launch-scope 通路展示的問題。
+- 產品修補：
+  - `OfficialV2LandingPage` 移除 Messenger channel badge 與 integration card。
+  - v2 integration copy 改為 IG comments / Meta OAuth / Webhooks，不再宣稱 Messenger permissions。
+- 測試：
+  - `tests/official-v3-footer-links.test.ts` 補 v2 channel scope guard。
+- 安全：
+  - 純公開頁文案 / icon scope 修補，未改 OAuth、Webhook、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Public marketing launch-scope copy polish
 
 - 目標：接續公開頁 audit，修正仍會讓訪客誤以為非 Instagram 通路已正式可用的文案。

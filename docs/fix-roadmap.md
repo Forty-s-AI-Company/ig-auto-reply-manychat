@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Official v2 launch channel scope polish
+
+Current status:
+
+- `[x]` `/official/v2` no longer displays Messenger as an active channel badge.
+- `[x]` `/official/v2` integration copy is now scoped to IG comments, Meta OAuth, and Webhooks.
+- `[x]` Source coverage prevents the legacy v2 page from reintroducing `siFacebook`, Messenger labels, or Messenger permission claims.
+
+Remaining:
+
+- `[ ]` Continue local-only sweep for old public pages and authenticated surfaces that can still over-promise unsupported channels.
+- `[ ]` Keep non-Instagram expansion behind explicit App Review, security, and operational support gates.
+
 # Latest - 2026-07-03 Public marketing launch-scope copy polish
 
 Current status:

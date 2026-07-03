@@ -23,7 +23,6 @@ import {
   Zap,
 } from "lucide-react";
 import {
-  siFacebook,
   siInstagram,
   siMeta,
 } from "simple-icons";
@@ -306,13 +305,11 @@ const copy = {
 const channels = [
   { label: "Instagram", icon: siInstagram, color: "#e4405f" },
   { label: "Meta", icon: siMeta, color: "#0467df" },
-  { label: "Messenger", icon: siFacebook, color: "#0866ff" },
 ];
 
 const integrations = [
   { label: "Instagram", icon: siInstagram, color: "#e4405f" },
   { label: "Meta", icon: siMeta, color: "#0467df" },
-  { label: "Messenger", icon: siFacebook, color: "#0866ff" },
 ];
 
 const featureIcons: IconComponent[] = [MessageCircle, Workflow, Inbox, Bot, ShieldCheck, Globe2];
@@ -645,8 +642,8 @@ function IntegrationWall({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-5 text-lg leading-8 text-[#4b4f4a]">
             {locale === "zh"
-              ? "官網只展示與 IG 留言、Meta OAuth、Webhook 和 Messenger 權限相關的連線，不再放無關的工具牆。"
-              : "The page only shows connections related to IG comments, Meta OAuth, webhooks, and Messenger permissions."}
+              ? "官網只展示與 IG 留言、Meta OAuth 和 Webhook 相關的連線，不再放無關的工具牆。"
+              : "The page only shows connections related to IG comments, Meta OAuth, and webhooks."}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
