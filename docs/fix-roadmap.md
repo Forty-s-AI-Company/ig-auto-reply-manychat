@@ -4425,6 +4425,12 @@ Remaining:
 - 已完成：focused tests 覆蓋 `normalizeInstagramMediaError`、`getSafeInstagramCommentSyncError`、`getSafeChannelActionMessage` 與 token refresh route safe copy。
 - 下一步：本機模式可切到 admin / settings / low-frequency surfaces 的逐頁 smoke，或回到產品主線掃 profile menu、settings IA 與非核心頁 CTA。
 
+## 2026-07-03 - Low-frequency settings and admin surface local smoke sweep
+
+- 已完成：本機 Playwright smoke 逐頁覆蓋 profile、AI settings、billing、wallet、referrals、affiliate、channels、tags、knowledge base、sequences、segments 與 admin financial / audit surfaces。
+- 已完成：desktop / mobile 均可讀、沒有水平 overflow，未捕捉 console warning / error。
+- 下一步：若仍維持本機模式，建議切到可販售前 final local sweep：比對 product-readiness / launch checklist，找出是否只剩 staging/production/Meta/PayUNI 人工 gate；若還要產品修補，優先從實際頁面 smoke 發現的具體缺口處理。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

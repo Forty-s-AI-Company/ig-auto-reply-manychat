@@ -10796,3 +10796,27 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Low-frequency settings and admin surface local smoke sweep
+
+- 目標：接續本機可販售前 QA，檢查低頻但正式營運會碰到的設定、錢包、推薦折抵與內部管理頁，在 desktop / mobile 下是否有空白頁、console error 或水平 overflow。
+- 驗證範圍：
+  - `/profile`、`/ai-settings`、`/billing`、`/wallet`、`/referrals`、`/affiliate`
+  - `/channels`、`/channels/connect`、`/tags`、`/knowledge-base`
+  - `/sequences`、`/segments`
+  - `/admin/audit`、`/admin/invoices`、`/admin/payouts`、`/admin/payouts/batches`、`/admin/affiliates`
+- 驗證結果：
+  - 使用本機 dev server 與 `ADMIN_EMAIL` / `ADMIN_PASSWORD` 登入後逐頁讀取。
+  - desktop 1366x768 與 mobile 390x844 均有可讀 H1。
+  - 所有頁面 `documentElement.scrollWidth - clientWidth <= 2`，未發現水平 overflow。
+  - 未捕捉到 console warning / error。
+- 產品判斷：
+  - 低頻 settings / admin / financial surfaces 目前沒有明顯空白頁、RWD 破口或死路體感。
+  - Admin financial surfaces 仍屬內部受控流程；正式對外仍以「推薦折抵，不提現」為主。
+- 安全：
+  - 未改產品 source code
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

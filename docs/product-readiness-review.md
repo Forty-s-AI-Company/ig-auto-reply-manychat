@@ -2278,3 +2278,9 @@ Readiness implication:
 - Readiness update：Instagram media、comments sync、token refresh 的使用者可見錯誤面已確認有 safe mapper 與 focused tests，不會把 raw Meta provider 訊息直接丟到產品 UI。
 - Result：Meta / Instagram 相關的失敗體感更接近正式 SaaS，reviewer 或使用者遇到權限 / token / Graph 限制時會看到可讀中文指引。
 - Remaining risk：此輪沒有做 staging live Meta Graph call。真實 reviewer-safe channel、webhook 與 App Review evidence 仍需依 staging asset lane 完成。
+
+## 2026-07-03 - Low-frequency settings and admin surface local smoke sweep
+
+- Readiness update：Profile、AI Settings、Billing、Wallet、Referrals、Affiliate、Channels、Tags、Knowledge Base、Sequences、Segments 與 Admin financial / audit surfaces 已完成本機 desktop / mobile 快速 smoke。
+- Result：低頻但正式營運會碰到的頁面目前都有可讀 heading、沒有水平 overflow，也沒有 console warning / error。
+- Remaining risk：這仍是本機 smoke，不等於 staging / production sign-off。Admin financial surfaces 仍需維持內部受控使用，對外推薦制度仍以折抵、不提現為準。
