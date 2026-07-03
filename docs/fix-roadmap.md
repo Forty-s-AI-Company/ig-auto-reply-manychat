@@ -4305,6 +4305,12 @@ Remaining:
 - 已完成：popup 內失敗狀態補紅色視覺語意與穩定 test id，不改 token exchange、callback payload 或 popup auto-close 流程。
 - 下一步：若沒有人工阻塞，繼續掃 Social connect / Channels reviewer-safe UX，或補 reviewer rehearsal / simple release smoke。
 
+## 2026-07-03 - Token provider fallback gate clarity
+
+- 已完成：Telegram token provider 表單空 token 時不再送出 API，並補 disabled reason、`aria-describedby`、`title` 與 network error fallback。
+- 已完成：保留既有 token API、popup postMessage 與 provider registry，不改資料模型或 OAuth 主流程。
+- 下一步：若沒有人工阻塞，繼續掃 Channels fallback / profile menu / settings entry 的 remaining visible-but-unusable controls。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

@@ -13,44 +13,62 @@ export function TokenProviderForm({ provider, title, description }: TokenProvide
   const [label, setLabel] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const trimmedToken = token.trim();
+  const submitDisabledReason = submitting
+    ? "正在驗證 Telegram Bot Token，請稍候。"
+    : trimmedToken
+      ? null
+      : "請先貼上 Telegram Bot Token。";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
-    setError("");
+    if (submitting) return;
 
-    const response = await fetch(`/api/oauth/${provider}/token`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ token, label }),
-    });
-    const data = (await response.json().catch(() => ({}))) as {
-      ok?: boolean;
-      error?: string;
-      provider?: string;
-      accountId?: string;
-      displayName?: string;
-    };
-
-    if (!response.ok || !data.ok || !data.provider) {
-      setSubmitting(false);
-      setError(data.error || "Token 連接失敗。");
+    if (!trimmedToken) {
+      setError("請先貼上 Telegram Bot Token。");
       return;
     }
 
-    if (window.opener) {
-      window.opener.postMessage(
-        {
-          status: "success",
-          provider: data.provider,
-          accountId: data.accountId,
-          displayName: data.displayName,
-        },
-        window.location.origin,
-      );
-    }
+    setSubmitting(true);
+    setError("");
 
-    window.close();
+    try {
+      const response = await fetch(`/api/oauth/${provider}/token`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token: trimmedToken, label: label.trim() }),
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+        provider?: string;
+        accountId?: string;
+        displayName?: string;
+      };
+
+      if (!response.ok || !data.ok || !data.provider) {
+        setError(data.error || "Token 連接失敗。");
+        return;
+      }
+
+      if (window.opener) {
+        window.opener.postMessage(
+          {
+            status: "success",
+            provider: data.provider,
+            accountId: data.accountId,
+            displayName: data.displayName,
+          },
+          window.location.origin,
+        );
+      }
+
+      window.close();
+    } catch {
+      setError("無法連線到 Token 驗證服務，請稍後再試。");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -89,11 +107,18 @@ export function TokenProviderForm({ provider, title, description }: TokenProvide
 
       <button
         type="submit"
-        disabled={submitting}
+        disabled={Boolean(submitDisabledReason)}
+        aria-describedby={submitDisabledReason ? "token-provider-submit-disabled-reason" : undefined}
+        title={submitDisabledReason || undefined}
         className="flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white transition hover:bg-[#005fd0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {submitting ? "驗證中…" : "連接 Telegram Bot"}
       </button>
+      {submitDisabledReason ? (
+        <p id="token-provider-submit-disabled-reason" className="text-xs leading-5 text-[#667085]">
+          {submitDisabledReason}
+        </p>
+      ) : null}
     </form>
   );
 }

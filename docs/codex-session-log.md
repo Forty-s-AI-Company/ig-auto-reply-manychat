@@ -10534,3 +10534,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Token provider fallback gate clarity
+
+- 目標：接續 Channels / OAuth fallback audit，修正 Telegram token provider 表單空 token 仍可送出、網路錯誤可能不回到 UI 的半實作體感。
+- 產品修補：
+  - `TokenProviderForm` 會先 trim token，空 token 時不送 API，並顯示「請先貼上 Telegram Bot Token」。
+  - 送出按鈕補 `aria-describedby`、`title` 與 disabled helper text，驗證中也會提示請稍候。
+  - fetch/network 失敗會顯示「無法連線到 Token 驗證服務，請稍後再試。」而不是讓 Promise 失敗沉默。
+  - 保留既有 `/api/oauth/telegram-bot/token` API、popup postMessage 與 token 儲存流程不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 token provider disabled reason 與 network error guard。
+- 安全：
+  - 純 client form UX / error handling 修補，未改 token API、storage、OAuth registry、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

@@ -110,6 +110,10 @@ describe("channel client feedback", () => {
     const resyncButton = readFileSync("src/components/oauth/ResyncConnectedAccountButton.tsx", "utf8");
 
     expect(tokenForm).toContain('role="alert"');
+    expect(tokenForm).toContain("請先貼上 Telegram Bot Token。");
+    expect(tokenForm).toContain("無法連線到 Token 驗證服務，請稍後再試。");
+    expect(tokenForm).toContain('aria-describedby={submitDisabledReason ? "token-provider-submit-disabled-reason" : undefined}');
+    expect(tokenForm).toContain('id="token-provider-submit-disabled-reason"');
     expect(tokenForm).toContain("focus:ring-2 focus:ring-[#dbeafe]");
     expect(tokenForm).toContain("focus-visible:ring-[#006fe6]");
     expect(resyncButton).toContain("focus-visible:ring-[#006fe6]");
