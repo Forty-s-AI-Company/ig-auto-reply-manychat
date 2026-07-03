@@ -15,7 +15,7 @@ export default async function TagsPage() {
         description="建立、編輯、刪除聯絡人標籤。"
         endpoint="/api/tags"
         initialItems={JSON.parse(JSON.stringify(tags))}
-        createTemplate={{ name: "new-tag", color: "#2563eb" }}
+        createTemplate={{ name: "重要客戶", color: "#2563eb" }}
       />
     </AdminShell>
   );

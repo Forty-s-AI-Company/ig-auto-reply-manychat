@@ -9609,3 +9609,22 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Tags and knowledge base CRUD polish
+
+- 目標：接續 Tags / Knowledge Base 低頻頁面 audit，讓共用 JSON CRUD 介面不再像未收尾的內部工具。
+- 產品修補：
+  - `JsonCrudClient` 新增空狀態說明，讓尚未建立標籤或知識庫時有清楚下一步。
+  - 新增、編輯、刪除、預覽與 Dialog 按鈕補齊 keyboard-visible focus treatment。
+  - 刪除 Dialog 補 `aria-describedby`，footer 改為手機版不擠壓的 `flex-col-reverse`。
+  - Tags 預設範本改為「重要客戶」，Knowledge Base 預設範本改為「營業時間怎麼查？」與正式回答提示，避免 `new-tag` / placeholder 語氣。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 JsonCrud delete dialog / focus / empty state guard。
+  - `tests/admin-shell-localized-titles.test.ts` 補 Tags / Knowledge Base 預設範本文案 guard。
+- 安全：
+  - 未改 tags API、knowledge-base API、OAuth、Webhook、付款或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

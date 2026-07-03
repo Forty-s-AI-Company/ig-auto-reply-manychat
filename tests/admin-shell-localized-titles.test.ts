@@ -13,8 +13,12 @@ describe("admin shell localized titles", () => {
     const adminAffiliatesPage = readFileSync("src/app/admin/affiliates/page.tsx", "utf8");
 
     expect(tagsPage).toContain('AdminShell title="標籤管理"');
+    expect(tagsPage).toContain("重要客戶");
+    expect(tagsPage).not.toContain("new-tag");
     expect(tagsPage).not.toContain('AdminShell title="Tags"');
     expect(knowledgeBasePage).toContain('AdminShell title="知識庫"');
+    expect(knowledgeBasePage).toContain("營業時間怎麼查？");
+    expect(knowledgeBasePage).toContain("客服可以引用的正式回答內容");
     expect(knowledgeBasePage).not.toContain('AdminShell title="Knowledge Base"');
     expect(aiSettingsPage).toContain('AdminShell title="AI 設定"');
     expect(aiSettingsPage).not.toContain('AdminShell title="InboxPilot AI"');

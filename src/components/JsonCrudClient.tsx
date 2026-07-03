@@ -51,6 +51,15 @@ function formatValue(value: unknown) {
   return String(value);
 }
 
+const primaryButtonClass =
+  "rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
+
+const secondaryButtonClass =
+  "rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
+
+const dangerButtonClass =
+  "rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
+
 export function JsonCrudClient({
   title,
   description,
@@ -175,13 +184,14 @@ export function JsonCrudClient({
       ) : null}
 
       <section className="rounded-lg border border-[#d7dbe0] bg-white p-4 shadow-sm">
-        <h3 className="mb-2 font-medium text-[#111827]">新增資料</h3>
+        <h3 className="mb-2 font-medium text-[#111827]">新增{title}</h3>
+        <p className="mb-3 text-sm leading-6 text-[#667085]">請確認 JSON 欄位後再新增；儲存後會立即套用到目前工作區。</p>
         <textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           className="h-48 w-full rounded-md border border-[#d7dbe0] bg-[#f8fafc] p-3 font-mono text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#006fe6]/15"
         />
-        <button onClick={createItem} className="mt-3 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+        <button onClick={createItem} className={`mt-3 ${primaryButtonClass}`}>
           新增
         </button>
       </section>
@@ -196,14 +206,14 @@ export function JsonCrudClient({
                   <p className="font-medium text-[#111827]">{String(item.name || item.title || id)}</p>
                   <p className="text-xs text-[#667085]">{id}</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {queueBroadcast ? (
-                    <button onClick={() => previewItem(id)} className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc]">
+                    <button onClick={() => previewItem(id)} className={secondaryButtonClass}>
                       預覽
                     </button>
                   ) : null}
                   {queueBroadcast ? (
-                    <button onClick={() => queue(id)} className="rounded-md border border-[#006fe6] px-3 py-2 text-sm font-medium text-[#006fe6] hover:bg-[#eff6ff]">
+                    <button onClick={() => queue(id)} className="rounded-md border border-[#006fe6] bg-white px-3 py-2 text-sm font-medium text-[#006fe6] transition hover:bg-[#eff6ff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                       加入佇列
                     </button>
                   ) : null}
@@ -212,11 +222,11 @@ export function JsonCrudClient({
                       setEditingId(id);
                       setEditingJson(JSON.stringify(item, null, 2));
                     }}
-                    className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc]"
+                    className={secondaryButtonClass}
                   >
                     編輯
                   </button>
-                  <button onClick={() => setDeleteTargetId(id)} className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50">
+                  <button onClick={() => setDeleteTargetId(id)} className={dangerButtonClass}>
                     刪除
                   </button>
                 </div>
@@ -227,6 +237,12 @@ export function JsonCrudClient({
             </div>
           );
         })}
+        {items.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-[#cfd4dc] bg-white p-8 text-center">
+            <p className="text-sm font-medium text-[#111827]">目前還沒有{title}資料</p>
+            <p className="mt-2 text-sm leading-6 text-[#667085]">可以先用上方 JSON 範本建立第一筆資料；若只是測試環境，請使用不含真實個資的內容。</p>
+          </div>
+        ) : null}
       </section>
 
       {editingId ? (
@@ -234,7 +250,7 @@ export function JsonCrudClient({
           <div className="w-full max-w-3xl rounded-lg border border-[#d7dbe0] bg-white p-4 shadow-xl">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-medium text-[#111827]">編輯 {editingId}</h3>
-              <button onClick={() => setEditingId("")} className="text-sm text-[#667085] hover:text-[#111827]">
+              <button onClick={() => setEditingId("")} className="rounded-md px-2 py-1 text-sm text-[#667085] hover:bg-[#f8fafc] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                 關閉
               </button>
             </div>
@@ -243,7 +259,7 @@ export function JsonCrudClient({
               onChange={(event) => setEditingJson(event.target.value)}
               className="h-[50vh] w-full rounded-md border border-[#d7dbe0] bg-[#f8fafc] p-3 font-mono text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#006fe6]/15"
             />
-            <button onClick={updateItem} className="mt-3 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
+            <button onClick={updateItem} className={`mt-3 ${primaryButtonClass}`}>
               儲存
             </button>
           </div>
@@ -256,19 +272,20 @@ export function JsonCrudClient({
             role="dialog"
             aria-modal="true"
             aria-labelledby="json-crud-delete-title"
+            aria-describedby="json-crud-delete-description"
             className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
           >
             <h3 id="json-crud-delete-title" className="text-base font-semibold text-[#111827]">
               確認刪除資料？
             </h3>
-            <p className="mt-2 text-sm leading-6 text-[#475467]">
+            <p id="json-crud-delete-description" className="mt-2 text-sm leading-6 text-[#475467]">
               這會刪除 ID 為 <span className="font-mono text-xs text-[#111827]">{deleteTargetId}</span> 的資料。刪除後需要重新建立，請先確認它沒有被其他流程使用。
             </p>
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
               <button
                 type="button"
                 onClick={() => setDeleteTargetId("")}
-                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc]"
+                className={secondaryButtonClass}
               >
                 取消
               </button>
@@ -276,7 +293,7 @@ export function JsonCrudClient({
                 type="button"
                 onClick={() => deleteItem(deleteTargetId)}
                 data-testid="json-crud-confirm-delete"
-                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white hover:bg-red-800"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
               >
                 確認刪除
               </button>
@@ -293,7 +310,7 @@ export function JsonCrudClient({
                 <h3 className="font-medium text-[#111827]">廣播預覽</h3>
                 <p className="mt-1 text-sm text-[#667085]">{preview.broadcast?.name || "未命名廣播"}</p>
               </div>
-              <button onClick={() => setPreview(null)} className="text-sm text-[#667085] hover:text-[#111827]">
+              <button onClick={() => setPreview(null)} className="rounded-md px-2 py-1 text-sm text-[#667085] hover:bg-[#f8fafc] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                 關閉
               </button>
             </div>

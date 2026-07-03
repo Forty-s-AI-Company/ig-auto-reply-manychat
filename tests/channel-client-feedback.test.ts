@@ -28,7 +28,12 @@ describe("channel client feedback", () => {
     expect(source).toContain('setFeedback("已刪除資料。")');
     expect(source).toContain('role="dialog"');
     expect(source).toContain('aria-modal="true"');
+    expect(source).toContain('aria-describedby="json-crud-delete-description"');
+    expect(source).toContain("flex flex-col-reverse justify-end gap-2 sm:flex-row");
     expect(source).toContain('data-testid="json-crud-confirm-delete"');
+    expect(source).toContain("目前還沒有{title}資料");
+    expect(source).toContain("focus-visible:ring-[#006fe6]");
+    expect(source).toContain("focus-visible:ring-red-300");
     expect(source).not.toContain('await fetch(`${endpoint}/${id}`, { method: "DELETE" });\n    await reload();');
   });
 

@@ -15,7 +15,7 @@ export default async function KnowledgeBasePage() {
         description="AI FAQ 會優先使用目前工作區的知識庫內容作為回覆參考。"
         endpoint="/api/knowledge-base"
         initialItems={JSON.parse(JSON.stringify(items))}
-        createTemplate={{ title: "常見問題", content: "請填入回答內容。", enabled: true }}
+        createTemplate={{ title: "營業時間怎麼查？", content: "請在這裡填入客服可以引用的正式回答內容。", enabled: true }}
       />
     </AdminShell>
   );
