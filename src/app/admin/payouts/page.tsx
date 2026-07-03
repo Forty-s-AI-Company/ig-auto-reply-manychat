@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AdminShell } from "@/components/AdminShell";
+import { AdminPayoutDecisionButtons } from "@/components/AdminPayoutDecisionButtons";
 import { requireUser } from "@/lib/auth";
 import { formatTwd } from "@/lib/billing";
 import { getDb } from "@/lib/db";
@@ -112,26 +113,11 @@ export default async function AdminPayoutsPage() {
                   <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(request.requestedAt)}</td>
                   <td className="px-4 py-3">
                     {request.status === "requested" ? (
-                      <div className="flex flex-wrap gap-2">
-                        <form action={`/api/admin/payouts/${request.id}/approve`} method="post">
-                          <button
-                            type="submit"
-                            title="核准只會進入內部對帳批次，不會自動匯款。"
-                            className="inline-flex h-8 items-center rounded-md bg-[var(--primary)] px-3 text-xs font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-                          >
-                            核准進入對帳
-                          </button>
-                        </form>
-                        <form action={`/api/admin/payouts/${request.id}/reject`} method="post">
-                          <button
-                            type="submit"
-                            title="退回只會更新內部申請狀態，不會執行金流動作。"
-                            className="inline-flex h-8 items-center rounded-md border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-700 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
-                          >
-                            退回申請
-                          </button>
-                        </form>
-                      </div>
+                      <AdminPayoutDecisionButtons
+                        payoutId={request.id}
+                        affiliateLabel={request.affiliate.name || request.affiliate.email}
+                        amountLabel={formatTwd(request.amount)}
+                      />
                     ) : (
                       <span className="text-xs text-[var(--text-muted)]">已進入後續流程</span>
                     )}

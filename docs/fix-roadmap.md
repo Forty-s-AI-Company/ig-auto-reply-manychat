@@ -3742,6 +3742,13 @@ Remaining:
 - 已完成：focused tests 與 authenticated desktop/mobile smoke 通過。
 - 下一步：若沒有人工阻塞，繼續掃 Admin financial surfaces 或回到 Automations / Dashboard 的剩餘 mobile CTA 與 disabled UX。
 
+## 2026-07-03 - Admin financial destructive action confirmation
+
+- 已完成：Admin payouts 的 `核准進入對帳 / 退回申請` 從直接 POST 表單改為確認 Dialog。
+- 已完成：Dialog 明確標示內部對帳、非自動匯款、非 PayUNI 付款，降低營運人員誤操作風險。
+- 已完成：focused test 覆蓋 Dialog、`aria-modal`、不使用 `window.confirm`。
+- 下一步：若沒有人工阻塞，繼續檢查 Admin invoices / payout batches 的 mobile table density，或切回 Automations / Dashboard 剩餘產品缺口。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

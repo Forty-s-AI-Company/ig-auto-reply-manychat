@@ -9386,3 +9386,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Admin financial destructive action confirmation
+
+- 目標：接續 Admin financial surfaces audit，收斂分潤審核中的高風險內部狀態變更，避免「核准 / 退回」像單擊即執行的粗糙操作。
+- 產品修補：
+  - 新增 `src/components/AdminPayoutDecisionButtons.tsx`，把分潤 `核准進入對帳 / 退回申請` 改為明確確認 Dialog。
+  - Dialog 會顯示申請人、金額、操作說明與安全提醒，並明確說明不會自動匯款、不會觸發 PayUNI 付款。
+  - `src/app/admin/payouts/page.tsx` 改用 client decision component，保留既有 API route 與內部審核流程。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts` 補 Admin payout decision Dialog、`aria-modal`、不使用 `window.confirm` 與不觸發現金付款文案覆蓋。
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

@@ -523,3 +523,10 @@ Billing launch implication:
 - `[x]` Authenticated desktop/mobile smoke still verifies Referrals, Affiliate controlled opening, and Wallet lifecycle guidance.
 - `[x]` Cash payout remains controlled; this only improves navigation back to referral credits, wallet, and billing.
 - `[ ]` PayUNI production and cash payout remain Hold.
+
+# 2026-07-03 - Admin financial destructive action confirmation
+
+- `[x]` Admin payout approve / reject actions now require a confirmation dialog instead of direct single-click form submission.
+- `[x]` The dialog states that approval only enters internal reconciliation and does not trigger bank transfer, PayUNI payment, or cash payout.
+- `[x]` Focused source test covers the controlled dialog, `aria-modal`, and no native `window.confirm`.
+- `[ ]` Public referral credits remain the active sales path; cash payout stays a controlled future operation.

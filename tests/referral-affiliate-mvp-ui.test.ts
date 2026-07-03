@@ -64,14 +64,24 @@ describe("referral and affiliate MVP UX guards", () => {
 
   it("gives admin operators approve and reject controls for payout requests", () => {
     const source = read("src/app/admin/payouts/page.tsx");
+    const decisionSource = read("src/components/AdminPayoutDecisionButtons.tsx");
 
-    expect(source).toContain("/approve");
-    expect(source).toContain("/reject");
+    expect(decisionSource).toContain("/approve");
+    expect(decisionSource).toContain("/reject");
     expect(source).toContain("分潤審核（內部）");
     expect(source).toContain("內部保留的受控分潤審核面板");
     expect(source).toContain("不會觸發銀行匯款、金流付款或現金提領");
-    expect(source).toContain("核准進入對帳");
-    expect(source).toContain("退回申請");
+    expect(source).toContain("AdminPayoutDecisionButtons");
+    expect(decisionSource).toContain("確認核准進入對帳？");
+    expect(decisionSource).toContain("確認退回分潤申請？");
+    expect(decisionSource).toContain("核准進入對帳");
+    expect(decisionSource).toContain("退回申請");
+    expect(decisionSource).toContain('role="dialog"');
+    expect(decisionSource).toContain('aria-modal="true"');
+    expect(decisionSource).toContain('data-testid="admin-payout-decision-dialog"');
+    expect(decisionSource).toContain("不會自動匯款");
+    expect(decisionSource).toContain("不會執行金流、匯款或提款動作");
+    expect(decisionSource).not.toContain("window.confirm");
     expect(source).toContain("表格可左右滑動查看 Email、金額、狀態與操作");
     expect(source).not.toContain("提領管理");
     expect(source).not.toContain("已付款");

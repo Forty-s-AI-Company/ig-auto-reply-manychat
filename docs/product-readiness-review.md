@@ -1853,3 +1853,9 @@ Readiness implication:
 - Readiness update：推薦折抵、折抵金錢包與受控聯盟頁面中導回正式主線的 CTA 已補上 keyboard-visible focus treatment。
 - Result：使用者在金融面遇到受控功能時，更容易回到可用的推薦活動、折抵金錢包與方案頁，不會像進入死路。
 - Remaining risk：Admin financial surfaces 仍建議再做一次 mobile / table overflow / destructive action review。
+
+## 2026-07-03 - Admin financial destructive action confirmation
+
+- Readiness update：Admin payouts 的受控分潤核准 / 退回現在需要明確確認 Dialog，不再是表格內單擊即提交。
+- Result：內部營運人員能在確認前看到申請人、金額與「不會自動匯款 / 不會 PayUNI 付款」說明，降低財務面誤操作風險。
+- Remaining risk：這仍是內部受控聯盟流程，不屬於公開推薦折抵主線；正式現金分潤仍維持 Hold。
