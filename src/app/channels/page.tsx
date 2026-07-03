@@ -229,7 +229,11 @@ export default async function ChannelsPage({ searchParams }: Props) {
                 <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-[#98a2b3]">{group.title}</p>
                 <div className="space-y-1">
                   {group.items.map((item) => (
-                    <Link key={`${group.title}-${item.label}`} href={item.href} className="block rounded-md px-2 py-1.5 text-[#4b5563] hover:bg-[#eceff3] hover:text-[#111827]">
+                    <Link
+                      key={`${group.title}-${item.label}`}
+                      href={item.href}
+                      className="block rounded-md px-2 py-1.5 text-[#4b5563] hover:bg-[#eceff3] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                    >
                       {item.label}
                     </Link>
                   ))}
@@ -248,8 +252,8 @@ export default async function ChannelsPage({ searchParams }: Props) {
                 管理工作區、通知、收件匣行為、平台連線、方案與整合。低頻設定集中在這裡，主選單保留日常操作。
               </p>
             </div>
-            <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8]">
-              <Camera className="h-4 w-4" />
+            <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
+              <Camera className="h-4 w-4" aria-hidden="true" />
               + 新增平台帳號
             </Link>
           </header>
@@ -326,15 +330,15 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <ConnectionStateBadge tone={entry.kind === "static" ? "neutral" : entry.uiState.enabled ? "success" : "warning"}>
                         {entry.kind === "static" ? "規劃中" : entry.uiState.statusLabel || "暫停中"}
                       </ConnectionStateBadge>
-                      <Plug className="h-5 w-5 text-[#98a2b3]" />
+                      <Plug className="h-5 w-5 text-[#98a2b3]" aria-hidden="true" />
                     </div>
                   </div>
                   {entry.kind === "static" ? (
-                    <DisabledFeatureButton>正式開放後可連線</DisabledFeatureButton>
+                    <DisabledFeatureButton reason="這個平台入口仍在規劃中，完成供應商串接、權限與訊息收發驗證後才會開放。">正式開放後可連線</DisabledFeatureButton>
                   ) : entry.uiState.enabled ? (
                     <Link
                       href={entry.href}
-                      className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8]"
+                      className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     >
                       登入並連線
                     </Link>
@@ -354,7 +358,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
           <section id="instagram" className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <SectionTitle title="Instagram" description="管理已連結帳號、token 狀態、權限刷新與帳號停用。" />
-              <Link href={INSTAGRAM_TESTER_INVITES_URL} target="_blank" rel="noopener noreferrer" className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc]">
+              <Link href={INSTAGRAM_TESTER_INVITES_URL} target="_blank" rel="noopener noreferrer" className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                 開啟 Instagram 應用程式權限
               </Link>
             </div>
@@ -455,7 +459,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
             <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="方案與用量">
               方案、發票與付款方式集中在方案頁管理。
               <div className="mt-3">
-                <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/billing">
+                <Link className="rounded-sm text-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2" href="/billing">
                   前往方案頁
                 </Link>
               </div>
@@ -471,7 +475,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                     完整版測試站可設定
                   </DisabledFeatureButton>
                 ) : (
-                  <Link className="text-sm font-medium text-[#006fe6] hover:text-[#0057b8]" href="/ai-settings">
+                  <Link className="rounded-sm text-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2" href="/ai-settings">
                     前往 AI 設定
                   </Link>
                 )}
@@ -539,7 +543,7 @@ function SettingPanel({
     <div id={id} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
       <div className="flex items-center justify-between gap-2 text-[#111827]">
         <div className="flex items-center gap-2">
-          <span className="text-[#667085]">{icon}</span>
+          <span className="text-[#667085]" aria-hidden="true">{icon}</span>
           <h3 className="font-medium">{title}</h3>
         </div>
         {badge ? <StatusBadge>{badge}</StatusBadge> : null}
@@ -607,7 +611,8 @@ function DisabledFeatureButton({
   testId?: string;
   reason?: string;
 }) {
-  const reasonId = testId && reason ? `${testId}-reason` : undefined;
+  const visibleReason = reason || "此功能目前受控開通，完成安全、權限與營運規則驗證後才會開放。";
+  const reasonId = testId && visibleReason ? `${testId}-reason` : undefined;
 
   return (
     <span className="mt-4 inline-flex max-w-full flex-col items-start gap-1">
@@ -621,9 +626,9 @@ function DisabledFeatureButton({
       >
         {children}
       </button>
-      {reasonId ? (
+      {visibleReason ? (
         <span id={reasonId} className="max-w-sm text-xs leading-5 text-[#98a2b3]">
-          {reason}
+          {visibleReason}
         </span>
       ) : null}
     </span>

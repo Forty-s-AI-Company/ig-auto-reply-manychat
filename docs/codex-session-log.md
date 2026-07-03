@@ -9519,3 +9519,22 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Channels settings link and disabled UX polish
+
+- 目標：接續 Settings / Channels low-frequency settings audit，補強設定頁內部連結與受控開通控制項的可理解性。
+- 產品修補：
+  - Channels 設定側欄 anchor、頁首新增平台帳號、Instagram 權限外連、方案頁與 AI 設定連結補齊 keyboard-visible focus ring。
+  - `DisabledFeatureButton` 在未提供自訂 reason 時會顯示預設受控開通說明，避免只留下灰色不可按按鈕。
+  - 靜態平台入口補「供應商串接、權限與訊息收發驗證」說明。
+  - Settings panel 裝飾 icon 補 `aria-hidden`。
+- 測試：
+  - `tests/channels-connect-visibility.test.ts` 補 settings page link / disabled UX guard。
+  - Channels planned settings authenticated desktop/mobile smoke 通過。
+- 安全：
+  - 未改 OAuth、Webhook、token、workspace scope 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

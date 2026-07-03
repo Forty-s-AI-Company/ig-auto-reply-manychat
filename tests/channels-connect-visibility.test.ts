@@ -133,4 +133,14 @@ describe("channel connect visibility", () => {
     expect(profileSource).toContain("請先新增 Instagram 帳號");
     expect(profileSource).not.toContain("Facebook Messenger");
   });
+
+  it("keeps the settings page links and disabled controls understandable", () => {
+    const channelsSource = readFileSync("src/app/channels/page.tsx", "utf8");
+
+    expect(channelsSource).toContain("focus-visible:ring-[#006fe6]");
+    expect(channelsSource).toContain("此功能目前受控開通，完成安全、權限與營運規則驗證後才會開放。");
+    expect(channelsSource).toContain("完成供應商串接、權限與訊息收發驗證後才會開放");
+    expect(channelsSource).toContain("const reasonId = testId && visibleReason ? `${testId}-reason` : undefined");
+    expect(channelsSource).toContain('aria-hidden="true"');
+  });
 });

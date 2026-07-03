@@ -3791,6 +3791,12 @@ Remaining:
 - 已完成：「新增平台帳號」CTA 補齊 keyboard-visible focus treatment，Profile 頁裝飾 icon 補 `aria-hidden`。
 - 下一步：若沒有人工阻塞，繼續掃 Help Center / Settings low-frequency pages，或切回 Inbox / Contacts / Automations 的剩餘 mobile CTA 與 disabled UX。
 
+## 2026-07-03 - Channels settings link and disabled UX polish
+
+- 已完成：Channels 設定側欄 anchor、Instagram 權限外連、方案頁與 AI 設定連結補齊 keyboard-visible focus treatment。
+- 已完成：Channels 共用 disabled control 現在即使沒有自訂 reason，也會顯示清楚的受控開通說明。
+- 下一步：若沒有人工阻塞，繼續檢查 Help Center / public info pages 的 CTA consistency，或切回 Inbox / Contacts / Automations 剩餘產品路徑。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
