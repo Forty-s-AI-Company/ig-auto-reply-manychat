@@ -3827,6 +3827,12 @@ Remaining:
 - 已完成：Tags / Knowledge Base 預設新增範本改成正式產品語氣，避免 `new-tag` 與 placeholder 文案。
 - 下一步：若沒有人工阻塞，繼續回到完整空 workspace 啟用路徑，或掃 Admin / low-frequency financial surfaces 的 remaining disabled UX。
 
+## 2026-07-03 - Mobile navigation focus polish
+
+- 已完成：手機版主選單的開啟、關閉與 nav links 補齊 keyboard-visible focus treatment。
+- 已完成：Mobile nav decorative icons 補 `aria-hidden`，維持既有 IA 與 release-mode nav filtering 不變。
+- 下一步：若沒有人工阻塞，繼續掃完整 onboarding path 的 browser smoke，或回到 Billing / Referrals / Admin financial surfaces 做剩餘 mobile polish。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

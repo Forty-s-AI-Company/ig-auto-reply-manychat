@@ -5,6 +5,7 @@ const profileMenuSource = readFileSync("src/components/InboxPilotProfileMenu.tsx
 const profilePageSource = readFileSync("src/app/profile/page.tsx", "utf8");
 const accountChannelListSource = readFileSync("src/lib/account-channel-list.ts", "utf8");
 const inboxSource = readFileSync("src/components/InboxClient.tsx", "utf8");
+const mobileNavSource = readFileSync("src/components/AdminMobileNav.tsx", "utf8");
 
 describe("profile menu and settings IA copy", () => {
   it("keeps the profile menu centered on mainstream SaaS account, plan, settings, and support actions", () => {
@@ -22,6 +23,15 @@ describe("profile menu and settings IA copy", () => {
     expect(profileMenuSource).toContain("aria-controls={open ? menuId : undefined}");
     expect(profileMenuSource).toContain('name="interfaceLanguage"');
     expect(profileMenuSource).toContain("focus-visible:ring");
+  });
+
+  it("keeps mobile navigation controls keyboard visible", () => {
+    expect(mobileNavSource).toContain('aria-label="開啟選單"');
+    expect(mobileNavSource).toContain('aria-label="關閉選單"');
+    expect(mobileNavSource).toContain("focus-visible:ring-[var(--primary)]");
+    expect(mobileNavSource).toContain("focus-visible:ring-[#19d3d8]");
+    expect(mobileNavSource).toContain("focus-visible:ring-offset-[var(--sidebar-bg-dark)]");
+    expect(mobileNavSource).toContain('aria-hidden="true"');
   });
 
   it("keeps logout recoverable when the API request fails", () => {

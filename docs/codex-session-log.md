@@ -9628,3 +9628,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Mobile navigation focus polish
+
+- 目標：接續 IA / navigation audit，補強手機版主選單在鍵盤與輔助操作下的可見焦點。
+- 產品修補：
+  - `AdminMobileNav` 漢堡按鈕補 hover / focus-visible treatment。
+  - 手機抽屜關閉按鈕與主選單 links 補深色側欄上的 focus ring。
+  - Menu / Close icons 補 `aria-hidden`，避免重複朗讀。
+- 測試：
+  - `tests/profile-menu-ia.test.ts` 補 mobile navigation focus guard。
+- 安全：
+  - 未改 auth、workspace、release gate、OAuth、付款或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

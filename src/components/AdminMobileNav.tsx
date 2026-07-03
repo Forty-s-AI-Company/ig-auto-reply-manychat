@@ -94,10 +94,10 @@ export function AdminMobileNav({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] text-[var(--ip-text)] shadow-sm lg:hidden"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--ip-border)] bg-[var(--ip-surface)] text-[var(--ip-text)] shadow-sm transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 lg:hidden"
         aria-label="開啟選單"
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
 
       {open ? (
@@ -130,10 +130,10 @@ export function AdminMobileNav({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#b8dadd] hover:bg-white/10 hover:text-white"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#b8dadd] transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sidebar-bg-dark)]"
                 aria-label="關閉選單"
               >
-                <X className="h-5 w-5" />
+                <X className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
 
@@ -156,7 +156,7 @@ export function AdminMobileNav({
                     href={item.href}
                     onClick={() => setOpen(false)}
                     data-testid={`admin-mobile-nav-link-${item.href.replace(/^\//, "").replace(/\//g, "-") || "dashboard"}`}
-                    className={`flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium ${
+                    className={`flex items-center gap-3 rounded-md px-3 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--sidebar-bg-dark)] ${
                       active ? "bg-white/10 text-white" : "text-[#b8dadd] hover:bg-white/8 hover:text-white"
                     }`}
                   >
