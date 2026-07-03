@@ -9538,3 +9538,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Help center actionable onboarding copy
+
+- 目標：接續 Help Center / public info page audit，把說明中心從 placeholder-like 文案改成新使用者可直接照做的啟用路徑。
+- 產品修補：
+  - `src/app/help-center/page.tsx` 移除「這裡放」草稿語氣。
+  - 說明中心主 CTA 改為「開始連接 Instagram」，直接導向 `/channels/connect`。
+  - 快速開始內容補上左側帳號切換器、Inbox / Contacts 範圍確認與受控開通的進階節點說明。
+- 測試：
+  - `tests/marketing-info-page-polish.test.ts` 補 Help Center 文案 guard。
+  - `tests/e2e/public-and-auth.spec.ts` 新增 `/help-center` desktop/mobile smoke，確認 CTA 與非 placeholder 文案。
+- 安全：
+  - 未改 auth、workspace、OAuth、Webhook、付款或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

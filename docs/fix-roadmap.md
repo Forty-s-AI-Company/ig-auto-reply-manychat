@@ -3797,6 +3797,12 @@ Remaining:
 - 已完成：Channels 共用 disabled control 現在即使沒有自訂 reason，也會顯示清楚的受控開通說明。
 - 下一步：若沒有人工阻塞，繼續檢查 Help Center / public info pages 的 CTA consistency，或切回 Inbox / Contacts / Automations 剩餘產品路徑。
 
+## 2026-07-03 - Help center actionable onboarding copy
+
+- 已完成：說明中心移除 placeholder-like「這裡放」語氣，改成 Dashboard / Channels / Inbox / Contacts 對齊的新使用者啟用路徑。
+- 已完成：說明中心主 CTA 直接導向 `/channels/connect`，並新增 desktop/mobile smoke。
+- 下一步：若沒有人工阻塞，切回產品核心頁面做 Inbox / Contacts / Automations 剩餘 visible-but-unusable 掃描，或整理本機 commits 等待後續批次交付。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

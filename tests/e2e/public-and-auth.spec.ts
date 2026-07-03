@@ -92,6 +92,14 @@ test.describe("public and protected navigation", () => {
     await expect(page.getByLabel(/Password|密碼/)).toBeVisible();
   });
 
+  test("renders help center with an actionable Instagram connection path", async ({ page }) => {
+    await page.goto("/help-center", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "從連接 IG 到建立自動化，一步一步完成。" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "開始連接 Instagram" })).toHaveAttribute("href", "/channels/connect");
+    await expect(page.locator("body")).toContainText("確認左側帳號切換器");
+    await expect(page.locator("body")).not.toContainText("這裡放");
+  });
+
   test("preserves selected plan context from pricing into signup", async ({ page }) => {
     await page.goto("/pricing", { waitUntil: "domcontentloaded" });
     await expect(page.locator("body")).toContainText("方案與價格");
