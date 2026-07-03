@@ -1,5 +1,16 @@
 # Meta App Review Checklist
 
+## 2026-07-03 - Instagram media picker reviewer-safe error wording
+
+- `/api/instagram/media` now maps token and permission failures into reviewer-safe Chinese guidance.
+- Unsupported request / permission failures tell the operator to check App Review permissions, test account, and IG professional account setup.
+- Raw provider errors and `fbtrace_id` details remain outside the user-facing media picker response.
+
+App Review implication:
+
+- Reviewer rehearsal can explain why media/comment proof is blocked when permissions or assets are incomplete.
+- This does not prove approved Advanced Access or live comment/media delivery.
+
 ## 2026-07-03 - Instagram token refresh reviewer-safe error wording
 
 - `/api/instagram/token/refresh` now uses the shared channel-action safe error mapper.

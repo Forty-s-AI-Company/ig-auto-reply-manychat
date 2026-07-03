@@ -1,3 +1,19 @@
+# 2026-07-03 - Instagram media error classification
+
+Scope:
+
+- Extracted Instagram media fetch error mapping into a pure helper.
+- Mapped unsupported / permission failures to safe reviewer-facing guidance without provider trace details.
+
+Security decision:
+
+- Media picker failures no longer rely on generic raw-message matching in the route.
+- The change is limited to response classification and does not change Graph API fields, stored tokens, tenant scope, or OAuth behavior.
+
+Residual risk:
+
+- Reviewer-safe media proof still requires a connected IG asset with appropriate Meta permissions.
+
 # 2026-07-03 - Instagram token refresh error redaction
 
 Scope:

@@ -10501,6 +10501,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Instagram media permission error clarity
+
+- 目標：接續 Automations / Instagram media picker audit，修正抓取 IG 貼文遇到 unsupported / permission error 時只回泛用失敗訊息的缺口。
+- 產品修補：
+  - 新增 `src/lib/instagram/media-errors.ts`，將 media fetch 的 token 失效、授權不足、unsupported request 轉成安全中文訊息。
+  - `/api/instagram/media` 改用抽出的 helper，避免 unit test 直接 import route module。
+  - permission / unsupported request 會提示確認 App Review 權限、測試帳號與 IG 專業帳號設定，並提供重新連接入口。
+- 測試：
+  - 新增 `tests/instagram-media-errors.test.ts` 鎖住 unsupported request / token expired redaction 行為。
+- 安全：
+  - 純錯誤訊息分類與 helper extraction，未改 media API query、token storage、OAuth、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Instagram token cron summary safe error
 
 - 目標：接續 token refresh error audit，修正受保護 cron token refresh summary 可能把 provider raw error 放入 `failures.reason` 的缺口。

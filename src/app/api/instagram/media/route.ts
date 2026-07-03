@@ -7,6 +7,7 @@ import {
   refreshInstagramLongLivedToken,
 } from "@/lib/channels/instagram-token";
 import { getDb } from "@/lib/db";
+import { normalizeInstagramMediaError } from "@/lib/instagram/media-errors";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type MetaMediaItem = {
@@ -29,51 +30,6 @@ type MetaMediaResponse = {
     fbtrace_id?: string;
   };
 };
-
-type InstagramMediaError = {
-  message: string;
-  status: number;
-  code: "TOKEN_EXPIRED" | "TOKEN_INVALID" | "MEDIA_READ_FAILED";
-  actionHref?: string;
-};
-
-function normalizeInstagramMediaError(error: unknown): InstagramMediaError {
-  const rawMessage = error instanceof Error ? error.message : "";
-  const lowerMessage = rawMessage.toLowerCase();
-  const isExpired =
-    lowerMessage.includes("session has expired") ||
-    lowerMessage.includes("access token has expired") ||
-    lowerMessage.includes("token expired");
-  const isTokenInvalid =
-    isExpired ||
-    lowerMessage.includes("error validating access token") ||
-    lowerMessage.includes("invalid oauth") ||
-    lowerMessage.includes("invalid access token");
-
-  if (isExpired) {
-    return {
-      status: 401,
-      code: "TOKEN_EXPIRED",
-      message: "Instagram 授權已過期，請重新連接這個 IG 帳號後再抓取貼文。",
-      actionHref: "/channels/connect/social",
-    };
-  }
-
-  if (isTokenInvalid) {
-    return {
-      status: 401,
-      code: "TOKEN_INVALID",
-      message: "Instagram 授權目前無法使用，請重新連接這個 IG 帳號。",
-      actionHref: "/channels/connect/social",
-    };
-  }
-
-  return {
-    status: 400,
-    code: "MEDIA_READ_FAILED",
-    message: "目前無法讀取 Instagram 貼文，請稍後再試。",
-  };
-}
 
 function graphVersion() {
   return process.env.META_GRAPH_API_VERSION || "v25.0";

@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Instagram media permission error clarity
+
+Current status:
+
+- `[x]` Instagram media fetch failures now distinguish token expiry, invalid token, permission / unsupported request, and generic read failure.
+- `[x]` Permission / unsupported request failures point operators to App Review / test-account / IG professional account checks.
+- `[x]` Media error mapping lives in a pure helper instead of the route module.
+
+Remaining:
+
+- `[ ]` Real Instagram media picker evidence still needs reviewer-safe approved/testable Meta permissions and connected assets.
+
 # Latest - 2026-07-03 Instagram token cron summary safe error
 
 Current status:
