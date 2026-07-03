@@ -1,3 +1,18 @@
+# 2026-07-03 - Login submit gate clarity
+
+Status: improved first-run login UX; no auth API or data behavior change.
+
+What changed:
+
+- Email login now blocks empty Email / password before sending the login API request.
+- Login failure and network failure messages now use accessible alert semantics.
+- The login submit button explains why it is disabled and shows a loading label while submitting.
+
+Readiness implication:
+
+- New users and operators get clearer login feedback during local, staging, and reviewer-safe rehearsal flows.
+- This does not change login credentials, auth cookies, workspace scope, production data, production deployment, Meta App Review status, or PayUNI gates.
+
 # 2026-07-03 - Automations empty-state duplicate CTA polish
 
 Status: improved first-run Automations UX; no API or data behavior change.

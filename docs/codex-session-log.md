@@ -10501,6 +10501,24 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Login submit gate clarity
+
+- 目標：接續新使用者首次啟用路徑 audit，修正 Login 表單在 Email / 密碼空白時仍可送出、登入服務無法連線時缺少清楚回饋的體感問題。
+- 產品修補：
+  - `LoginForm` 補 Email / 密碼前端 submit gate，空欄位時顯示具體原因，不再直接打 `/api/auth/login`。
+  - 登入按鈕補 `aria-describedby`、`title` 與 disabled helper text；登入中顯示「登入中…」。
+  - 登入失敗提示改為 `role="alert"` / `aria-live="polite"`，網路錯誤顯示「無法連線到登入服務，請稍後再試。」。
+  - 送出時 trim email，保留既有 Google login、auth API、cookie、rate limit 與 redirect 行為不變。
+- 測試：
+  - 新增 `tests/login-form-feedback.test.ts` 鎖住 Login submit gate、accessible failure feedback 與 current-password autocomplete。
+- 安全：
+  - 純 client onboarding UX 修補，未改 login API、auth cookie、workspace scope、schema 或 OAuth 流程
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Contact detail action disabled UX
 
 - 目標：接續 Contacts 詳情頁完整性 audit，修正尚未修改欄位時「取消 / 儲存變更」只灰掉、缺少原因說明的體感問題。

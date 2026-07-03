@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Login submit gate clarity
+
+Current status:
+
+- `[x]` Email login now blocks empty Email / password before calling `/api/auth/login`.
+- `[x]` Login failure and network failure states now render as accessible alerts.
+- `[x]` The login submit button explains why it is disabled and shows a loading label while submitting.
+
+Remaining:
+
+- `[ ]` Continue checking first-run onboarding pages for any remaining raw error, ambiguous disabled state, or mobile CTA friction.
+
 # Latest - 2026-07-03 Automations empty-state duplicate CTA polish
 
 Current status:
