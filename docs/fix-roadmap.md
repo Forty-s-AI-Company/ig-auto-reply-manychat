@@ -4213,6 +4213,11 @@ Remaining:
 - 已完成：我的個人檔案展開選單的登出失敗提示改用 `role="alert"`，讓錯誤狀態能被輔助工具即時感知。
 - 下一步：若沒有人工阻塞，繼續掃 Profile / Settings / Billing 的 account-level CTA，或切回 Inbox / Contacts mobile smoke。
 
+## 2026-07-03 - Instagram account switch error alert semantics
+
+- 已完成：側邊欄多 IG 帳號切換失敗提示改用 `role="alert"`，包含新版 account dropdown 與舊版 switcher。
+- 下一步：若沒有人工阻塞，繼續掃 Channels / Social connect 的錯誤語意，或切回 Inbox / Contacts 的實際操作 smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

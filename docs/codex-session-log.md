@@ -10253,3 +10253,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Instagram account switch error alert semantics
+
+- 目標：接續 Channels / Sidebar 多帳號切換 audit，補齊 IG 帳號切換失敗的錯誤語意。
+- 產品修補：
+  - 側邊欄 `InboxPilotAccountDropdown` 的切換失敗訊息改用 `role="alert"`。
+  - 舊版 `IgAccountSwitcher` 的切換失敗訊息也同步改用 `role="alert"`。
+  - 維持既有 scope update API、dropdown 顯示、metadata fallback 與 workspace scope 邏輯不變。
+- 測試：
+  - `tests/account-channel-list.test.ts` 補兩個切換錯誤 alert semantics guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 account scope API、channel metadata、token 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

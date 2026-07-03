@@ -83,7 +83,7 @@ export function IgAccountSwitcher({
         </select>
       </label>
       {error ? (
-        <p role="status" aria-live="polite" className="text-xs text-red-300">
+        <p role="alert" className="text-xs text-red-300">
           {error}
         </p>
       ) : null}

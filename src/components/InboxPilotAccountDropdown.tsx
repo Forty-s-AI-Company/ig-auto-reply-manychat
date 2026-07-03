@@ -137,7 +137,7 @@ export function InboxPilotAccountDropdown({ channels, selectedChannelId }: Inbox
       {open ? (
         <div className="absolute left-0 top-[calc(100%+6px)] z-[90] w-full min-w-[260px] max-w-[calc(100vw-32px)] overflow-hidden rounded-md border border-[#d6dae0] bg-white text-[#111827] shadow-[0_18px_42px_rgba(2,23,24,0.22)]">
           {scopeError ? (
-            <p className="m-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+            <p className="m-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="alert">
               {scopeError}
             </p>
           ) : null}

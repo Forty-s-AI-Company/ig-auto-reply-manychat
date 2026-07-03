@@ -58,7 +58,7 @@ describe("InboxPilotAccountDropdown feedback", () => {
     expect(source).toContain("切換 Instagram 帳號失敗，請確認網路連線後再試一次。");
     expect(source).toContain('data-testid="account-dropdown-trigger-subtitle"');
     expect(source).toContain("尚未取得帳號資料");
-    expect(source).toContain('aria-live="polite"');
+    expect(source).toContain('role="alert"');
     expect(source).not.toContain("if (!response.ok) return;");
   });
 });
@@ -69,7 +69,7 @@ describe("IgAccountSwitcher feedback", () => {
 
     expect(source).toContain("切換 Instagram 帳號失敗，請稍後再試。");
     expect(source).toContain("切換 Instagram 帳號失敗，請確認網路連線後再試一次。");
-    expect(source).toContain('aria-live="polite"');
+    expect(source).toContain('role="alert"');
     expect(source).not.toContain("if (!response.ok) {\\n      setValue(selectedChannelId || \"all\");\\n      return;\\n    }");
   });
 });
