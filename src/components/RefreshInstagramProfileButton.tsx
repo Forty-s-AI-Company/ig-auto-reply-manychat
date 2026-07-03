@@ -14,11 +14,13 @@ export function RefreshInstagramProfileButton({ channelId, hasStoredToken = true
   const router = useRouter();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"neutral" | "success" | "error">("neutral");
   const disabledReason = getChannelActionDisabledReason("profile", { hasStoredToken });
 
   async function refreshProfile() {
     if (isRefreshing || disabledReason) return;
     setIsRefreshing(true);
+    setMessageTone("neutral");
     setMessage("正在重新讀取帳號名稱與頭像…");
     try {
       const response = await fetch(`/api/channels/${channelId}/instagram-profile/refresh`, {
@@ -28,9 +30,11 @@ export function RefreshInstagramProfileButton({ channelId, hasStoredToken = true
       if (!response.ok) {
         throw new Error(typeof data.error === "string" ? data.error : "重新讀取帳號名稱失敗。");
       }
+      setMessageTone("success");
       setMessage("已更新帳號名稱與頭像。");
       router.refresh();
     } catch (error) {
+      setMessageTone("error");
       setMessage(getSafeChannelActionMessage("profile", error));
     } finally {
       setIsRefreshing(false);
@@ -52,7 +56,12 @@ export function RefreshInstagramProfileButton({ channelId, hasStoredToken = true
         重新讀取帳號名稱
       </button>
       {disabledReason || message ? (
-        <p id="instagram-profile-refresh-status" className="text-[11px] text-[#667085]" aria-live="polite">
+        <p
+          id="instagram-profile-refresh-status"
+          className="text-[11px] text-[#667085]"
+          role={messageTone === "error" ? "alert" : "status"}
+          aria-live="polite"
+        >
           {disabledReason || message}
         </p>
       ) : null}

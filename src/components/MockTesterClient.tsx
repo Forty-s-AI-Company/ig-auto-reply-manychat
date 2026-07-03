@@ -95,7 +95,7 @@ export function MockTesterClient() {
               ? "border-green-200 bg-green-50 text-green-800"
               : "border-red-200 bg-red-50 text-red-800"
           }`}
-          role="status"
+          role={feedback.tone === "error" ? "alert" : "status"}
           aria-live="polite"
         >
           {feedback.message}

@@ -15,7 +15,7 @@ describe("mock tester light theme", () => {
   it("shows clear async feedback instead of silent raw JSON only", () => {
     expect(source).toContain("送出中…");
     expect(source).toContain('aria-live="polite"');
-    expect(source).toContain('role="status"');
+    expect(source).toContain('role={feedback.tone === "error" ? "alert" : "status"}');
     expect(source).toContain('name="mockExternalId"');
     expect(source).toContain('name="mockDisplayName"');
     expect(source).toContain('name="mockMessageText"');

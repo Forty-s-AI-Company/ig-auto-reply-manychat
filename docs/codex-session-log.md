@@ -10361,3 +10361,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Reviewer rehearsal action error alert semantics
+
+- 目標：接續 reviewer-safe / local rehearsal UX audit，補齊 profile refresh、mock tester 與 Instagram 預設回覆的錯誤回饋語意。
+- 產品修補：
+  - `RefreshInstagramProfileButton` 增加 message tone，重新讀取帳號名稱失敗時改用 `role="alert"`，成功 / 讀取中維持 `role="status"`。
+  - `MockTesterClient` 的模擬 webhook 送出失敗改用 `role="alert"`，成功送出維持 `role="status"`。
+  - `InstagramDefaultReplyClient` 的儲存失敗提示改用 `role="alert"`，成功儲存維持 `role="status"`。
+  - 維持既有 profile refresh API、mock webhook、automation save payload 與 reviewer-safe fixture 流程不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts`、`tests/mock-tester-light-theme.test.ts`、`tests/instagram-default-reply-light-theme.test.ts` 補 source guard。
+- 安全：
+  - 純 client UI accessibility 修補，未改 OAuth、webhook ingestion、automation API、schema 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

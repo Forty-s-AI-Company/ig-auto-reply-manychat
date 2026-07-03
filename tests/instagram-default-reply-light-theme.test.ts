@@ -18,6 +18,7 @@ describe("Instagram default reply light-theme polish", () => {
   it("keeps form and feedback semantics production-ready", () => {
     expect(source).toContain('htmlFor="instagram-default-reply-message"');
     expect(source).toContain('id="instagram-default-reply-message"');
+    expect(source).toContain('role={noticeTone === "error" ? "alert" : "status"}');
     expect(source).toContain('aria-live="polite"');
     expect(source).toContain("focus-visible:ring");
   });

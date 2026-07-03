@@ -86,6 +86,7 @@ describe("channel client feedback", () => {
     expect(profileRefresh).toContain('text-[#b54708]');
     expect(profileRefresh).toContain('aria-describedby={disabledReason || message ? "instagram-profile-refresh-status" : undefined}');
     expect(profileRefresh).toContain('id="instagram-profile-refresh-status"');
+    expect(profileRefresh).toContain('role={messageTone === "error" ? "alert" : "status"}');
     expect(profileRefresh).toContain("focus-visible:ring-[#b54708]");
     expect(profileRefresh).not.toMatch(/text-amber-100|bg-amber-900/);
     expect(instagramActions).toContain('bg-[#f0f9ff]');

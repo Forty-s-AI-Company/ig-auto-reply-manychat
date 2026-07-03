@@ -4245,6 +4245,12 @@ Remaining:
 - 已完成：推薦連結複製失敗訊息改用 `role="alert"`，成功複製仍保留 `role="status"`。
 - 下一步：若沒有人工阻塞，繼續掃 Inbox / Contacts / Billing / Channels 的 client-side action feedback，或改用 Playwright 做新使用者 activation route smoke。
 
+## 2026-07-03 - Reviewer rehearsal action error alert semantics
+
+- 已完成：Instagram profile refresh 失敗、Mock tester 送出失敗、Instagram 預設回覆儲存失敗都改用 `role="alert"`，成功 / 讀取中狀態仍保留 `role="status"`。
+- 已完成：補 source-level guards，避免 reviewer rehearsal 相關操作回到只用 polite status 顯示錯誤。
+- 下一步：若沒有人工阻塞，繼續以 Playwright 跑新使用者 activation / reviewer rehearsal route smoke，找剩餘空狀態、CTA 或 mobile overflow。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
