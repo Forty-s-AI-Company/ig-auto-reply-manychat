@@ -1,5 +1,16 @@
 # Meta App Review Checklist
 
+## 2026-07-03 - Instagram comment sync reviewer-safe error wording
+
+- `/api/instagram/comments/sync` now maps Meta Graph provider failures into reviewer-safe Chinese guidance.
+- Unsupported request / `fbtrace_id` details are not echoed to the UI or API response for comment sync failures.
+- Token-expired failures instruct the operator to reconnect Instagram instead of exposing raw access-token wording.
+
+App Review implication:
+
+- Reviewer-facing comment-trigger rehearsal has safer failure copy if permissions or test assets are incomplete.
+- This does not grant Advanced Access, submit App Review, change Meta Dashboard settings, or prove real webhook-backed comment delivery.
+
 ## 2026-07-03 - Meta App Review preflight gap audit
 
 - Verified the correct Meta app is `InboxPilot` (`App ID: 924285843989683`) in Meta Developers.

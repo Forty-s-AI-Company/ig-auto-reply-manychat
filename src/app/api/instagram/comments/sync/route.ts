@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireApiUser } from "@/lib/auth";
-import { syncInstagramCommentsFromActiveAutomations } from "@/lib/instagram/comments-sync";
+import { getSafeInstagramCommentSyncError, syncInstagramCommentsFromActiveAutomations } from "@/lib/instagram/comments-sync";
 
 export const runtime = "nodejs";
 
@@ -19,7 +19,7 @@ export async function POST() {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Instagram comment sync failed." },
+      { error: getSafeInstagramCommentSyncError(error) },
       { status: 400 },
     );
   }

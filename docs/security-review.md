@@ -1,3 +1,19 @@
+# 2026-07-03 - Instagram comment sync error redaction
+
+Scope:
+
+- Sanitized `POST /api/instagram/comments/sync` error responses so raw Meta Graph messages and `fbtrace_id` values are not echoed to authenticated operators.
+- Added focused coverage for unsupported request and expired-token messages.
+
+Security decision:
+
+- API responses now expose user-actionable Chinese guidance instead of provider internals.
+- The change is limited to response wording; it does not change token storage, OAuth, webhook processing, automation execution, or tenant scope.
+
+Residual risk:
+
+- Real comment-trigger evidence still depends on Meta permission approval and reviewer-safe Instagram test assets.
+
 # 2026-07-02 - Admin invoice refund operator UI
 
 Scope:

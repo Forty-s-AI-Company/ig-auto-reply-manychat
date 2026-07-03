@@ -47,6 +47,33 @@ function graphVersion() {
   return process.env.META_GRAPH_API_VERSION || "v25.0";
 }
 
+export function getSafeInstagramCommentSyncError(error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : String(error || "");
+  const lowerMessage = rawMessage.toLowerCase();
+  const tokenInvalid =
+    lowerMessage.includes("session has expired") ||
+    lowerMessage.includes("access token has expired") ||
+    lowerMessage.includes("error validating access token") ||
+    lowerMessage.includes("invalid oauth") ||
+    lowerMessage.includes("invalid access token");
+  const permissionDenied =
+    lowerMessage.includes("unsupported request") ||
+    lowerMessage.includes("permission") ||
+    lowerMessage.includes("permissions error") ||
+    lowerMessage.includes("requires business") ||
+    lowerMessage.includes("not authorized");
+
+  if (tokenInvalid) {
+    return "Instagram 授權已失效，目前無法同步留言觸發。請重新登入 Instagram 後再試一次。";
+  }
+
+  if (permissionDenied) {
+    return "Meta 目前沒有允許這個帳號同步留言觸發。請確認 App Review 權限、測試帳號與 IG 專業帳號設定後再試一次。";
+  }
+
+  return "目前無法同步 Instagram 留言觸發，請稍後再試。";
+}
+
 function asRecord(value: unknown) {
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }

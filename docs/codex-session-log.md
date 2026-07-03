@@ -10501,6 +10501,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Instagram comment sync safe error
+
+- 目標：接續 Automations / Channels reviewer-safe UX audit，修正留言同步 API 失敗時可能把 Meta Graph raw error / `fbtrace_id` 回傳到前端的缺口。
+- 產品修補：
+  - `getSafeInstagramCommentSyncError` 將留言同步的 token 失效、權限不足、unsupported request 等錯誤轉成中文可讀訊息。
+  - `/api/instagram/comments/sync` catch 改用安全錯誤訊息，不再直接回傳 provider raw message。
+  - 保留既有留言同步、automation matching、comment inbound processing、worker interval 與 token refresh 行為不變。
+- 測試：
+  - 新增 `tests/instagram-comment-sync-errors.test.ts` 鎖住 `Unsupported request ... fbtrace_id=...` 與 token expired 的 redaction 行為。
+- 安全：
+  - 純錯誤訊息安全化，未改 Meta Dashboard、OAuth scope、webhook、automation schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Login submit gate clarity
 
 - 目標：接續新使用者首次啟用路徑 audit，修正 Login 表單在 Email / 密碼空白時仍可送出、登入服務無法連線時缺少清楚回饋的體感問題。

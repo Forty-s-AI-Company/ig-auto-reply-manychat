@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Instagram comment sync safe error
+
+Current status:
+
+- `[x]` Instagram comment sync API failures now use safe Chinese messages instead of raw Meta Graph errors.
+- `[x]` Unsupported request / `fbtrace_id` details are redacted before reaching the API response.
+- `[x]` Token-expired failures point operators back to Instagram reconnect.
+
+Remaining:
+
+- `[ ]` Real reviewer-safe staging comment evidence still requires approved permissions / test assets before Meta submission.
+
 # Latest - 2026-07-03 Login submit gate clarity
 
 Current status:
