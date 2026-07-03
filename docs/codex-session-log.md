@@ -10654,3 +10654,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - JSON CRUD editor validation clarity
+
+- 目標：接續設定型頁面 visible-but-unusable audit，修正知識庫 / 標籤管理共用 JSON 編輯器在格式錯誤時仍可送出、只能等 API 回錯的粗糙體感。
+- 產品修補：
+  - `JsonCrudClient` 新增送出前 JSON 物件驗證，空白、陣列或格式錯誤都會顯示可讀中文原因。
+  - 新增 / 編輯 textarea 補 `aria-invalid`、`aria-describedby`、`spellCheck={false}` 與 helper text。
+  - 新增 / 儲存按鈕在 JSON 無效時 disabled，並用 `title` 說明原因，避免使用者誤以為按鈕壞掉。
+  - 保留既有 knowledge-base / tags API、workspace scope、delete dialog 與 broadcast preview/queue 行為不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 JSON validation、helper linkage 與 disabled guard。
+- 安全：
+  - 純 client UI / validation 修補，未改 API、schema、tenant scope、OAuth、payment 或 webhook
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

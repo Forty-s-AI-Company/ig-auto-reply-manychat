@@ -2230,3 +2230,9 @@ Readiness implication:
 - Readiness update：Signup 表單現在會在名稱、Email 或密碼不足時先阻擋送出，並用 disabled reason 說明下一步，不再只依賴 API 回傳泛用格式錯誤。
 - Result：新使用者從 Pricing 進到 Signup 的首輪體感更清楚，推薦碼與方案上下文仍保留，後端 signup validation / rate limit 仍是最終防線。
 - Remaining risk：Google signup 與正式第三方登入仍需要在 production/staging OAuth 設定完整後，以真實帳號做最後檢查。
+
+## 2026-07-03 - JSON CRUD editor validation clarity
+
+- Readiness update：知識庫與標籤管理這類設定型 CRUD 不再允許明顯無效 JSON 送出後才回錯；使用者會先看到格式修正提示。
+- Result：低頻但重要的後台資料維護工具更像正式 SaaS 後台，而不是內部工程測試頁。
+- Remaining risk：仍建議繼續掃 Knowledge Base、Tags、Settings 類頁面的 mobile layout 與非 JSON 化表單體驗，逐步降低操作門檻。

@@ -51,6 +51,21 @@ function formatValue(value: unknown) {
   return String(value);
 }
 
+function getJsonValidationMessage(value: string) {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "JSON 內容不能空白。";
+
+  try {
+    const parsed = JSON.parse(trimmedValue);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return "請輸入 JSON 物件，例如 { \"name\": \"重要客戶\" }。";
+    }
+    return "";
+  } catch {
+    return "JSON 格式無法解析，請檢查逗號、雙引號或括號。";
+  }
+}
+
 const primaryButtonClass =
   "rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60";
 
@@ -77,6 +92,8 @@ export function JsonCrudClient({
   const [preview, setPreview] = useState<BroadcastPreview | null>(null);
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
+  const draftValidationMessage = getJsonValidationMessage(draft);
+  const editingValidationMessage = editingId ? getJsonValidationMessage(editingJson) : "";
 
   async function reload() {
     const response = await fetch(endpoint);
@@ -90,6 +107,10 @@ export function JsonCrudClient({
   async function createItem() {
     setError("");
     setFeedback("");
+    if (draftValidationMessage) {
+      setError(`新增${title}前請先修正：${draftValidationMessage}`);
+      return;
+    }
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -109,6 +130,10 @@ export function JsonCrudClient({
     if (!editingId) return;
     setError("");
     setFeedback("");
+    if (editingValidationMessage) {
+      setError(`儲存${title}前請先修正：${editingValidationMessage}`);
+      return;
+    }
     try {
       const response = await fetch(`${endpoint}/${editingId}`, {
         method: updateMethod,
@@ -189,9 +214,23 @@ export function JsonCrudClient({
         <textarea
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          aria-invalid={Boolean(draftValidationMessage)}
+          aria-describedby="json-crud-draft-help"
+          spellCheck={false}
           className="h-48 w-full rounded-md border border-[#d7dbe0] bg-[#f8fafc] p-3 font-mono text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#006fe6]/15"
         />
-        <button onClick={createItem} className={`mt-3 ${primaryButtonClass}`}>
+        <p
+          id="json-crud-draft-help"
+          className={`mt-2 text-sm leading-6 ${draftValidationMessage ? "text-red-700" : "text-[#667085]"}`}
+        >
+          {draftValidationMessage || "JSON 格式有效，送出後會建立在目前工作區。"}
+        </p>
+        <button
+          onClick={createItem}
+          disabled={Boolean(draftValidationMessage)}
+          title={draftValidationMessage || undefined}
+          className={`mt-3 ${primaryButtonClass}`}
+        >
           新增
         </button>
       </section>
@@ -257,9 +296,23 @@ export function JsonCrudClient({
             <textarea
               value={editingJson}
               onChange={(event) => setEditingJson(event.target.value)}
+              aria-invalid={Boolean(editingValidationMessage)}
+              aria-describedby="json-crud-edit-help"
+              spellCheck={false}
               className="h-[50vh] w-full rounded-md border border-[#d7dbe0] bg-[#f8fafc] p-3 font-mono text-sm text-[#111827] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#006fe6]/15"
             />
-            <button onClick={updateItem} className={`mt-3 ${primaryButtonClass}`}>
+            <p
+              id="json-crud-edit-help"
+              className={`mt-2 text-sm leading-6 ${editingValidationMessage ? "text-red-700" : "text-[#667085]"}`}
+            >
+              {editingValidationMessage || "JSON 格式有效，儲存後會立即更新這筆資料。"}
+            </p>
+            <button
+              onClick={updateItem}
+              disabled={Boolean(editingValidationMessage)}
+              title={editingValidationMessage || undefined}
+              className={`mt-3 ${primaryButtonClass}`}
+            >
               儲存
             </button>
           </div>

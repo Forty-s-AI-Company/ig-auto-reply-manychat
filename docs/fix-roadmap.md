@@ -4375,6 +4375,12 @@ Remaining:
 - 已完成：保留 Google signup、推薦碼、pricing plan context、後端 signup validation、rate limit 與 referral attribution 不變。
 - 下一步：若沒有人工阻塞，繼續掃 Login / Signup / Pricing onboarding smoke，或回到 Dashboard activation path。
 
+## 2026-07-03 - JSON CRUD editor validation clarity
+
+- 已完成：知識庫 / 標籤管理共用 JSON 編輯器補送出前 JSON 物件驗證，格式錯誤時會直接顯示可讀中文原因。
+- 已完成：新增 / 編輯 textarea 補 helper text、`aria-invalid`、`aria-describedby`，送出按鈕在 JSON 無效時有 disabled reason。
+- 下一步：若沒有人工阻塞，繼續掃 Knowledge Base / Tags / Settings 類頁面的 mobile overflow、空狀態與表單錯誤提示；或回到 Dashboard / Inbox activation route 做 smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
