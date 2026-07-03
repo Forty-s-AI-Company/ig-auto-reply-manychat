@@ -142,6 +142,12 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
   const [savingKey, setSavingKey] = useState(false);
   const [testing, setTesting] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"info" | "success" | "warning" | "danger">("info");
+
+  function showMessage(nextMessage: string, tone: "info" | "success" | "warning" | "danger" = "info") {
+    setMessageTone(tone);
+    setMessage(nextMessage);
+  }
 
   const activeProvider = useMemo(
     () => initialState.providers.find((item) => item.id === provider),
@@ -195,7 +201,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       const exists = nextModels.some((item: ModelOption) => item.id === targetModel);
       setModel(exists ? targetModel : nextModels[0]?.id || "auto");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "讀取模型清單失敗。");
+      showMessage(error instanceof Error ? error.message : "讀取模型清單失敗。", "danger");
     } finally {
       setLoadingModels(false);
     }
@@ -204,7 +210,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
   async function handleProviderChange(nextProvider: ProviderId) {
     const nextMeta = initialState.providers.find((item) => item.id === nextProvider);
     if (nextMeta?.kind === "cli" && !initialState.localCliEnabled) {
-      setMessage("Codex / Antigravity 需要透過下方連接方式啟用，正式 SaaS 請改用 API Key 連接。");
+      showMessage("Codex / Antigravity 需要透過下方連接方式啟用，正式 SaaS 請改用 API Key 連接。", "warning");
       return;
     }
 
@@ -217,16 +223,16 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
     setProvider(nextProvider);
     setApiKey("");
     await loadModels(nextProvider, preferredModel);
-    setMessage("已切換到建議供應商。請填入這個帳號自己的 API Key，儲存後即可測試模型。");
+    showMessage("已切換到建議供應商。請填入這個帳號自己的 API Key，儲存後即可測試模型。", "info");
   }
 
   async function refreshModels() {
     if (!canSaveSetting) {
-      setMessage("正式 SaaS 不會直接執行本機 CLI；請使用下方連接方式改用 API Key。");
+      showMessage("正式 SaaS 不會直接執行本機 CLI；請使用下方連接方式改用 API Key。", "warning");
       return;
     }
     if (isApiProvider && !activeCredential?.configured) {
-      setMessage("請先加密儲存這個供應商的 API Key，再抓取最新模型清單。");
+      showMessage("請先加密儲存這個供應商的 API Key，再抓取最新模型清單。", "warning");
       return;
     }
     setRefreshingModels(true);
@@ -240,9 +246,9 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "更新模型清單失敗。");
       setModels(Array.isArray(data.models) ? data.models : []);
-      setMessage(`已更新 ${activeProvider?.label || provider} 模型清單，共 ${data.count || 0} 筆。`);
+      showMessage(`已更新 ${activeProvider?.label || provider} 模型清單，共 ${data.count || 0} 筆。`, "success");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "更新模型清單失敗。");
+      showMessage(error instanceof Error ? error.message : "更新模型清單失敗。", "danger");
     } finally {
       setRefreshingModels(false);
     }
@@ -250,7 +256,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
 
   async function saveSetting() {
     if (!canSaveSetting) {
-      setMessage("正式 SaaS 只能儲存 API 型 AI 供應商；CLI 請使用下方連接方式。");
+      showMessage("正式 SaaS 只能儲存 API 型 AI 供應商；CLI 請使用下方連接方式。", "warning");
       return;
     }
     setSaving(true);
@@ -268,9 +274,9 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "儲存 AI 設定失敗。");
-      setMessage("AI 設定已儲存。");
+      showMessage("AI 設定已儲存。", "success");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "儲存 AI 設定失敗。");
+      showMessage(error instanceof Error ? error.message : "儲存 AI 設定失敗。", "danger");
     } finally {
       setSaving(false);
     }
@@ -278,7 +284,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
 
   async function saveApiKey() {
     if (!isApiProvider) {
-      setMessage("CLI 模式不接受 API Key 儲存，請改用 ChatGPT / Gemini / DeepSeek / XAI。");
+      showMessage("CLI 模式不接受 API Key 儲存，請改用 ChatGPT / Gemini / DeepSeek / XAI。", "warning");
       return;
     }
     setSavingKey(true);
@@ -293,10 +299,10 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       if (!response.ok) throw new Error(data.error || "儲存 API Key 失敗。");
       setCredentials(data.credentials);
       setApiKey("");
-      setMessage(apiKey.trim() ? "API Key 已加密儲存。" : "已清除這個供應商的 API Key。");
+      showMessage(apiKey.trim() ? "API Key 已加密儲存。" : "已清除這個供應商的 API Key。", "success");
       await loadModels(provider, model);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "儲存 API Key 失敗。");
+      showMessage(error instanceof Error ? error.message : "儲存 API Key 失敗。", "danger");
     } finally {
       setSavingKey(false);
     }
@@ -318,11 +324,11 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "模型測試失敗。");
-      setMessage(`模型測試通過：${String(data.reply || "").slice(0, 80)}`);
+      showMessage(`模型測試通過：${String(data.reply || "").slice(0, 80)}`, "success");
       const settings = await fetch("/api/ai-settings");
       if (settings.ok) setCredentials((await settings.json()).credentials);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "模型測試失敗。");
+      showMessage(error instanceof Error ? error.message : "模型測試失敗。", "danger");
     } finally {
       setTesting(false);
     }
@@ -372,7 +378,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
       </div>
 
       {message ? (
-        <DismissibleNoticeToast key={message} title="AI 設定提醒" tone="info">
+        <DismissibleNoticeToast key={message} title="AI 設定提醒" tone={messageTone}>
           {message}
         </DismissibleNoticeToast>
       ) : null}

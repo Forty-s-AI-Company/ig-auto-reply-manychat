@@ -21,4 +21,12 @@ describe("AI settings disabled UX", () => {
     expect(source).toContain('<RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />');
     expect(source).toContain('<ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />');
   });
+
+  it("separates success, warning, and danger toast tones instead of showing every message as info", () => {
+    expect(source).toContain('const [messageTone, setMessageTone] = useState<"info" | "success" | "warning" | "danger">("info");');
+    expect(source).toContain('showMessage(error instanceof Error ? error.message : "模型測試失敗。", "danger")');
+    expect(source).toContain('showMessage(`模型測試通過：${String(data.reply || "").slice(0, 80)}`, "success")');
+    expect(source).toContain('showMessage("正式 SaaS 只能儲存 API 型 AI 供應商；CLI 請使用下方連接方式。", "warning")');
+    expect(source).toContain('tone={messageTone}');
+  });
 });

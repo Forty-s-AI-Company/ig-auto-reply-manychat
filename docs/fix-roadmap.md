@@ -4251,6 +4251,12 @@ Remaining:
 - 已完成：補 source-level guards，避免 reviewer rehearsal 相關操作回到只用 polite status 顯示錯誤。
 - 下一步：若沒有人工阻塞，繼續以 Playwright 跑新使用者 activation / reviewer rehearsal route smoke，找剩餘空狀態、CTA 或 mobile overflow。
 
+## 2026-07-03 - AI settings toast tone clarity
+
+- 已完成：AI 設定頁不再把成功、受控限制與錯誤都顯示成 info toast；現在 success / warning / danger 分流更清楚。
+- 已完成：測試模型失敗、儲存失敗、模型清單讀取失敗會走 danger toast；成功操作走 success；前置條件不足走 warning。
+- 下一步：若沒有人工阻塞，繼續掃 AI settings / Billing / Channels 這類設定型頁面的錯誤提示與 mobile overflow。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

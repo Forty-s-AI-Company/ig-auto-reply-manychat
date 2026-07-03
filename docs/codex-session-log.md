@@ -10379,3 +10379,22 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - AI settings toast tone clarity
+
+- 目標：接續產品功能完整性 audit，修正 AI 設定頁所有回饋都顯示成 info toast 的體感問題。
+- 產品修補：
+  - `AiSettingsClient` 增加 `messageTone` 與 `showMessage` helper。
+  - 模型測試、API Key 儲存、設定儲存、模型清單更新成功時使用 success tone。
+  - CLI / API Key 前置條件不足時使用 warning tone。
+  - 讀取 / 儲存 / 測試失敗時使用 danger tone，透過既有 `DismissibleNoticeToast` 轉成 alert semantics。
+  - 維持既有 AI provider API、credential encryption、local CLI gating 與模型選擇邏輯不變。
+- 測試：
+  - `tests/ai-settings-disabled-ux.test.ts` 補 success / warning / danger tone guard。
+- 安全：
+  - 純 client UI feedback 修補，未改 API Key 儲存格式、server route、secret handling 或 provider execution
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
