@@ -9592,3 +9592,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Broadcast destructive action dialog polish
+
+- 目標：接續低頻頁面 audit，先收掉 Broadcasts 頁「看得到且可刪除，但缺少正式確認流程」的產品缺口。
+- 產品修補：
+  - `BroadcastsClient` 的刪除操作改為 in-app confirmation dialog，不再點擊後直接送 DELETE。
+  - Dialog 補上清楚文案：說明正在發送中的活動不能刪除、草稿刪除後需重新建立。
+  - 建立草稿、預覽、排程、刪除與 dialog 按鈕補齊 keyboard-visible focus treatment。
+- 測試：
+  - `tests/broadcasts-client-disabled-ux.test.ts` 補 destructive dialog 與 focus guard。
+- 安全：
+  - 未改 broadcasts API、queue/preview 邏輯、付款、OAuth、Webhook 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

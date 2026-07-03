@@ -3815,6 +3815,12 @@ Remaining:
 - 已完成：Channel client feedback focused test 與 Channels authenticated desktop/mobile smoke 通過。
 - 下一步：若沒有人工阻塞，繼續掃 Knowledge Base / Tags / Broadcasts 等低頻頁面，或回到 Automations editor mobile 的剩餘交互。
 
+## 2026-07-03 - Broadcast destructive action dialog polish
+
+- 已完成：Broadcasts 刪除操作改為 in-app confirmation dialog，不再直接執行 DELETE。
+- 已完成：建立草稿、預覽、排程、刪除與 dialog 操作補齊 keyboard-visible focus treatment。
+- 下一步：若沒有人工阻塞，繼續掃 Tags / Knowledge Base 的 JSON CRUD 體驗，或回到 Dashboard / Inbox / Contacts 的完整空 workspace 啟用路徑。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

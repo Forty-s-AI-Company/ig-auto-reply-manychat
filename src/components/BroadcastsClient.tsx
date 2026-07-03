@@ -117,6 +117,7 @@ export function BroadcastsClient({
   });
   const [preview, setPreview] = useState<Record<string, Preview>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<BroadcastItem | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const audienceOptions = form.audienceType === "segment" ? segments : tags;
   const createDisabledReason = getCreateDisabledReason(form, audienceOptions.length);
@@ -187,6 +188,8 @@ export function BroadcastsClient({
       return;
     }
     setBroadcasts((items) => items.filter((item) => item.id !== id));
+    setDeleteTarget(null);
+    setFeedback("已刪除廣播活動草稿。");
   }
 
   return (
@@ -249,9 +252,9 @@ export function BroadcastsClient({
               onClick={createBroadcast}
               aria-describedby={!canSubmit ? "broadcast-create-disabled-reason" : undefined}
               title={createDisabledReason || "建立廣播草稿"}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <Megaphone className="h-4 w-4" />
+              <Megaphone className="h-4 w-4" aria-hidden="true" />
               建立草稿
             </button>
             {!canSubmit ? (
@@ -317,7 +320,7 @@ export function BroadcastsClient({
                               ? "發送中的廣播活動不能刪除，避免任務狀態不一致。"
                               : undefined
                         }
-                        onClick={() => deleteBroadcast(item.id)}
+                        onClick={() => setDeleteTarget(item)}
                         icon={<Trash2 className="h-4 w-4" />}
                         danger
                       />
@@ -339,6 +342,45 @@ export function BroadcastsClient({
           </div>
         </div>
       </section>
+
+      {deleteTarget ? (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60 p-4" role="presentation">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="broadcast-delete-title"
+            aria-describedby="broadcast-delete-description"
+            data-testid="broadcast-delete-dialog"
+            className="w-full max-w-md rounded-lg border border-red-200 bg-white p-5 shadow-xl"
+          >
+            <h3 id="broadcast-delete-title" className="text-base font-semibold text-[var(--text-primary)]">
+              確認刪除廣播草稿？
+            </h3>
+            <p id="broadcast-delete-description" className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+              這會刪除「{deleteTarget.name}」。已經發送中的活動不允許刪除；刪除草稿後需要重新建立，請先確認預覽名單與訊息內容不再需要保留。
+            </p>
+            <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                disabled={busyId === deleteTarget.id}
+                className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteBroadcast(deleteTarget.id)}
+                disabled={busyId === deleteTarget.id}
+                data-testid="broadcast-confirm-delete"
+                className="rounded-md border border-red-700 bg-red-700 px-3 py-2 text-sm font-semibold text-white transition hover:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {busyId === deleteTarget.id ? "刪除中..." : "確認刪除"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -346,7 +388,9 @@ export function BroadcastsClient({
 function Metric({ icon, label, value }: { icon: ReactNode; label: string; value: number }) {
   return (
     <div className="ip-dashboard-card flex items-center gap-4 p-4">
-      <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--teal-dark)]">{icon}</span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--teal-dark)]" aria-hidden="true">
+        {icon}
+      </span>
       <div>
         <p className="text-sm text-[var(--text-secondary)]">{label}</p>
         <p className="text-2xl font-semibold text-[var(--text-primary)]">{value}</p>
@@ -393,9 +437,9 @@ function IconButton({
       onClick={onClick}
       title={disabledReason || label}
       aria-label={disabledReason ? `${label}：${disabledReason}` : label}
-      className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className={`inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
     >
-      {icon}
+      <span aria-hidden="true">{icon}</span>
       {label}
     </button>
   );
