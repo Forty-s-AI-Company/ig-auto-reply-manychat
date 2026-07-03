@@ -9646,6 +9646,21 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Inbox setup reply launch-scope wording
+
+- 目標：讓 Inbox 的設定協助回覆草稿更貼近 Instagram-first launch scope，避免操作員看到 `Meta / Facebook 資產` 後誤以為 Messenger / Facebook 也是目前主線。
+- 產品修補：
+  - `buildReplySuggestion()` 的設定協助文案改成 `Meta 商業資產`。
+- 測試：
+  - `tests/inbox-focus-affordances.test.ts` 補 Inbox 草稿文案 guard。
+- 安全：
+  - 純文案修補，未改回覆送出、AI 草稿判斷、channel scope、OAuth、Webhook、資料模型或付款流程
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Channel action feedback provider wording
 
 - 目標：接續 Channels provider wording 收斂，把 action feedback 的舊 `Facebook 粉專登入` 顯示改成同一套 `Meta Page Login（舊流程）` 語意。

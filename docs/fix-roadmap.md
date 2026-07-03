@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Inbox setup reply launch-scope wording
+
+Current status:
+
+- `[x]` Inbox setup reply suggestion now references `Meta 商業資產` instead of `Meta / Facebook 資產`.
+- `[x]` Source coverage prevents the draft helper from reintroducing the broader Facebook wording.
+
+Remaining:
+
+- `[ ]` Continue auditing operator-visible Inbox helper copy for launch-scope drift.
+- `[ ]` Keep actual Meta account permission changes separate from copy-only fixes.
+
 # Latest - 2026-07-03 Channel action feedback provider wording
 
 Current status:

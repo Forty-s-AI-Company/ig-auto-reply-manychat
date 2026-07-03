@@ -123,7 +123,7 @@ function buildReplySuggestion(conversation: Conversation) {
 
   if (/怎麼|如何|教學|設定|連接|登入|login|connect|setup/i.test(inboundText)) {
     return {
-      text: `${firstName} 您好，我可以協助您設定。請先確認目前使用的 Instagram 是商業或創作者帳號，並已連到對應的 Meta / Facebook 資產；如果畫面有錯誤訊息，也可以截圖給我，我會依照狀況協助排查。`,
+      text: `${firstName} 您好，我可以協助您設定。請先確認目前使用的 Instagram 是商業或創作者帳號，並已連到對應的 Meta 商業資產；如果畫面有錯誤訊息，也可以截圖給我，我會依照狀況協助排查。`,
       reason: "已依最新訊息產生設定協助回覆草稿，送出前請再確認內容。",
     };
   }

@@ -29,4 +29,9 @@ describe("Inbox focus affordances", () => {
     expect(source).toContain('data-testid="inbox-apply-tag-select"');
     expect(source).toContain("focus-visible:ring-white focus-visible:ring-offset-2");
   });
+
+  it("keeps setup reply suggestions aligned to the Instagram launch scope", () => {
+    expect(source).toContain("Meta 商業資產");
+    expect(source).not.toContain("Meta / Facebook 資產");
+  });
 });

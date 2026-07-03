@@ -1,3 +1,17 @@
+# 2026-07-03 - Inbox setup reply launch-scope wording
+
+Status: improved for operator-visible reply suggestions; no behavior change.
+
+What changed:
+
+- Inbox setup reply suggestions now ask operators to confirm the Instagram account is linked to the correct `Meta 商業資產`.
+- The copy no longer uses the broader `Meta / Facebook 資產` wording in this launch-scope surface.
+
+Readiness implication:
+
+- Operators should see guidance that better matches the Instagram-first launch scope.
+- Reply generation heuristics, message sending, channel scope, and API behavior remain unchanged.
+
 # 2026-07-03 - Channel action feedback provider wording
 
 Status: improved for legacy connection clarity; no behavior change.
