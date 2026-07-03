@@ -10270,3 +10270,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - OAuth connect error alert semantics
+
+- 目標：接續 Channels / Social connect reviewer-safe UX audit，補齊 OAuth popup 與 token fallback 的錯誤語意。
+- 產品修補：
+  - `OAuthPopupConnectButton` 的連接失敗訊息改用 `role="alert"`。
+  - `TokenProviderForm` 的 token 連接失敗訊息改用 `role="alert"`。
+  - 維持既有 popup / redirect transport、token provider submit 與 provider API 不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 改為檢查 OAuth recoverable errors 使用 alert semantics。
+- 安全：
+  - 純 UI accessibility 修補，未改 OAuth callback、token storage、provider API 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

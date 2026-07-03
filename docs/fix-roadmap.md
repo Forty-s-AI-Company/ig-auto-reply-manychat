@@ -4218,6 +4218,11 @@ Remaining:
 - 已完成：側邊欄多 IG 帳號切換失敗提示改用 `role="alert"`，包含新版 account dropdown 與舊版 switcher。
 - 下一步：若沒有人工阻塞，繼續掃 Channels / Social connect 的錯誤語意，或切回 Inbox / Contacts 的實際操作 smoke。
 
+## 2026-07-03 - OAuth connect error alert semantics
+
+- 已完成：Social connect popup error 與 token fallback error 改用 `role="alert"`，避免連接失敗只被當作一般狀態文字。
+- 下一步：若沒有人工阻塞，繼續掃 OAuth popup bridge / channel resync 的錯誤語意，或切回 reviewer-safe staging evidence lane。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

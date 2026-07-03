@@ -105,7 +105,7 @@ export function OAuthPopupConnectButton({
         {pending ? pendingLabel : children}
       </button>
       {errorMessage ? (
-        <span className="max-w-sm rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+        <span className="max-w-sm rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="alert">
           {errorMessage}
         </span>
       ) : null}

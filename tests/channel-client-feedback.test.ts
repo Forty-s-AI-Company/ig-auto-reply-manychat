@@ -16,7 +16,11 @@ describe("channel client feedback", () => {
       expect(source, file).not.toMatch(/[^\w.]alert\s*\(/);
       expect(source, file).not.toMatch(/\bwindow\.confirm\s*\(/);
       expect(source, file).not.toMatch(/[^\w.]confirm\s*\(/);
-      expect(source, file).toContain('aria-live="polite"');
+      if (file.includes("OAuthPopupConnectButton")) {
+        expect(source, file).toContain('role="alert"');
+      } else {
+        expect(source, file).toContain('aria-live="polite"');
+      }
     }
   });
 
@@ -100,8 +104,7 @@ describe("channel client feedback", () => {
     const tokenForm = readFileSync("src/components/oauth/TokenProviderForm.tsx", "utf8");
     const resyncButton = readFileSync("src/components/oauth/ResyncConnectedAccountButton.tsx", "utf8");
 
-    expect(tokenForm).toContain('role="status"');
-    expect(tokenForm).toContain('aria-live="polite"');
+    expect(tokenForm).toContain('role="alert"');
     expect(tokenForm).toContain("focus:ring-2 focus:ring-[#dbeafe]");
     expect(tokenForm).toContain("focus-visible:ring-[#006fe6]");
     expect(resyncButton).toContain("focus-visible:ring-[#006fe6]");
