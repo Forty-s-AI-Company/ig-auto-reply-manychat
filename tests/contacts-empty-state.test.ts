@@ -86,4 +86,17 @@ describe("contacts empty state", () => {
     expect(source).toContain('aria-describedby={createSegmentDisabledReason ? "contacts-create-segment-disabled-reason" : undefined}');
     expect(source).toContain("disabled={Boolean(createSegmentDisabledReason)}");
   });
+
+  it("keeps contacts filtering and batch actions keyboard-visible", () => {
+    const source = readFileSync("src/components/ContactsListClient.tsx", "utf8");
+
+    expect(source).toContain('aria-label="關閉篩選"');
+    expect(source).toContain("data-testid=\"contacts-filter-status\"");
+    expect(source).toContain("data-testid=\"contacts-filter-tag\"");
+    expect(source).toContain("focus-visible:ring-[#006fe6]");
+    expect(source).toContain("data-testid=\"contacts-batch-add-tag\"");
+    expect(source).toContain("data-testid=\"contacts-batch-remove-tag\"");
+    expect(source).toContain("取消選取");
+    expect(source).toContain("rounded-sm font-semibold text-[#111827]");
+  });
 });

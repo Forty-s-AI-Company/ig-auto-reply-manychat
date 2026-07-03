@@ -9556,3 +9556,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contacts filter and batch action focus polish
+
+- 目標：接續 Contacts list audit，補強篩選彈窗、批次操作工具列與聯絡人列連結的鍵盤可見焦點。
+- 產品修補：
+  - Contacts 搜尋、篩選關閉、篩選 select、清除、套用篩選補齊 keyboard-visible focus treatment。
+  - 批次加標籤、批次移除標籤、取消選取與批次標籤 select 補齊 focus ring。
+  - 聯絡人列表姓名連結補 focus ring，避免鍵盤使用者看不出目前焦點。
+- 測試：
+  - `tests/contacts-empty-state.test.ts` 補 filter / batch action focus guard。
+  - Contacts authenticated desktop/mobile smoke 全部通過。
+- 安全：
+  - 未改 Contacts API、batch tag API、segment API 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

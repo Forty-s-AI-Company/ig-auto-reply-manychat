@@ -304,14 +304,14 @@ export function ContactsListClient({
       <section className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-auto shrink-0 flex-col gap-3 border-b border-[#d7dbe0] px-5 py-3 lg:h-14 lg:flex-row lg:items-center lg:justify-between lg:py-0">
           <form onSubmit={submitSearch} className="relative w-full max-w-xl">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#98a2b3]" aria-hidden="true" />
             <input
               name="q"
               aria-label="搜尋聯絡人"
               autoComplete="off"
               defaultValue={q}
               placeholder="搜尋姓名、Instagram username、Email…"
-              className="h-9 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
+              className="h-9 w-full rounded-md border border-[#d7dbe0] bg-white pl-9 pr-3 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe] focus-visible:outline-none"
             />
           </form>
           <div className="relative flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap">
@@ -361,8 +361,8 @@ export function ContactsListClient({
               >
                 <div className="mb-3 flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-[#111827]">篩選聯絡人</h2>
-                  <button type="button" onClick={() => setIsFilterOpen(false)} aria-label="關閉篩選" className="rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7]">
-                    <X className="h-4 w-4" />
+                  <button type="button" onClick={() => setIsFilterOpen(false)} aria-label="關閉篩選" className="rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
+                    <X className="h-4 w-4" aria-hidden="true" />
                   </button>
                 </div>
                 <label className="block text-sm font-medium text-[#344054]">
@@ -371,7 +371,7 @@ export function ContactsListClient({
                     data-testid="contacts-filter-status"
                     value={draftStatus}
                     onChange={(event) => setDraftStatus(event.target.value)}
-                    className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827]"
+                    className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                   >
                     {statusOptions.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -386,7 +386,7 @@ export function ContactsListClient({
                     data-testid="contacts-filter-tag"
                     value={draftTagId}
                     onChange={(event) => setDraftTagId(event.target.value)}
-                    className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827]"
+                    className="mt-1 h-10 w-full rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                   >
                     <option value="">全部標籤</option>
                     {tags.map((tag) => (
@@ -405,11 +405,11 @@ export function ContactsListClient({
                       updateFilters("", "");
                       setIsFilterOpen(false);
                     }}
-                    className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]"
+                    className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                   >
                     清除
                   </button>
-                  <button type="submit" className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8]">
+                  <button type="submit" className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                     套用篩選
                   </button>
                 </div>
@@ -442,7 +442,7 @@ export function ContactsListClient({
             <select
               value={batchTagId}
               onChange={(event) => setBatchTagId(event.target.value)}
-              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827]"
+              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
               aria-label="選擇批次加入的標籤"
             >
               {tags.length === 0 ? <option value="">尚未建立標籤</option> : null}
@@ -459,7 +459,7 @@ export function ContactsListClient({
               title={batchActionDisabledReason || undefined}
               aria-describedby={batchActionDisabledReason ? "contacts-batch-disabled-reason" : undefined}
               data-testid="contacts-batch-add-tag"
-              className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isPending ? "處理中…" : "批次加標籤"}
             </button>
@@ -470,11 +470,11 @@ export function ContactsListClient({
               title={batchActionDisabledReason || undefined}
               aria-describedby={batchActionDisabledReason ? "contacts-batch-disabled-reason" : undefined}
               data-testid="contacts-batch-remove-tag"
-              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               批次移除標籤
             </button>
-            <button type="button" onClick={() => setSelectedIds([])} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
+            <button type="button" onClick={() => setSelectedIds([])} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
               取消選取
             </button>
             {batchTagDisabledReason ? (
@@ -516,7 +516,7 @@ export function ContactsListClient({
                     />
                   </td>
                   <td className="px-4 py-4">
-                    <Link href={`/contacts/${contact.id}`} className="font-semibold text-[#111827] hover:text-[#006fe6]">
+                    <Link href={`/contacts/${contact.id}`} className="rounded-sm font-semibold text-[#111827] hover:text-[#006fe6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
                       {contact.displayName}
                     </Link>
                     <div className="mt-1 text-xs text-[#667085]">{contact.username ? `@${contact.username}` : contact.externalId}</div>

@@ -3803,6 +3803,12 @@ Remaining:
 - 已完成：說明中心主 CTA 直接導向 `/channels/connect`，並新增 desktop/mobile smoke。
 - 下一步：若沒有人工阻塞，切回產品核心頁面做 Inbox / Contacts / Automations 剩餘 visible-but-unusable 掃描，或整理本機 commits 等待後續批次交付。
 
+## 2026-07-03 - Contacts filter and batch action focus polish
+
+- 已完成：Contacts 篩選彈窗、批次操作工具列與聯絡人列連結補齊 keyboard-visible focus treatment。
+- 已完成：Contacts source-level guard 與 authenticated desktop/mobile smoke 通過。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox composer / contact side panel 或 Automations editor mobile 仍可能存在的細節缺口。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
