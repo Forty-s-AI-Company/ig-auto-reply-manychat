@@ -1,3 +1,18 @@
+# 2026-07-03 - Official landing channel scope alignment
+
+Status: improved for public pre-signup expectation setting; launch still depends on continued local product sweeps and final delivery batching.
+
+What changed:
+
+- The active `/official` landing page no longer displays WhatsApp, Messenger, TikTok, or YouTube as product channels.
+- The public integration promise now explicitly focuses on Instagram and Meta authorization, which matches the current launchable scope.
+- Footer social icons were narrowed to Instagram / Meta so the public page does not imply unsupported multi-channel delivery.
+
+Readiness implication:
+
+- New users should be less likely to buy expecting non-Instagram channels that are not ready for launch.
+- Remaining readiness work stays focused on first-run product flows, Inbox / Contacts / Automations UX, and Billing / referral-credit clarity.
+
 # 2026-07-03 - Sequences / Segments empty-state activation polish
 
 Status: improved for first-run audience / nurture setup; launch still depends on broader mobile QA and later paid-flow polish.

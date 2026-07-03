@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Official landing channel scope alignment
+
+- 目標：接續 simple/full release 與新使用者付費前體驗 audit，修正公開首頁對未交付通路的過度承諾。
+- 產品修補：
+  - `/official` 目前使用的 `OfficialLandingPage` 不再展示 WhatsApp、Messenger、TikTok、YouTube 圖示。
+  - 首頁整合區文案收斂為「目前聚焦支援 Instagram 與 Meta 授權」，英文版同步改為 focused channel scope。
+  - Footer social icons 同步只保留 Instagram / Meta，避免使用者誤以為多通路都已正式可用。
+- 測試：
+  - 新增 `tests/official-landing-channel-scope.test.ts`，鎖住首頁不得再宣傳尚未正式交付的通路。
+- 安全：
+  - 純公開頁文案 / UI 修正，未改 OAuth、Webhook、Billing、PayUNI、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - OAuth fallback control focus polish
 
 - 目標：接續 Channels / Connect 補救路徑 audit，補強 Telegram token fallback 與已連接帳號重新同步按鈕的正式產品可操作性。

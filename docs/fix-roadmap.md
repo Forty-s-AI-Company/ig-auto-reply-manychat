@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Official landing channel scope alignment
+
+Current status:
+
+- `[x]` `/official` landing page no longer advertises WhatsApp, Messenger, TikTok, or YouTube as active product channels.
+- `[x]` Public channel promise is now scoped to Instagram and Meta authorization, matching the current launchable product surface.
+- `[x]` Footer social icons no longer imply unsupported multi-channel delivery.
+- `[x]` Source regression coverage now guards the active landing page from reintroducing unsupported channel claims.
+
+Remaining:
+
+- `[ ]` Continue local-only product sweeps across first-run onboarding, Inbox / Contacts / Automations, and Billing / Referral credit until all visible-but-unusable surfaces are closed.
+- `[ ]` Keep Vercel Preview / PR delivery batched until preview quota pressure is no longer a concern.
+
 # Latest - 2026-07-03 Sequences / Segments empty-state activation polish
 
 Current status:

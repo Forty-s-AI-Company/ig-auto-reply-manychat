@@ -15,14 +15,7 @@ import {
   Tags,
   Zap,
 } from "lucide-react";
-import {
-  siFacebook,
-  siInstagram,
-  siMeta,
-  siTiktok,
-  siWhatsapp,
-  siYoutube,
-} from "simple-icons";
+import { siInstagram, siMeta } from "simple-icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Locale = "zh" | "en";
@@ -45,7 +38,7 @@ const copy = {
       trusted: "為創作者、電商與小型團隊打造",
     },
     badges: ["Meta 串接準備", "IG 留言關鍵字", "繁中介面", "No-code 流程"],
-    channelsTitle: "支援你每天使用的社群入口",
+    channelsTitle: "目前聚焦支援 Instagram 與 Meta 授權",
     socialProofTitle: "讓每一次留言都變成可以追蹤的對話",
     socialProofBody:
       "不只是自動回覆，InboxPilot 會把留言、私訊、標籤、指派與提醒串在一起，讓銷售與客服都看得懂下一步。",
@@ -137,7 +130,7 @@ const copy = {
       trusted: "Built for creators, sellers, and lean teams",
     },
     badges: ["Meta-ready setup", "IG comment keywords", "Bilingual UI", "No-code flows"],
-    channelsTitle: "Works with the channels your audience already uses",
+    channelsTitle: "Focused on Instagram and Meta authorization",
     socialProofTitle: "Turn every comment into a trackable conversation",
     socialProofBody:
       "InboxPilot connects comments, DMs, tags, assignments, and reminders so sales and support teams know exactly what to do next.",
@@ -216,10 +209,7 @@ const copy = {
 
 const channelIcons = [
   { label: "Instagram", icon: siInstagram, bg: "#E4405F" },
-  { label: "WhatsApp", icon: siWhatsapp, bg: "#25D366" },
-  { label: "Messenger", icon: siFacebook, bg: "#0866FF" },
-  { label: "TikTok", icon: siTiktok, bg: "#111111" },
-  { label: "Meta", icon: siMeta, bg: "#0467DF" },
+  { label: "Meta OAuth", icon: siMeta, bg: "#0467DF" },
 ];
 
 const avatarImages = [
@@ -628,7 +618,7 @@ export function OfficialLandingPage() {
         <p className="mb-5 text-center text-sm font-black uppercase tracking-[0.18em] text-[#666]">
           {t.channelsTitle as string}
         </p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
           {channelIcons.map((item, index) => (
             <div
               key={item.label}
@@ -819,7 +809,7 @@ export function OfficialLandingPage() {
                 : "Manage Instagram conversations, comments, and automations so every interaction has a next step."}
             </p>
             <div className="mt-6 flex gap-3 text-white/75">
-              {[siInstagram, siYoutube, siTiktok].map((icon) => (
+              {[siInstagram, siMeta].map((icon) => (
                 <span key={icon.title} className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
                   <SimpleIcon icon={icon} className="h-5 w-5" />
                 </span>
