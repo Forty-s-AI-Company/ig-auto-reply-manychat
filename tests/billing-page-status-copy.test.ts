@@ -21,6 +21,7 @@ describe("billing page status copy", () => {
     expect(source).toContain("已使用後才退款，會以沖回紀錄抵銷");
     expect(source).toContain("查看推薦活動");
     expect(source).toContain("查看折抵明細");
+    expect(source).toContain("transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2");
     expect(source).toContain("addonDisplayName");
     expect(source).toContain("對話保留 +180 天");
     expect(source).toContain("+5,000 訊息事件");

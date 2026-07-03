@@ -4182,6 +4182,11 @@ Remaining:
 - 已完成：Dialog 明確列出批次 ID、筆數、總金額，並說明不會執行銀行匯款、PayUNI 付款或現金提領。
 - 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Referrals / Admin financial surfaces 的 mobile smoke，或切回新使用者啟用路徑。 
 
+## 2026-07-03 - Billing referral credit CTA focus polish
+
+- 已完成：Billing 推薦折抵區的「查看推薦活動」與「查看折抵明細」CTA 補齊 keyboard-visible focus treatment。
+- 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Referrals 的 mobile smoke，或切回 Dashboard / Inbox / Contacts 的新使用者路徑。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

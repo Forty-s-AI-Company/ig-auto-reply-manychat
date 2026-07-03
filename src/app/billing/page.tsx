@@ -170,13 +170,13 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/referrals"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
                 查看推薦活動
               </Link>
               <Link
                 href="/wallet"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
                 查看折抵明細
               </Link>

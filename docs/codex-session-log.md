@@ -10160,3 +10160,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Billing referral credit CTA focus polish
+
+- 目標：接續 Billing / Wallet / Referrals mobile 與 CTA audit，補齊方案頁推薦折抵區的鍵盤可見焦點。
+- 產品修補：
+  - Billing 頁「查看推薦活動」與「查看折抵明細」CTA 補 `focus-visible` ring。
+  - 維持既有 PayUNI Sandbox、推薦折抵、checkout gate 與發票邏輯不變。
+- 測試：
+  - `tests/billing-page-status-copy.test.ts` 補 CTA focus guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 checkout、wallet ledger、invoice、subscription 或 PayUNI callback
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

@@ -548,3 +548,9 @@ Billing launch implication:
 - `[x]` The dialog shows batch ID, item count, and total amount, and reminds operators that the CSV is internal reconciliation data only.
 - `[x]` The export UX explicitly states it does not trigger bank transfer, PayUNI payment, or cash payout.
 - `[ ]` Public referral credits remain the active sales path; cash payout and production PayUNI remain Hold.
+
+# 2026-07-03 - Billing referral credit CTA focus polish
+
+- `[x]` Billing referral-credit CTAs now have keyboard-visible focus treatment aligned with Wallet and Referrals.
+- `[x]` The change keeps PayUNI Sandbox, production gate, referral-credit lifecycle, and invoice logic unchanged.
+- `[ ]` PayUNI production remains Hold; this only improves the self-serve billing page UX.
