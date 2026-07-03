@@ -371,7 +371,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                       <div>
                         <h3 className="font-medium text-[#111827]">{channel.name}</h3>
                         <p className="mt-1 text-sm text-[#667085]">
-                          {config.instagramUsername ? `@${config.instagramUsername}` : "尚未取得使用者名稱"} · {config.loginProvider === "instagram" ? "Instagram 登入" : config.pageName || "Facebook 粉專登入"}
+                          {config.instagramUsername ? `@${config.instagramUsername}` : "尚未取得使用者名稱"} · {config.loginProvider === "instagram" ? "Instagram OAuth" : config.pageName || "Meta Page Login（舊流程）"}
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">

@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Channel login provider label alignment
+
+Current status:
+
+- `[x]` Channels settings now labels legacy page-based connections as `Meta Page Login（舊流程）`.
+- `[x]` Connect success page uses the same legacy provider wording instead of `Meta / Facebook`.
+- `[x]` Source coverage guards provider labels across settings and success surfaces.
+
+Remaining:
+
+- `[ ]` Continue local-only channel evidence checks for real connected-channel metadata and reviewer-safe staging data.
+- `[ ]` Keep actual OAuth behavior changes separate from this display-only copy alignment.
+
 # Latest - 2026-07-03 Social connect legacy Meta Page Login copy polish
 
 Current status:

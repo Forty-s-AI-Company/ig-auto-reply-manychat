@@ -9646,6 +9646,22 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Channel login provider label alignment
+
+- 目標：接續 Social connect copy polish，把已連接帳號與成功頁的 provider 顯示也統一到相同語意。
+- 產品修補：
+  - `/channels` 已連接 Instagram 卡片 fallback 改成 `Meta Page Login（舊流程）`。
+  - `/channels/connect/success` fallback 改成 `登入方式：Meta Page Login（舊流程）`。
+- 測試：
+  - `tests/channels-connect-visibility.test.ts` 補 settings / success provider label guard。
+- 安全：
+  - 純顯示文案修補，未改 OAuth、callback、token 儲存、Webhook、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Social connect legacy Meta Page Login copy polish
 
 - 目標：接續 Channels / Social connect audit，降低舊版 Meta / Page 授權流程與主要 Instagram OAuth 流程混淆。

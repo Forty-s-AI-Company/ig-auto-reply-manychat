@@ -69,7 +69,7 @@ export default async function ChannelConnectionSuccessPage({ searchParams }: Pro
                   {config.instagramUsername ? `@${config.instagramUsername}` : "未讀取到 Instagram 使用者名稱"}
                 </p>
                 <p className="mt-1 text-xs text-[#98a2b3]">
-                  {config.pageName ? `綁定粉專：${config.pageName}` : config.loginProvider === "instagram" ? "登入方式：Instagram OAuth" : "登入方式：Meta / Facebook"}
+                  {config.pageName ? `綁定粉專：${config.pageName}` : config.loginProvider === "instagram" ? "登入方式：Instagram OAuth" : "登入方式：Meta Page Login（舊流程）"}
                 </p>
               </div>
             </div>

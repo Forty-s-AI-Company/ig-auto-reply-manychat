@@ -133,8 +133,10 @@ describe("channel connect visibility", () => {
 
     expect(successSource).toContain("前往設定檢查綁定");
     expect(successSource).toContain("回到社群帳號連接");
+    expect(successSource).toContain("登入方式：Meta Page Login（舊流程）");
     expect(successSource).not.toContain("前往 Channels 檢查綁定");
     expect(successSource).not.toContain("回到 Social Accounts");
+    expect(successSource).not.toContain("登入方式：Meta / Facebook");
 
     expect(profileSource).toContain("請先新增 Instagram 帳號");
     expect(profileSource).not.toContain("Facebook Messenger");
@@ -147,6 +149,7 @@ describe("channel connect visibility", () => {
     expect(channelsSource).toContain("Telegram 屬於後續受控通路");
     expect(channelsSource).toContain("TikTok 尚未納入本次付費版可用範圍");
     expect(channelsSource).toContain("WhatsApp Business 尚未納入本次付費版可用範圍");
+    expect(channelsSource).toContain("Meta Page Login（舊流程）");
     expect(channelsSource).toContain("此功能目前受控開通，完成安全、權限與營運規則驗證後才會開放。");
     expect(channelsSource).toContain("完成供應商串接、權限與訊息收發驗證後才會開放");
     expect(channelsSource).toContain("const reasonId = testId && visibleReason ? `${testId}-reason` : undefined");

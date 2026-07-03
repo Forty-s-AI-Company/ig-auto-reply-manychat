@@ -1,3 +1,17 @@
+# 2026-07-03 - Channel login provider label alignment
+
+Status: improved for connected-channel readability; no behavior change.
+
+What changed:
+
+- Channels settings and connect success surfaces now consistently use `Meta Page Login（舊流程）` for legacy page-based connections.
+- The UI no longer falls back to vague `Meta / Facebook` wording in the success state.
+
+Readiness implication:
+
+- Operators and reviewers should see a clearer distinction between primary Instagram OAuth and the compatibility page-login path.
+- OAuth behavior, token handling, and channel sync remain unchanged.
+
 # 2026-07-03 - Social connect legacy Meta Page Login copy polish
 
 Status: improved for account connection clarity; launch remains gated by real reviewer-safe channel evidence.
