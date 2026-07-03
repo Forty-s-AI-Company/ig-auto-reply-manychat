@@ -40,4 +40,19 @@ describe("marketing info page polish", () => {
     expect(apiDocsSource).not.toContain("/api/webhooks/telegram");
     expect(apiDocsSource).not.toContain("/api/webhooks/whatsapp");
   });
+
+  it("keeps the contact page support copy safe for secrets and payment data", () => {
+    const contactSource = readFileSync("src/app/contact/page.tsx", "utf8");
+
+    expect(contactSource).toContain("PayUNI");
+    expect(contactSource).toContain("敏感資料請先遮蔽");
+    expect(contactSource).toContain("請避免在信件中貼上完整密鑰、token、卡號或 cookie");
+    expect(contactSource).toContain("App ID 或 Business ID 可先遮蔽部分數字");
+    expect(contactSource).toContain("遮蔽後的查詢編號");
+    expect(contactSource).toContain("請不要寄完整卡號或正式金鑰");
+    expect(contactSource).not.toContain("PayUni");
+    expect(contactSource).not.toContain("Payuni");
+    expect(contactSource).not.toContain("請提供 Meta App ID");
+    expect(contactSource).not.toContain("請提供 PayUni 商店代號");
+  });
 });

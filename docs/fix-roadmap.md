@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Contact support copy redaction polish
+
+Current status:
+
+- `[x]` Contact page now uses consistent `PayUNI` naming.
+- `[x]` Support copy no longer asks users to email complete Meta App IDs, PayUNI merchant identifiers, full card data, tokens, cookies, or production keys.
+- `[x]` Contact page now asks for redacted screenshots, error codes, timestamps, steps, and masked lookup references.
+- `[x]` Source coverage guards the support page from returning to unsafe support-data requests.
+
+Remaining:
+
+- `[ ]` Continue local-only product sweeps for public trust pages and authenticated paid/onboarding paths.
+- `[ ]` Keep real payment reconciliation, production keys, and Meta reviewer assets behind manual secure handoff.
+
 # Latest - 2026-07-03 Public API docs launch-safe scope
 
 Current status:

@@ -9646,6 +9646,24 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Contact support copy redaction polish
+
+- 目標：接續公開支援頁 audit，修正聯絡頁對 Meta / PayUNI 支援資訊的安全提示與用語一致性。
+- 產品修補：
+  - `PayUni` 統一為 `PayUNI`。
+  - 聯絡頁不再要求使用者直接提供完整 Meta App ID 或 PayUNI 商店代號。
+  - 支援說明改為要求錯誤畫面、錯誤碼、發生時間、操作步驟與遮蔽後查詢資訊。
+  - 明確提醒不要寄完整密鑰、token、cookie、卡號或正式金鑰。
+- 測試：
+  - `tests/marketing-info-page-polish.test.ts` 補 Contact support redaction guard。
+- 安全：
+  - 純公開支援文案修補，未改 Meta、PayUNI、OAuth、Webhook、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Public API docs launch-safe scope
 
 - 目標：接續公開頁與 developer-facing surface audit，避免 `/api-docs` 對外宣傳尚未正式交付或僅供內部測試的通路。

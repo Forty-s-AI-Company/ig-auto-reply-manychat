@@ -1,3 +1,18 @@
+# 2026-07-03 - Contact support copy redaction polish
+
+Status: improved for support readiness and secret-handling hygiene; launch remains gated by broader product QA.
+
+What changed:
+
+- Contact page now consistently uses `PayUNI`.
+- Meta / Instagram support copy now asks for partially masked identifiers and user-visible error evidence instead of full raw IDs.
+- Payment support copy now asks for transaction timing, payment method, callback state, and masked lookup references, not full card data or production keys.
+
+Readiness implication:
+
+- Early customers have a clearer support path that does not encourage unsafe secret or payment-data sharing.
+- Operational support still needs final runbooks for production payment reconciliation and Meta reviewer credential handoff.
+
 # 2026-07-03 - Public API docs launch-safe scope
 
 Status: improved for developer-facing expectation setting; launch still depends on final API/security review.
