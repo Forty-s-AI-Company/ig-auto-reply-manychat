@@ -1,3 +1,18 @@
+# 2026-07-03 - Public marketing launch-scope copy polish
+
+Status: improved for pre-signup expectation setting; launch remains gated by full product-path QA.
+
+What changed:
+
+- Templates page now frames keyword automation as Instagram private-message routing instead of LINE OA routing.
+- About and Status pages now use consistent `PayUNI` naming.
+- Official v3 landing page no longer presents Messenger permissions as part of the active launch-scope integration promise.
+
+Readiness implication:
+
+- Public pages are less likely to sell or imply unsupported channels before the product and platform review work are ready.
+- LINE, Messenger, WhatsApp, TikTok, and other non-Instagram channels remain future controlled expansions.
+
 # 2026-07-03 - Contact support copy redaction polish
 
 Status: improved for support readiness and secret-handling hygiene; launch remains gated by broader product QA.

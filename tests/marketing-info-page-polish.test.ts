@@ -55,4 +55,21 @@ describe("marketing info page polish", () => {
     expect(contactSource).not.toContain("請提供 Meta App ID");
     expect(contactSource).not.toContain("請提供 PayUni 商店代號");
   });
+
+  it("keeps public marketing pages aligned to the launch channel and PayUNI scope", () => {
+    const templatesSource = readFileSync("src/app/templates/page.tsx", "utf8");
+    const aboutSource = readFileSync("src/app/about/page.tsx", "utf8");
+    const statusSource = readFileSync("src/app/status/page.tsx", "utf8");
+    const officialV3Source = readFileSync("src/components/official/OfficialV3LandingPage.tsx", "utf8");
+
+    expect(templatesSource).toContain("Instagram 私訊導流");
+    expect(templatesSource).not.toContain("LINE OA 導流");
+    expect(aboutSource).toContain("PayUNI 付款");
+    expect(statusSource).toContain("PayUNI 付款流程");
+    expect(officialV3Source).toContain("連接 Instagram 與 Meta 相關權限");
+    expect(officialV3Source).toContain("Connect Instagram and Meta permissions");
+    expect(officialV3Source).not.toContain("siFacebook");
+    expect(officialV3Source).not.toContain("Messenger permissions");
+    expect(`${aboutSource}\n${statusSource}`).not.toContain("PayUni");
+  });
 });

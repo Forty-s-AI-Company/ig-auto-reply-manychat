@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Public marketing launch-scope copy polish
+
+- 目標：接續公開頁 audit，修正仍會讓訪客誤以為非 Instagram 通路已正式可用的文案。
+- 產品修補：
+  - `Templates` 移除 `LINE OA 導流`，改成 Instagram 私訊導流。
+  - `About` 與 `Status` 統一 `PayUNI` 命名。
+  - `Official v3` integrations 移除 Messenger 權限作為 launch-scope 的描述與 Facebook icon。
+- 測試：
+  - `tests/marketing-info-page-polish.test.ts` 補 public marketing launch-scope guard。
+- 安全：
+  - 純公開文案 / icon scope 修補，未改 OAuth、Webhook、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Contact support copy redaction polish
 
 - 目標：接續公開支援頁 audit，修正聯絡頁對 Meta / PayUNI 支援資訊的安全提示與用語一致性。

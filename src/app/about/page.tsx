@@ -23,7 +23,7 @@ export default function AboutPage() {
         },
         {
           title: "和 ManyChat 的關係",
-          body: "InboxPilot 參考 ManyChat 的清楚排版與 no-code 操作邏輯，但功能會優先聚焦在 Instagram、中文營運場景、PayUni 付款與本地團隊常見需求。",
+          body: "InboxPilot 參考 ManyChat 的清楚排版與 no-code 操作邏輯，但功能會優先聚焦在 Instagram、中文營運場景、PayUNI 付款與本地團隊常見需求。",
         },
         {
           title: "接下來",

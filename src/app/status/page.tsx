@@ -25,7 +25,7 @@ export default function StatusPage() {
         },
         {
           title: "付款與方案",
-          body: "PayUni 付款流程已保留 Return URL 與 Notify URL 的串接位置。若商店後台只提供一組網址，InboxPilot 會以同一個商店對應目前的方案付款流程。",
+          body: "PayUNI 付款流程已保留 Return URL 與 Notify URL 的串接位置。若商店後台只提供一組網址，InboxPilot 會以同一個商店對應目前的方案付款流程。",
         },
         {
           title: "平台支援範圍",

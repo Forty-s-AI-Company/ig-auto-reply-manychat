@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Public marketing launch-scope copy polish
+
+Current status:
+
+- `[x]` Templates page no longer mentions `LINE OA` as a launch-scope automation destination.
+- `[x]` About and Status pages now consistently use `PayUNI` naming.
+- `[x]` Official v3 landing integrations no longer describe Messenger as an active launch-scope permission.
+- `[x]` Source coverage guards public marketing pages from drifting back to unsupported channel claims or old PayUni spelling.
+
+Remaining:
+
+- `[ ]` Continue local-only sweeps for public onboarding pages, authenticated activation, and Billing / referral-credit clarity.
+- `[ ]` Keep non-Instagram channel expansion behind explicit platform, security, and App Review gates.
+
 # Latest - 2026-07-03 Contact support copy redaction polish
 
 Current status:

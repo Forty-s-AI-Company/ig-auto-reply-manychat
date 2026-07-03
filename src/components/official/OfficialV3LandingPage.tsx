@@ -23,7 +23,6 @@ import {
   Zap,
 } from "lucide-react";
 import {
-  siFacebook,
   siInstagram,
   siMeta,
 } from "simple-icons";
@@ -55,7 +54,7 @@ const flowChrome: Array<{ accent: string; icon: IconComponent }> = [
   { accent: "#7c3aed", icon: CalendarCheck },
 ];
 
-const integrationIcons = [siInstagram, siMeta, siFacebook];
+const integrationIcons = [siInstagram, siMeta];
 const footerLinks = [
   { label: "Privacy", href: "/privacy-policy" },
   { label: "Terms", href: "/terms-of-service" },
@@ -177,7 +176,7 @@ const copy = {
     integrations: {
       title: "連接你常用的工具",
       body:
-        "連接 Instagram、Meta 與 Messenger 相關權限，讓留言、私訊與 Webhook 資料回到同一個工作區。",
+        "連接 Instagram 與 Meta 相關權限，讓留言、私訊與 Webhook 資料回到同一個工作區。",
     },
     bonus: {
       title: "不是工具包，是 IG 自動化工作區",
@@ -294,7 +293,7 @@ const copy = {
       body: "建立留言触发、DM 回复、标签、提醒与 Inbox 接手流程。",
       items: [["留言触发", "依照指定帖子、全部帖子与关键词启动流程。"], ["DM 回复流程", "用消息、条件、等待与动作节点建立对话路径。"], ["整合收件箱", "集中管理留言、私信、提醒、客服交接与销售跟进。"], ["标签管理", "把活动来源、需求与高意愿状态整理到名单上。"], ["快速回复", "保存每天都会用到的答案，团队可以直接套用。"], ["跟进提醒", "避免高意愿名单因为没有即时跟进而流失。"]],
     },
-    integrations: { title: "连接你常用的工具", body: "连接 Instagram、Meta 与 Messenger 相关权限，让留言、私信与 Webhook 数据回到同一个工作区。" },
+    integrations: { title: "连接你常用的工具", body: "连接 Instagram 与 Meta 相关权限，让留言、私信与 Webhook 数据回到同一个工作区。" },
     bonus: { title: "不是工具包，是 IG 自动化工作区", body: "v3 移除无关的制作工具与额外应用程序，回到本项目真的要交付的功能。", app1: "留言流程 Builder", app2: "团队 Inbox 接手", cardBody: "建立可视化流程、活动标签、提醒与围绕 IG 对话的日常作业。" },
     why: { title: "为什么选择 InboxPilot", body: "从同一个工作区处理 IG 留言、DM、名单标签与团队接手。", heading: "更有效率", tabs: ["留言回复", "活动帖子", "客服接手", "精简团队"], cards: ["最适合回复留言", "为 IG 活动打造", "支持客服与销售", "适合小团队快速上线"] },
     different: {
@@ -376,7 +375,7 @@ const copy = {
       body: "Build comment triggers, DM replies, tags, reminders, and inbox handoff flows.",
       items: [["Comment triggers", "Start flows from selected posts, all posts, and keywords."], ["DM reply flows", "Use message, condition, wait, and action nodes to build conversation paths."], ["Unified Inbox", "Manage comments, DMs, handoff, reminders, and support in one workspace."], ["Tag management", "Organize campaign source, needs, and high-intent status on every lead."], ["Quick Replies", "Save the answers your team sends every day and reuse them instantly."], ["Follow-Up Reminders", "Never lose a lead because the first reply happened at the wrong time."]],
     },
-    integrations: { title: "Connect the channels InboxPilot actually uses", body: "Connect Instagram, Meta, and Messenger permissions so comments, DMs, and webhook data return to one workspace." },
+    integrations: { title: "Connect the channels InboxPilot actually uses", body: "Connect Instagram and Meta permissions so comments, DMs, and webhook data return to one workspace." },
     bonus: { title: "Not a tool bundle. An IG automation workspace.", body: "V3 removes unrelated creation tools and extra apps so the page reflects what this project actually ships.", app1: "Comment Flow Builder", app2: "Team Inbox Handoff", cardBody: "Build visual flows, campaign tags, reminders, and daily work around IG conversations." },
     why: { title: "Why businesses choose InboxPilot", body: "Handle IG comments, DMs, tags, and team handoff from one focused workspace.", heading: "Super-efficient", tabs: ["Comment replies", "Campaign posts", "Support handoff", "Lean teams"], cards: ["Best at replying to comments", "Built for IG campaigns", "Built for support and sales", "Ready for lean teams"] },
     different: {
