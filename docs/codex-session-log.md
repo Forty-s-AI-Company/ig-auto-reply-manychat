@@ -10343,3 +10343,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Channel and referral client error alert semantics
+
+- 目標：接續 visible-but-unusable / 錯誤語意 audit，補齊使用者會直接點擊的 Channels 與 Referrals client-side 錯誤回饋。
+- 產品修補：
+  - `InstagramChannelActions` 在 Instagram action 失敗時改用 `role="alert"`，成功 / 處理中 / neutral guidance 維持 `role="status"`。
+  - `ReferralLinkCopyButton` 的 clipboard 失敗提示改用 `role="alert"`，成功複製仍維持 `role="status"`。
+  - 維持既有 Instagram media / comments / token API、推薦連結、折抵制度與 PayUNI Sandbox 邏輯不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 Instagram action error alert semantics guard。
+  - `tests/referral-affiliate-mvp-ui.test.ts` 補 referral copy error alert guard。
+- 安全：
+  - 純 client UI accessibility 修補，未改 OAuth、token、referral attribution、billing 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

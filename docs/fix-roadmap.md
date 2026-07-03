@@ -4239,6 +4239,12 @@ Remaining:
 - 已完成：Automations editor smoke 改鎖定 header create CTA，確認 React Flow editor、刪除節點確認、mobile canvas notice 與 mobile dialog scroll-safe 仍通過。
 - 下一步：若沒有人工阻塞，繼續做新使用者啟用路徑或 Inbox / Contacts / Channels 的實際操作 smoke，優先找 visible-but-unusable 控制項。
 
+## 2026-07-03 - Channel and referral client error alert semantics
+
+- 已完成：Instagram channel action 失敗訊息改用 `role="alert"`，避免貼文抓取、留言同步或權杖更新失敗只被當成一般狀態文字。
+- 已完成：推薦連結複製失敗訊息改用 `role="alert"`，成功複製仍保留 `role="status"`。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox / Contacts / Billing / Channels 的 client-side action feedback，或改用 Playwright 做新使用者 activation route smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

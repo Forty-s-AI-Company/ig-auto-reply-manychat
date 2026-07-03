@@ -32,6 +32,10 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).not.toContain("<span>{item.status}</span>");
     expect(source).not.toContain("現金提領");
     expect(source).not.toContain("toLocaleDateString");
+
+    const copyButtonSource = read("src/components/ReferralLinkCopyButton.tsx");
+    expect(copyButtonSource).toContain('role="alert"');
+    expect(copyButtonSource).toContain("瀏覽器暫時不允許自動複製");
   });
 
   it("keeps affiliate cash payout behind a controlled-opening gate", () => {

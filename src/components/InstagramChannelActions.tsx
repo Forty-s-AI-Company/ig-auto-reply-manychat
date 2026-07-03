@@ -119,7 +119,7 @@ export function InstagramChannelActions({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-sm font-medium text-[#0b4a6f]">Instagram 功能檢查</p>
-          <p className={`mt-1 text-xs ${messageClass}`} role="status" aria-live="polite">
+          <p className={`mt-1 text-xs ${messageClass}`} role={state.tone === "error" ? "alert" : "status"} aria-live="polite">
             {displayedMessage}
           </p>
         </div>

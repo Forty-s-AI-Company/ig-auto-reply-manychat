@@ -33,7 +33,7 @@ export function ReferralLinkCopyButton({ referralUrl }: { referralUrl: string })
         {state === "copied" ? "已複製" : "複製推薦連結"}
       </button>
       {state === "error" ? (
-        <p className="max-w-xs text-xs leading-5 text-amber-800" role="status">
+        <p className="max-w-xs text-xs leading-5 text-amber-800" role="alert">
           瀏覽器暫時不允許自動複製，請手動選取上方推薦連結。
         </p>
       ) : null}
