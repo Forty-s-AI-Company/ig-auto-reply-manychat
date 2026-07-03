@@ -19,4 +19,16 @@ describe("Broadcasts disabled UX", () => {
     expect(source).toContain("focus-visible:ring-[var(--primary)]");
     expect(source).not.toContain("window.confirm");
   });
+
+  it("announces failed broadcast actions as alerts", () => {
+    const source = readFileSync("src/components/BroadcastsClient.tsx", "utf8");
+
+    expect(source).toContain('type Feedback = {');
+    expect(source).toContain('showFeedback("danger", body?.error || "建立廣播活動失敗。")');
+    expect(source).toContain('showFeedback("danger", body?.error || "讀取預覽失敗。")');
+    expect(source).toContain('showFeedback("danger", body?.error || "排程發送失敗。")');
+    expect(source).toContain('showFeedback("danger", body?.error || "刪除廣播活動失敗。")');
+    expect(source).toContain('role={feedback.tone === "danger" ? "alert" : "status"}');
+    expect(source).toContain('aria-live="polite"');
+  });
 });

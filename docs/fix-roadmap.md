@@ -4269,6 +4269,12 @@ Remaining:
 - 已完成：成功與一般提示仍維持 `role="status"`，不增加非錯誤流程的干擾。
 - 下一步：若沒有人工阻塞，繼續掃 Inbox / Contacts / Billing 的 client-side feedback，或回到新使用者首次啟用路徑做 mobile smoke。
 
+## 2026-07-03 - Broadcasts feedback tone clarity
+
+- 已完成：Broadcasts 建立、預覽、排程、刪除失敗改用 danger tone 與 `role="alert"`，成功回饋維持 status。
+- 已完成：維持既有草稿建立、預覽、排程、刪除確認與 disabled reason，不改廣播 API 或 worker。
+- 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Admin financial surfaces 的 action feedback，或回到 activation route mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

@@ -10433,3 +10433,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Broadcasts feedback tone clarity
+
+- 目標：接續產品完整性 audit，修正 Broadcasts 建立、預覽、排程與刪除操作成功 / 失敗共用同一種中性 feedback 的體感問題。
+- 產品修補：
+  - `BroadcastsClient` 增加 `Feedback` tone 與 `showFeedback` helper。
+  - 建立草稿、排程成功、刪除草稿成功維持 success status。
+  - 建立、預覽、排程、刪除失敗改用 danger tone 與 `role="alert"`。
+  - 保留既有受眾 preview、queue、delete dialog、disabled reason、broadcast API 與 plan gating 邏輯不變。
+- 測試：
+  - `tests/broadcasts-client-disabled-ux.test.ts` 補 Broadcasts action failure alert semantics guard。
+- 安全：
+  - 純 client UI feedback 修補，未改 broadcast API、queue worker、schema、billing entitlement 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

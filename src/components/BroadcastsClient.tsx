@@ -36,6 +36,11 @@ type FormState = {
   scheduledAt: string;
 };
 
+type Feedback = {
+  tone: "success" | "danger";
+  message: string;
+};
+
 function asRecord(value: unknown) {
   return (value || {}) as Record<string, unknown>;
 }
@@ -118,7 +123,7 @@ export function BroadcastsClient({
   const [preview, setPreview] = useState<Record<string, Preview>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<BroadcastItem | null>(null);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
   const audienceOptions = form.audienceType === "segment" ? segments : tags;
   const createDisabledReason = getCreateDisabledReason(form, audienceOptions.length);
   const canSubmit = !createDisabledReason;
@@ -132,6 +137,10 @@ export function BroadcastsClient({
     [broadcasts],
   );
 
+  function showFeedback(tone: Feedback["tone"], message: string) {
+    setFeedback({ tone, message });
+  }
+
   async function createBroadcast() {
     if (!canSubmit) return;
     setFeedback(null);
@@ -142,12 +151,12 @@ export function BroadcastsClient({
     });
     const body = await response.json().catch(() => null);
     if (!response.ok) {
-      setFeedback(body?.error || "建立廣播活動失敗。");
+      showFeedback("danger", body?.error || "建立廣播活動失敗。");
       return;
     }
     setBroadcasts((items) => [body, ...items]);
     setForm({ name: "", audienceType: defaultAudienceType, audienceId: defaultAudienceId, message: "", scheduledAt: "" });
-    setFeedback("已建立草稿。先預覽受眾，確認後即可排程。");
+    showFeedback("success", "已建立草稿。先預覽受眾，確認後即可排程。");
   }
 
   async function loadPreview(id: string) {
@@ -157,7 +166,7 @@ export function BroadcastsClient({
     const body = await response.json().catch(() => null);
     setBusyId(null);
     if (!response.ok) {
-      setFeedback(body?.error || "讀取預覽失敗。");
+      showFeedback("danger", body?.error || "讀取預覽失敗。");
       return;
     }
     setPreview((items) => ({ ...items, [id]: body }));
@@ -170,11 +179,11 @@ export function BroadcastsClient({
     const body = await response.json().catch(() => null);
     setBusyId(null);
     if (!response.ok) {
-      setFeedback(body?.error || "排程發送失敗。");
+      showFeedback("danger", body?.error || "排程發送失敗。");
       return;
     }
     setBroadcasts((items) => items.map((item) => (item.id === id ? { ...item, status: "queued" } : item)));
-    setFeedback(`已建立 ${body?.queued ?? 0} 個發送任務。`);
+    showFeedback("success", `已建立 ${body?.queued ?? 0} 個發送任務。`);
   }
 
   async function deleteBroadcast(id: string) {
@@ -184,12 +193,12 @@ export function BroadcastsClient({
     const body = await response.json().catch(() => null);
     setBusyId(null);
     if (!response.ok) {
-      setFeedback(body?.error || "刪除廣播活動失敗。");
+      showFeedback("danger", body?.error || "刪除廣播活動失敗。");
       return;
     }
     setBroadcasts((items) => items.filter((item) => item.id !== id));
     setDeleteTarget(null);
-    setFeedback("已刪除廣播活動草稿。");
+    showFeedback("success", "已刪除廣播活動草稿。");
   }
 
   return (
@@ -262,7 +271,19 @@ export function BroadcastsClient({
                 {createDisabledReason}
               </p>
             ) : null}
-            {feedback ? <p className="rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm text-[var(--text-secondary)]">{feedback}</p> : null}
+            {feedback ? (
+              <p
+                className={`rounded-md border px-3 py-2 text-sm ${
+                  feedback.tone === "danger"
+                    ? "border-red-200 bg-red-50 text-red-700"
+                    : "border-[var(--border-soft)] bg-[var(--ip-surface-muted)] text-[var(--text-secondary)]"
+                }`}
+                role={feedback.tone === "danger" ? "alert" : "status"}
+                aria-live="polite"
+              >
+                {feedback.message}
+              </p>
+            ) : null}
           </div>
         </div>
 
