@@ -9646,6 +9646,21 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Channel action feedback provider wording
+
+- 目標：接續 Channels provider wording 收斂，把 action feedback 的舊 `Facebook 粉專登入` 顯示改成同一套 `Meta Page Login（舊流程）` 語意。
+- 產品修補：
+  - `getChannelActionDisabledReason()` 的 token refresh disabled reason 改用 `Meta Page Login（舊流程）`。
+- 測試：
+  - `tests/channel-action-feedback.test.ts` 更新 provider wording guard。
+- 安全：
+  - 純顯示文案修補，未改 OAuth、token refresh、callback、Webhook、資料模型、tenant scope 或付款流程
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Channel login provider label alignment
 
 - 目標：接續 Social connect copy polish，把已連接帳號與成功頁的 provider 顯示也統一到相同語意。

@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Channel action feedback provider wording
+
+Current status:
+
+- `[x]` Token refresh disabled reason now labels legacy page-based connections as `Meta Page Login（舊流程）`.
+- `[x]` Source coverage prevents this surface from drifting back to `Facebook 粉專登入`.
+
+Remaining:
+
+- `[ ]` Continue keeping OAuth/token behavior changes separate from display-only copy alignment.
+- `[ ]` Real connected-channel evidence still needs reviewer-safe staging assets before Meta App Review submission.
+
 # Latest - 2026-07-03 Channel login provider label alignment
 
 Current status:

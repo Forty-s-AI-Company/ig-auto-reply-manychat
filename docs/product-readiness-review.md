@@ -1,3 +1,17 @@
+# 2026-07-03 - Channel action feedback provider wording
+
+Status: improved for legacy connection clarity; no behavior change.
+
+What changed:
+
+- Channel action disabled feedback now calls page-based connections `Meta Page Login（舊流程）` instead of `Facebook 粉專登入`.
+- Token refresh messaging remains conservative and still points users to reconnect the page-based lane.
+
+Readiness implication:
+
+- Users and reviewers should see consistent naming across Social connect, Channels, success, and action feedback surfaces.
+- Token refresh, OAuth, webhook, tenant scope, and channel sync behavior remain unchanged.
+
 # 2026-07-03 - Channel login provider label alignment
 
 Status: improved for connected-channel readability; no behavior change.

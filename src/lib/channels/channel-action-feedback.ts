@@ -17,7 +17,7 @@ export function getChannelActionDisabledReason(action: ChannelActionType, contex
   }
 
   if (action === "token" && context.loginProvider === "facebook") {
-    return "這個帳號是 Facebook 粉專登入，不能直接更新 Instagram 長效權杖，請改用重新連結粉專。";
+    return "這個帳號使用 Meta Page Login（舊流程）連接，不能直接更新 Instagram 長效權杖，請改用重新連結粉專。";
   }
 
   return "";

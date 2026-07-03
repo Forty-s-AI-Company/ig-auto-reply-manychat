@@ -9,7 +9,7 @@ describe("channel action feedback", () => {
 
   it("disables token refresh for facebook login channels", () => {
     expect(getChannelActionDisabledReason("token", { hasStoredToken: true, loginProvider: "facebook" })).toMatch(
-      /Facebook 粉專登入/,
+      /Meta Page Login（舊流程）/,
     );
   });
 
