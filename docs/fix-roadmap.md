@@ -4208,6 +4208,11 @@ Remaining:
 - 已完成：header CTA 補齊 keyboard-visible focus treatment，裝飾 icon 補 `aria-hidden`。
 - 下一步：若沒有人工阻塞，繼續掃 Automations / Sequences / Segments 的 mobile full-flow，或切回新使用者首次啟用路徑。
 
+## 2026-07-03 - Profile menu logout error alert semantics
+
+- 已完成：我的個人檔案展開選單的登出失敗提示改用 `role="alert"`，讓錯誤狀態能被輔助工具即時感知。
+- 下一步：若沒有人工阻塞，繼續掃 Profile / Settings / Billing 的 account-level CTA，或切回 Inbox / Contacts mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

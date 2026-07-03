@@ -38,7 +38,7 @@ describe("profile menu and settings IA copy", () => {
     expect(profileMenuSource).toContain("登出失敗，請稍後再試。");
     expect(profileMenuSource).toContain("登出失敗，請確認網路連線後再試一次。");
     expect(profileMenuSource).toContain("disabled={loggingOut}");
-    expect(profileMenuSource).toContain('aria-live="polite"');
+    expect(profileMenuSource).toContain('role="alert"');
   });
 
   it("keeps the profile page from presenting read-only account facts as editable inputs", () => {

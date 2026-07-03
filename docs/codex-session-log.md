@@ -10237,3 +10237,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Profile menu logout error alert semantics
+
+- 目標：接續 Profile menu / Settings IA audit，補齊登出失敗提示的錯誤語意。
+- 產品修補：
+  - 我的個人檔案展開選單中，登出 API 失敗或網路失敗時的錯誤訊息改用 `role="alert"`。
+  - 維持既有登出流程、方案摘要、設定入口與支援入口不變。
+- 測試：
+  - `tests/profile-menu-ia.test.ts` 補 logout error alert semantics guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 auth/logout API、session、cookie 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

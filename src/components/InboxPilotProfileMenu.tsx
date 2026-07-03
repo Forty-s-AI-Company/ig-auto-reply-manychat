@@ -132,7 +132,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
 
           <div className="border-t border-[#edf0f2] py-2">
             {logoutError ? (
-              <p className="mx-4 mb-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="status" aria-live="polite">
+              <p className="mx-4 mb-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs leading-5 text-red-700" role="alert">
                 {logoutError}
               </p>
             ) : null}
