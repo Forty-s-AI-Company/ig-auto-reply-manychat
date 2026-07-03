@@ -1,4 +1,5 @@
 import { AdminShell } from "@/components/AdminShell";
+import { AdminPayoutBatchCreateForm } from "@/components/AdminPayoutBatchCreateForm";
 import { requireUser } from "@/lib/auth";
 import { formatTwd } from "@/lib/billing";
 import { getDb } from "@/lib/db";
@@ -46,23 +47,7 @@ export default async function AdminPayoutBatchesPage() {
   return (
     <AdminShell title="分潤對帳批次">
       <div className="space-y-4">
-        <form action="/api/admin/payouts/batches" method="post" className="ip-dashboard-card px-4 py-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-base font-semibold text-[var(--text-primary)]">建立內部對帳批次</h2>
-              <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
-                依目前已核准的受控分潤資料產生本月 15 日對帳批次；這不會觸發銀行匯款、PayUNI 付款或現金提領。
-              </p>
-            </div>
-            <button
-              type="submit"
-              title="只建立內部對帳批次，不會執行付款。"
-              className="inline-flex h-10 shrink-0 items-center justify-center rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-            >
-              產生對帳批次
-            </button>
-          </div>
-        </form>
+        <AdminPayoutBatchCreateForm />
 
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-4">

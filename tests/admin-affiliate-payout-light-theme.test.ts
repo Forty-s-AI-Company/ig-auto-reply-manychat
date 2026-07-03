@@ -23,6 +23,7 @@ describe("admin affiliate and payout light-theme polish", () => {
     const affiliateSource = readFileSync("src/app/admin/affiliates/page.tsx", "utf8");
     const payoutSource = readFileSync("src/app/admin/payouts/page.tsx", "utf8");
     const batchSource = readFileSync("src/app/admin/payouts/batches/page.tsx", "utf8");
+    const batchCreateSource = readFileSync("src/components/AdminPayoutBatchCreateForm.tsx", "utf8");
 
     expect(affiliateSource).toContain("待審核");
     expect(affiliateSource).toContain("目前沒有受控聯盟申請");
@@ -32,7 +33,9 @@ describe("admin affiliate and payout light-theme polish", () => {
     expect(payoutSource).toContain("受控分潤審核");
     expect(payoutSource).toContain("目前沒有待審核的分潤紀錄");
     expect(payoutSource).toContain("max-w-56 break-all");
-    expect(batchSource).toContain("建立內部對帳批次");
+    expect(batchSource).toContain("AdminPayoutBatchCreateForm");
+    expect(batchCreateSource).toContain("建立內部對帳批次");
+    expect(batchCreateSource).toContain("不會觸發銀行匯款、PayUNI 付款或現金提領");
     expect(batchSource).toContain("目前還沒有內部對帳批次");
     expect(batchSource).toContain("待匯出對帳");
     expect(batchSource).not.toContain("已付款");

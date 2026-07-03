@@ -90,13 +90,20 @@ describe("referral and affiliate MVP UX guards", () => {
 
   it("keeps admin payout batches as internal reconciliation instead of payment execution", () => {
     const source = read("src/app/admin/payouts/batches/page.tsx");
+    const createFormSource = read("src/components/AdminPayoutBatchCreateForm.tsx");
 
     expect(source).toContain("分潤對帳批次");
-    expect(source).toContain("建立內部對帳批次");
-    expect(source).toContain("不會觸發銀行匯款、PayUNI 付款或現金提領");
+    expect(source).toContain("AdminPayoutBatchCreateForm");
+    expect(createFormSource).toContain("建立內部對帳批次");
+    expect(createFormSource).toContain("不會觸發銀行匯款、PayUNI 付款或現金提領");
+    expect(createFormSource).toContain('role="dialog"');
+    expect(createFormSource).toContain('aria-modal="true"');
+    expect(createFormSource).toContain('data-testid="admin-payout-batch-create-dialog"');
+    expect(createFormSource).toContain('data-testid="admin-payout-batch-create-confirm"');
     expect(source).toContain("下載對帳 CSV");
     expect(source).toContain("下載內部對帳 CSV，不會執行付款");
     expect(source).toContain("表格可左右滑動查看批次 ID、金額與匯出操作");
+    expect(createFormSource).not.toContain("window.confirm");
     expect(source).not.toContain("建立付款批次");
     expect(source).not.toContain("產生本月 15 日批次");
     expect(source).not.toContain("目前還沒有提領批次");

@@ -9662,3 +9662,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Admin payout batch create confirmation
+
+- 目標：接續 Billing / Referrals / Admin financial surfaces audit，收斂「建立分潤對帳批次」這類內部高風險 CTA 的誤操作風險。
+- 產品修補：
+  - 新增 `AdminPayoutBatchCreateForm`，將「產生對帳批次」改為先開啟 in-app confirmation dialog。
+  - Dialog 明確說明只建立內部對帳 CSV / 批次，不會觸發銀行匯款、PayUNI 付款或現金提領。
+  - 確認與取消按鈕補 mobile-friendly layout 與 keyboard-visible focus treatment。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts` 補 admin payout batch create dialog / non-payment guard。
+- 安全：
+  - 未改 payout batch API、付款流程、PayUNI、資料模型或 migration
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

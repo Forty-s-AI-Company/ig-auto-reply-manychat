@@ -3839,6 +3839,12 @@ Remaining:
 - 已完成：已連接帳號重新同步 Channel 按鈕補 focus ring 與 decorative icon `aria-hidden`。
 - 下一步：若沒有人工阻塞，繼續檢查 OAuth / Connect 頁面在手機版的實際瀏覽器 smoke，或切回完整新使用者啟用路徑。
 
+## 2026-07-03 - Admin payout batch create confirmation
+
+- 已完成：`/admin/payouts/batches` 的「產生對帳批次」改成先顯示確認 Dialog，不再讓內部高風險操作一鍵提交。
+- 已完成：Dialog 文案明確標示不會執行銀行匯款、PayUNI 付款或現金提領，只建立內部對帳批次。
+- 下一步：若沒有人工阻塞，繼續掃 Admin financial surfaces / Wallet / Billing 的 mobile smoke，或切回新使用者首次啟用路徑。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
