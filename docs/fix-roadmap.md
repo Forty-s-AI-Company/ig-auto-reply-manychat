@@ -3730,6 +3730,12 @@ Remaining:
 - 已完成：Analytics CTA decorative icons 補 `aria-hidden`，降低輔助科技噪音。
 - 下一步：若沒有人工阻塞，切到 Dashboard / Automations / Billing 的 mobile CTA 密度與 remaining disabled UX 掃描。
 
+## 2026-07-03 - Billing checkout CTA focus polish
+
+- 已完成：Billing 方案 checkout 主按鈕補 `hover` 與 `focus-visible` ring，維持 PayUNI Sandbox / production gate 文案不變。
+- 已完成：focused billing source test 與 authenticated billing smoke 通過。
+- 下一步：若沒有人工阻塞，繼續檢查 Referrals / Wallet / Admin financial surfaces 的 mobile CTA 密度與 disabled UX。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

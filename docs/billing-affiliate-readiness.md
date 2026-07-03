@@ -509,3 +509,10 @@ Billing launch implication:
 - `[x]` Wallet now keeps those next-step CTAs visible even when ledger entries already exist, instead of only exposing them in the empty state.
 - `[x]` Authenticated desktop/mobile smoke now checks these controlled-lane CTAs so the financial surfaces are less likely to regress into dead-end pages.
 - `[ ]` PayUNI production remains Hold; this only clarifies the current product path and does not enable cash payout or production checkout.
+
+# 2026-07-03 - Billing checkout CTA focus polish
+
+- `[x]` Billing self-serve checkout buttons now have keyboard-visible focus treatment in addition to existing Sandbox / controlled production copy.
+- `[x]` Custom plan and PayUNI-disabled states still use visible reason text plus `aria-describedby`; no checkout, credit, refund, or payout logic changed.
+- `[x]` Focused billing source test and authenticated desktop/mobile billing smoke passed locally.
+- `[ ]` PayUNI production remains Hold; this does not switch gateway, enable production checkout, or affect production DB.

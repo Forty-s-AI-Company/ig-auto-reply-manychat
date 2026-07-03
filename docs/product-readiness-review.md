@@ -1841,3 +1841,9 @@ Readiness implication:
 - Readiness update：Analytics 的主要下一步 CTA 現在有更一致的 keyboard focus treatment，也有穩定 selector 供 smoke / browser QA 鎖定。
 - Result：分析頁在空資料、simple release gate 與 full-release broadcast action 之間的可測性與可操作性更穩。
 - Remaining risk：仍需逐頁檢查 Dashboard / Automations / Billing 在 mobile 下的 CTA 密度與資訊層級。
+
+## 2026-07-03 - Billing checkout CTA focus polish
+
+- Readiness update：方案 checkout 主按鈕現在有清楚的 keyboard focus treatment，PayUNI Sandbox 與正式站受控開通文案維持不變。
+- Result：付費前的核心 CTA 更符合可上線產品的可操作性要求，且沒有改動付款、折抵、退款或 production gate 邏輯。
+- Remaining risk：仍需繼續檢查 Wallet / Referrals / Admin financial surfaces 的手機版 CTA 密度與受控功能說明。

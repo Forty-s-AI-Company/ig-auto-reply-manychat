@@ -9346,3 +9346,24 @@ Launch impact:
   - 未部署 Production
   - 未送 Meta App Review
   - 未輸出任何 secret
+
+## 2026-07-03 - Billing checkout CTA focus polish
+
+- 目標：接續 Billing / Referrals / Wallet 付費前路徑 audit，補強方案 checkout 主 CTA 的鍵盤可見焦點。
+- 產品修補：
+  - `src/app/billing/page.tsx` 的 PayUNI / Sandbox checkout button 補 `hover` 與 `focus-visible` ring，避免付費前主按鈕只靠滑鼠 hover 才有明確狀態。
+  - 保留既有 disabled reason、`aria-describedby`、Sandbox / production gate 文案，不改付款流程。
+- 測試：
+  - `tests/billing-page-status-copy.test.ts` 補 checkout focus-visible source-level 覆蓋。
+- 驗證：
+  - `npx vitest run tests/billing-page-status-copy.test.ts`: passed
+  - `npm run e2e:admin:ensure; npx playwright test tests/e2e/public-and-auth.spec.ts --grep "billing sandbox" --workers=1`: passed
+  - `npm run lint`: passed
+  - `npm run build -- --webpack`: passed
+  - `npm test`: passed
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

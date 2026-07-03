@@ -16,6 +16,7 @@ describe("billing page status copy", () => {
     expect(source).toContain("客製方案需要由管理員手動開通；請先聯絡我們確認用量、折抵與付款安排。");
     expect(source).toContain("aria-describedby={checkoutReasonId}");
     expect(source).toContain("id={checkoutReasonId}");
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).toContain("待確認折抵會取消");
     expect(source).toContain("已使用後才退款，會以沖回紀錄抵銷");
     expect(source).toContain("查看推薦活動");

@@ -214,7 +214,7 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
                       checkoutDisabledReason ||
                       (payuniStatus.sandbox ? "這會前往 PayUNI Sandbox 測試站，不會進入正式扣款。" : undefined)
                     }
-                    className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
+                    className="w-full rounded-md bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
                   >
                     {checkoutButtonLabel(plan, payuniStatus)}
                   </button>
