@@ -1889,3 +1889,9 @@ Readiness implication:
 - Readiness update：已連結 Instagram channel 的功能檢查與帳號資料重新讀取操作具備更清楚的 keyboard focus treatment。
 - Result：設定頁中 reviewer / operator 會操作的 Instagram 檢查按鈕更像正式產品控制項，而不是僅能滑鼠點擊的測試工具。
 - Remaining risk：真實 staging connected-channel evidence lane 仍取決於 reviewer-safe Instagram asset 與 staging workspace 資料是否準備完成。
+
+## 2026-07-03 - AI settings controls focus polish
+
+- Readiness update：AI 設定頁的主要控制項與連接建議按鈕已補齊 keyboard focus treatment。
+- Result：低頻但重要的模型設定流程更符合主流 SaaS 後台可操作性，不再像只為滑鼠點擊設計。
+- Remaining risk：正式站仍應維持 API provider 優先；local CLI bridge 只適合本機 / 自架環境。

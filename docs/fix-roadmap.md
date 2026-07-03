@@ -3779,6 +3779,12 @@ Remaining:
 - 已完成：Instagram profile refresh button 補齊 amber focus ring，維持 safe error redaction 與 token/permission disabled reason 不變。
 - 下一步：若沒有人工阻塞，繼續回到 onboarding / empty workspace full-flow 或 Billing / Referrals 的 mobile CTA 密度掃描。
 
+## 2026-07-03 - AI settings controls focus polish
+
+- 已完成：AI 設定頁的測試模型、儲存設定、抓取最新模型、API Key 儲存與 CLI 連接建議按鈕補齊 keyboard-visible focus treatment。
+- 已完成：AI 設定頁裝飾 icon 補 `aria-hidden`，維持 API Key 加密儲存與 local CLI bridge 邏輯不變。
+- 下一步：若沒有人工阻塞，繼續檢查 Profile / Settings / Help Center 的 remaining IA 或回到 Billing / Referrals mobile CTA 掃描。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

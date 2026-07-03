@@ -9484,3 +9484,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - AI settings controls focus polish
+
+- 目標：接續 profile/settings IA 收尾，補強 AI 設定頁主要操作按鈕的鍵盤可見焦點與裝飾 icon 語意。
+- 產品修補：
+  - `AiSettingsClient` 的測試模型、儲存設定、抓取最新模型、API Key 儲存與 CLI 連接建議按鈕補 `focus-visible` ring。
+  - 主要裝飾 icon 補 `aria-hidden`，避免輔助科技讀到多餘圖示。
+- 測試：
+  - `tests/ai-settings-disabled-ux.test.ts` 補 focus / icon guard。
+  - authenticated route desktop/mobile smoke 通過。
+- 安全：
+  - 未改 AI provider、API key 加密、local CLI bridge 或後端資料邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

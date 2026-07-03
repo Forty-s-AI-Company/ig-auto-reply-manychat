@@ -118,7 +118,7 @@ function providerLabel(provider: ProviderOption) {
 }
 
 const lightFieldClass = "w-full rounded-md border border-[#cfd4dc] bg-white px-3 py-2 text-[#111827] shadow-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe] disabled:bg-[#eef0f2] disabled:text-[#667085]";
-const secondaryButtonClass = "rounded-md border border-[#cfd4dc] bg-white px-3 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]";
+const secondaryButtonClass = "rounded-md border border-[#cfd4dc] bg-white px-3 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]";
 
 function statusLabel(status?: string) {
   return statusLabels[status || ""] || status || "尚未測試";
@@ -347,9 +347,9 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             onClick={testModel}
             title={testModelDisabledReason || "測試目前模型"}
             aria-describedby={testModelDisabledReason ? "ai-test-model-disabled-reason" : undefined}
-            className="flex items-center gap-2 rounded-md border border-[#00b8d9] bg-white px-4 py-2 text-sm font-medium text-[#006d85] hover:bg-[#ecfeff] disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]"
+            className="flex items-center gap-2 rounded-md border border-[#00b8d9] bg-white px-4 py-2 text-sm font-medium text-[#006d85] hover:bg-[#ecfeff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:border-[#d7dbe0] disabled:bg-[#f3f4f6] disabled:text-[#667085]"
           >
-            <TestTube2 className="h-4 w-4" />
+            <TestTube2 className="h-4 w-4" aria-hidden="true" />
             {testing ? "測試中…" : "測試模型"}
           </button>
           <button
@@ -357,9 +357,9 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
             disabled={saving || loadingModels || !canSaveSetting}
             onClick={saveSetting}
             aria-describedby={saveSettingDisabledReason ? "ai-save-setting-disabled-reason" : undefined}
-            className="flex items-center gap-2 rounded-md bg-[#00b8d9] px-4 py-2 text-sm font-medium text-[#111827] hover:bg-[#0098b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
+            className="flex items-center gap-2 rounded-md bg-[#00b8d9] px-4 py-2 text-sm font-medium text-[#111827] hover:bg-[#0098b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
-            <Save className="h-4 w-4" />
+            <Save className="h-4 w-4" aria-hidden="true" />
             {saving ? "儲存中…" : "儲存設定"}
           </button>
         </div>
@@ -411,9 +411,9 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                   onClick={refreshModels}
                   title={refreshModelsDisabledReason || "抓取最新模型清單"}
                   aria-describedby={refreshModelsDisabledReason ? "ai-refresh-models-disabled-reason" : undefined}
-                  className="inline-flex items-center gap-1 rounded px-1 text-xs font-medium text-[#007f99] hover:text-[#005f73] disabled:text-[#667085]"
+                  className="inline-flex items-center gap-1 rounded px-1 text-xs font-medium text-[#007f99] hover:text-[#005f73] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:text-[#667085]"
                 >
-                  <RefreshCw className="h-3.5 w-3.5" />
+                  <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
                   抓取最新
                 </button>
               </span>
@@ -477,7 +477,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
           {isApiProvider ? (
             <div className="rounded-lg border border-[#d7dbe0] bg-[#f8fafc] p-4">
               <div className="mb-3 flex items-center gap-2 text-sm font-medium text-[#111827]">
-                <ShieldCheck className="h-4 w-4 text-[#12b76a]" />
+                <ShieldCheck className="h-4 w-4 text-[#12b76a]" aria-hidden="true" />
                 API Key
               </div>
               <div className="grid gap-3 md:grid-cols-[1fr_140px]">
@@ -504,7 +504,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
           ) : (
             <div className="rounded-lg border border-[#bae6fd] bg-[#ecfeff] p-4 text-sm text-[#344054]">
               <div className="mb-2 flex items-center gap-2 font-medium text-[#111827]">
-                <Terminal className="h-4 w-4 text-[#007f99]" />
+                <Terminal className="h-4 w-4 text-[#007f99]" aria-hidden="true" />
                 本機 CLI 橋接已開放
               </div>
               <p className="leading-6">
@@ -531,7 +531,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
               <article key={card.id} className="rounded-lg border border-[#bae6fd] bg-[#ecfeff] p-4 text-sm text-[#344054]">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <Cable className="h-4 w-4 text-[#007f99]" />
+                    <Cable className="h-4 w-4 text-[#007f99]" aria-hidden="true" />
                     <h3 className="font-semibold text-[#111827]">{card.title}</h3>
                   </div>
                   <span className="rounded-full border border-[#67e8f9] bg-white px-2 py-0.5 text-[11px] text-[#006d85]">{card.badge}</span>
@@ -540,10 +540,10 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                 <button
                   type="button"
                   onClick={() => void applyConnectionPreset(card.provider, card.preferredModel)}
-                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#00b8d9] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#0098b8]"
+                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#00b8d9] px-3 py-2 text-xs font-semibold text-[#111827] hover:bg-[#0098b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                 >
                   {card.button}
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
                 <div className="mt-4 rounded-md border border-[#d7dbe0] bg-white p-3">
                   <p className="flex items-center gap-2 text-xs font-medium text-[#344054]">
@@ -576,7 +576,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
                     </span>
                   </div>
                   <p className={`mt-1 flex items-center gap-1 text-xs ${passed ? "text-[#039855]" : "text-[#667085]"}`}>
-                    {passed ? <CheckCircle2 className="h-3.5 w-3.5" /> : null}
+                    {passed ? <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> : null}
                     測試：{statusLabel(credential?.testStatus)}
                     {credential?.testedModel ? ` · ${credential.testedModel}` : ""}
                   </p>
@@ -586,7 +586,7 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
           </div>
           <div className="mt-4 rounded-md border border-[#d7dbe0] bg-[#f8fafc] p-3">
             <p className="flex items-center gap-2 text-xs font-medium text-[#344054]">
-              <KeyRound className="h-3.5 w-3.5 text-[#007f99]" />
+              <KeyRound className="h-3.5 w-3.5 text-[#007f99]" aria-hidden="true" />
               連接原則
             </p>
             <p className="mt-2 text-xs leading-5 text-[#667085]">
