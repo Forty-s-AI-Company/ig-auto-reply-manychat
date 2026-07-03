@@ -26,6 +26,10 @@ describe("signup light theme", () => {
     expect(formSource).toContain('role="alert"');
     expect(formSource).toContain('aria-live="polite"');
     expect(formSource).toContain("建立中…");
+    expect(formSource).toContain("signup-submit-disabled-reason");
+    expect(formSource).toContain("請先輸入你的名稱。");
+    expect(formSource).toContain("密碼至少需要 8 個字元。");
+    expect(formSource).toContain('aria-describedby={signupDisabledReason ? "signup-submit-disabled-reason" : undefined}');
   });
 
   it("preserves referral attribution from signup links for email and Google signup", () => {

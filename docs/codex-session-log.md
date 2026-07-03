@@ -10552,3 +10552,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Signup submit gate clarity
+
+- 目標：接續新使用者首次啟用路徑 audit，修正 Signup 表單在名稱、Email 或密碼未達基本條件時仍可送 API 後才回錯的粗糙體感。
+- 產品修補：
+  - `SignupForm` 依照後端 `signupSchema` 的核心條件，補名稱必填、Email 必填、密碼至少 8 字元的前端 submit gate。
+  - 建立帳號按鈕補 `aria-describedby`、`title` 與 disabled helper text，讓使用者知道下一步缺什麼。
+  - 送出時 trim name/email，保留 referral code、pricing plan context、Google signup 與後端 validation / rate limit 不變。
+- 測試：
+  - `tests/signup-light-theme.test.ts` 補 signup submit disabled reason guard。
+- 安全：
+  - 純 client onboarding UX 修補，未改 signup API、auth cookie、workspace/subscription 建立、rate limit、schema 或 referral attribution 邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

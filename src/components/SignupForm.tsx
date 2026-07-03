@@ -44,9 +44,27 @@ export function SignupForm() {
   const visibleReferralCode = referralCodeInput ?? urlReferralCode;
   const effectiveReferralCode = visibleReferralCode.trim();
   const selectedPlanLabel = selectedPlan ? planLabels[selectedPlan] : "";
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const signupDisabledReason = submitting
+    ? "正在建立帳號，請稍候。"
+    : !trimmedName
+      ? "請先輸入你的名稱。"
+      : !trimmedEmail
+        ? "請先輸入 Email。"
+        : password.length < 8
+          ? "密碼至少需要 8 個字元。"
+          : null;
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
+
+    if (signupDisabledReason) {
+      setError(signupDisabledReason);
+      return;
+    }
+
     setError("");
     setSubmitting(true);
     try {
@@ -54,9 +72,9 @@ export function SignupForm() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          name,
-          workspaceName: `${name || email || "InboxPilot"} Workspace`,
-          email,
+          name: trimmedName,
+          workspaceName: `${trimmedName || trimmedEmail || "InboxPilot"} Workspace`,
+          email: trimmedEmail,
           password,
           referralCode: effectiveReferralCode || null,
         }),
@@ -166,11 +184,18 @@ export function SignupForm() {
       </label>
       <button
         type="submit"
-        disabled={submitting}
-        className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-wait disabled:bg-[#e5e7eb] disabled:text-[#667085]"
+        disabled={Boolean(signupDisabledReason)}
+        aria-describedby={signupDisabledReason ? "signup-submit-disabled-reason" : undefined}
+        title={signupDisabledReason || undefined}
+        className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#e5e7eb] disabled:text-[#667085]"
       >
         {submitting ? "建立中…" : "建立帳號"}
       </button>
+      {signupDisabledReason ? (
+        <p id="signup-submit-disabled-reason" className="text-xs leading-5 text-[#667085]">
+          {signupDisabledReason}
+        </p>
+      ) : null}
       <p className="text-center text-sm text-[#667085]">
         已經有帳號？{" "}
         <Link href="/login" className="font-medium text-[#006fe6] hover:text-[#0057b8]">

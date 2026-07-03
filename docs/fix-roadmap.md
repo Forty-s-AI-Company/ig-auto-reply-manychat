@@ -4311,6 +4311,12 @@ Remaining:
 - 已完成：保留既有 token API、popup postMessage 與 provider registry，不改資料模型或 OAuth 主流程。
 - 下一步：若沒有人工阻塞，繼續掃 Channels fallback / profile menu / settings entry 的 remaining visible-but-unusable controls。
 
+## 2026-07-03 - Signup submit gate clarity
+
+- 已完成：Signup 表單補名稱、Email、密碼基本條件的 submit gate 與 disabled reason，避免新使用者空白送出後才得到泛用錯誤。
+- 已完成：保留 Google signup、推薦碼、pricing plan context、後端 signup validation、rate limit 與 referral attribution 不變。
+- 下一步：若沒有人工阻塞，繼續掃 Login / Signup / Pricing onboarding smoke，或回到 Dashboard activation path。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

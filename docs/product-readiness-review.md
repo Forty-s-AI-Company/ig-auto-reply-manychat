@@ -2209,3 +2209,9 @@ Readiness implication:
 - Readiness update：AI 設定頁的主要控制項與連接建議按鈕已補齊 keyboard focus treatment。
 - Result：低頻但重要的模型設定流程更符合主流 SaaS 後台可操作性，不再像只為滑鼠點擊設計。
 - Remaining risk：正式站仍應維持 API provider 優先；local CLI bridge 只適合本機 / 自架環境。
+
+## 2026-07-03 - Signup submit gate clarity
+
+- Readiness update：Signup 表單現在會在名稱、Email 或密碼不足時先阻擋送出，並用 disabled reason 說明下一步，不再只依賴 API 回傳泛用格式錯誤。
+- Result：新使用者從 Pricing 進到 Signup 的首輪體感更清楚，推薦碼與方案上下文仍保留，後端 signup validation / rate limit 仍是最終防線。
+- Remaining risk：Google signup 與正式第三方登入仍需要在 production/staging OAuth 設定完整後，以真實帳號做最後檢查。
