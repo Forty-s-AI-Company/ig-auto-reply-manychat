@@ -6,6 +6,7 @@ Current status:
 - `[x]` Production Meta Webhook callback is persisted as `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
 - `[x]` Instagram Webhook object shows core comments/messages subscriptions: `comments`, `message_reactions`, `messages`, `messaging_postbacks`, `messaging_seen`, and `standby`.
 - `[x]` Basic Settings contain production domains, privacy/terms URLs, data deletion callback, and website URL.
+- `[x]` Added `docs/meta-app-review-final-recording-preflight.md` as the one-page recording gate.
 
 Remaining:
 

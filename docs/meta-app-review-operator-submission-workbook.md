@@ -64,6 +64,7 @@ This workbook is the operator-facing checklist for preparing a real Meta App Rev
 
 It turns these source documents into one manual workflow:
 
+- `docs/meta-app-review-final-recording-preflight.md`
 - `docs/public-paid-launch-control-room.md`
 - `docs/meta-app-review-submission-package.md`
 - `docs/meta-reviewer-recording-shot-list.md`
@@ -118,6 +119,8 @@ Do not place this folder inside the repository unless it is explicitly gitignore
 ## Phase 1 - Operator Prep
 
 Complete before recording or screenshot capture.
+
+Before starting the checklist below, read `docs/meta-app-review-final-recording-preflight.md` and confirm the current decision is not blocked by App icon, reviewer-safe asset, or redaction gates.
 
 ### Runtime Checks
 

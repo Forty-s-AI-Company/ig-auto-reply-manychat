@@ -10860,3 +10860,24 @@ Launch impact:
   - 未碰 production DB
   - 未部署 Production
   - 未輸出任何 secret / token / app secret / verify token
+
+## 2026-07-04 - Meta App Review final recording preflight checklist
+
+- 目標：把 Meta App Review 最終錄影前的 Go / Hold 條件集中成一份可執行檢查表，不送審、不改 DB、不部署。
+- 產出：
+  - 新增 `docs/meta-app-review-final-recording-preflight.md`。
+  - 將 App icon、Production webhook callback、Instagram webhook subscriptions、permission approval、reviewer-safe staging asset lane、redaction hard stops、final manual submit steps 集中整理。
+  - 串接 `docs/meta-app-review-checklist.md`、`docs/meta-app-review-operator-submission-workbook.md`、`docs/meta-reviewer-recording-shot-list.md`。
+- 目前判斷：
+  - Recording package preparation：Conditional Go。
+  - Meta App Review submission：Hold。
+  - Production webhook callback：Pass。
+  - Instagram webhook subscriptions：Pass for core comments/messages fields。
+  - Required permissions / Advanced Access：Hold。
+  - PayUNI：維持 Sandbox。
+- 安全：
+  - 未按 Submit / 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出任何 secret / token / app secret / verify token

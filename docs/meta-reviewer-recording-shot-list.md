@@ -1,6 +1,13 @@
 # Meta Reviewer Recording Shot List
 
-Last updated: 2026-07-03.
+Last updated: 2026-07-04.
+
+## 2026-07-04 Final Recording Preflight Link
+
+- Before recording, use `docs/meta-app-review-final-recording-preflight.md`.
+- The current package is `Conditional Go` for recording preparation, not final App Review submission.
+- App icon remains a polish / possible Meta package gap until a reviewer-safe InboxPilot icon is uploaded or the operator explicitly accepts the current dashboard state.
+- Live webhook-backed message/comment proof remains Hold unless a reviewer-safe remote event rehearsal is captured.
 
 ## 2026-07-03 Preflight Notes
 

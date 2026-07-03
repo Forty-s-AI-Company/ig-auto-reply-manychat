@@ -18,6 +18,11 @@ App Review implication:
 - Final App Review remains Hold until reviewer-safe recording/assets, final redaction, Business Verification / Advanced Access approval, and the final Meta submit action are complete.
 - No App Review submission was performed.
 
+Final recording preflight:
+
+- Use `docs/meta-app-review-final-recording-preflight.md` before capturing the final reviewer video or screenshots.
+- Treat recording as `Conditional Go` only after reviewer-safe staging credentials, workspace isolation, Instagram asset safety, and redaction gates are complete.
+
 ## 2026-07-03 - Instagram media picker reviewer-safe error wording
 
 - `/api/instagram/media` now maps token and permission failures into reviewer-safe Chinese guidance.
