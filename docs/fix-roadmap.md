@@ -4412,6 +4412,13 @@ Remaining:
 - 已完成：本輪未發現新的假按鈕、粗糙原生 confirm / alert、raw provider error 外溢或 simple/full release 立即破口。
 - 下一步：若仍維持本機模式，建議切到低頻 admin / settings QA 或 reviewer-safe staging evidence lane 的本機替代檢查；若要上線交付，等 Vercel Preview quota 恢復後再批次 push / PR / merge。
 
+## 2026-07-03 - Public, legal, and reviewer-safe local smoke sweep
+
+- 已完成：公開官網、v2 / v3 官方頁、Pricing、Help Center、Status 已用本機 Playwright 做 desktop / mobile 快速渲染與 overflow 檢查。
+- 已完成：Contact、Privacy Policy、Terms of Service、Data Deletion、API Docs 已用本機 Playwright 做 desktop / mobile 快速渲染與 overflow 檢查。
+- 已完成：`npm run test:e2e:reviewer` 通過，reviewer-safe local demo lane 可重複走主要 reviewer evidence path。
+- 下一步：若仍維持本機模式，建議切到 admin / settings 低頻頁或 API error surface source-level scan；若要進 reviewer staging lane，需使用 staging-safe tenant 與 reviewer-safe Instagram asset，但仍不可碰 production DB。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

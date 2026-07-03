@@ -10760,3 +10760,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Public, legal, and reviewer-safe local smoke sweep
+
+- 目標：接續可販售前信任面 audit，確認公開頁、法務頁與 reviewer-safe rehearsal 在本機 desktop / mobile 下沒有基本渲染、console 或 RWD 破口。
+- 驗證結果：
+  - Playwright quick smoke 覆蓋 `/official`、`/official/v2`、`/official/v3`、`/pricing`、`/help-center`、`/status`，desktop / mobile 均無 console warning / error，且無水平 overflow。
+  - Playwright quick smoke 覆蓋 `/contact`、`/privacy-policy`、`/terms-of-service`、`/data-deletion`、`/api-docs`，desktop / mobile 均有可讀 H1、無 console warning / error，且無水平 overflow。
+  - `npm run test:e2e:reviewer` 通過，reviewer-safe local demo data 可走 Dashboard、Channels、Inbox、Contacts 與 Automations flows。
+- 產品判斷：
+  - 公開頁與法務頁目前沒有需要立刻修補的 mobile overflow 或空白頁問題。
+  - Meta App Review 的 local rehearsal lane 已可重複驗證；staging / real Instagram reviewer asset lane 仍不等於本機驗證通過。
+- 安全：
+  - 未改產品 source code
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

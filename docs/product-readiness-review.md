@@ -2266,3 +2266,9 @@ Readiness implication:
 - Readiness update：本機 smoke 已重新覆蓋 empty workspace activation、Inbox、Contacts、Automations editor、authenticated route、simple release gates。
 - Result：目前本機 sellable path 的主要操作面沒有新發現 visible-but-unusable 控制項；Inbox / Contacts / Automations / Billing / Referrals / Wallet / Affiliate 均有 desktop / mobile 或 source-level guard 支撐。
 - Remaining risk：這不是 staging / production sign-off。Meta reviewer-safe staging connected-channel evidence、PayUNI production 切換、production DB 與正式 App Review 仍維持人工 gate。
+
+## 2026-07-03 - Public, legal, and reviewer-safe local smoke sweep
+
+- Readiness update：公開官網、價格、說明、系統狀態、法務與資料刪除頁已在本機 desktop / mobile 快速驗證可讀、無水平 overflow、無 console warning / error。
+- Result：上線前信任面與 Meta reviewer local rehearsal path 更穩，reviewer-safe demo data 可以在本機證明 Dashboard、Channels、Inbox、Contacts、Automations 的最小證據鏈。
+- Remaining risk：staging / real asset lane 仍需要 staging-safe tenant、reviewer-safe Instagram account/channel 與人工錄影前檢查；本輪沒有送審，也沒有動 production。
