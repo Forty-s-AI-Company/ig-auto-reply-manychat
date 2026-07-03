@@ -4387,6 +4387,12 @@ Remaining:
 - 已完成：維持既有 login disabled reason、network error fallback、Google OAuth start route 與後端 auth 流程不變。
 - 下一步：若沒有人工阻塞，繼續掃 Signup / Pricing / Dashboard activation route 的 keyboard focus 與 mobile smoke。
 
+## 2026-07-03 - Signup fallback and link focus polish
+
+- 已完成：Signup fetch/network 失敗不再顯示 raw browser error，改成可讀中文 fallback。
+- 已完成：Signup 底部「回到登入 / 回看方案與價格」連結補齊 keyboard-visible focus ring。
+- 下一步：若沒有人工阻塞，繼續掃 Pricing CTA / Dashboard activation path / Help Center 的 keyboard focus 與 mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

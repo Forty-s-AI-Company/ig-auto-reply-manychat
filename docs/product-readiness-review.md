@@ -2242,3 +2242,9 @@ Readiness implication:
 - Readiness update：Login 首屏的 Google login link 與 Email 登入按鈕現在有一致的鍵盤可見焦點。
 - Result：新使用者與 reviewer 在鍵盤操作登入頁時，不會失去目前焦點位置。
 - Remaining risk：正式 Google OAuth 仍需依 staging/production OAuth 設定與真實帳號做最後人工檢查。
+
+## 2026-07-03 - Signup fallback and link focus polish
+
+- Readiness update：Signup 網路失敗與底部導覽連結的體感更清楚，不再可能把瀏覽器原始錯誤直接丟給使用者。
+- Result：新使用者從 Pricing / referral link 進入建立帳號流程時，錯誤與返回路徑更像正式產品。
+- Remaining risk：正式 Google signup 與 referral attribution 仍需依 staging/production OAuth 設定與真實帳號做最後人工檢查。

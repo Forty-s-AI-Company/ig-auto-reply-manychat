@@ -88,8 +88,8 @@ export function SignupForm() {
       }
 
       window.location.href = "/dashboard";
-    } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "註冊失敗，請稍後再試。");
+    } catch {
+      setError("無法連線到註冊服務，請稍後再試。");
       setSubmitting(false);
     }
   }
@@ -198,13 +198,13 @@ export function SignupForm() {
       ) : null}
       <p className="text-center text-sm text-[#667085]">
         已經有帳號？{" "}
-        <Link href="/login" className="font-medium text-[#006fe6] hover:text-[#0057b8]">
+        <Link href="/login" className="rounded-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
           回到登入
         </Link>
       </p>
       <p className="text-center text-xs text-[#667085]">
         想重新比較功能與用量？{" "}
-        <Link href="/pricing" data-testid="signup-back-to-pricing" className="font-medium text-[#006fe6] hover:text-[#0057b8]">
+        <Link href="/pricing" data-testid="signup-back-to-pricing" className="rounded-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
           回看方案與價格
         </Link>
       </p>

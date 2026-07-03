@@ -10689,3 +10689,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Signup fallback and link focus polish
+
+- 目標：接續 Signup onboarding audit，修正註冊網路失敗可能顯示 raw browser error，以及底部導覽連結缺少明確 keyboard focus 的缺口。
+- 產品修補：
+  - Signup fetch/network 失敗時改顯示「無法連線到註冊服務，請稍後再試。」。
+  - 「回到登入」與「回看方案與價格」連結補 `focus-visible` ring，鍵盤操作時可清楚辨識焦點。
+  - 保留既有 signup API、Google signup、referral code、pricing plan context、後端 validation 與 rate limit 不變。
+- 測試：
+  - `tests/signup-light-theme.test.ts` 補 network fallback 與 link focus guard。
+- 安全：
+  - 純 client onboarding UX 修補，未改 auth API、workspace/subscription 建立、referral attribution、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
