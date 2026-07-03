@@ -86,6 +86,8 @@ describe("channel client feedback", () => {
     expect(instagramActions).toContain('data-testid="instagram-action-disabled-reasons"');
     expect(instagramActions).toContain('["media", "comments", "token"]');
     expect(instagramActions).toContain("testId: `instagram-action-${action}`");
+    expect(instagramActions).toContain('role="status"');
+    expect(instagramActions).toContain('aria-live="polite"');
     expect(instagramActions).toContain("aria-describedby");
     expect(instagramActions).toContain("暫時停用原因");
     expect(instagramActions).toContain("focus-visible:ring-[#006fe6]");

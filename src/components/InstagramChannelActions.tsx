@@ -119,7 +119,9 @@ export function InstagramChannelActions({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="text-sm font-medium text-[#0b4a6f]">Instagram 功能檢查</p>
-          <p className={`mt-1 text-xs ${messageClass}`}>{displayedMessage}</p>
+          <p className={`mt-1 text-xs ${messageClass}`} role="status" aria-live="polite">
+            {displayedMessage}
+          </p>
         </div>
         {state.loading ? <RefreshCw className="h-4 w-4 animate-spin text-[#006fe6]" aria-hidden="true" /> : null}
       </div>

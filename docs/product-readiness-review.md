@@ -1,3 +1,17 @@
+# 2026-07-03 - Instagram channel action status accessibility
+
+Status: improved for Channels action feedback; no API behavior change.
+
+What changed:
+
+- Instagram channel action result text now uses a polite live status region.
+- Source coverage guards this treatment for profile-related action feedback surfaces.
+
+Readiness implication:
+
+- Users get clearer feedback after media, comments, and token actions, including assistive technology users.
+- The action routes, provider permissions, OAuth, token refresh, and webhook behavior remain unchanged.
+
 # 2026-07-03 - PayUNI redirect fallback localization
 
 Status: improved for payment flow polish; no gateway behavior change.

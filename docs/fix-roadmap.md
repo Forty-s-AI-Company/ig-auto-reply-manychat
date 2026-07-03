@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Instagram channel action status accessibility
+
+Current status:
+
+- `[x]` Instagram channel action result text now exposes a polite live status region.
+- `[x]` Source coverage guards the accessible status treatment for media, comments, and token action feedback.
+
+Remaining:
+
+- `[ ]` Real staging connected-channel evidence still needs reviewer-safe account assets.
+- `[ ]` Keep API behavior and provider permissions unchanged in this accessibility-only pass.
+
 # Latest - 2026-07-03 PayUNI redirect fallback localization
 
 Current status:

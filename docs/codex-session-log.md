@@ -9646,6 +9646,21 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Instagram channel action status accessibility
+
+- 目標：補齊 Channels / Instagram 功能檢查區的操作結果可達性，避免按下貼文、留言、token 動作後只靠視覺文字變化。
+- 產品修補：
+  - `InstagramChannelActions` 的狀態訊息加入 `role="status"` 與 `aria-live="polite"`。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 Instagram action status accessibility guard。
+- 安全：
+  - 純 UI / accessibility 修補，未改 API route、OAuth、token refresh、Webhook、資料模型、tenant scope 或付款流程
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - PayUNI redirect fallback localization
 
 - 目標：補齊 PayUNI 付款轉址 fallback 頁面的中文化，避免使用者在轉址瞬間看到英文技術頁。
