@@ -1,3 +1,18 @@
+# Latest - 2026-07-04 Meta Dashboard preflight callback update
+
+Current status:
+
+- `[x]` Correct Meta app `InboxPilot` (`924285843989683`) was verified in the logged-in Meta Developers dashboard.
+- `[x]` Production Meta Webhook callback is persisted as `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- `[x]` Instagram Webhook object shows core comments/messages subscriptions: `comments`, `message_reactions`, `messages`, `messaging_postbacks`, `messaging_seen`, and `standby`.
+- `[x]` Basic Settings contain production domains, privacy/terms URLs, data deletion callback, and website URL.
+
+Remaining:
+
+- `[ ]` Required Instagram permissions remain `可供測試`; App Review / Advanced Access is still not approved.
+- `[ ]` App icon still appears as an upload target; prepare reviewer-safe branding before final submission if required.
+- `[ ]` Final reviewer recording, redaction pass, reviewer-safe asset handoff, and manual Submit remain Hold.
+
 # Latest - 2026-07-03 Instagram media permission error clarity
 
 Current status:

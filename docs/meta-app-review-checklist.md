@@ -1,5 +1,23 @@
 # Meta App Review Checklist
 
+## 2026-07-04 - Meta Dashboard direct preflight update
+
+- Verified the correct Meta app is `InboxPilot` (`App ID: 924285843989683`) in the logged-in Meta Developers dashboard.
+- Basic Settings contain production app domains, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL.
+- Basic Settings still show the App icon upload/drop area; add a reviewer-safe InboxPilot icon before final submission if Meta requires branded app presentation.
+- Webhooks callback is now persisted in Meta Developers as `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`; the verify token remained masked and was not recorded.
+- Instagram Webhook object is available and currently shows `comments`, `message_reactions`, `messages`, `messaging_postbacks`, `messaging_seen`, and `standby` as subscribed.
+- Required Instagram Business permissions still show `可供測試`, not approved Advanced Access / App Review status:
+  - `instagram_business_basic`
+  - `instagram_business_manage_comments`
+  - `instagram_business_manage_messages`
+
+App Review implication:
+
+- Dashboard preflight is stronger than the previous document-only state: the production webhook callback is no longer a transient ngrok URL.
+- Final App Review remains Hold until reviewer-safe recording/assets, final redaction, Business Verification / Advanced Access approval, and the final Meta submit action are complete.
+- No App Review submission was performed.
+
 ## 2026-07-03 - Instagram media picker reviewer-safe error wording
 
 - `/api/instagram/media` now maps token and permission failures into reviewer-safe Chinese guidance.

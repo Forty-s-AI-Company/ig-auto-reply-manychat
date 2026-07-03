@@ -1,6 +1,30 @@
 # Meta App Review Operator Submission Workbook
 
-Last updated: 2026-07-03.
+Last updated: 2026-07-04.
+
+## 2026-07-04 Direct Meta Dashboard Preflight Status
+
+Observed from the real Meta Developers dashboard for `InboxPilot` (`924285843989683`):
+
+- Basic Settings contain production domains, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL.
+- Basic Settings still show an App icon upload/drop area; prepare a reviewer-safe InboxPilot icon before final recording or submission if required.
+- Webhooks callback is persisted as `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- The verify token remained masked and was not written into docs, logs, or screenshots.
+- Instagram Webhook object shows these subscribed fields: `comments`, `message_reactions`, `messages`, `messaging_postbacks`, `messaging_seen`, and `standby`.
+- Required Instagram permissions remain in `可供測試` and still need review / Advanced Access before public live usage:
+  - `instagram_business_basic`
+  - `instagram_business_manage_comments`
+  - `instagram_business_manage_messages`
+
+Current preflight decision:
+
+```text
+Meta App Review submission: Hold
+Production webhook callback: Pass
+Instagram webhook subscriptions: Present for core comments/messages fields
+Permission approval / Advanced Access: Hold
+Reviewer asset recording: Hold
+```
 
 ## 2026-07-03 Preflight Gap Status
 
@@ -103,7 +127,8 @@ Complete before recording or screenshot capture.
 - `[ ]` Terms opens: `https://inboxpilot.carry-digital-nomad.in.net/terms-of-service`.
 - `[ ]` Data Deletion opens: `https://inboxpilot.carry-digital-nomad.in.net/data-deletion`.
 - `[ ]` Meta Data Deletion endpoint is known: `https://inboxpilot.carry-digital-nomad.in.net/api/meta/data-deletion`.
-- `[x]` Meta Webhook endpoint is known: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- `[x]` Meta Webhook endpoint is known and persisted in Meta Developers: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- `[x]` Instagram Webhook object shows the core comments/messages fields subscribed.
 - `[ ]` Current Instagram OAuth callback is known: `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
 - `[ ]` Generic provider callback is documented separately and not treated as the main review callback unless product flow is migrated: `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`.
 

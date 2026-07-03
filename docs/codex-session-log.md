@@ -10838,3 +10838,25 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-04 - Meta Dashboard direct preflight update
+
+- 目標：在已登入 Meta Developers 的狀態下，直接確認 `InboxPilot` (`App ID: 924285843989683`) 的 App Review 前置設定，不送審、不改 production DB、不部署 Production。
+- Meta Dashboard 檢查結果：
+  - Basic Settings 已有 production domains、contact email、privacy policy URL、terms URL、data deletion callback URL、website URL。
+  - Basic Settings 的 App icon 區塊仍顯示為上傳 / drop target；送審前建議補 reviewer-safe InboxPilot icon。
+  - Webhooks callback 已確認保存為 `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`，不再是暫時 ngrok URL。
+  - Verify token 在 Meta Developers 仍為遮蔽狀態；本輪未輸出或記錄實際 token。
+  - Instagram Webhook object 可選，且 `comments`、`message_reactions`、`messages`、`messaging_postbacks`、`messaging_seen`、`standby` 顯示為已訂閱。
+  - 必要 Instagram Business permissions 仍顯示為 `可供測試`：`instagram_business_basic`、`instagram_business_manage_comments`、`instagram_business_manage_messages`。
+- 文件更新：
+  - `docs/meta-app-review-checklist.md`
+  - `docs/meta-app-review-submission-package.md`
+  - `docs/meta-app-review-operator-submission-workbook.md`
+  - `docs/fix-roadmap.md`
+- 安全：
+  - 未按 Submit / 未送 Meta App Review
+  - 未切 PayUNI production，PayUNI 仍維持 Sandbox 方向
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出任何 secret / token / app secret / verify token

@@ -1,6 +1,29 @@
 # Meta App Review Submission Package
 
-Last updated: 2026-07-03.
+Last updated: 2026-07-04.
+
+## 2026-07-04 Meta Dashboard Direct Preflight Snapshot
+
+Observed from the logged-in Meta Developers dashboard for the correct app:
+
+- App name: `InboxPilot`
+- App ID: `924285843989683`
+- App status: `已發佈`
+- Basic Settings: production domains, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL are present.
+- Basic Settings gap: the App icon area still appears as an upload/drop target; add a reviewer-safe app icon before final package capture if Meta requires branded presentation.
+- Webhooks callback: persisted as `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- Webhooks verify token: masked in Meta Developers and not recorded in this package.
+- Instagram Webhook object: `comments`, `message_reactions`, `messages`, `messaging_postbacks`, `messaging_seen`, and `standby` show as subscribed.
+- Required permissions remain `可供測試`, not approved Advanced Access / App Review:
+  - `instagram_business_basic`
+  - `instagram_business_manage_comments`
+  - `instagram_business_manage_messages`
+
+Preflight conclusion:
+
+- The production webhook callback gap is closed.
+- The package is still not ready for final submission because permission approval, reviewer-safe assets, and final recording/redaction are not complete.
+- Do not upload or submit this package until the operator completes the manual reviewer asset lane.
 
 ## 2026-07-03 Preflight Snapshot
 
@@ -132,7 +155,7 @@ Fill this table with the exact permission names shown in Meta Dashboard before u
 | instagram_business_basic | User clicks Connect Instagram and authorizes the account. | Channels connect screen and connected channel result. | `/api/oauth/meta-instagram/authorize`, `/api/instagram/oauth/callback` | Testable only |
 | instagram_business_manage_messages | User receives/sends IG messages from Inbox. | Inbox conversation view and reply action. | `/api/webhooks/meta`, message reply flow | Testable only |
 | instagram_business_manage_comments | User syncs/comments automation for owned media. | Automation/comment keyword setup and comment sync result. | `/api/instagram/comments/sync`, comment webhook parsing | Testable only |
-| Webhook subscription / event delivery | Meta delivers message/comment events to InboxPilot. | Webhook verification and event processing evidence. | `/api/webhooks/meta` | Verification step is configured; still needs reviewer-safe remote evidence |
+| Webhook subscription / event delivery | Meta delivers message/comment events to InboxPilot. | Webhook verification and event processing evidence. | `/api/webhooks/meta` | Callback persisted; Instagram object subscriptions for comments/messages/postbacks/seen/standby are visible; still needs reviewer-safe remote evidence |
 
 Do not request permissions that are not shown in the reviewer walkthrough.
 
