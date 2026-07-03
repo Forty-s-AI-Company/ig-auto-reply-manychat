@@ -49,6 +49,8 @@ describe("new-user activation empty states", () => {
   it("gives Automations first-run empty state a next step and a safer fallback path", () => {
     expect(automationsSource).toContain('data-testid="automation-list-empty"');
     expect(automationsSource).toContain("新工作區可以先從 Instagram 預設回覆或空白流程開始");
+    expect(automationsSource).toContain("const showEmptyAutomationState");
+    expect(automationsSource).toContain("{showEmptyAutomationState ? null : (");
     expect(automationsSource).toContain('data-testid="automation-header-create-cta"');
     expect(automationsSource).toContain('data-testid="automation-empty-create-cta"');
     expect(automationsSource).toContain('data-testid="automation-empty-basic-cta"');

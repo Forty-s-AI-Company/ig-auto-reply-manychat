@@ -1,3 +1,17 @@
+# 2026-07-03 - Automations empty-state duplicate CTA polish
+
+Status: improved first-run Automations UX; no API or data behavior change.
+
+What changed:
+
+- The Automations header create button is suppressed only when the user is in the totally empty first-run state.
+- The empty-state CTA remains the primary action, reducing duplicate same-label actions on the first-run path.
+
+Readiness implication:
+
+- New users see a clearer Automations next step during empty workspace activation.
+- This does not change automation creation APIs, execution behavior, production data, production deployment, or Meta / PayUNI gates.
+
 # 2026-07-03 - Mock webhook workspace/channel scope
 
 Status: improved for reviewer-safe remote demo data routing; production mock access remains guarded.

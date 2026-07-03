@@ -1807,6 +1807,13 @@ function FlowBuilderInner({
   if (view !== "editor") {
     const pageTitle = selectedFolder ? selectedFolder.name : activeTab === "basic" ? "基礎流程" : activeTab === "sequences" ? "序列流程" : "我的自動化";
     const emptyMessage = selectedFolder ? "這裡還沒有內容" : "尚未建立自動化";
+    const showEmptyAutomationState =
+      activeTab === "my" &&
+      !selectedFolder &&
+      folderItems.length === 0 &&
+      !search &&
+      triggerFilter === "all" &&
+      statusFilter === "all";
 
     return (
       <div className="w-full bg-[var(--ip-bg)] pb-10 text-[var(--ip-text)]">
@@ -1826,15 +1833,17 @@ function FlowBuilderInner({
         <div className="border-b border-[var(--ip-border)] bg-[var(--ip-surface)] px-4 py-4 lg:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-[28px] font-bold text-[var(--ip-text)]">自動化</h2>
-            <button
-              type="button"
-              onClick={() => setTemplateDialogOpen(true)}
-              data-testid="automation-header-create-cta"
-              className="ip-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold"
-            >
-              <Plus className="h-4 w-4" />
-              新增自動化
-            </button>
+            {showEmptyAutomationState ? null : (
+              <button
+                type="button"
+                onClick={() => setTemplateDialogOpen(true)}
+                data-testid="automation-header-create-cta"
+                className="ip-button-primary inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold"
+              >
+                <Plus className="h-4 w-4" />
+                新增自動化
+              </button>
+            )}
           </div>
         </div>
 

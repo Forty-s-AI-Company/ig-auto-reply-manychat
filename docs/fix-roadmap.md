@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Automations empty-state duplicate CTA polish
+
+Current status:
+
+- `[x]` The Automations header create CTA is hidden only for the truly empty first-run state.
+- `[x]` The empty-state primary CTAs remain visible, so new users have one clear path instead of duplicate "新增自動化" buttons.
+
+Remaining:
+
+- `[ ]` Continue checking Automations mobile/editor paths for any remaining duplicate or unclear CTAs.
+
 # Latest - 2026-07-03 Mock webhook workspace/channel scope
 
 Current status:

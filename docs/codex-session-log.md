@@ -9742,6 +9742,21 @@ Launch impact:
   - 未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Automations empty-state duplicate CTA polish
+
+- 目標：修正真正空 workspace 的 Automations 首次啟用畫面中，header 與 empty state 同時出現「新增自動化」造成選擇感混亂的問題。
+- 修補：
+  - `AutomationBuilderClient` 在 `my` tab、無資料、無資料夾、無搜尋、無篩選時，隱藏 header create CTA。
+  - 保留 empty state 內的主要「新增自動化」與「查看基礎流程」CTA。
+  - `activation-path-empty-states` 補 source-level guard。
+- 驗證：
+  - `npx vitest run tests/activation-path-empty-states.test.ts` 通過。
+  - `npm run test:e2e:empty` desktop / mobile 通過。
+  - `npm run lint`、`npm run build -- --webpack`、`npm test` 通過。
+- 安全：
+  - 純 UI/UX 修補，未改 Automations API、執行邏輯、資料模型、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。
