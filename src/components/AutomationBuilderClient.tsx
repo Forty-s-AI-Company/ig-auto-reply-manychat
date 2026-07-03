@@ -1180,6 +1180,7 @@ function StepConfigEditor({
               type="button"
               onClick={onRefreshMedia}
               disabled={mediaLoading}
+              title={mediaLoading ? "正在抓取 Instagram 貼文，請稍候。" : "重新抓取 Instagram 貼文"}
               data-testid="trigger-fetch-media"
               className="inline-flex items-center gap-1 rounded-md border border-zinc-200 px-2 py-1 text-xs text-zinc-600 hover:bg-zinc-50 disabled:opacity-60"
             >
@@ -1217,7 +1218,7 @@ function StepConfigEditor({
               選擇貼文
             </div>
             {mediaError ? (
-              <div className="mb-2 rounded-md bg-amber-50 p-2 text-xs leading-5 text-amber-800">
+              <div className="mb-2 rounded-md bg-amber-50 p-2 text-xs leading-5 text-amber-800" role="alert" aria-live="polite">
                 <p>{mediaError}</p>
                 {mediaErrorActionHref ? (
                   <a href={mediaErrorActionHref} className="mt-1 inline-flex font-semibold text-amber-900 underline underline-offset-2">

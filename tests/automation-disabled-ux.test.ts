@@ -22,4 +22,10 @@ describe("automation disabled UX", () => {
     expect(source).toContain("rounded-sm text-zinc-400 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300");
     expect(source).toContain("mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end");
   });
+
+  it("announces Instagram media fetch failures clearly", () => {
+    expect(source).toContain('title={mediaLoading ? "正在抓取 Instagram 貼文，請稍候。" : "重新抓取 Instagram 貼文"}');
+    expect(source).toContain('role="alert" aria-live="polite"');
+    expect(source).toContain("重新連接 Instagram");
+  });
 });

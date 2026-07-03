@@ -10467,3 +10467,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Automations media fetch error semantics
+
+- 目標：接續 Automations editor QA，修正 Instagram 貼文抓取失敗時只顯示 amber 區塊、未以 alert 語意公告的缺口。
+- 產品修補：
+  - `AutomationBuilderClient` 的「抓取貼文」按鈕在 loading / idle 時補明確 `title`。
+  - media fetch error 區塊補 `role="alert"` 與 `aria-live="polite"`，保留「重新連接 Instagram」修復入口。
+  - 維持既有 media API、trigger draft、automation save、React Flow editor 與 simple/full release gate 不變。
+- 測試：
+  - `tests/automation-disabled-ux.test.ts` 補 media fetch failure alert semantics guard。
+- 安全：
+  - 純 editor UI accessibility 修補，未改 Instagram API、OAuth、automation API、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

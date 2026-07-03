@@ -4281,6 +4281,12 @@ Remaining:
 - 已完成：維持推薦折抵制度 v1 與受控聯盟 gate，不開放現金提領、不改 payout / commission 邏輯。
 - 下一步：若沒有人工阻塞，繼續掃 Billing checkout / Wallet / Referrals mobile smoke，或切回 Channels / Inbox reviewer-safe UX。
 
+## 2026-07-03 - Automations media fetch error semantics
+
+- 已完成：Automations editor 的 Instagram 貼文抓取錯誤改用 `role="alert"`，並保留「重新連接 Instagram」修復入口。
+- 已完成：抓取貼文按鈕補 loading / idle title，避免按鈕 disabled 時只靠 spinner 表示狀態。
+- 下一步：若沒有人工阻塞，繼續掃 Automations editor mobile / Channels reviewer-safe connected-channel UX，或切回 Contacts detail mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
