@@ -3755,6 +3755,12 @@ Remaining:
 - 已完成：Dashboard 主要 CTA 裝飾 icon 補 `aria-hidden`。
 - 下一步：若沒有人工阻塞，繼續檢查 Automations / Sequences / Segments 的 mobile CTA 與 destructive action 交互。
 
+## 2026-07-03 - Sequences / Segments mobile destructive dialog polish
+
+- 已完成：Sequences 列表 `編輯 / 刪除` 與編輯取消補 keyboard-visible focus ring。
+- 已完成：Sequence delete、Sequence step remove、Segment delete Dialog footer 改成手機版不擠壓的直向排列。
+- 下一步：若沒有人工阻塞，繼續檢查 Inbox / Contacts 詳情互動或 Channels connected-channel evidence lane 的剩餘 product gap。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

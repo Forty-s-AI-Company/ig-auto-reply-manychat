@@ -266,14 +266,14 @@ export function SequencesClient({
                 <button
                   type="button"
                   onClick={() => editSequence(sequence)}
-                  className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc]"
+                  className="rounded-md border border-[#d7dbe0] px-3 py-2 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
                 >
                   編輯
                 </button>
                 <button
                   type="button"
                   onClick={() => setDeleteTargetId(sequence.id)}
-                  className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50"
+                  className="rounded-md border border-red-200 px-3 py-2 text-sm text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
                 >
                   刪除
                 </button>
@@ -330,7 +330,11 @@ export function SequencesClient({
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-semibold text-[#111827]">{editingSequenceId ? "編輯序列" : "建立序列"}</h2>
             {editingSequenceId ? (
-              <button type="button" onClick={resetDraft} className="text-xs text-[#667085]">
+              <button
+                type="button"
+                onClick={resetDraft}
+                className="rounded-md text-xs text-[#667085] hover:text-[#344054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              >
                 取消
               </button>
             ) : null}
@@ -498,7 +502,7 @@ export function SequencesClient({
             <p className="mt-2 text-sm leading-6 text-[#475467]">
               刪除後，這個序列的步驟與後續訂閱排程會一併移除。若只是暫停發送，請改用「停用序列」再儲存。
             </p>
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => setDeleteTargetId("")}
@@ -553,7 +557,7 @@ function SequenceStepRemoveDialog({
         <p className="mt-2 text-sm leading-6 text-[#475467]">
           你即將從目前草稿移除第 {stepOrder} 封訊息。這只會先修改草稿，按下「建立序列」或「更新序列」後才會套用。
         </p>
-        <div className="mt-5 flex justify-end gap-2">
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onCancel}

@@ -1865,3 +1865,9 @@ Readiness implication:
 - Readiness update：Dashboard 主要操作、帳號連線卡、下一步清單與快速自動化入口已補齊鍵盤可見焦點。
 - Result：新使用者啟用路徑更不依賴滑鼠 hover，桌機與輔助科技使用者都能更清楚判斷目前焦點位置。
 - Remaining risk：Automations / Sequences / Segments 仍建議再做一次 mobile full-flow QA。
+
+## 2026-07-03 - Sequences / Segments mobile destructive dialog polish
+
+- Readiness update：Sequences / Segments 的刪除與移除確認 Dialog 在手機版下不再擠壓按鈕，序列列表操作也有鍵盤可見焦點。
+- Result：自動化周邊的破壞性操作更接近正式 SaaS 後台標準，降低誤點與鍵盤操作不清楚的體感問題。
+- Remaining risk：Automations editor 本體仍有既有髒檔變更，後續整理時需避免混入不相關修補。

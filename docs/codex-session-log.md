@@ -9418,3 +9418,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Sequences / Segments mobile destructive dialog polish
+
+- 目標：接續 Automations / Sequences / Segments full-flow audit，補強序列與分眾破壞性操作在鍵盤與手機版的可操作性。
+- 產品修補：
+  - `SequencesClient` 的序列列表 `編輯 / 刪除` 補 `focus-visible` ring。
+  - `SequencesClient` 編輯取消按鈕補 keyboard-visible focus treatment。
+  - 序列刪除 Dialog、序列步驟移除 Dialog 與分眾刪除 Dialog 的 footer 改為手機友善的 `flex-col-reverse`，避免窄螢幕按鈕擠壓。
+- 測試：
+  - `tests/sequences-form-state.test.ts` 與 `tests/segments-light-theme.test.ts` 補 mobile dialog footer 與 focus guard。
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

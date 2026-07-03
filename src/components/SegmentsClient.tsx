@@ -412,7 +412,7 @@ function SegmentDeleteDialog({
         <div className="bg-[#fff8f6] px-5 py-3 text-sm leading-6 text-[#b42318]">
           刪除前請確認沒有正在排程或準備中的廣播依賴這個分眾。
         </div>
-        <div className="flex items-center justify-end gap-2 px-5 py-4">
+        <div className="flex flex-col-reverse gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-end">
           <button
             type="button"
             onClick={onCancel}

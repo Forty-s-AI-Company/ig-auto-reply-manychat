@@ -33,12 +33,14 @@ describe("sequences form state", () => {
     expect(source).toContain('role="dialog"');
     expect(source).toContain('aria-modal="true"');
     expect(source).toContain('data-testid="sequence-confirm-delete"');
+    expect(source).toContain("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end");
     expect(source).toContain("function requestRemoveStep");
     expect(source).toContain("function confirmRemoveStep");
     expect(source).toContain('data-testid={`sequence-step-remove-${index}`}');
     expect(source).toContain('data-testid="sequence-step-confirm-remove"');
     expect(source).toContain("移除序列步驟？");
     expect(source).toContain("這只會先修改草稿");
+    expect(source).toContain("focus-visible:ring-red-300");
     expect(source).not.toContain('confirm("確定要刪除這個序列？")');
     expect(source).not.toContain("onClick={() => removeStep(index)}");
   });
