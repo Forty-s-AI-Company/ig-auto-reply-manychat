@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/AdminShell";
 import { ContactDetailEditor } from "@/components/ContactDetailEditor";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
@@ -24,7 +24,7 @@ export default async function ContactDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const [contact, allTags] = await Promise.all([
     getDb().contact.findFirst({
       where: { id, ...channelWhere },

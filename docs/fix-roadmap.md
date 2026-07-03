@@ -3419,3 +3419,18 @@ Remaining:
 - [ ] Deliver this non-production route fix into the remote staging lane so reviewer-safe Inbox / Contacts synthetic data becomes visible remotely.
 - [ ] Finish the reviewer-safe Instagram OAuth asset lane on staging with a real reviewer-safe account session.
 - [ ] Capture final reviewer-safe staging Inbox / Contacts / connected-channel evidence only after the remote lane is green.
+
+# Latest - 2026-07-03 Reviewer-safe staging remote evidence unblock resolved
+
+Current status:
+
+- [x] Authenticated mock inbound now resolves the current workspace before writing synthetic inbound data.
+- [x] Staging reviewer-safe tenant can receive synthetic inbound and show it in Inbox / Contacts remotely.
+- [x] Unselected IG scope no longer hides reviewer-safe Local Mock channel data; the app now falls back to all enabled workspace channels.
+- [x] Regression coverage exists for account scope, authenticated mock webhook workspace scoping, conversation routes, and tenant-isolation routes.
+- [x] The same workspace-scope fix has been prepared for `master` delivery.
+
+Remaining:
+
+- [ ] Finish the reviewer-safe Instagram OAuth asset lane on staging with a real reviewer-safe account session.
+- [ ] Capture final reviewer-safe staging Inbox / Contacts / connected-channel evidence only after the real reviewer-safe IG asset lane is green.

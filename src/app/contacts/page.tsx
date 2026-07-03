@@ -1,6 +1,6 @@
 import { AdminShell } from "@/components/AdminShell";
 import { ContactsListClient } from "@/components/ContactsListClient";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
@@ -33,7 +33,7 @@ export default async function ContactsPage({
   const tagId = params.tag || "";
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const contactWhere = {
     ...channelWhere,
     ...(q
