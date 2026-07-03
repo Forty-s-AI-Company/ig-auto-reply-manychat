@@ -23,6 +23,11 @@ describe("sequences form state", () => {
     expect(source).toContain('id="sequence-save-disabled-reason"');
     expect(source).toContain('aria-describedby={subscribeDisabledReason ? "sequence-subscribe-disabled-reason" : undefined}');
     expect(source).toContain('id="sequence-subscribe-disabled-reason"');
+    expect(source).toContain("目前還沒有可加入序列的聯絡人");
+    expect(source).toContain('data-testid="sequences-empty-state"');
+    expect(source).toContain('data-testid="sequences-empty-create-cta"');
+    expect(source).toContain('data-testid="sequences-empty-open-contacts"');
+    expect(source).toContain('data-testid="sequence-subscribe-open-contacts"');
     expect(source).toContain("重新載入序列失敗，請稍後再試。");
     expect(source).toContain("刪除序列失敗，請稍後再試。");
     expect(source).toContain('role="dialog"');

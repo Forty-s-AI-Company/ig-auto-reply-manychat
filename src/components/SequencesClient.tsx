@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
@@ -62,6 +63,7 @@ export function SequencesClient({
     return !step.text.trim() || !Number.isFinite(delaySeconds) || delaySeconds < 0;
   });
   const canSaveSequence = hasHydrated && Boolean(trimmedName) && steps.length > 0 && !invalidStep;
+  const hasContacts = contacts.length > 0;
   const saveDisabledReason = !hasHydrated
     ? "序列表單正在載入，請稍候。"
     : !trimmedName
@@ -71,6 +73,8 @@ export function SequencesClient({
       : "";
   const subscribeDisabledReason = !selectedSequenceId
     ? "請先選擇要訂閱的序列。"
+    : !hasContacts
+      ? "目前還沒有可加入序列的聯絡人，先到聯絡人或收件匣建立第一筆對話。"
     : !selectedContactId
       ? "請先選擇要加入序列的聯絡人。"
       : "";
@@ -167,6 +171,11 @@ export function SequencesClient({
 
   function syncNameFromInput(event: FormEvent<HTMLInputElement>) {
     setName(event.currentTarget.value);
+  }
+
+  function focusSequenceEditor() {
+    nameInputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    nameInputRef.current?.focus();
   }
 
   async function createSequence() {
@@ -281,9 +290,32 @@ export function SequencesClient({
         ))}
 
         {sequences.length === 0 ? (
-          <p className="rounded-lg border border-dashed border-[#d7dbe0] bg-white p-6 text-sm text-[#667085]">
-            尚未建立序列。
-          </p>
+          <div
+            data-testid="sequences-empty-state"
+            className="rounded-lg border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-6 text-sm text-[#667085]"
+          >
+            <p className="text-base font-semibold text-[#111827]">尚未建立序列。</p>
+            <p className="mt-2 leading-6">
+              可以先建立第一個培養流程，再把聯絡人加入序列；如果目前還沒有聯絡人，先回收件匣或聯絡人完成第一筆名單。
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={focusSequenceEditor}
+                data-testid="sequences-empty-create-cta"
+                className="inline-flex h-9 items-center justify-center rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              >
+                建立第一個序列
+              </button>
+              <Link
+                href="/contacts"
+                data-testid="sequences-empty-open-contacts"
+                className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              >
+                前往聯絡人
+              </Link>
+            </div>
+          </div>
         ) : null}
       </section>
 
@@ -294,7 +326,7 @@ export function SequencesClient({
           </p>
         ) : null}
 
-        <section className="rounded-lg border border-[#d7dbe0] bg-white p-4">
+        <section id="sequence-editor-card" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-semibold text-[#111827]">{editingSequenceId ? "編輯序列" : "建立序列"}</h2>
             {editingSequenceId ? (
@@ -433,6 +465,15 @@ export function SequencesClient({
               <p id="sequence-subscribe-disabled-reason" className="text-xs leading-5 text-[#667085]">
                 {subscribeDisabledReason}
               </p>
+            ) : null}
+            {!hasContacts ? (
+              <Link
+                href="/contacts"
+                data-testid="sequence-subscribe-open-contacts"
+                className="inline-flex text-xs font-medium text-[#087f95] hover:text-[#0b4a6f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+              >
+                先前往聯絡人整理名單
+              </Link>
             ) : null}
             {selectedSequence ? (
               <p className="text-xs leading-5 text-[#667085]">

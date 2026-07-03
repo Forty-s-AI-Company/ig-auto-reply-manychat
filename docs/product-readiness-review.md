@@ -1,3 +1,19 @@
+# 2026-07-03 - Sequences / Segments empty-state activation polish
+
+Status: improved for first-run audience / nurture setup; launch still depends on broader mobile QA and later paid-flow polish.
+
+What changed:
+
+- `Sequences` now gives a brand-new workspace real next steps instead of a dead-end empty message.
+- Sequence subscription no longer fails with a vague disabled state when there are zero contacts; it now explains that the user needs to create a contact first and links back to the contact surface.
+- `Segments` now exposes a guided empty state with direct actions to create the first reusable audience, inspect contacts, and connect Instagram when no channel exists yet.
+- The repeatable empty-workspace Playwright smoke now proves these first-run surfaces on both desktop and mobile.
+
+Readiness implication:
+
+- A new user can continue from Inbox / Contacts into Segments / Sequences without hitting another “looks unfinished” wall.
+- Remaining activation risk is now mostly concentrated in Automations mobile editor ergonomics, CTA density, and cross-surface visual consistency.
+
 # 2026-07-03 - Dashboard / Inbox onboarding CTA polish
 
 Status: improved for the first authenticated activation path; launch still depends on later-stage empty-state and mobile QA.

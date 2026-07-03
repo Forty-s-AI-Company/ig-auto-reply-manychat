@@ -1,3 +1,18 @@
+# Latest - 2026-07-03 Sequences / Segments empty-state activation polish
+
+Current status:
+
+- `[x]` `Sequences` 空頁面不再只剩一句「尚未建立序列」，而是提供建立第一個序列與前往聯絡人的實際下一步 CTA。
+- `[x]` 當目前沒有聯絡人可加入序列時，`訂閱聯絡人` 控制項現在會清楚說明原因，並提供回到聯絡人的實際路徑。
+- `[x]` `Segments` 空頁面不再只是靜態提示，已補上建立第一個分群、前往聯絡人、以及尚未連接 IG 時的設定入口 CTA。
+- `[x]` Empty workspace Playwright smoke 現在額外覆蓋 `/sequences` 與 `/segments` 的 desktop / mobile first-run 路徑。
+- `[x]` Focused source tests、`npm run lint`、`npm run build -- --webpack`、`npm test` 都已在本機通過。
+
+Remaining:
+
+- `[ ]` 繼續檢查新使用者首次啟用路徑裡 `Contacts / Automations` 的 mobile CTA 密度、panel 遮擋與 disabled UX 一致性。
+- `[ ]` 之後再收掉更後段的 first-paid-experience：Pricing / Signup / Billing / Referrals 文案與 CTA 一致性。
+
 # Latest - 2026-07-03 Dashboard / Inbox onboarding CTA polish
 
 Current status:

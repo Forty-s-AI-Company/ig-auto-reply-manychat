@@ -109,5 +109,21 @@ test.describe("empty workspace activation path", () => {
     await page.getByTestId("automation-empty-basic-cta").click();
     await expect(page.locator("body")).toContainText("基礎流程");
     await expectNoHorizontalOverflow(page);
+
+    await page.goto("/sequences", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "序列" }).first()).toBeVisible();
+    await expect(page.getByTestId("sequences-empty-state")).toBeVisible();
+    await expect(page.getByTestId("sequences-empty-create-cta")).toBeVisible();
+    await expect(page.getByTestId("sequences-empty-open-contacts")).toHaveAttribute("href", "/contacts");
+    await expect(page.getByTestId("sequence-subscribe-open-contacts")).toHaveAttribute("href", "/contacts");
+    await expectNoHorizontalOverflow(page);
+
+    await page.goto("/segments", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "分眾" }).first()).toBeVisible();
+    await expect(page.getByTestId("segments-empty-state")).toBeVisible();
+    await expect(page.getByTestId("segments-empty-create-cta")).toBeVisible();
+    await expect(page.getByTestId("segments-empty-open-contacts")).toHaveAttribute("href", "/contacts");
+    await expect(page.getByTestId("segments-empty-connect-instagram")).toHaveAttribute("href", "/channels/connect");
+    await expectNoHorizontalOverflow(page);
   });
 });

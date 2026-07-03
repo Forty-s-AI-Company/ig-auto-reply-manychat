@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type Tag = { id: string; name: string };
@@ -148,6 +149,12 @@ export function SegmentsClient({
     }
   }
 
+  function focusSegmentEditor() {
+    document.getElementById("segments-editor-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const nameInput = document.querySelector<HTMLInputElement>('input[name="segment-name"]');
+    nameInput?.focus();
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -198,13 +205,50 @@ export function SegmentsClient({
             </article>
           ))}
           {segments.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-6 text-sm leading-6 text-[#667085]">
-              尚未建立分群。右側可以先用標籤、同意狀態或互動天數建立第一個受眾。
-            </p>
+            <div
+              data-testid="segments-empty-state"
+              className="rounded-lg border border-dashed border-[#d7dbe0] bg-[#f8fafc] p-6 text-sm leading-6 text-[#667085]"
+            >
+              <p className="text-base font-semibold text-[#111827]">尚未建立分群。</p>
+              <p className="mt-2">
+                可以先從聯絡人常用條件開始，例如已訂閱、最近互動或指定標籤；建立後，之後的廣播與分析就能直接重用這組受眾。
+              </p>
+              {channels.length === 0 ? (
+                <p className="mt-2 text-xs text-[#98a2b3]">
+                  目前還沒有已連接的 Instagram 帳號；若你想用帳號維度做分群，先到設定完成連線。
+                </p>
+              ) : null}
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={focusSegmentEditor}
+                  data-testid="segments-empty-create-cta"
+                  className="inline-flex h-9 items-center justify-center rounded-md bg-[#0057d9] px-3 text-sm font-medium text-white hover:bg-[#0047b3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                >
+                  建立第一個分群
+                </button>
+                <Link
+                  href="/contacts"
+                  data-testid="segments-empty-open-contacts"
+                  className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                >
+                  前往聯絡人
+                </Link>
+                {channels.length === 0 ? (
+                  <Link
+                    href="/channels/connect"
+                    data-testid="segments-empty-connect-instagram"
+                    className="inline-flex h-9 items-center justify-center rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
+                  >
+                    前往設定連接 IG
+                  </Link>
+                ) : null}
+              </div>
+            </div>
           ) : null}
         </div>
 
-        <aside className="rounded-lg border border-[#d7dbe0] bg-white p-4 shadow-sm">
+        <aside id="segments-editor-card" className="rounded-lg border border-[#d7dbe0] bg-white p-4 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-medium text-[#111827]">{isEditing ? "編輯分群" : "新增分群"}</h3>
             {isEditing ? (

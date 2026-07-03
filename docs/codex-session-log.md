@@ -1,3 +1,20 @@
+## 2026-07-03 13:45 +08:00 - Sequences / Segments empty-state activation polish
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: `src/components/SequencesClient.tsx`, `src/components/SegmentsClient.tsx`, `tests/sequences-form-state.test.ts`, `tests/segments-empty-state.test.ts`, `tests/e2e/empty-workspace-activation.spec.ts`.
+- `Sequences` 空頁面現在提供 `建立第一個序列` 與 `前往聯絡人` CTA，不再只是靜態一句話。
+- `訂閱聯絡人` 在 zero-contact 狀態下，現在會明確說明先建立聯絡人，再提供回到聯絡人的實際入口。
+- `Segments` 空頁面現在提供建立分群、查看聯絡人，以及尚未接好 IG 時的設定入口，不再只是純文字提示。
+- `tests/e2e/empty-workspace-activation.spec.ts` 現在會額外驗證 `/sequences` 與 `/segments` 的 desktop/mobile first-run 路徑與無水平 overflow。
+- Local validation passed:
+  - `npx eslint src/components/SequencesClient.tsx src/components/SegmentsClient.tsx tests/sequences-form-state.test.ts tests/segments-empty-state.test.ts tests/e2e/empty-workspace-activation.spec.ts`
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests\\sequences-form-state.test.ts tests\\segments-empty-state.test.ts`
+  - `npm run e2e:empty:ensure && npx playwright test tests/e2e/empty-workspace-activation.spec.ts --workers=1`
+  - `npm run lint`
+  - `npm run build -- --webpack`
+  - `npm test`
+  - `npm test` 仍有既知 Windows Vitest multi-file batch crash `3221225477`，但 runner 自動逐檔診斷後全部通過，沒有本輪新增回歸。
+
 ## 2026-07-03 13:35 +08:00 - Dashboard / Inbox onboarding CTA polish
 
 - Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
