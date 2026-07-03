@@ -2236,3 +2236,9 @@ Readiness implication:
 - Readiness update：知識庫與標籤管理這類設定型 CRUD 不再允許明顯無效 JSON 送出後才回錯；使用者會先看到格式修正提示。
 - Result：低頻但重要的後台資料維護工具更像正式 SaaS 後台，而不是內部工程測試頁。
 - Remaining risk：仍建議繼續掃 Knowledge Base、Tags、Settings 類頁面的 mobile layout 與非 JSON 化表單體驗，逐步降低操作門檻。
+
+## 2026-07-03 - Login focus affordance polish
+
+- Readiness update：Login 首屏的 Google login link 與 Email 登入按鈕現在有一致的鍵盤可見焦點。
+- Result：新使用者與 reviewer 在鍵盤操作登入頁時，不會失去目前焦點位置。
+- Remaining risk：正式 Google OAuth 仍需依 staging/production OAuth 設定與真實帳號做最後人工檢查。

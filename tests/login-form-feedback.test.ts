@@ -21,5 +21,7 @@ describe("login form feedback", () => {
     expect(loginFormSource).toContain("無法連線到登入服務，請稍後再試。");
     expect(loginFormSource).toContain("email: trimmedEmail");
     expect(loginFormSource).toContain('autoComplete="current-password"');
+    expect(loginFormSource).toContain("focus-visible:ring-[#006fe6]");
+    expect(loginFormSource).toContain("focus-visible:ring-offset-2");
   });
 });

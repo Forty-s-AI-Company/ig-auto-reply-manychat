@@ -68,7 +68,7 @@ export function LoginForm({ initialError = "" }: { initialError?: string }) {
 
       <a
         href="/api/auth/google/start"
-        className="flex w-full items-center justify-center gap-3 rounded-md border border-[#d7dbe0] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#f8fafc]"
+        className="flex w-full items-center justify-center gap-3 rounded-md border border-[#d7dbe0] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
       >
         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4285f4] text-xs font-bold text-white">G</span>
         使用 Google 繼續
@@ -112,7 +112,7 @@ export function LoginForm({ initialError = "" }: { initialError?: string }) {
         disabled={Boolean(loginDisabledReason)}
         aria-describedby={loginDisabledReason ? "login-submit-disabled-reason" : undefined}
         title={loginDisabledReason || undefined}
-        className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:bg-[#e5e7eb] disabled:text-[#667085]"
+        className="w-full rounded-md bg-[#006fe6] px-4 py-2 font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#e5e7eb] disabled:text-[#667085]"
       >
         {submitting ? "登入中…" : "登入"}
       </button>

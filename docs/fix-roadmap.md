@@ -4381,6 +4381,12 @@ Remaining:
 - 已完成：新增 / 編輯 textarea 補 helper text、`aria-invalid`、`aria-describedby`，送出按鈕在 JSON 無效時有 disabled reason。
 - 下一步：若沒有人工阻塞，繼續掃 Knowledge Base / Tags / Settings 類頁面的 mobile overflow、空狀態與表單錯誤提示；或回到 Dashboard / Inbox activation route 做 smoke。
 
+## 2026-07-03 - Login focus affordance polish
+
+- 已完成：Login 首屏的 Email 登入按鈕與 Google login link 補齊 keyboard-visible focus ring。
+- 已完成：維持既有 login disabled reason、network error fallback、Google OAuth start route 與後端 auth 流程不變。
+- 下一步：若沒有人工阻塞，繼續掃 Signup / Pricing / Dashboard activation route 的 keyboard focus 與 mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

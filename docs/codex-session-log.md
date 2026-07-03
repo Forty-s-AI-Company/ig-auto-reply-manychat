@@ -10672,3 +10672,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Login focus affordance polish
+
+- 目標：接續新使用者登入路徑 audit，修正 Login 首屏主要登入入口缺少鍵盤可見焦點的可用性缺口。
+- 產品修補：
+  - Email 登入送出按鈕補 `focus-visible` ring 與 offset。
+  - Google login link 補一致的 `focus-visible` ring，鍵盤操作時可清楚看到目前焦點位置。
+  - 保留既有 login API、Google OAuth start route、submit disabled reason、error alert 與 redirect 行為不變。
+- 測試：
+  - `tests/login-form-feedback.test.ts` 補登入表單 focus affordance guard。
+- 安全：
+  - 純 client UI / accessibility 修補，未改 auth API、OAuth、cookie、rate limit、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
