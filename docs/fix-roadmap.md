@@ -4176,6 +4176,12 @@ Remaining:
 - 已完成：Analytics simple-release broadcast gate 與 error banner 的裝飾 icon 補 `aria-hidden`，避免輔助工具重複朗讀。
 - 下一步：若沒有人工阻塞，繼續掃 Dashboard / Analytics / Billing 的 browser smoke，或切回真正空 workspace 啟用路徑。
 
+## 2026-07-03 - Admin payout CSV export confirmation
+
+- 已完成：`/admin/payouts/batches` 的「下載對帳 CSV」改為受控確認 Dialog，不再讓內部敏感資料一鍵直接下載。
+- 已完成：Dialog 明確列出批次 ID、筆數、總金額，並說明不會執行銀行匯款、PayUNI 付款或現金提領。
+- 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Referrals / Admin financial surfaces 的 mobile smoke，或切回新使用者啟用路徑。 
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

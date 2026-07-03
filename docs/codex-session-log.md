@@ -10143,3 +10143,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Admin payout CSV export confirmation
+
+- 目標：接續 Billing / Referrals / Wallet / Admin financial surfaces audit，補齊內部對帳 CSV 匯出前的受控確認。
+- 產品修補：
+  - `/admin/payouts/batches` 的「下載對帳 CSV」不再是直接下載連結，改為確認 Dialog 後才下載。
+  - Dialog 顯示批次 ID、筆數、總金額，並明確說明 CSV 只供內部對帳，不會執行銀行匯款、PayUNI 付款或現金提領。
+  - 匯出警示補上敏感資料保存提醒，降低營運誤傳公開管道的風險。
+- 測試：
+  - `tests/admin-affiliate-payout-light-theme.test.ts` 補對帳 CSV 受控匯出 Dialog、`aria-modal`、`data-testid` 與 no native confirm guard。
+- 安全：
+  - 純 UI / 內部營運確認流程修補，未改 payout export API、金流、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

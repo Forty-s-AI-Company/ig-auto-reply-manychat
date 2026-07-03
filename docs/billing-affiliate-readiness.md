@@ -541,3 +541,10 @@ Billing launch implication:
 - `[x]` The dialog states that approval only enters internal reconciliation and does not trigger bank transfer, PayUNI payment, or cash payout.
 - `[x]` Focused source test covers the controlled dialog, `aria-modal`, and no native `window.confirm`.
 - `[ ]` Public referral credits remain the active sales path; cash payout stays a controlled future operation.
+
+# 2026-07-03 - Admin payout CSV export confirmation
+
+- `[x]` Admin payout batch CSV export now requires an in-app confirmation dialog before download.
+- `[x]` The dialog shows batch ID, item count, and total amount, and reminds operators that the CSV is internal reconciliation data only.
+- `[x]` The export UX explicitly states it does not trigger bank transfer, PayUNI payment, or cash payout.
+- `[ ]` Public referral credits remain the active sales path; cash payout and production PayUNI remain Hold.

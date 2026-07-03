@@ -1,5 +1,6 @@
 import { AdminShell } from "@/components/AdminShell";
 import { AdminPayoutBatchCreateForm } from "@/components/AdminPayoutBatchCreateForm";
+import { AdminPayoutBatchExportButton } from "@/components/AdminPayoutBatchExportButton";
 import { requireUser } from "@/lib/auth";
 import { formatTwd } from "@/lib/billing";
 import { getDb } from "@/lib/db";
@@ -86,13 +87,7 @@ export default async function AdminPayoutBatchesPage() {
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{batch.itemCount} 筆</td>
                     <td className="px-4 py-3 font-semibold text-[var(--text-primary)]">{formatTwd(batch.totalAmount)}</td>
                     <td className="px-4 py-3">
-                      <a
-                        className="font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-                        href={`/api/admin/payouts/batches/${batch.id}/export`}
-                        title="下載內部對帳 CSV，不會執行付款。"
-                      >
-                        下載對帳 CSV
-                      </a>
+                      <AdminPayoutBatchExportButton batchId={batch.id} itemCount={batch.itemCount} totalAmountLabel={formatTwd(batch.totalAmount)} />
                     </td>
                     <td className="px-4 py-3 text-[var(--text-secondary)]">{formatDate(batch.createdAt)}</td>
                   </tr>
