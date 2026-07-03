@@ -1,3 +1,17 @@
+# Latest - 2026-07-03 Profile controlled settings polish
+
+Current status:
+
+- `[x]` Profile page no longer implies Apple / Telegram login methods are already waiting behind a hidden entry.
+- `[x]` Additional login methods now show a clear controlled-opening disabled UX with visible reason copy.
+- `[x]` Notification settings copy now has a real next-step link to `/channels#notifications`.
+- `[x]` Source coverage guards against returning to ambiguous profile settings copy.
+
+Remaining:
+
+- `[ ]` Continue local-only product sweeps for remaining profile/settings, Inbox, Contacts, Automations, and Billing surfaces.
+- `[ ]` Keep actual auth-provider expansion behind security review and manual launch gates.
+
 # Latest - 2026-07-03 Official landing channel scope alignment
 
 Current status:

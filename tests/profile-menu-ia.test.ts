@@ -46,6 +46,11 @@ describe("profile menu and settings IA copy", () => {
     expect(profilePageSource).not.toContain("readOnly");
     expect(profilePageSource).not.toContain("<input");
     expect(profilePageSource).toContain("focus-visible:ring-[#006fe6]");
+    expect(profilePageSource).toContain("新增登入方式受控開通");
+    expect(profilePageSource).toContain("aria-describedby=\"profile-login-provider-disabled-reason\"");
+    expect(profilePageSource).toContain("前往通知設定");
+    expect(profilePageSource).toContain('href="/channels#notifications"');
+    expect(profilePageSource).not.toContain("Apple、Telegram 登入方式先保留入口");
   });
 
   it("uses settings language for account metadata recovery and simple-release feature gates", () => {

@@ -1,3 +1,18 @@
+# 2026-07-03 - Profile controlled settings polish
+
+Status: improved for mainstream account/settings UX; launch still depends on continued product-flow QA.
+
+What changed:
+
+- The Profile page no longer suggests Apple / Telegram login is present but hidden.
+- Additional login methods now appear as a controlled-opening disabled action with a visible reason.
+- Notification settings now provide a real link into the Settings surface instead of leaving users to hunt for the next step.
+
+Readiness implication:
+
+- Account settings feel less like a half-built menu and more like an intentional controlled-opening surface.
+- Auth provider expansion remains a future security-reviewed capability, not part of the current launch promise.
+
 # 2026-07-03 - Official landing channel scope alignment
 
 Status: improved for public pre-signup expectation setting; launch still depends on continued local product sweeps and final delivery batching.

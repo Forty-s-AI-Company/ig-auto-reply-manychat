@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Profile page controlled account settings polish
+
+- 目標：接續 Profile / Settings IA audit，收斂個人檔案頁內容易讓使用者誤會的登入方式與通知設定提示。
+- 產品修補：
+  - `登入與安全` 不再用「Apple、Telegram 登入方式先保留入口」暗示不存在的操作。
+  - 新增清楚 disabled UX：`新增登入方式受控開通`，並用可見說明與 `aria-describedby` 解釋安全審查前不開放。
+  - `通知` 區補上實際可點的 `前往通知設定` 連結到 `/channels#notifications`，避免只寫「集中在通知設定」卻沒有下一步。
+- 測試：
+  - `tests/profile-menu-ia.test.ts` 補 Profile 頁登入方式 disabled UX 與通知設定連結 guard。
+- 安全：
+  - 純 Profile 頁 UX 修補，未改 auth provider、OAuth、session、通知 API、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Official landing channel scope alignment
 
 - 目標：接續 simple/full release 與新使用者付費前體驗 audit，修正公開首頁對未交付通路的過度承諾。

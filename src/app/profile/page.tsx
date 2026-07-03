@@ -62,7 +62,20 @@ export default async function ProfilePage() {
                 <h3 className="font-semibold text-[#111827]">登入與安全</h3>
               </div>
               <p className="text-sm leading-6 text-[#667085]">
-                目前支援 Email / 密碼登入與 Google 登入。Apple、Telegram 登入方式先保留入口，正式串接後會顯示在這裡。
+                目前支援 Email / 密碼登入與 Google 登入。其他登入方式會在完成安全審查、帳號綁定規則與客服 SOP 後再受控開通。
+              </p>
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                aria-describedby="profile-login-provider-disabled-reason"
+                title="新增登入方式需先完成安全審查與帳號綁定規則，暫時不開放操作。"
+                className="mt-4 inline-flex cursor-not-allowed rounded-md border border-[#d7dbe0] bg-[#f8fafc] px-3 py-2 text-sm font-medium text-[#98a2b3]"
+              >
+                新增登入方式受控開通
+              </button>
+              <p id="profile-login-provider-disabled-reason" className="mt-2 text-xs leading-5 text-[#667085]">
+                這裡不會假裝 Apple、Telegram 已可直接連接；正式開放前會先完成安全與客服流程。
               </p>
             </section>
 
@@ -74,6 +87,12 @@ export default async function ProfilePage() {
               <p className="text-sm leading-6 text-[#667085]">
                 Inbox 新訊息、指派提醒、系統通知會集中在通知設定。現在先以頁面內提醒為主。
               </p>
+              <Link
+                href="/channels#notifications"
+                className="mt-4 inline-flex rounded-md border border-[#d7dbe0] px-3 py-2 text-sm font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+              >
+                前往通知設定
+              </Link>
             </section>
           </aside>
         </div>
