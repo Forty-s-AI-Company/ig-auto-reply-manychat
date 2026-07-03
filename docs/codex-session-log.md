@@ -10127,3 +10127,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Analytics decorative icon accessibility polish
+
+- 目標：接續 Dashboard / Analytics 視覺化與 disabled UX audit，清理分析頁裝飾 icon 的輔助朗讀細節。
+- 產品修補：
+  - Simple release 的「廣播活動受控開通」icon 補 `aria-hidden`。
+  - 分析資料載入失敗 banner 的警示 icon 補 `aria-hidden`。
+- 測試：
+  - `tests/analytics-empty-state.test.ts` 補 decorative icon guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 analytics query、broadcast gate、workspace scope 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

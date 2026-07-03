@@ -29,5 +29,7 @@ describe("analytics empty state CTA", () => {
     expect(source).toContain('aria-describedby="analytics-broadcast-gate-reason"');
     expect(source).toContain('id="analytics-broadcast-gate-reason"');
     expect(source).toContain("目前 simple release 先保留分析讀取，不開放廣播管理。");
+    expect(source).toContain('<Megaphone className="h-4 w-4" aria-hidden="true" />');
+    expect(source).toContain('<AlertTriangle className="h-4 w-4" aria-hidden="true" />');
   });
 });

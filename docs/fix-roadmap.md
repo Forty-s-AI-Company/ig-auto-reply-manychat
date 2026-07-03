@@ -4171,6 +4171,11 @@ Remaining:
 - 已完成：刪除節點與刪除自動化 Dialog footer 改成 mobile-friendly 排版，降低手機誤觸風險。
 - 下一步：若沒有人工阻塞，繼續掃 Sequences / Segments 的 mobile smoke 或切回 Billing / Wallet 的剩餘空狀態。
 
+## 2026-07-03 - Analytics decorative icon accessibility polish
+
+- 已完成：Analytics simple-release broadcast gate 與 error banner 的裝飾 icon 補 `aria-hidden`，避免輔助工具重複朗讀。
+- 下一步：若沒有人工阻塞，繼續掃 Dashboard / Analytics / Billing 的 browser smoke，或切回真正空 workspace 啟用路徑。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
