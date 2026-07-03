@@ -1,3 +1,14 @@
+# Latest - 2026-07-03 Instagram token refresh safe error
+
+Current status:
+
+- `[x]` `/api/instagram/token/refresh` now returns safe channel-action feedback instead of raw provider errors.
+- `[x]` Token refresh failures point operators to reconnect Instagram and avoid echoing access-token wording / fbtrace details.
+
+Remaining:
+
+- `[ ]` Continue auditing protected cron / operator-only token refresh summaries for any raw provider details before public evidence recording.
+
 # Latest - 2026-07-03 Instagram comment sync safe error
 
 Current status:

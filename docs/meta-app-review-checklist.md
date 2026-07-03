@@ -1,5 +1,15 @@
 # Meta App Review Checklist
 
+## 2026-07-03 - Instagram token refresh reviewer-safe error wording
+
+- `/api/instagram/token/refresh` now uses the shared channel-action safe error mapper.
+- Raw provider messages, access-token wording, and `fbtrace_id` details are not echoed to the operator-facing token refresh response.
+
+App Review implication:
+
+- Reviewer-facing Channels action feedback is safer when a token cannot be refreshed.
+- This does not change token refresh permissions, grant Advanced Access, submit App Review, or change Meta Dashboard settings.
+
 ## 2026-07-03 - Instagram comment sync reviewer-safe error wording
 
 - `/api/instagram/comments/sync` now maps Meta Graph provider failures into reviewer-safe Chinese guidance.

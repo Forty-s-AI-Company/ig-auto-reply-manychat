@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
+import { getSafeChannelActionMessage } from "@/lib/channels/channel-action-feedback";
 import { getMetaChannelConfig, toPrismaJson } from "@/lib/channels/meta";
 import { refreshInstagramLongLivedToken } from "@/lib/channels/instagram-token";
 import { getDb } from "@/lib/db";
@@ -52,12 +53,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? `${error.message} 如果 token 已經過期，Meta 不允許 refresh，請重新用 Instagram 登入授權。`
-            : "Instagram token refresh failed.",
-      },
+      { error: getSafeChannelActionMessage("token", error) },
       { status: 400 },
     );
   }

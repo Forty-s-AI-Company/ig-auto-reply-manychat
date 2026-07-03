@@ -10501,6 +10501,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Instagram token refresh safe error
+
+- 目標：接續 Channels / Instagram action feedback audit，修正 `/api/instagram/token/refresh` 失敗時可能把 provider raw error 直接拼回 API response 的缺口。
+- 產品修補：
+  - token refresh route 改用既有 `getSafeChannelActionMessage("token", error)`。
+  - 失效 token / raw provider error 會轉成「請重新登入 Instagram」的中文操作建議，不再回傳 raw `error.message`。
+  - 保留既有 selected channel scope、token refresh service、channel config update 與 Facebook Page Login gate 不變。
+- 測試：
+  - 新增 `tests/instagram-token-refresh-route.test.ts` 鎖住 route 不再 echo raw provider error。
+- 安全：
+  - 純 API response wording 修補，未改 token storage、OAuth、schema、tenant scope 或 cron refresh 行為
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Instagram comment sync safe error
 
 - 目標：接續 Automations / Channels reviewer-safe UX audit，修正留言同步 API 失敗時可能把 Meta Graph raw error / `fbtrace_id` 回傳到前端的缺口。

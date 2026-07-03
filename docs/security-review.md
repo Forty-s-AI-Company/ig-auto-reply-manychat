@@ -1,3 +1,19 @@
+# 2026-07-03 - Instagram token refresh error redaction
+
+Scope:
+
+- Sanitized `POST /api/instagram/token/refresh` error responses by reusing the shared channel-action safe error mapper.
+- Added focused coverage that the route no longer echoes raw provider errors.
+
+Security decision:
+
+- Operator-facing token refresh failures now avoid raw access-token wording, provider internals, and trace identifiers.
+- The change is limited to response wording; it does not change token storage, OAuth flow, selected-channel scope, or cron refresh behavior.
+
+Residual risk:
+
+- Protected cron refresh summaries should still be reviewed before any operator report or screenshot is shared externally.
+
 # 2026-07-03 - Instagram comment sync error redaction
 
 Scope:
