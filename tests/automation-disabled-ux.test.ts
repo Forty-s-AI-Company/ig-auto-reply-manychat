@@ -14,4 +14,12 @@ describe("automation disabled UX", () => {
     expect(source).toContain('id="automation-sequence-disabled-reason"');
     expect(source).toContain("不是假裝序列已經在簡版可直接使用");
   });
+
+  it("keeps editor actions and destructive dialogs mobile and keyboard friendly", () => {
+    expect(source).toContain("previewPanelRef.current?.scrollIntoView");
+    expect(source).toContain("hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9]");
+    expect(source).toContain("disabled:cursor-not-allowed disabled:bg-[#d7dbe0]");
+    expect(source).toContain("rounded-sm text-zinc-400 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300");
+    expect(source).toContain("mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end");
+  });
 });

@@ -10110,3 +10110,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Automation editor action polish
+
+- 目標：接續 Automations / Sequences / Segments audit，補齊自動化編輯器高頻按鈕與破壞性 Dialog 的鍵盤 / mobile 操作細節。
+- 產品修補：
+  - Automation editor 的「預覽」與「儲存」按鈕補 keyboard-visible focus treatment。
+  - Automation list 刪除 icon 補 focus ring，避免只對滑鼠 hover 清楚。
+  - 刪除節點與刪除自動化 Dialog footer 改為 mobile-friendly `flex-col-reverse` 排版。
+- 測試：
+  - `tests/automation-disabled-ux.test.ts` 補 editor action / destructive dialog guard。
+- 安全：
+  - 純 UI accessibility / mobile polish，未改 automation API、runner、trigger、workspace scope 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

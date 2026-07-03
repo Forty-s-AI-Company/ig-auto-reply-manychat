@@ -2396,7 +2396,7 @@ function FlowBuilderInner({
               setPreviewMode("preview");
               previewPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50"
+            className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2"
           >
             預覽
           </button>
@@ -2404,7 +2404,7 @@ function FlowBuilderInner({
             type="button"
             disabled={saving}
             onClick={saveFlow}
-            className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] disabled:bg-[#d7dbe0] disabled:text-[#667085]"
+            className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#d7dbe0] disabled:text-[#667085]"
           >
             <Save className="h-4 w-4" aria-hidden="true" />
             {saving ? "儲存中…" : "儲存"}
@@ -2501,7 +2501,12 @@ function FlowBuilderInner({
                         <p className="truncate font-medium text-zinc-950">{item.name}</p>
                         <p className="mt-1 text-xs text-zinc-500">{formatDateTime(item.updatedAt)}</p>
                       </button>
-                      <button type="button" onClick={() => requestDeleteFlow(item)} aria-label={`刪除自動化 ${item.name}`} className="text-zinc-400 hover:text-red-500">
+                      <button
+                        type="button"
+                        onClick={() => requestDeleteFlow(item)}
+                        aria-label={`刪除自動化 ${item.name}`}
+                        className="rounded-sm text-zinc-400 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+                      >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
                       </button>
                     </div>
@@ -2727,7 +2732,7 @@ function DeleteNodeDialog({
             </p>
           </div>
         </div>
-        <div className="mt-5 flex justify-end gap-2">
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={onCancel}
@@ -2782,7 +2787,7 @@ function DeleteAutomationDialog({
             </p>
           </div>
         </div>
-        <div className="mt-5 flex justify-end gap-2">
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
             disabled={saving}

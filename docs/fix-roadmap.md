@@ -4165,6 +4165,12 @@ Remaining:
 - 已完成：Contacts 表格全選與列選取 checkbox 補齊 keyboard-visible focus treatment。
 - 下一步：若沒有人工阻塞，繼續掃 Contacts detail / Inbox side panel 的 mobile overflow，或切到 Automations editor mobile smoke。
 
+## 2026-07-03 - Automation editor action polish
+
+- 已完成：Automation editor 的預覽 / 儲存按鈕與列表刪除 icon 補齊 keyboard-visible focus treatment。
+- 已完成：刪除節點與刪除自動化 Dialog footer 改成 mobile-friendly 排版，降低手機誤觸風險。
+- 下一步：若沒有人工阻塞，繼續掃 Sequences / Segments 的 mobile smoke 或切回 Billing / Wallet 的剩餘空狀態。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
