@@ -65,6 +65,9 @@ describe("channel client feedback", () => {
     expect(disconnect).toContain('role="dialog"');
     expect(disconnect).toContain('aria-modal="true"');
     expect(disconnect).toContain('data-testid="disconnect-channel-confirm"');
+    expect(disconnect).toContain("flex flex-col-reverse justify-end gap-2 sm:flex-row");
+    expect(disconnect).toContain("focus-visible:ring-[#b42318]");
+    expect(disconnect).toContain("focus-visible:ring-[#006fe6]");
     expect(disconnect).not.toMatch(/red-900|red-950|text-red-300/);
     expect(profileRefresh).toContain('bg-white');
     expect(profileRefresh).toContain('text-[#b54708]');

@@ -9574,3 +9574,21 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Channel disconnect dialog focus polish
+
+- 目標：接續 Channels destructive action audit，補強解除 Instagram 綁定 Dialog 在鍵盤與手機情境下的可操作性。
+- 產品修補：
+  - `DisconnectChannelButton` 解除綁定 icon button 補齊 destructive focus ring。
+  - Dialog footer 改為 mobile-friendly `flex-col-reverse`，避免窄螢幕按鈕擠壓。
+  - Dialog 取消與確認解除按鈕補齊 keyboard-visible focus treatment。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 Dialog footer / focus guard。
+  - Channels planned settings authenticated desktop/mobile smoke 通過。
+- 安全：
+  - 未改 DELETE channel API、OAuth、Webhook、token 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

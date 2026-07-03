@@ -43,7 +43,7 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
         disabled={isDeleting}
         aria-label={`解除綁定 ${channelName}`}
         title="解除綁定"
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#fecdca] bg-white text-[#b42318] transition hover:border-[#fda29b] hover:bg-[#fef3f2] disabled:cursor-not-allowed disabled:border-[#d7dbe0] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-[#fecdca] bg-white text-[#b42318] transition hover:border-[#fda29b] hover:bg-[#fef3f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b42318] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-[#d7dbe0] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]"
       >
         <Trash2 className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -69,12 +69,12 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
             <div className="mt-4 rounded-md border border-[#fedf89] bg-[#fffaeb] px-3 py-2 text-xs leading-5 text-[#93370d]">
               若只是 token 失效，請先使用「重新登入 IG 後連接」或更新長效權杖。
             </div>
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-5 flex flex-col-reverse justify-end gap-2 sm:flex-row">
               <button
                 type="button"
                 onClick={() => setIsConfirmOpen(false)}
                 disabled={isDeleting}
-                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 取消
               </button>
@@ -83,7 +83,7 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
                 onClick={disconnect}
                 disabled={isDeleting}
                 data-testid="disconnect-channel-confirm"
-                className="rounded-md border border-[#b42318] bg-[#b42318] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#912018] disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-md border border-[#b42318] bg-[#b42318] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#912018] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b42318] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isDeleting ? "解除中..." : "確認解除"}
               </button>

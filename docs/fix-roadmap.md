@@ -3809,6 +3809,12 @@ Remaining:
 - 已完成：Contacts source-level guard 與 authenticated desktop/mobile smoke 通過。
 - 下一步：若沒有人工阻塞，繼續掃 Inbox composer / contact side panel 或 Automations editor mobile 仍可能存在的細節缺口。
 
+## 2026-07-03 - Channel disconnect dialog focus polish
+
+- 已完成：解除 Instagram 綁定 Dialog 的 destructive button、取消/確認按鈕與 mobile footer 補齊可操作性。
+- 已完成：Channel client feedback focused test 與 Channels authenticated desktop/mobile smoke 通過。
+- 下一步：若沒有人工阻塞，繼續掃 Knowledge Base / Tags / Broadcasts 等低頻頁面，或回到 Automations editor mobile 的剩餘交互。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
