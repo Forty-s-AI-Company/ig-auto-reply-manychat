@@ -10192,3 +10192,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contacts create-segment dialog polish
+
+- 目標：接續 Contacts 篩選 / 批次操作 / 分眾建立 audit，補齊建立分眾 Dialog 的 mobile 與鍵盤操作細節。
+- 產品修補：
+  - 建立分眾 Dialog 關閉按鈕補 keyboard-visible focus treatment。
+  - Dialog footer 改為 mobile-friendly `flex-col-reverse` 排版，降低手機誤觸風險。
+  - 關閉 icon 補 `aria-hidden`，避免輔助工具重複朗讀。
+- 測試：
+  - `tests/contacts-empty-state.test.ts` 補 create-segment Dialog mobile / keyboard guard。
+- 安全：
+  - 純 UI accessibility / mobile polish，未改 contacts segment API、filter query、batch tags 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

@@ -103,6 +103,16 @@ describe("contacts empty state", () => {
     expect(source).toContain("h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2");
   });
 
+  it("keeps the create-segment dialog mobile and keyboard friendly", () => {
+    const source = readFileSync("src/components/ContactsListClient.tsx", "utf8");
+
+    expect(source).toContain('aria-label="關閉建立分眾"');
+    expect(source).toContain('<X className="h-4 w-4" aria-hidden="true" />');
+    expect(source).toContain("mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end");
+    expect(source).toContain('data-testid="contacts-confirm-create-segment"');
+    expect(source).toContain("focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2");
+  });
+
   it("keeps the contact tag creation dialog accessible and keyboard-visible", () => {
     const source = readFileSync("src/components/ContactTagCreateButton.tsx", "utf8");
 

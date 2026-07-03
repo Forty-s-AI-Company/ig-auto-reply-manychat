@@ -4192,6 +4192,11 @@ Remaining:
 - 已完成：Inbox 篩選面板內的 select、checkbox、重設、完成與關閉控制補齊 keyboard-visible focus treatment。
 - 下一步：若沒有人工阻塞，繼續掃 Inbox contact side panel / Contacts detail 的 mobile overflow，或切回 Channels / Connect reviewer-safe UX。
 
+## 2026-07-03 - Contacts create-segment dialog polish
+
+- 已完成：Contacts 建立分眾 Dialog 補齊關閉按鈕 focus treatment、mobile-friendly footer 排版與 decorative icon `aria-hidden`。
+- 下一步：若沒有人工阻塞，繼續掃 Contact detail / Inbox side panel 的 tag 與 custom field mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

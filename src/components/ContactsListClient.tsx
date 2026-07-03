@@ -632,8 +632,13 @@ export function ContactsListClient({
                 </h2>
                 <p className="mt-1 text-sm text-[#667085]">會保存目前的搜尋字、訂閱狀態、標籤與選定 IG 帳號篩選。</p>
               </div>
-              <button type="button" onClick={() => setIsSegmentDialogOpen(false)} aria-label="關閉建立分眾" className="rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7]">
-                <X className="h-4 w-4" />
+              <button
+                type="button"
+                onClick={() => setIsSegmentDialogOpen(false)}
+                aria-label="關閉建立分眾"
+                className="rounded-md p-1 text-[#667085] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
             <label className="block text-sm font-medium text-[#344054]">
@@ -664,15 +669,19 @@ export function ContactsListClient({
                 這組條件目前會套用到 {filteredContactCount} 位聯絡人。
               </div>
             </div>
-            <div className="mt-5 flex justify-end gap-2">
-              <button type="button" onClick={() => setIsSegmentDialogOpen(false)} className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc]">
+            <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setIsSegmentDialogOpen(false)}
+                className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+              >
                 取消
               </button>
               <button
                 type="button"
                 onClick={createSegmentFromCurrentFilter}
                 data-testid="contacts-confirm-create-segment"
-                className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8]"
+                className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
               >
                 建立
               </button>
