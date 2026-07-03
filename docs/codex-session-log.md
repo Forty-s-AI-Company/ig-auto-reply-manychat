@@ -9645,3 +9645,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - OAuth fallback control focus polish
+
+- 目標：接續 Channels / Connect 補救路徑 audit，補強 Telegram token fallback 與已連接帳號重新同步按鈕的正式產品可操作性。
+- 產品修補：
+  - `TokenProviderForm` inputs 補 focus ring，錯誤訊息改為 inline status alert。
+  - `TokenProviderForm` submit button 補 keyboard-visible focus treatment。
+  - `ResyncConnectedAccountButton` 補 focus ring，refresh icon 補 `aria-hidden`。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 OAuth fallback / resync controls accessibility guard。
+- 安全：
+  - 未改 OAuth API、token 儲存、workspace scope、Webhook、付款或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

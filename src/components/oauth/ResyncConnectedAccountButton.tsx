@@ -54,9 +54,9 @@ export function ResyncConnectedAccountButton({ accountId }: ResyncConnectedAccou
         type="button"
         onClick={handleResync}
         disabled={submitting}
-        className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d0d5dd] bg-white px-3 text-xs font-medium text-[#17191c] hover:bg-[#f9fafb] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d0d5dd] bg-white px-3 text-xs font-medium text-[#17191c] transition hover:bg-[#f9fafb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        <RefreshCw className={submitting ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
+        <RefreshCw className={submitting ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} aria-hidden="true" />
         {submitting ? "同步中…" : "重新同步 Channel"}
       </button>
 

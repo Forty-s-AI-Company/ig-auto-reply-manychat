@@ -93,4 +93,16 @@ describe("channel client feedback", () => {
     expect(instagramActions).not.toMatch(/維持 disabled/);
     expect(instagramActions).not.toMatch(/bg-cyan-950|text-cyan-100|text-zinc-100|border-zinc-700|hover:bg-zinc-800/);
   });
+
+  it("keeps OAuth fallback and resync controls accessible", () => {
+    const tokenForm = readFileSync("src/components/oauth/TokenProviderForm.tsx", "utf8");
+    const resyncButton = readFileSync("src/components/oauth/ResyncConnectedAccountButton.tsx", "utf8");
+
+    expect(tokenForm).toContain('role="status"');
+    expect(tokenForm).toContain('aria-live="polite"');
+    expect(tokenForm).toContain("focus:ring-2 focus:ring-[#dbeafe]");
+    expect(tokenForm).toContain("focus-visible:ring-[#006fe6]");
+    expect(resyncButton).toContain("focus-visible:ring-[#006fe6]");
+    expect(resyncButton).toContain('aria-hidden="true"');
+  });
 });

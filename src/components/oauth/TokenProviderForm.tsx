@@ -65,7 +65,7 @@ export function TokenProviderForm({ provider, title, description }: TokenProvide
         <input
           value={label}
           onChange={(event) => setLabel(event.target.value)}
-          className="h-11 w-full rounded-md border border-[#d0d5dd] px-3 text-sm outline-none focus:border-[#006fe6]"
+          className="h-11 w-full rounded-md border border-[#d0d5dd] px-3 text-sm outline-none transition focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
           placeholder="例如：客服機器人"
         />
       </label>
@@ -75,18 +75,22 @@ export function TokenProviderForm({ provider, title, description }: TokenProvide
         <input
           value={token}
           onChange={(event) => setToken(event.target.value)}
-          className="h-11 w-full rounded-md border border-[#d0d5dd] px-3 font-mono text-sm outline-none focus:border-[#006fe6]"
+          className="h-11 w-full rounded-md border border-[#d0d5dd] px-3 font-mono text-sm outline-none transition focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
           placeholder="123456789:AA..."
           autoFocus
         />
       </label>
 
-      {error ? <p className="text-sm text-[#d92d20]">{error}</p> : null}
+      {error ? (
+        <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-[#d92d20]" role="status" aria-live="polite">
+          {error}
+        </p>
+      ) : null}
 
       <button
         type="submit"
         disabled={submitting}
-        className="flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white hover:bg-[#005fd0] disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex h-11 w-full items-center justify-center rounded-md bg-[#006fe6] px-4 text-sm font-semibold text-white transition hover:bg-[#005fd0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {submitting ? "驗證中…" : "連接 Telegram Bot"}
       </button>
