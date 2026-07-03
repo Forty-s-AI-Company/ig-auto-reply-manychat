@@ -32,6 +32,18 @@ describe("Inbox focus affordances", () => {
     expect(source).toContain("focus-visible:ring-white focus-visible:ring-offset-2");
   });
 
+  it("keeps inbox filter panel controls keyboard-visible", () => {
+    expect(source).toContain('data-testid="inbox-filter-panel"');
+    expect(source).toContain('data-testid="inbox-filter-status"');
+    expect(source).toContain('data-testid="inbox-filter-unread"');
+    expect(source).toContain('data-testid="inbox-filter-sort"');
+    expect(source).toContain('data-testid="inbox-filter-tag"');
+    expect(source).toContain('data-testid="inbox-filter-team"');
+    expect(source).toContain('data-testid="inbox-reset-filters"');
+    expect(source).toContain('data-testid="inbox-close-filter-panel"');
+    expect(source).toContain("focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2");
+  });
+
   it("keeps setup reply suggestions aligned to the Instagram launch scope", () => {
     expect(source).toContain("Meta 商業資產");
     expect(source).not.toContain("Meta / Facebook 資產");

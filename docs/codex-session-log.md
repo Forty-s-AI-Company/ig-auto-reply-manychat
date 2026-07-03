@@ -10176,3 +10176,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Inbox filter panel focus polish
+
+- 目標：接續 Inbox / Contacts 高頻使用路徑 audit，補齊收件匣篩選面板內控制項的鍵盤可見焦點。
+- 產品修補：
+  - Inbox filter panel 的關閉、狀態、未讀、排序、標籤、指派對象、重設與完成控制補 `focus-visible` ring。
+  - 維持既有篩選、搜尋、標籤、指派與 workspace / channel scope 邏輯不變。
+- 測試：
+  - `tests/inbox-focus-affordances.test.ts` 補 filter panel controls guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 conversations API、messages API、assignment、tagging 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

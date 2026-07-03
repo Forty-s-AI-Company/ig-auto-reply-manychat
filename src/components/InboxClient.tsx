@@ -785,7 +785,7 @@ export function InboxClient({
                   <button
                     type="button"
                     onClick={() => setShowFilterHint(false)}
-                    className="rounded-md px-2 py-1 text-[#667085] hover:bg-[#f8fafc]"
+                    className="rounded-md px-2 py-1 text-[#667085] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     aria-label="關閉收件匣篩選"
                   >
                     ×
@@ -802,7 +802,7 @@ export function InboxClient({
                   <select
                     value={statusFilter}
                     onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
-                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     data-testid="inbox-filter-status"
                   >
                     <option value="open">只看開啟對話</option>
@@ -814,6 +814,7 @@ export function InboxClient({
                     type="checkbox"
                     checked={unreadOnly}
                     onChange={(event) => setUnreadOnly(event.target.checked)}
+                    className="h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     data-testid="inbox-filter-unread"
                   />
                   只看未讀
@@ -823,7 +824,7 @@ export function InboxClient({
                   <select
                     value={sortNewest ? "newest" : "oldest"}
                     onChange={(event) => setSortNewest(event.target.value === "newest")}
-                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     data-testid="inbox-filter-sort"
                   >
                     <option value="newest">最新優先</option>
@@ -835,7 +836,7 @@ export function InboxClient({
                   <select
                     value={selectedTagId}
                     onChange={(event) => selectTag(event.target.value)}
-                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     data-testid="inbox-filter-tag"
                   >
                     <option value="all">全部標籤</option>
@@ -851,7 +852,7 @@ export function InboxClient({
                   <select
                     value={selectedTeamMemberId}
                     onChange={(event) => selectTeamMember(event.target.value)}
-                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2"
+                    className="h-8 w-full rounded-md border border-[#d7dbe0] bg-white px-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     data-testid="inbox-filter-team"
                   >
                     <option value="all">所有人</option>
@@ -867,7 +868,7 @@ export function InboxClient({
                   onClick={() => {
                     resetFilters();
                   }}
-                  className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc]"
+                  className="h-8 w-full rounded-md border border-[#d7dbe0] text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                   data-testid="inbox-reset-filters"
                 >
                   重設篩選
@@ -875,7 +876,7 @@ export function InboxClient({
                 <button
                   type="button"
                   onClick={() => setShowFilterHint(false)}
-                  className="mt-2 h-8 w-full rounded-md bg-[#006fe6] text-white hover:bg-[#005bbf]"
+                  className="mt-2 h-8 w-full rounded-md bg-[#006fe6] text-white hover:bg-[#005bbf] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                   data-testid="inbox-close-filter-panel"
                 >
                   完成

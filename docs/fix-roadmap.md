@@ -4187,6 +4187,11 @@ Remaining:
 - 已完成：Billing 推薦折抵區的「查看推薦活動」與「查看折抵明細」CTA 補齊 keyboard-visible focus treatment。
 - 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Referrals 的 mobile smoke，或切回 Dashboard / Inbox / Contacts 的新使用者路徑。
 
+## 2026-07-03 - Inbox filter panel focus polish
+
+- 已完成：Inbox 篩選面板內的 select、checkbox、重設、完成與關閉控制補齊 keyboard-visible focus treatment。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox contact side panel / Contacts detail 的 mobile overflow，或切回 Channels / Connect reviewer-safe UX。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
