@@ -41,4 +41,11 @@ describe("dashboard recent message empty state", () => {
     expect(source).toContain('label: "新增廣播"');
     expect(source).toContain("PrimaryDashboardActionIcon");
   });
+
+  it("keeps dashboard action links keyboard visible and decorative icons quiet", () => {
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
+    expect(source).toContain('<PrimaryDashboardActionIcon className="h-4 w-4" aria-hidden="true" />');
+    expect(source).toContain('<Inbox className="h-4 w-4" aria-hidden="true" />');
+    expect(source).toContain('<ArrowRight className="h-4 w-4 text-[var(--text-muted)]" aria-hidden="true" />');
+  });
 });

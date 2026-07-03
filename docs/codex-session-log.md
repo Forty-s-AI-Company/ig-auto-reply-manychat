@@ -9402,3 +9402,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Dashboard action keyboard focus polish
+
+- 目標：接續新使用者首頁啟用路徑 audit，補強 Dashboard 主要 CTA、帳號連線卡與快速自動化入口的鍵盤可見焦點。
+- 產品修補：
+  - 首頁頂部 `查看收件匣 / 連接 IG / 查看收件匣 / 新增廣播` 主操作補 `focus-visible` ring。
+  - 帳號連線卡、下一步清單、快速自動化卡片與次要測試工具 CTA 補 keyboard-visible focus treatment。
+  - 主要 CTA 內的裝飾 icon 補 `aria-hidden`，減少輔助科技噪音。
+- 測試：
+  - `tests/dashboard-empty-state.test.ts` 補 Dashboard action focus 與 decorative icon guard。
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

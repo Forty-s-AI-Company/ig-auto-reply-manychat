@@ -190,12 +190,12 @@ export default async function DashboardPage({
                 <h2 className="mt-1 text-2xl font-semibold text-[var(--text-primary)]">今天需要注意的訊息與流程</h2>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Link href="/inbox" className="inline-flex h-10 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)]">
-                  <Inbox className="h-4 w-4" />
+                <Link href="/inbox" className="inline-flex h-10 items-center gap-2 rounded-md border border-[var(--border)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
+                  <Inbox className="h-4 w-4" aria-hidden="true" />
                   查看收件匣
                 </Link>
-                <Link href={primaryDashboardAction.href} className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)]">
-                  <PrimaryDashboardActionIcon className="h-4 w-4" />
+                <Link href={primaryDashboardAction.href} className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
+                  <PrimaryDashboardActionIcon className="h-4 w-4" aria-hidden="true" />
                   {primaryDashboardAction.label}
                 </Link>
               </div>
@@ -248,16 +248,16 @@ export default async function DashboardPage({
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href="/channels/connect"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
-                  <PlugZap className="h-4 w-4" />
+                  <PlugZap className="h-4 w-4" aria-hidden="true" />
                   {connectedInstagramChannels > 0 ? "管理 IG 連線" : "連接 Instagram"}
                 </Link>
                 <Link
                   href="/inbox"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)]"
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
-                  <Inbox className="h-4 w-4" />
+                  <Inbox className="h-4 w-4" aria-hidden="true" />
                   查看目前帳號的收件匣
                 </Link>
               </div>
@@ -289,15 +289,15 @@ export default async function DashboardPage({
                 <Link
                   key={step.title}
                   href={step.href}
-                  className="flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-white px-3 py-2 text-sm hover:border-[var(--primary)] hover:bg-[var(--primary-soft)]"
+                  className="flex items-center justify-between rounded-md border border-[var(--border-soft)] bg-white px-3 py-2 text-sm hover:border-[var(--primary)] hover:bg-[var(--primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
                   <span className={step.done ? "text-[var(--text-muted)] line-through" : "text-[var(--text-primary)]"}>
                     {step.title}
                   </span>
                   {step.done ? (
-                    <CheckCircle2 className="h-4 w-4 text-[var(--success)]" />
+                    <CheckCircle2 className="h-4 w-4 text-[var(--success)]" aria-hidden="true" />
                   ) : (
-                    <ArrowRight className="h-4 w-4 text-[var(--text-muted)]" />
+                    <ArrowRight className="h-4 w-4 text-[var(--text-muted)]" aria-hidden="true" />
                   )}
                 </Link>
               ))}
@@ -311,7 +311,7 @@ export default async function DashboardPage({
               <h3 className="text-lg font-semibold text-[var(--text-primary)]">快速建立自動化</h3>
               <p className="text-sm text-[var(--text-secondary)]">先把最常用的 IG 自動回覆流程做好。</p>
             </div>
-            <Link href="/automations" className="text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)]">
+            <Link href="/automations" className="rounded-md text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2">
               查看全部
             </Link>
           </div>
@@ -322,7 +322,7 @@ export default async function DashboardPage({
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="ip-dashboard-card p-5 transition hover:-translate-y-0.5 hover:border-[var(--primary)]"
+                  className="ip-dashboard-card p-5 transition hover:-translate-y-0.5 hover:border-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--primary-soft)]">
                     <Icon className="h-6 w-6 text-[var(--teal-dark)]" />
@@ -331,7 +331,7 @@ export default async function DashboardPage({
                   <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
                   <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--teal-dark)]">
                     {item.label}
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </p>
                 </Link>
               );
@@ -372,7 +372,7 @@ export default async function DashboardPage({
                     <Link
                       href="/mock-tester"
                       data-testid="dashboard-recent-messages-empty-secondary-cta"
-                      className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)]"
+                      className="mt-3 inline-flex rounded-md text-sm font-semibold text-[var(--teal-dark)] hover:text-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
                     >
                       需要快速驗證時，改用測試工具
                     </Link>

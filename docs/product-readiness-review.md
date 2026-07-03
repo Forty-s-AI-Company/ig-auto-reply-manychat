@@ -1859,3 +1859,9 @@ Readiness implication:
 - Readiness update：Admin payouts 的受控分潤核准 / 退回現在需要明確確認 Dialog，不再是表格內單擊即提交。
 - Result：內部營運人員能在確認前看到申請人、金額與「不會自動匯款 / 不會 PayUNI 付款」說明，降低財務面誤操作風險。
 - Remaining risk：這仍是內部受控聯盟流程，不屬於公開推薦折抵主線；正式現金分潤仍維持 Hold。
+
+## 2026-07-03 - Dashboard action keyboard focus polish
+
+- Readiness update：Dashboard 主要操作、帳號連線卡、下一步清單與快速自動化入口已補齊鍵盤可見焦點。
+- Result：新使用者啟用路徑更不依賴滑鼠 hover，桌機與輔助科技使用者都能更清楚判斷目前焦點位置。
+- Remaining risk：Automations / Sequences / Segments 仍建議再做一次 mobile full-flow QA。

@@ -3749,6 +3749,12 @@ Remaining:
 - 已完成：focused test 覆蓋 Dialog、`aria-modal`、不使用 `window.confirm`。
 - 下一步：若沒有人工阻塞，繼續檢查 Admin invoices / payout batches 的 mobile table density，或切回 Automations / Dashboard 剩餘產品缺口。
 
+## 2026-07-03 - Dashboard action keyboard focus polish
+
+- 已完成：Dashboard 頂部 CTA、帳號連線卡、下一步清單、快速自動化卡與次要測試工具 CTA 補齊 keyboard-visible focus ring。
+- 已完成：Dashboard 主要 CTA 裝飾 icon 補 `aria-hidden`。
+- 下一步：若沒有人工阻塞，繼續檢查 Automations / Sequences / Segments 的 mobile CTA 與 destructive action 交互。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
