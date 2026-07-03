@@ -9324,3 +9324,25 @@ Launch impact:
   - 未部署 Production
   - 未送 Meta App Review
   - 未輸出任何 secret
+
+## 2026-07-03 - Analytics CTA focus and smoke anchor polish
+
+- 目標：接續 Dashboard / Analytics first-run audit，補強 Analytics 主要 CTA 的鍵盤可見焦點與 smoke selector 穩定性。
+- 產品修補：
+  - `src/app/analytics/page.tsx` 的 state banner action、full-release broadcast action、empty-state CTA 都補齊 `focus-visible` ring。
+  - 補 `analytics-state-banner-action` 與 `analytics-broadcast-open` test id，讓後續 browser / Playwright QA 能穩定鎖定 Analytics 主要 CTA。
+  - 裝飾 icon 補 `aria-hidden`，避免輔助科技讀出不必要的 icon 資訊。
+- 測試：
+  - `tests/analytics-empty-state.test.ts` 補 CTA focus / selector / decorative icon source-level 覆蓋。
+- 驗證：
+  - `npx vitest run tests/analytics-empty-state.test.ts`: passed
+  - `npx playwright test tests/e2e/simple-release.spec.ts --grep "Analytics broadcast" --workers=1`: skipped by current local release guard, no failure
+  - `npm run e2e:admin:ensure; npx playwright test tests/e2e/public-and-auth.spec.ts --grep "analytics scope" --workers=1`: passed
+  - `npm run lint`: passed
+  - `npm run build -- --webpack`: passed
+  - `npm test`: passed；Windows Vitest batch `3221225477` 仍偶發，但 runner 逐檔診斷重跑後全部通過
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未輸出任何 secret

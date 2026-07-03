@@ -17,6 +17,14 @@ describe("analytics empty state CTA", () => {
     expect(source).toContain('actionLabel="建立第一個流程"');
   });
 
+  it("keeps analytics CTAs keyboard-visible and stable for smoke tests", () => {
+    expect(source).toContain('data-testid="analytics-state-banner-action"');
+    expect(source).toContain('data-testid="analytics-broadcast-open"');
+    expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
+    expect(source).toContain('<Compass className="h-4 w-4" aria-hidden="true" />');
+    expect(source).toContain('<Megaphone className="h-4 w-4" aria-hidden="true" />');
+  });
+
   it("shows a visible simple-release reason for disabled broadcast management", () => {
     expect(source).toContain('aria-describedby="analytics-broadcast-gate-reason"');
     expect(source).toContain('id="analytics-broadcast-gate-reason"');

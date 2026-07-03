@@ -81,8 +81,12 @@ export default async function AnalyticsPage() {
               </p>
             </div>
           ) : (
-            <Link href="/broadcasts" className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d]">
-              <Megaphone className="h-4 w-4" />
+            <Link
+              href="/broadcasts"
+              data-testid="analytics-broadcast-open"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-[var(--primary)] px-3 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+            >
+              <Megaphone className="h-4 w-4" aria-hidden="true" />
               管理廣播活動
             </Link>
           )}
@@ -126,9 +130,10 @@ export default async function AnalyticsPage() {
             {analyticsState.bannerActionLabel && analyticsState.bannerActionHref ? (
               <Link
                 href={analyticsState.bannerActionHref}
-                className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] shadow-sm transition hover:bg-[var(--ip-surface-muted)]"
+                data-testid="analytics-state-banner-action"
+                className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] shadow-sm transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
               >
-                <Compass className="h-4 w-4" />
+                <Compass className="h-4 w-4" aria-hidden="true" />
                 {analyticsState.bannerActionLabel}
               </Link>
             ) : null}
@@ -269,10 +274,10 @@ function EmptyState({
         <Link
           href={actionHref}
           data-testid={testId}
-          className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)]"
+          className="mt-4 inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--teal-dark)] hover:bg-[var(--primary-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
         >
           {actionLabel}
-          <Compass className="h-4 w-4" />
+          <Compass className="h-4 w-4" aria-hidden="true" />
         </Link>
       ) : null}
     </div>

@@ -3723,6 +3723,13 @@ Remaining:
 - 驗證：focused Vitest、empty workspace activation smoke、Contacts / Inbox authenticated smoke 皆通過。
 - 下一步：若沒有人工阻塞，繼續檢查 Dashboard / Analytics / Automations 的 first-run CTA、mobile RWD 與 disabled UX 是否仍有可見但不可理解的控制項。
 
+## 2026-07-03 - Analytics CTA focus and smoke anchor polish
+
+- 已完成：Analytics state banner action、empty-state CTA 與 full-release broadcast action 補齊 keyboard-visible focus ring。
+- 已完成：Analytics 主要 CTA 補穩定 test id，後續 smoke / browser QA 更容易鎖定。
+- 已完成：Analytics CTA decorative icons 補 `aria-hidden`，降低輔助科技噪音。
+- 下一步：若沒有人工阻塞，切到 Dashboard / Automations / Billing 的 mobile CTA 密度與 remaining disabled UX 掃描。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

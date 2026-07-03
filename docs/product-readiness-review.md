@@ -1835,3 +1835,9 @@ Readiness implication:
 - Readiness update：Contacts 在沒有可用聯絡人時不再允許建立 0 人分眾，Inbox 手機版未選對話時也會說明為何「訊息內容 / 聯絡人」pane 暫不可用。
 - Result：新使用者第一次進入 Contacts / Inbox 時，比較不會把空資料或未選取狀態誤認成產品壞掉。
 - Remaining risk：仍需繼續掃描 Dashboard、Automations、Analytics 在 mobile 與空資料狀態下的 CTA 密度與下一步提示。
+
+## 2026-07-03 - Analytics CTA focus and smoke anchor polish
+
+- Readiness update：Analytics 的主要下一步 CTA 現在有更一致的 keyboard focus treatment，也有穩定 selector 供 smoke / browser QA 鎖定。
+- Result：分析頁在空資料、simple release gate 與 full-release broadcast action 之間的可測性與可操作性更穩。
+- Remaining risk：仍需逐頁檢查 Dashboard / Automations / Billing 在 mobile 下的 CTA 密度與資訊層級。
