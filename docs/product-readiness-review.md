@@ -1,3 +1,17 @@
+# 2026-07-03 - Mock webhook workspace/channel scope
+
+Status: improved for reviewer-safe remote demo data routing; production mock access remains guarded.
+
+What changed:
+
+- Authenticated mock webhook writes can now carry the active workspace scope into inbound message handling.
+- When the reviewer/operator has selected an Instagram channel, synthetic inbound messages target that channel; otherwise the route can fall back to the only enabled Instagram channel in the workspace.
+
+Readiness implication:
+
+- Reviewer-safe synthetic Inbox / Contacts data is less likely to land in a detached mock scope that the UI cannot show.
+- This does not change Meta webhook signature handling, production data policy, production deployment, Meta App Review status, or PayUNI gates.
+
 # 2026-07-03 - Meta OAuth/Webhook helper extraction
 
 Status: improved testability and maintainability; no intended runtime behavior change.

@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Mock webhook workspace/channel scope
+
+Current status:
+
+- `[x]` Authenticated production-mode mock webhook writes can pass the current workspace into `handleInboundMessage`.
+- `[x]` If a selected Instagram channel exists, mock inbound writes target that channel instead of creating a detached mock channel.
+- `[x]` If no selected channel exists but the workspace has exactly one enabled Instagram channel, the mock webhook falls back to that channel.
+
+Remaining:
+
+- `[ ]` Keep this route protected by auth or shared secret in deployed environments.
+- `[ ]` Treat mock webhook data as reviewer-safe synthetic data only.
+
 # Latest - 2026-07-03 Meta OAuth/Webhook helper extraction
 
 Current status:

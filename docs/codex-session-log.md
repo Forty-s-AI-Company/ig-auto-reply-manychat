@@ -9727,6 +9727,21 @@ Launch impact:
   - 純重構 / 可測性修補，未改 Meta Dashboard、OAuth scope、Webhook provider 設定、production DB、部署、Meta App Review 或 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Mock webhook workspace/channel scope
+
+- 目標：收斂 reviewer-safe remote demo data lane 中 `/mock-tester` 可能寫入不可見 scope 的問題。
+- 修補：
+  - `mock` webhook 在 production-mode authenticated path 會讀取目前 workspace。
+  - 若目前有 selected Instagram channel，synthetic inbound message 會寫入該 channel。
+  - 若沒有 selected channel 但 workspace 只有一個 enabled Instagram channel，會安全 fallback 到該 channel。
+  - `handleInboundMessage` 支援傳入既有 channel id，並檢查 workspace scope。
+- 驗證：
+  - `npx vitest run tests/mock-webhook-route.test.ts tests/mock-webhook-flow.test.ts tests/conversation-routes.test.ts` 在 TEST_DATABASE_URL 指向 55322 時通過。
+- 安全：
+  - 未放寬 production route guard；部署環境仍需要 shared secret 或 authenticated user
+  - 未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。
