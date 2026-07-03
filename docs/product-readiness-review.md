@@ -1,3 +1,35 @@
+# 2026-07-03 - Financial surfaces CTA path polish
+
+Status: improved for Billing / Referrals / Wallet handoff clarity; public paid launch remains Hold.
+
+What changed:
+
+- Billing now gives users direct next steps to `推薦活動` and `折抵金錢包` after reading the referral-credit rules.
+- Add-on labels in Billing are now localized into Traditional Chinese, so the pricing surface feels less like an unfinished internal build.
+- Wallet empty state now points users to the two real next actions: start sharing a referral link, or verify plan / credit state in Billing.
+- Referrals empty-state guidance now explains that pending / available credit timing can be checked from `方案與用量`.
+
+Readiness implication:
+
+- A new user is less likely to get stuck in the Billing / Referrals / Wallet path without understanding what to do next.
+- Public cash payout, PayUNI production, and final financial operations still remain manual launch gates.
+
+# 2026-07-03 - Meta reviewer-safe evidence package status
+
+Status: documentation clarified and staging reviewer-safe evidence advanced; Meta App Review submission remains Hold.
+
+What changed:
+
+- Synced the Meta review package docs to the real `InboxPilot` app (`924285843989683`) and the current production callback path `/api/instagram/oauth/callback`.
+- Split reviewer evidence into four buckets: directly recordable now, needs synthetic demo data, needs reviewer-safe manual assets, and not yet safe to claim.
+- Confirmed public Privacy Policy, Terms, and Data Deletion pages are already usable as reviewer evidence.
+- Verified a reviewer-safe staging tenant can now show a connected Instagram channel, a reviewer-safe Inbox conversation, a reviewer-safe Contact, and the `Meta Review Keyword Reply` automation draft.
+
+Readiness implication:
+
+- The main remaining Meta gaps are now mostly operational: secure reviewer credential handoff, final redaction, Business Verification / Advanced Access confirmation, and any live webhook-backed proof that still cannot be claimed safely.
+- Public paid launch still remains Hold until the final Meta reviewer package can be assembled without guessing or over-claiming live webhook proof.
+
 # 2026-07-03 - Contacts batch tag disabled reason polish
 
 Status: improved for Contacts batch operation clarity; public paid launch remains Hold.

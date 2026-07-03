@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AdminShell } from "@/components/AdminShell";
 import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
 import { ManualActionNotice } from "@/components/ManualActionNotice";
@@ -74,6 +75,26 @@ function checkoutButtonLabel(plan: { customSales?: boolean }, payuniStatus: { ch
   return payuniStatus.sandbox ? "前往 PayUNI Sandbox 月繳" : "前往 PayUNI 月繳";
 }
 
+function addonDisplayName(name: string) {
+  return (
+    {
+      "+5,000 Message Events": "+5,000 訊息事件",
+      "+20,000 Message Events": "+20,000 訊息事件",
+      "+50,000 Message Events": "+50,000 訊息事件",
+      "+100,000 Message Events": "+100,000 訊息事件",
+      "+500,000 Message Events": "+500,000 訊息事件",
+      "+1,000 Active Contacts": "+1,000 活躍聯絡人",
+      "+5,000 Active Contacts": "+5,000 活躍聯絡人",
+      "+10,000 Active Contacts": "+10,000 活躍聯絡人",
+      "+50,000 Active Contacts": "+50,000 活躍聯絡人",
+      "+1 Team Seat": "+1 個團隊席位",
+      "+5 Team Seats": "+5 個團隊席位",
+      "Retention +180 days": "對話保留 +180 天",
+      "Retention +365 days": "對話保留 +365 天",
+    }[name] || name
+  );
+}
+
 export default async function BillingPage({ searchParams }: { searchParams?: Promise<{ payment?: string; payuni?: string }> }) {
   const user = await requireUser();
   const params = await searchParams;
@@ -146,6 +167,20 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
               折抵只能用在方案費，單筆帳單最低可折到 0 元；首筆有效付費需先經過 7 天退款觀察期，轉成可用後 30 天內未使用會失效。
               若在觀察期內退款，待確認折抵會取消；若已使用後才退款，會以沖回紀錄抵銷。
             </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                href="/referrals"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+              >
+                查看推薦活動
+              </Link>
+              <Link
+                href="/wallet"
+                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+              >
+                查看折抵明細
+              </Link>
+            </div>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <ProgressBar label="活躍聯絡人" used={entitlement.usage.activeContacts} limit={entitlement.limits.activeContacts} />
@@ -203,7 +238,7 @@ export default async function BillingPage({ searchParams }: { searchParams?: Pro
           <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {billingAddons.map((addon) => (
               <div key={addon.key} className="rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] p-4">
-                <p className="font-medium text-[var(--text-primary)]">{addon.name}</p>
+                <p className="font-medium text-[var(--text-primary)]">{addonDisplayName(addon.name)}</p>
                 <p className="mt-1 text-sm text-[var(--text-secondary)]">{formatTwd(addon.priceMonthly)} / 月</p>
               </div>
             ))}

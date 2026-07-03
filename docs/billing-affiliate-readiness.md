@@ -1,3 +1,17 @@
+# 2026-07-03 - Financial surfaces CTA and localization polish
+
+- [x] Billing now links directly to `推薦活動` and `折抵金錢包` from the referral-credit guidance block.
+- [x] Billing add-on labels are localized to Traditional Chinese instead of leaving English package names in the public pricing surface.
+- [x] Wallet empty state now points users toward the real next actions instead of leaving a dead-end ledger view.
+- [x] Referrals now points users back to Billing when they need to verify pending / available credit timing.
+- [x] Focused source tests and local Playwright smoke confirm the Billing / Referrals / Wallet / Affiliate path still matches the referral-credit-first direction.
+- [ ] Cash payout remains gated until legal, tax, anti-fraud, payout profile, refund / clawback, and provider reconciliation are approved.
+
+Billing launch implication:
+
+- The non-cash referral-credit product direction is easier to understand from the first paid-experience path.
+- No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, or PR action was performed.
+
 # 2026-07-03 - Referral affiliate backend error wording cleanup
 
 - [x] Referral tracking boundary copy now says controlled payment instead of cash withdrawal.

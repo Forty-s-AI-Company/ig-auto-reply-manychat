@@ -1,4 +1,83 @@
+# Latest - 2026-07-03 Financial surfaces CTA polish
+
+Current status:
+
+- `[x]` Billing now exposes a clearer next-step path from plan payment to `推薦活動` and `折抵金錢包`, so users do not need to guess where pending / available credits are tracked.
+- `[x]` Billing add-on labels are localized to user-facing Traditional Chinese instead of leaving `Message Events`, `Active Contacts`, `Team Seat`, and `Retention` English strings in the product surface.
+- `[x]` Wallet empty state now links back to `推薦活動` and `方案與用量`, making the zero-ledger path actionable instead of ending on a static message.
+- `[x]` Referrals now points users back to `方案與用量` when they need to verify pending / available credit timing.
+- `[x]` Focused source tests, `npm run lint`, `npm run build -- --webpack`, `npm test`, and targeted Playwright smoke for Billing / Referrals / Wallet / Affiliate are green locally.
+
+Remaining:
+
+- `[ ]` Continue the first-paid-experience product sweep: Pricing / Signup / Dashboard / Billing handoff still needs a fuller CTA and copy consistency audit.
+- `[ ]` Keep cash payout, PayUNI production, production DB changes, and production deployment behind manual launch gates.
+
+# Latest - 2026-07-03 Local reviewer/build parity + Automations CTA de-dup
+
+Current status:
+
+- `[x]` Brought the main worktree back in sync with the staging reviewer-safe lane for mock inbound workspace/channel scoping.
+- `[x]` Extracted Meta OAuth / webhook helper exports out of App Router route files into `src/lib/meta-oauth-start.ts`, `src/lib/meta-oauth-callback.ts`, and `src/lib/meta-webhook-config.ts`, so local `next build --webpack` is green again on Next.js 16.
+- `[x]` Added `tests/mock-webhook-route.test.ts` to lock the deployed reviewer-safe mock inbound route behavior.
+- `[x]` Full local validation is green again:
+  - `npm run lint`
+  - `npm test`
+  - `npm run build -- --webpack`
+  - `npm run test:e2e:empty`
+  - `npm run test:e2e:reviewer`
+- `[x]` Fixed Automations empty-state CTA duplication by hiding the header-level `新增自動化` CTA when the real empty-state create CTA is already the primary action.
+- `[x]` Re-ran `tests/e2e/automations-editor.spec.ts`; desktop/mobile editor smoke is green again.
+
+Remaining:
+
+- `[ ]` Continue the authenticated product-flow QA sweep beyond Automations: Dashboard / Billing / Wallet / Referrals / first-paid-experience copy and disabled UX.
+- `[ ]` Keep Meta App Review in Hold until secure credential handoff, final redaction, and Business Verification / Advanced Access checks are complete.
+
+# Latest - 2026-07-03 Meta reviewer-safe evidence package
+
+Current status:
+
+- `[x]` Added a reviewer-safe evidence matrix separating direct-recording proof from demo-data, manual-asset, and not-yet-safe proof.
+- `[x]` Confirmed source-level support exists for Channels connect entry, connected-channel UI, Inbox, Contacts, Automations setup, and the public Privacy/Terms/Data Deletion pages.
+- `[x]` Synced submission package, checklist, recording shot list, screenshot checklist, and operator workbook to the same evidence boundaries.
+- `[x]` Added `docs/meta-reviewer-demo-data-prep-runbook.md` to map existing local seed / fixture assets into reviewer-safe rehearsal lanes.
+- `[x]` Added `docs/meta-reviewer-staging-rehearsal-gap-audit.md` to separate what local rehearsal already proves from what still needs a reviewer-safe staging tenant or real Instagram asset lane.
+- `[x]` Re-ran `npm run e2e:reviewer:ensure` and `npm run test:e2e:reviewer`; the local reviewer-safe rehearsal still passes on desktop/mobile.
+- `[x]` Added `docs/meta-reviewer-staging-tenant-sop.md` to define the manual staging login, synthetic-only workspace, Instagram asset lane, pre-recording validation, and post-review cleanup flow.
+- `[x]` Created a real reviewer-safe staging tenant through the product signup flow and verified the empty-workspace path on Dashboard / Channels / Inbox / Contacts / Automations.
+- `[x]` Created and saved a reviewer-safe staging automation draft named `Meta Review Keyword Reply`.
+- `[x]` Fixed `src/app/api/webhooks/mock/route.ts` locally so authenticated staging mock inbound writes use the current workspace instead of silently falling back to the default workspace.
+- `[x]` Added `tests/mock-webhook-route.test.ts` to lock the authenticated workspace scope regression.
+
+Remaining:
+
+- `[x]` Completed a real reviewer-safe Instagram OAuth lane on staging using the logged-in reviewer-safe Instagram session; the callback now returns `status=success`, and the connected channel is visible in Channels, the sidebar account dropdown, and the scoped Inbox / Contacts surfaces.
+- `[x]` Closed the reviewer-safe staging remote synthetic data lane; staging `/mock-tester` now lands a visible reviewer-safe conversation/contact in the same reviewer workspace, and the resulting Inbox / Contacts evidence is recordable.
+- `[ ]` Vercel Preview env pull currently does not expose staging DB connection vars, so remote seeding cannot be completed from the current CLI lane alone.
+- `[ ]` Prepare secure reviewer credential handoff for the staging tenant.
+- `[x]` Fill Meta Dashboard webhook callback URL and verify token in Meta Developers for the production webhook endpoint.
+- `[ ]` Re-check Business Verification / Advanced Access / technical provider status before final submission.
+
 # Latest - 2026-07-03 Broadcasts disabled action clarity
+
+# Latest - 2026-07-03 Meta App Review preflight gap audit
+
+Current status:
+
+- `[x]` Confirmed the correct Meta app is `InboxPilot` (`924285843989683`).
+- `[x]` Confirmed Dashboard is published and currently shows no required actions.
+- `[x]` Confirmed Basic Settings already contain production domain, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL.
+- `[x]` Confirmed required Instagram permissions are still only `可供測試`.
+- `[x]` Completed Instagram API setup webhook callback / verify token configuration in Meta Developers.
+- `[x]` Corrected App Review docs to treat `/api/instagram/oauth/callback` as the current production Instagram callback path.
+
+Remaining:
+
+- `[ ]` Review Business Verification / Advanced Access / technical provider status manually in Meta Dashboard.
+- `[ ]` Prepare reviewer-safe login, Instagram asset, test conversation, and test comment evidence.
+- `[ ]` Record reviewer walkthrough and capture redacted screenshots.
+- `[ ]` Submit Meta App Review manually after final product/security sign-off.
 
 Current status:
 
@@ -3592,6 +3671,13 @@ Remaining:
 
 - 已完成：Inbox 回覆/備註 composer 在空內容時顯示明確 disabled reason、title 與 aria-describedby，不再只是灰色不可按。
 - 下一步：繼續檢查 Inbox / Dashboard / Automations 是否還有可見但不可理解的 disabled controls。
+
+## 2026-07-03 - Reviewer-safe local rehearsal helper
+
+- 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
+- 已完成：Meta reviewer demo data runbook 改為優先使用 reviewer-safe labels 進行本機 rehearsal，而不是直接沿用 `E2E` 命名。
+- 已完成：新增 `npm run test:e2e:reviewer`，把 Dashboard -> Channels -> Inbox -> Contacts -> Automations 的 reviewer rehearsal 串成可重跑 smoke。
+- 下一步：若沒有人工阻塞，將這組 smoke 對照未來真正 reviewer-safe staging tenant，再補一份實機驗證 SOP。
 
 # Latest - 2026-07-03 AI model cache refresh automation
 

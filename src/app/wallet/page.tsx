@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AdminShell } from "@/components/AdminShell";
 import { requireUser } from "@/lib/auth";
 import { formatTwd } from "@/lib/billing";
@@ -120,7 +121,21 @@ export default async function WalletPage() {
             </div>
           ) : (
             <div className="px-4 py-8 text-sm leading-6 text-[var(--text-muted)]">
-              目前還沒有折抵金紀錄。完成推薦活動或帳單折抵後，這裡會顯示入帳與使用明細。
+              <p>目前還沒有折抵金紀錄。完成推薦活動或帳單折抵後，這裡會顯示入帳與使用明細。</p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/referrals"
+                  className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+                >
+                  前往推薦活動
+                </Link>
+                <Link
+                  href="/billing"
+                  className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)]"
+                >
+                  查看方案與用量
+                </Link>
+              </div>
             </div>
           )}
         </section>

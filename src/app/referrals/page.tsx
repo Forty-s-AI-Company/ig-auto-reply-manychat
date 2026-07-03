@@ -97,9 +97,14 @@ export default async function ReferralsPage() {
               <p className="mt-1">下一筆到期時間：{dashboard.walletSummary.nextExpiryAt ? formatReferralDate(dashboard.walletSummary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</p>
             </div>
             {!simpleRelease ? (
-              <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
-                前往折抵金錢包
-              </Link>
+              <div className="mt-3 flex flex-wrap gap-3">
+                <Link className="inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/wallet">
+                  前往折抵金錢包
+                </Link>
+                <Link className="inline-flex text-sm font-semibold text-[var(--teal-dark)] hover:underline" href="/billing">
+                  查看方案與用量
+                </Link>
+              </div>
             ) : (
               <div className="mt-3 rounded-md border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-3 py-2 text-sm leading-6 text-[var(--text-secondary)]">
                 折抵金錢包在完整版本中開放；目前 simple release 會先在推薦活動與方案頁顯示待確認、可用與到期規則。
@@ -122,6 +127,7 @@ export default async function ReferralsPage() {
             <div className="px-4 py-6 text-sm leading-6 text-[var(--text-secondary)]">
               <p className="font-semibold text-[var(--text-primary)]">尚無推薦紀錄。</p>
               <p className="mt-1">分享上方推薦連結後，成功註冊的名單會出現在這裡。</p>
+              <p className="mt-1">若你想確認折抵何時可用，可以先到「方案與用量」查看待確認與可用金額。</p>
             </div>
           ) : null}
         </section>

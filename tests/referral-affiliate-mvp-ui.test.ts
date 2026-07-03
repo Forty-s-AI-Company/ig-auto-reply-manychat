@@ -22,6 +22,8 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("30 天內要使用");
     expect(source).toContain("折抵金錢包在完整版本中開放");
     expect(source).toContain("simple release 會先在推薦活動與方案頁顯示");
+    expect(source).toContain("查看方案與用量");
+    expect(source).toContain("若你想確認折抵何時可用");
     expect(source).toContain("formatReferralDate");
     expect(source).toContain("break-all");
     expect(source).not.toContain("<span>{item.status}</span>");

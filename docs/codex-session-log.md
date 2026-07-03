@@ -1,3 +1,19 @@
+## 2026-07-03 13:10 +08:00 - Financial surfaces CTA and localization polish
+
+- Mode: local development verification only; no push, no PR, no Production deploy, no production DB.
+- Scope: `src/app/billing/page.tsx`, `src/app/referrals/page.tsx`, `src/app/wallet/page.tsx`.
+- Billing now exposes direct next-step links to `推薦活動` and `折抵金錢包`, and add-on names are localized into Traditional Chinese.
+- Wallet empty state now points users to `推薦活動` and `方案與用量` instead of ending in a static no-data message.
+- Referrals now links back to `方案與用量` when users need to verify pending / available credit timing.
+- Added / updated focused guards in `tests/billing-page-status-copy.test.ts`, `tests/referral-affiliate-mvp-ui.test.ts`, and `tests/wallet-light-theme.test.ts`.
+- Local validation passed:
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build -- --webpack`
+  - `npm test`
+  - `npm run e2e:admin:ensure && npx playwright test tests/e2e/public-and-auth.spec.ts --grep "billing sandbox gate guidance|referral URL|Affiliate cash payout|wallet lifecycle" --workers=1`
+  - `npm test` still hits the known Windows Vitest batch crash `3221225477`, but the runner isolated the affected batch and every diagnostic rerun passed individually.
+
 ## 2026-07-03 06:00 +08:00 - Broadcasts disabled action clarity
 
 - Scope: local development verification mode only; no production deploy, no production DB, no Vercel Preview push.
@@ -8952,3 +8968,256 @@ Launch impact:
 - 結果：刷新成功；`failed-workspace`、`available-refund-workspace`、`default-workspace` 都回傳 `chatgpt=10`、`gemini=7`、`deepseek=2`、`xai=2`。
 - 備註：`codex_cli` / `antigravity_cli` 未出現在 refresh payload，延續 `AI_ENABLE_LOCAL_CLI` 未啟用時的 local CLI opt-in gating；未判定為 provider API 失敗。
 - 安全：未修改產品程式碼、未碰 production DB、未部署 Production、未跑 migration/db push、未切 PayUNI production、未執行 Meta App Review 動作。
+# 2026-07-03 - Meta App Review preflight gap audit
+
+- Scope: read-only audit of the real Meta Developers state for the correct `InboxPilot` app (`924285843989683`) and alignment of the repo submission package docs.
+- Browser findings:
+  - Dashboard is published and currently shows no required actions.
+  - Basic Settings already include the production domain, contact email, privacy policy URL, terms URL, data deletion callback URL, and website URL.
+  - Instagram API setup still shows webhook callback / verify token as unfilled.
+  - Instagram permission entries needed for InboxPilot are still `可供測試`.
+  - The visible generated Instagram login setup currently uses `/api/instagram/oauth/callback`.
+- Documentation changes:
+  - Updated the checklist/package/workbook/recording docs to reflect the real callback path, current testable-only permission state, and manual webhook/dashboard blockers.
+- Safety:
+  - Did not click submit.
+  - Did not reveal app secret, verify token, OAuth code, or any other secret.
+  - Did not change Meta Dashboard settings, production DB, or Production deployment.
+
+## 2026-07-03 - Meta reviewer-safe evidence package
+
+- 目標：延續 Meta preflight 文件，補齊 reviewer-safe evidence package，避免文件把 demo 假設寫成已可實證的產品能力。
+- 產品 / source-level 對照：
+  - `src/app/channels/connect/social/page.tsx` 已有清楚的 Instagram connect CTA、連接成功區塊、Meta 錯誤提示 alert。
+  - `src/app/channels/page.tsx` 已有 Instagram channel 設定區，可作為 connected-channel 補充證據。
+  - `src/app/inbox/page.tsx`、`src/app/contacts/page.tsx`、`src/app/automations/page.tsx` 都是實頁面，但 reviewer 要看懂仍需要 synthetic demo data。
+  - `src/app/privacy-policy/page.tsx`、`src/app/terms-of-service/page.tsx`、`src/app/data-deletion/page.tsx` 可直接作為 public policy evidence。
+- 文件補強：
+  - 在 submission package、checklist、recording shot list、operator workbook、screenshot checklist 中新增 reviewer-safe evidence matrix / readiness 說明。
+  - 明確切開四類狀態：可直接錄、需要 demo data、需要人工資產、目前無法安全證明。
+  - 明確標示 webhook callback / verify token 未填前，不得宣稱 live webhook-backed message/comment proof 已可錄製。
+- 結論：
+  - 這輪沒有必要動產品碼；主要缺口是 reviewer-safe IG 資產、synthetic Inbox/Contacts/Automations 資料、以及 Meta Dashboard webhook 手動配置。
+  - 未送審、未變更 Meta Dashboard、未碰 production DB、未部署 Production。
+
+## 2026-07-03 - Meta reviewer demo data and asset prep runbook
+
+- 目標：把現有本機 seed / fixture / Playwright smoke 整理成 reviewer-safe evidence prep SOP，明確分出哪些可以直接重用，哪些仍需人工資產。
+- 盤點結果：
+  - `npm run admin:ensure` 可重用於本機 admin/bootstrap，但不足以形成 reviewer evidence。
+  - `npm run prisma:seed` 可重用於本機 demo automation copy rehearsal，但不是 reviewer-ready Instagram evidence。
+  - `npm run e2e:admin:ensure` 可重用於 `TEST_DATABASE_URL` 的 rich Inbox / Contacts rehearsal，但命名仍偏 E2E。
+  - `npm run e2e:empty:ensure` 與 `tests/e2e/empty-workspace-activation.spec.ts` 可重用於空 workspace 啟用路徑 rehearsal。
+  - `tests/e2e/public-and-auth.spec.ts`、`tests/e2e/inbox-auth.spec.ts`、`tests/e2e/empty-workspace-activation.spec.ts` 可重用於本機 reviewer flow rehearsal。
+- 文件新增 / 串接：
+  - 新增 `docs/meta-reviewer-demo-data-prep-runbook.md`
+  - 將 submission package、operator workbook、recording shot list、day-of run card、reviewer handoff checklist、Meta checklist 全部串回這份 runbook
+- 結論：
+  - 目前不需要為 reviewer package 急著再加一支新 seed script。
+  - 真正缺的是 reviewer-safe 命名、reviewer-safe IG 資產、synthetic Inbox/Contacts/Automations demo data，以及 webhook 尚未配置前不得過度宣稱 live proof 的邊界。
+
+## 2026-07-03 - Reviewer-safe local demo helper
+
+- 目標：評估並補最小安全版本的 reviewer-safe local demo helper，只服務 `TEST_DATABASE_URL` 的本機 rehearsal，不碰正式 reviewer 資產。
+- 判斷：值得新增。原因是現有 `e2e:admin:ensure` fixture 功能足夠，但命名仍偏 `E2E`，不利於 reviewer 錄影演練與操作腳本對齊。
+- 變更：
+  - 新增 `scripts/ensure-reviewer-demo-data.ts`
+  - 新增 `npm run e2e:reviewer:ensure`
+  - helper 只會在 `TEST_DATABASE_URL` 上建立 reviewer-safe local fixtures：
+    - `InboxPilot Review Workspace`
+    - `Instagram Review Channel`
+    - `Meta Reviewer Test Contact`
+    - synthetic conversation text
+    - disabled reviewer-safe automation draft
+  - 更新 `docs/meta-reviewer-demo-data-prep-runbook.md`，把這支 helper 納入 Lane A rehearsal。
+- 驗證：
+  - 後續跑 helper 與 lint，確認本機 rehearsal 鏈路可用。
+- 安全：
+  - helper 明確拒絕 production DB / production project ref。
+  - 未送審、未修改 Meta Dashboard、未碰 production DB、未部署 Production。
+
+## 2026-07-03 - Reviewer-safe rehearsal smoke
+
+- 目標：把 reviewer-safe local demo helper 再往前推一步，補成一條可重跑的 local rehearsal smoke，而不是只停留在 seed script。
+- 變更：
+  - 新增 `tests/e2e/meta-reviewer-rehearsal.spec.ts`
+  - 新增 `npm run test:e2e:reviewer`
+  - smoke 會使用 reviewer-safe local fixture 驗證：
+    - Dashboard
+    - Channels / Connect / Social
+    - Inbox（可見 reviewer-safe conversation）
+    - Contacts（可見 reviewer-safe contact/tag）
+    - Automations（可見 reviewer-safe automation draft）
+  - runbook 同步更新，將 `test:e2e:reviewer` 納入 Lane A rehearsal。
+- 驗證：
+  - 後續執行 `npm run test:e2e:reviewer`、`npm run lint`、`npm run build`、`npm test`。
+- 安全：
+  - 只跑 `TEST_DATABASE_URL`。
+  - 未送審、未變更 Meta Dashboard、未碰 production DB、未部署 Production。
+
+## 2026-07-03 - Reviewer-safe staging rehearsal gap audit
+
+- 目標：在不碰 production DB、不送審、不改 Meta Dashboard 的前提下，整理 local reviewer rehearsal 已證明的證據，以及哪些仍必須透過 staging / real reviewer-safe asset lane 才能成立。
+- 盤點：
+  - `npm run e2e:reviewer:ensure` + `npm run test:e2e:reviewer` 已可穩定演練 Dashboard / Channels / Inbox / Contacts / Automations，且 reviewer-safe 命名已和最終 reviewer 話術接近。
+  - 這組 local smoke 仍不等於 real OAuth success、connected Instagram asset、live webhook proof，也不等於 remote reviewer-safe tenant 已準備完成。
+  - 既有 launch/readiness 文件已記錄 staging health、staging alias、以及 empty-tenant browser QA pass，因此 staging rehearsal 在技術方向上是可行的，但仍需人工準備 reviewer-safe tenant、secure login handoff、reviewer-safe Instagram asset。
+- 文件：
+  - 新增 `docs/meta-reviewer-staging-rehearsal-gap-audit.md`
+  - 更新 submission package / operator workbook / handoff checklist / local demo runbook，明確加入 staging rehearsal lane 與 manual blockers。
+- 驗證：
+  - `npm run e2e:reviewer:ensure`: passed
+  - `npm run test:e2e:reviewer`: passed
+- 安全：
+  - 未送出 Meta App Review
+  - 未變更 Meta Dashboard
+  - 未碰 production DB
+  - 未部署 Production
+
+## 2026-07-03 - Reviewer-safe staging tenant SOP
+
+- 目標：把 reviewer-safe staging tenant 的人工流程整理成可執行 SOP，避免之後 remote reviewer rehearsal 仍停留在零散備忘錄。
+- 文件：
+  - 新增 `docs/meta-reviewer-staging-tenant-sop.md`
+  - 串接至 submission package、operator workbook、handoff checklist、local demo runbook、staging gap audit。
+- SOP 範圍：
+  - reviewer-safe staging login
+  - reviewer-safe synthetic-only workspace
+  - reviewer-safe Instagram asset lane
+  - pre-recording validation
+  - post-review cleanup
+  - manual blocker checklist
+- 驗證：
+  - 本輪為文件收尾，沿用上一輪已通過的 local reviewer rehearsal 結果：
+    - `npm run e2e:reviewer:ensure`: passed
+    - `npm run test:e2e:reviewer`: passed
+- 安全：
+  - 未送審
+  - 未變更 Meta Dashboard
+  - 未碰 production DB
+  - 未部署 Production
+
+## 2026-07-03 - Meta webhook callback configured in dashboard
+
+- 目標：驗證先前文件裡的 Meta webhook blocker 是否能直接在 Meta Developers 與既有環境設定中完成，而不是繼續停留在手動待辦。
+- 根因釐清：
+  - production 實際可用 host 是 `https://inboxpilot.carry-digital-nomad.in.net`，不是 root `carry-digital-nomad.in.net`。
+  - 以 `.env.local` 的 `META_VERIFY_TOKEN` 直接測試 production `/api/webhooks/meta`，已可回傳 `200 + challenge`。
+- 實際操作：
+  - 在正確 Meta App `InboxPilot` (`924285843989683`) 的 Instagram API setup 頁面，填入 production webhook callback URL。
+  - 填入既有 verify token。
+  - 觸發 `驗證並儲存` 後，Meta Developers Webhooks 第 3 步已顯示綠勾。
+- 文件同步：
+  - 更新 `docs/meta-app-review-checklist.md`
+  - 更新 `docs/meta-app-review-submission-package.md`
+  - 更新 `docs/meta-app-review-operator-submission-workbook.md`
+  - 更新 `docs/meta-reviewer-staging-tenant-sop.md`
+  - 更新 `docs/fix-roadmap.md`
+- 仍未完成：
+  - reviewer-safe staging tenant / secure login handoff
+  - reviewer-safe Instagram asset lane
+  - reviewer-safe remote Inbox / Contacts / Automations evidence
+  - Business Verification / Advanced Access 的最終人工確認
+- 安全：
+  - 未送審
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出 verify token 或其他 secret
+
+## 2026-07-03 - Reviewer-safe staging tenant advanced to real app state
+
+- 目標：把 Meta reviewer-safe staging lane 從純文件規劃推進到真實 app state，盡量減少仍需人工補的部分。
+- 已完成：
+  - 透過 staging `/signup` 建立一個 reviewer-safe staging 使用者與獨立 workspace。
+  - 用瀏覽器逐頁確認該 workspace 在 Dashboard / Channels / Inbox / Contacts / Automations 都是空狀態，沒有混入既有客戶資料。
+  - 在 staging `/automations` 實際建立並儲存一個 reviewer-safe draft：`Meta Review Keyword Reply`。
+  - 發現 staging `/mock-tester` 送出的 mock inbound 雖然成功入列，但沒有進到目前 reviewer-safe workspace。
+- 根因：
+  - `src/app/api/webhooks/mock/route.ts` 在 authenticated production/staging 路徑只做 `requireApiUser()`，沒有把目前 workspaceId 傳給 `handleInboundMessage()`。
+  - `handleInboundMessage()` 因此退回 `getDefaultWorkspaceId()`，把 synthetic conversation/contact 寫到 default workspace，而不是目前登入的 reviewer-safe tenant。
+- 本地修補：
+  - `src/app/api/webhooks/mock/route.ts` 現已在 authenticated production/staging 路徑補上 `getCurrentWorkspaceId()`，並把 `workspaceId` 傳入 `handleInboundMessage()`。
+  - 新增 `tests/mock-webhook-route.test.ts`，鎖住這個 workspace scope regression。
+- 驗證：
+  - `npx vitest run tests/mock-webhook-route.test.ts`: passed
+  - `npm run build`: passed
+  - 直接裸跑 `tests/mock-webhook-flow.test.ts` 時因未帶 project env 而失敗；不是這次修補邏輯回歸。
+- 仍未完成：
+  - reviewer-safe staging Inbox / Contacts synthetic data 仍需把這個 route fix 送到 non-production remote lane，或改走 direct staging-only seed。
+  - Instagram OAuth reviewer-safe connected-channel proof 仍卡在 Instagram 強制重新驗證，需要真正 reviewer-safe 帳號的 credentialed session 才能完成。
+  - 嘗試從 Vercel Preview env 直接取得 staging DB 連線失敗；目前 preview env pull 不包含 DB 連線變數，因此無法只靠現有 CLI lane 直接 seed staging reviewer data。
+- 安全：
+  - 未送審
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出 Instagram / Meta / staging 帳密或其他 secrets
+
+## 2026-07-03 - Reviewer-safe staging connected-channel lane completed
+
+- 目標：把 Meta reviewer-safe staging lane 最後一段的真實 Instagram connected-channel evidence 做到可直接錄製，而不是只停在本機 rehearsal 或文件假設。
+- 實際操作：
+  - 在 Meta Developers `InboxPilot` (`924285843989683`) 補齊 / 確認 staging app domains、Business Login `嵌入的瀏覽器 OAuth 登入`，並用 Meta redirect URI validator 確認 staging callback 合法。
+  - 釐清 staging preview branch env 的 Meta app ids 與 redirect URIs 仍是舊值，直接把 `staging` branch preview env 校正到目前產品使用的 Instagram / Meta callback 路徑。
+  - redeploy staging preview 後，在 `https://staging.carry-digital-nomad.in.net/channels/connect/social` 重新走真實 Instagram OAuth。
+  - 用 reviewer-safe Instagram session 完成 consent，callback 成功回到 `status=success&provider=meta-instagram`。
+- 已完成證據：
+  - Channels 的 Instagram 卡片可見 `Instagram @carry.digital.nomad`。
+  - 左側 sidebar account dropdown 已顯示 `@carry.digital.nomad` 與正確帳號名稱/頭像。
+  - Inbox / Contacts 已切到同一個 channel-scoped workspace surface，且不再是 metadata incomplete 狀態。
+- 額外檢查：
+  - staging `/mock-tester` 現在會回傳真實 `conversationId`，代表 reviewer-safe synthetic data lane 已經往前走；但 reviewer workspace 的 Inbox / Contacts 仍未立刻顯示這筆資料，所以 remote demo data evidence 仍未完全收斂。
+- 仍未完成：
+  - reviewer-safe staging Inbox / Contacts synthetic data 要嘛還卡在 remote workspace scope，要嘛卡在 async processing / non-default workspace可見性，這條 lane 仍需下一輪收尾。
+  - Facebook / Meta Login lane 仍未納入最小 submission scope，不必為了本輪 reviewer-safe Instagram evidence 強行打通。
+- 安全：
+  - 未送審
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出任何 Meta / Instagram / Vercel secret
+
+## 2026-07-03 - Reviewer-safe staging remote demo-data lane completed
+
+- 目標：收尾 reviewer-safe staging remote demo-data lane，確認 connected channel 之外，Inbox / Contacts / Automations 的 reviewer-safe evidence 也能在 staging UI 真正看見。
+- 實際驗證：
+  - staging `/api/health/staging` 回傳 `status: ok`，database / redis / staging 檢查均正常。
+  - staging `/mock-tester` 以 reviewer-safe synthetic inbound 提交後，回傳真實 `conversationId`：`cmr4fqi4w0003l704fy7gjz3l`。
+  - staging `/inbox` 實際可見 `Meta Reviewer Test Contact` 與訊息 `Hi, I want product information.`，並顯示 Instagram channel scope。
+  - staging `/contacts` 實際可見 `Meta Reviewer Test Contact` 與 `meta-reviewer-staging-contact`，且歸屬 `Instagram @carry.digital.nomad`。
+  - staging `/automations` 仍可見 reviewer-safe draft：`Meta Review Keyword Reply`。
+- 文件同步：
+  - Meta reviewer package / checklist / workbook / runbook / staging SOP / readiness docs 全部改成已完成 connected-channel、Inbox、Contacts、Automations draft 的 staging reviewer-safe evidence。
+  - 剩餘 blocker 改為：secure credential handoff、final redaction sign-off、Business Verification / Advanced Access 確認，以及仍不可過度宣稱的 live webhook-backed proof。
+- 安全：
+  - 未送審
+  - 未碰 production DB
+  - 未部署 Production
+  - 未輸出任何 secret
+
+## 2026-07-03 - Local reviewer/build parity and Automations empty-state CTA cleanup
+
+- 目標：把主 worktree 的 source 與 staging reviewer-safe lane 對齊，恢復本機 build / test / reviewer smoke 的一致性，順手收掉 Automations 空狀態重複主 CTA 的體感問題。
+- source 修補：
+  - 新增 `src/lib/meta-oauth-start.ts`、`src/lib/meta-oauth-callback.ts`、`src/lib/meta-webhook-config.ts`，把 Next.js 16 App Router 不該留在 route file 的 helper exports 抽回 lib。
+  - 更新 `src/app/api/meta/oauth/start/route.ts`、`src/app/api/meta/oauth/callback/route.ts`、`src/app/api/webhooks/meta/route.ts` 改用上述 helper。
+  - 將 staging reviewer-safe lane 的 mock inbound IG scope 修補帶回主 worktree：
+    - `src/lib/messages.ts` 支援直接指定 `channelId`
+    - `src/app/api/webhooks/mock/route.ts` 會優先寫入目前選定的 Instagram channel，若 workspace 僅有一個啟用中的 IG channel 也會自動落到那個 channel
+  - 新增 `tests/mock-webhook-route.test.ts` 鎖住 reviewer-safe mock inbound workspace/channel scope。
+- 本機測試基礎設施：
+  - 補 `package.json` 的 `npm run test:e2e:empty`，避免之後再手動忘記先跑 `e2e:empty:ensure` 導致 401。
+- 產品 UX 修補：
+  - `src/components/AutomationBuilderClient.tsx` 在真正空狀態時，不再同時顯示頁首與 empty state 兩顆同名「新增自動化」按鈕；empty state 只保留單一主要 CTA。
+- 驗證：
+  - `npx eslint src/app/api/meta/oauth/start/route.ts src/app/api/meta/oauth/callback/route.ts src/app/api/webhooks/meta/route.ts src/app/api/webhooks/mock/route.ts src/lib/messages.ts src/lib/meta-oauth-start.ts src/lib/meta-oauth-callback.ts src/lib/meta-webhook-config.ts tests/meta-oauth.test.ts tests/meta-webhook.test.ts tests/mock-webhook-route.test.ts`: passed
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests/meta-oauth.test.ts tests/meta-webhook.test.ts tests/mock-webhook-route.test.ts tests/mock-webhook-flow.test.ts`: passed
+  - `npm test`: passed
+  - `npm run lint`: passed
+  - `npm run build -- --webpack`: passed
+  - `npm run test:e2e:empty`: passed
+  - `npm run test:e2e:reviewer`: passed
+  - `npm run e2e:admin:ensure && npx playwright test tests/e2e/inbox-auth.spec.ts tests/e2e/contacts-auth.spec.ts tests/e2e/automations-editor.spec.ts --workers=1`: initial run surfaced Automations duplicate CTA strict-mode failures; after the UX fix, `npx playwright test tests/e2e/automations-editor.spec.ts --workers=1` passed on desktop/mobile.
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未輸出任何 secret

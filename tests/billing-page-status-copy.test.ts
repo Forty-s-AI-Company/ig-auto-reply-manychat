@@ -18,6 +18,13 @@ describe("billing page status copy", () => {
     expect(source).toContain("id={checkoutReasonId}");
     expect(source).toContain("待確認折抵會取消");
     expect(source).toContain("已使用後才退款，會以沖回紀錄抵銷");
+    expect(source).toContain("查看推薦活動");
+    expect(source).toContain("查看折抵明細");
+    expect(source).toContain("addonDisplayName");
+    expect(source).toContain("對話保留 +180 天");
+    expect(source).toContain("+5,000 訊息事件");
+    expect(source).toContain("+1 個團隊席位");
+    expect(source).not.toContain("{addon.name}");
     expect(source).not.toContain("<span>{invoice.status}</span>");
     expect(source).not.toContain("<span>{order.status}</span>");
   });
