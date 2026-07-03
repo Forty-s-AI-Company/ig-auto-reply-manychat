@@ -10220,3 +10220,20 @@ Launch impact:
   - `tests/contact-detail-editor-ux.test.ts` 補 toast role guard。
 - 安全：
   - 純 accessibility 修補，未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret
+
+## 2026-07-03 - Automations empty-state header CTA regression fix
+
+- 目標：修正 authenticated route smoke 發現的 Automations 空狀態建立入口 regression。
+- 產品修補：
+  - Automations overview 在真正空 workspace / 無符合篩選結果時，header 仍保留「新增自動化」主要 CTA。
+  - 空狀態內 CTA 維持作為輔助引導，避免新使用者只在卡片下方才找到建立入口。
+  - header CTA 補 keyboard-visible focus treatment，icon 補 `aria-hidden`。
+- 測試：
+  - `tests/e2e/public-and-auth.spec.ts` 的 `shows Automations scope clarity and disabled controls` focused smoke 已通過 desktop / mobile。
+- 安全：
+  - 純 UI / onboarding CTA 修補，未改 automation API、資料模型、workspace scope 或 release gating
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
