@@ -9256,3 +9256,25 @@ Launch impact:
   - 未部署 Production
   - 未送 Meta App Review
   - 未輸出任何 secret
+
+## 2026-07-03 - Pricing to signup plan-intent continuity
+
+- 目標：補齊新使用者從 `Pricing -> Signup` 的付費前路徑，避免選了方案之後進入註冊頁卻像重新開始，降低首購前的認知斷點。
+- 產品修補：
+  - `src/components/PricingPageClient.tsx` 的 CTA 改為保留 `?plan=` query，所有公開方案都會把選定方案帶到 `/signup`。
+  - `src/components/SignupForm.tsx` 新增 `signup-selected-plan` 提示卡，明確顯示目前是從哪個方案入口進來，並提醒後續 PayUNI Sandbox 與推薦折抵確認流程。
+  - `src/components/SignupForm.tsx` 補上回到 `/pricing` 的明確連結，避免使用者想重看用量與價格時卡住。
+- 測試：
+  - `tests/pricing-page-polish.test.ts`
+  - `tests/signup-light-theme.test.ts`
+  - `tests/e2e/public-and-auth.spec.ts` 新增從 `/pricing` 點到 `/signup?plan=pro` 的實際 smoke。
+- 驗證：
+  - `npx eslint src/components/PricingPageClient.tsx src/components/SignupForm.tsx tests/pricing-page-polish.test.ts tests/signup-light-theme.test.ts tests/e2e/public-and-auth.spec.ts`
+  - `node --env-file=.env.local .\\node_modules\\vitest\\vitest.mjs run tests\\pricing-page-polish.test.ts tests\\signup-light-theme.test.ts`
+  - `npx playwright test tests/e2e/public-and-auth.spec.ts --grep "preserves selected plan context from pricing into signup" --workers=1`
+  - 後續再跑 `npm run lint`、`npm run build -- --webpack`、`npm test`
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未輸出任何 secret

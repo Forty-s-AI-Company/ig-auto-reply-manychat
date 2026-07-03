@@ -92,6 +92,19 @@ test.describe("public and protected navigation", () => {
     await expect(page.getByLabel(/Password|密碼/)).toBeVisible();
   });
 
+  test("preserves selected plan context from pricing into signup", async ({ page }) => {
+    await page.goto("/pricing", { waitUntil: "domcontentloaded" });
+    await expect(page.locator("body")).toContainText("方案與價格");
+    await expect(page.getByRole("heading", { name: /依照 IG 訊息營運規模選擇方案/ })).toBeVisible();
+    await expect(page.getByTestId("pricing-referral-credit-rules")).toBeVisible();
+
+    await page.locator('a[href="/signup?plan=pro"]').click();
+    await expect(page).toHaveURL(/\/signup\?plan=pro(?:[&#].*)?$/);
+    await expect(page.getByTestId("signup-selected-plan")).toContainText("Pro");
+    await expect(page.getByTestId("signup-selected-plan")).toContainText("PayUNI Sandbox");
+    await expect(page.getByTestId("signup-back-to-pricing")).toHaveAttribute("href", "/pricing");
+  });
+
   test("keeps protected dashboard behind authentication", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(page).toHaveURL(/\/login/);

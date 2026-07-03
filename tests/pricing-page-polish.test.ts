@@ -29,6 +29,9 @@ describe("public pricing page polish", () => {
     expect(source).toContain("border-[#d7dbe0]");
     expect(source).toContain("focus-visible:outline");
     expect(source).toContain("PayUNI Sandbox 已驗證");
+    expect(source).toContain('href="/signup?plan=trial"');
+    expect(source).toContain("function getPlanSignupHref");
+    expect(source).toContain("href={getPlanSignupHref(plan)}");
     expect(source).not.toMatch(/tracking-\[0\.18em\]|tracking-\[-0\.05em\]/);
   });
 

@@ -7,11 +7,28 @@ function subscribeToUrlReferral() {
   return () => {};
 }
 
+const planLabels: Record<string, string> = {
+  trial: "免費試用",
+  starter: "Starter",
+  creator: "Creator",
+  pro: "Pro",
+  business: "Business",
+};
+
 function getUrlReferralCode() {
   return new URLSearchParams(window.location.search).get("ref")?.trim() || "";
 }
 
 function getServerUrlReferralCode() {
+  return "";
+}
+
+function getUrlSelectedPlan() {
+  const plan = new URLSearchParams(window.location.search).get("plan")?.trim() || "";
+  return planLabels[plan] ? plan : "";
+}
+
+function getServerSelectedPlan() {
   return "";
 }
 
@@ -23,8 +40,10 @@ export function SignupForm() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const urlReferralCode = useSyncExternalStore(subscribeToUrlReferral, getUrlReferralCode, getServerUrlReferralCode);
+  const selectedPlan = useSyncExternalStore(subscribeToUrlReferral, getUrlSelectedPlan, getServerSelectedPlan);
   const visibleReferralCode = referralCodeInput ?? urlReferralCode;
   const effectiveReferralCode = visibleReferralCode.trim();
+  const selectedPlanLabel = selectedPlan ? planLabels[selectedPlan] : "";
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,6 +86,14 @@ export function SignupForm() {
         <p className="text-sm font-medium text-[#667085]">IG 自動化控制台</p>
         <h1 className="mt-1 text-2xl font-semibold text-[#111827]">建立平台登入帳號</h1>
       </div>
+      {selectedPlanLabel ? (
+        <div
+          data-testid="signup-selected-plan"
+          className="rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm leading-6 text-cyan-950"
+        >
+          目前從「{selectedPlanLabel}」方案入口進來。建立帳號後，可先到「方案與用量」完成 PayUNI Sandbox 測試與推薦折抵確認，再決定是否正式升級。
+        </div>
+      ) : null}
       {error ? (
         <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert" aria-live="polite">
           {error}
@@ -148,6 +175,12 @@ export function SignupForm() {
         已經有帳號？{" "}
         <Link href="/login" className="font-medium text-[#006fe6] hover:text-[#0057b8]">
           回到登入
+        </Link>
+      </p>
+      <p className="text-center text-xs text-[#667085]">
+        想重新比較功能與用量？{" "}
+        <Link href="/pricing" data-testid="signup-back-to-pricing" className="font-medium text-[#006fe6] hover:text-[#0057b8]">
+          回看方案與價格
         </Link>
       </p>
     </form>

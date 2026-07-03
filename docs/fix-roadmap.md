@@ -3687,6 +3687,13 @@ Remaining:
 - 已完成：Automations mobile auth smoke 不再依賴 role lookup 競態，改用 template dialog 與 stable test id 驗證。
 - 驗證：test:e2e:auth、lint、build、npm test 通過。
 
+## 2026-07-03 - Pricing -> Signup continuity
+
+- 已完成：公開方案頁會把 `plan` 意圖保留到 `/signup`，不再讓使用者選完方案後像重新開始。
+- 已完成：Signup 顯示目前選定方案、PayUNI Sandbox 提醒與返回方案頁連結。
+- 已完成：新增 public Playwright smoke，實際驗證 `/pricing -> /signup?plan=pro` 的承接路徑。
+- 下一步：繼續檢查首次付費前體驗是否還有 CTA 落差、simple/full release 語意混亂，優先看 Pricing / Signup / Billing 的連續性。
+
 ## 2026-07-03 - Contacts mobile activation header polish
 
 - 已完成：Contacts mobile header actions 可換行、focus-visible 可見、空 workspace activation smoke 覆蓋 desktop/mobile。

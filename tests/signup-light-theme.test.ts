@@ -20,6 +20,9 @@ describe("signup light theme", () => {
     expect(formSource).toContain('autoComplete="new-password"');
     expect(formSource).toContain('name="referralCode"');
     expect(formSource).toContain('data-testid="signup-referral-helper"');
+    expect(formSource).toContain('data-testid="signup-selected-plan"');
+    expect(formSource).toContain('data-testid="signup-back-to-pricing"');
+    expect(formSource).toContain("PayUNI Sandbox");
     expect(formSource).toContain('role="alert"');
     expect(formSource).toContain('aria-live="polite"');
     expect(formSource).toContain("建立中…");
@@ -27,9 +30,11 @@ describe("signup light theme", () => {
 
   it("preserves referral attribution from signup links for email and Google signup", () => {
     expect(formSource).toContain('new URLSearchParams(window.location.search).get("ref")');
+    expect(formSource).toContain('new URLSearchParams(window.location.search).get("plan")');
     expect(formSource).toContain("useSyncExternalStore");
     expect(formSource).toContain("const visibleReferralCode = referralCodeInput ?? urlReferralCode");
     expect(formSource).toContain("const effectiveReferralCode = visibleReferralCode.trim()");
+    expect(formSource).toContain("const selectedPlanLabel = selectedPlan ? planLabels[selectedPlan] : \"\"");
     expect(formSource).toContain("referralCode: effectiveReferralCode || null");
     expect(formSource).toContain("encodeURIComponent(effectiveReferralCode)");
     expect(formSource).toContain("已從邀請連結帶入推薦碼");

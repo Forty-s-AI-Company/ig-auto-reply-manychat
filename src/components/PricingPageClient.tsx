@@ -26,6 +26,10 @@ function getReferralCreditSummary(plan: BillingPlan) {
   return plan.key === "trial" ? "推薦折抵升級後可用" : "推薦折抵可用於方案費";
 }
 
+function getPlanSignupHref(plan: BillingPlan) {
+  return `/signup?plan=${encodeURIComponent(plan.key)}`;
+}
+
 export function PricingPageClient() {
   const publicPlans = billingPlans.filter((plan) => plan.key !== "agency");
 
@@ -40,7 +44,7 @@ export function PricingPageClient() {
             <Link href="/login" className="text-sm font-semibold text-slate-600 hover:text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-600">
               登入
             </Link>
-            <Link href="/signup" className="rounded-md bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-sm hover:bg-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700">
+            <Link href="/signup?plan=trial" className="rounded-md bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 shadow-sm hover:bg-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700">
               免費開始
             </Link>
           </div>
@@ -123,7 +127,7 @@ export function PricingPageClient() {
                 </li>
               </ul>
               <Link
-                href="/signup"
+                href={getPlanSignupHref(plan)}
                 className="mt-auto inline-flex items-center justify-center gap-2 rounded-md bg-[#111827] px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-600"
               >
                 {plan.key === "trial" ? "開始免費試用" : "選擇這個方案"}
