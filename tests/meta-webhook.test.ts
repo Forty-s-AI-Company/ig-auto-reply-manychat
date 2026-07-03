@@ -11,8 +11,9 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/db", () => ({ getDb: () => mocks.db }));
 
-import { buildWebhookChannelConfig, POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
+import { POST as metaWebhookPost } from "@/app/api/webhooks/meta/route";
 import { metaAdapter, parseMetaWebhookComments, parseMetaWebhookMessages } from "@/lib/channels/meta";
+import { buildWebhookChannelConfig } from "@/lib/meta-webhook-config";
 
 function sign(body: string, secret: string) {
   return `sha256=${createHmac("sha256", secret).update(body).digest("hex")}`;

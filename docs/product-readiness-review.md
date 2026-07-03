@@ -1,3 +1,17 @@
+# 2026-07-03 - Meta OAuth/Webhook helper extraction
+
+Status: improved testability and maintainability; no intended runtime behavior change.
+
+What changed:
+
+- Meta OAuth / webhook pure helper logic was moved from route modules into `src/lib/*` modules.
+- Existing focused unit coverage now imports the helper modules directly instead of route handlers.
+
+Readiness implication:
+
+- OAuth and webhook behavior remain guarded while route handlers stay thinner and easier to review for App Review readiness.
+- This does not change Meta Dashboard settings, permission scope, production data, production deployment, or PayUNI gates.
+
 # 2026-07-03 - Reviewer-safe local rehearsal smoke
 
 Status: improved for Meta App Review rehearsal readiness; no production behavior change.

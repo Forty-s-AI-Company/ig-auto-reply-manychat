@@ -3,7 +3,6 @@ import { Prisma } from "@prisma/client";
 import { recordAuditEvent } from "@/lib/audit";
 import {
   findMetaChannelForInbound,
-  isMetaGlobalEnvFallbackEnabled,
   isConfiguredMetaObject,
   parseMetaWebhookComments,
   parseMetaWebhookMessages,
@@ -13,6 +12,7 @@ import {
 import { getDb } from "@/lib/db";
 import { processInstagramCommentEvent } from "@/lib/instagram/comments-sync";
 import { getOrCreateChannel, handleInboundMessage } from "@/lib/messages";
+import { buildWebhookChannelConfig } from "@/lib/meta-webhook-config";
 import { assertRateLimit, getClientIp } from "@/lib/security";
 
 export const runtime = "nodejs";
@@ -52,20 +52,6 @@ async function ensureChannelEnabled(
       configJson: buildWebhookChannelConfig(existingConfig, hasStoredPageToken) as Prisma.InputJsonValue,
     },
   });
-}
-
-export function buildWebhookChannelConfig(existingConfig: Record<string, unknown>, hasStoredPageToken: boolean) {
-  if (!isMetaGlobalEnvFallbackEnabled()) return existingConfig;
-
-  return {
-    ...existingConfig,
-    pageId: "pageId" in existingConfig ? existingConfig.pageId : process.env.META_PAGE_ID || "",
-    instagramBusinessAccountId:
-      "instagramBusinessAccountId" in existingConfig
-        ? existingConfig.instagramBusinessAccountId
-        : process.env.META_INSTAGRAM_BUSINESS_ACCOUNT_ID || "",
-    ...(hasStoredPageToken ? {} : { tokenEnv: "META_PAGE_ACCESS_TOKEN" }),
-  };
 }
 
 export async function POST(request: Request) {

@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Meta OAuth/Webhook helper extraction
+
+Current status:
+
+- `[x]` Meta OAuth callback error mapping and Instagram app-secret selection helpers now live in `src/lib/meta-oauth-callback.ts`.
+- `[x]` Meta OAuth start login-preference helper now lives in `src/lib/meta-oauth-start.ts`.
+- `[x]` Meta webhook fallback config helper now lives in `src/lib/meta-webhook-config.ts`.
+
+Remaining:
+
+- `[ ]` Keep route handlers thin and avoid importing route modules directly in unit tests.
+- `[ ]` Do not change Meta Dashboard settings or App Review status from this refactor.
+
 # Latest - 2026-07-03 Reviewer-safe local rehearsal smoke
 
 Current status:

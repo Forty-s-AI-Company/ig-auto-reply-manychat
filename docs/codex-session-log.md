@@ -9713,6 +9713,20 @@ Launch impact:
   - 只影響本機 / TEST_DATABASE_URL reviewer rehearsal，不送 Meta App Review、不改 Meta Dashboard、不碰 production DB、不部署 Production、不切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Meta OAuth/Webhook helper extraction
+
+- 目標：降低 Meta OAuth / Webhook route handler 的測試耦合，把純 helper 移到 `src/lib`。
+- 修補：
+  - 新增 `src/lib/meta-oauth-callback.ts`，承接 OAuth error code / user message / Instagram secret / callback mode helper。
+  - 新增 `src/lib/meta-oauth-start.ts`，承接 Meta Business Login preference helper。
+  - 新增 `src/lib/meta-webhook-config.ts`，承接 webhook fallback channel config helper。
+  - focused tests 改為直接 import lib helper。
+- 驗證：
+  - `npx vitest run tests/meta-oauth.test.ts tests/meta-webhook.test.ts` 通過。
+- 安全：
+  - 純重構 / 可測性修補，未改 Meta Dashboard、OAuth scope、Webhook provider 設定、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。
