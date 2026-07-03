@@ -2,6 +2,38 @@
 
 Last updated: 2026-06-26.
 
+## 2026-07-03 Preflight Gap Status
+
+Observed from the real Meta Developers dashboard for `InboxPilot` (`924285843989683`):
+
+- Dashboard is published and shows no required actions.
+- Basic Settings already contain the production domain, contact email, privacy/terms URLs, data deletion callback, and website URL.
+- Instagram API setup Webhooks step is configured against the production callback URL.
+- Instagram permission entries needed for InboxPilot remain in `可供測試`.
+- The visible generated Instagram login flow currently uses `/api/instagram/oauth/callback`.
+
+Current preflight decision:
+
+```text
+Meta App Review submission: Hold
+Package preparation: Go
+Manual dashboard completion needed: Yes
+```
+
+## Reviewer-Safe Evidence Status
+
+Use this section before any recording or screenshot work so the operator does not over-claim what the current product can prove.
+
+| Evidence item | Current status | Why | Operator action |
+| --- | --- | --- | --- |
+| Channels connect entry | 已可直接錄 | The product already shows a clear Instagram connect entry and readable error UX. | Can be recorded after reviewer-safe login. |
+| Successful OAuth return + connected channel | 需要人工資產 | Real proof still depends on a reviewer-safe Instagram asset and workspace. | Prepare reviewer-safe IG asset, workspace, and secure credential handoff. |
+| Inbox message read / reply | 需要先補 demo data | The reviewer-safe staging tenant exists, but the synthetic conversation still needs a remote non-production seed lane. | Deliver the authenticated mock inbound workspace-scope fix to staging or use a direct staging-only seed path. |
+| Contacts workspace scope | 需要先補 demo data | The reviewer-safe staging tenant exists, but the safe contact is not yet visible remotely. | Seed one reviewer-safe contact under the staging reviewer tenant. |
+| Automations keyword/comment configuration | 已可直接錄 | A real staging draft named `Meta Review Keyword Reply` has already been created and saved. | Record it after the final redaction pass. |
+| Live webhook-backed message/comment proof | 目前無法安全證明 | Webhook verification is configured, but reviewer-safe remote asset proof is still missing. | Keep submission in Hold for live event proof until remote reviewer-safe rehearsal is complete. |
+| Privacy / Terms / Data Deletion | 已可直接錄 | Public pages are already available and reviewer-safe. | Record and screenshot directly after final redaction check. |
+
 ## Purpose
 
 This workbook is the operator-facing checklist for preparing a real Meta App Review submission package for InboxPilot.
@@ -13,6 +45,9 @@ It turns these source documents into one manual workflow:
 - `docs/meta-reviewer-recording-shot-list.md`
 - `docs/meta-app-review-screenshot-redaction-checklist.md`
 - `docs/meta-reviewer-test-asset-handoff-checklist.md`
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
+- `docs/meta-reviewer-staging-rehearsal-gap-audit.md`
+- `docs/meta-reviewer-staging-tenant-sop.md`
 
 This workbook intentionally stops before logging in to Meta Dashboard or submitting App Review.
 
@@ -29,7 +64,7 @@ Public paid launch: Hold
 Submission can move from Prepare to Go only after:
 
 - Production health is ok.
-- Reviewer-safe user, workspace, Instagram asset, and demo data are ready.
+- Reviewer-safe user and workspace are ready, and remote reviewer-safe demo data is complete.
 - Recording and screenshots pass redaction.
 - Meta Dashboard fields match the production URLs and requested permissions.
 - Business Verification / Advanced Access status is acceptable for the selected permissions.
@@ -68,9 +103,9 @@ Complete before recording or screenshot capture.
 - `[ ]` Terms opens: `https://inboxpilot.carry-digital-nomad.in.net/terms-of-service`.
 - `[ ]` Data Deletion opens: `https://inboxpilot.carry-digital-nomad.in.net/data-deletion`.
 - `[ ]` Meta Data Deletion endpoint is known: `https://inboxpilot.carry-digital-nomad.in.net/api/meta/data-deletion`.
-- `[ ]` Meta Webhook endpoint is known: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
-- `[ ]` Instagram OAuth callback is known: `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`.
-- `[ ]` Legacy-compatible Instagram callback is known: `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[x]` Meta Webhook endpoint is known: `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- `[ ]` Current Instagram OAuth callback is known: `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[ ]` Generic provider callback is documented separately and not treated as the main review callback unless product flow is migrated: `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`.
 
 ### Reviewer-Safe Assets
 
@@ -85,6 +120,15 @@ Prepare these outside git and docs:
 - `[ ]` Synthetic test contact.
 - `[ ]` Simple Instagram keyword or comment automation.
 - `[ ]` Revocation plan after App Review.
+
+Before collecting the final package, read:
+
+- `docs/meta-reviewer-demo-data-prep-runbook.md`
+
+That runbook explains which existing local seed / fixture chains are reusable for rehearsal and which reviewer-safe assets still must be created manually.
+
+Use `docs/meta-reviewer-staging-rehearsal-gap-audit.md` to decide whether the next rehearsal can move from local-only proof into a reviewer-safe staging tenant, or whether the operator still needs to prepare remote assets first.
+Use `docs/meta-reviewer-staging-tenant-sop.md` when the decision is Go and the operator needs a step-by-step staging login / tenant / cleanup flow.
 
 Use safe example data:
 
@@ -192,17 +236,18 @@ Use this as the manual checklist while filling Meta Dashboard. Do not paste secr
 
 Confirm the exact Meta product settings before submission:
 
-- `[ ]` Valid OAuth redirect URI includes `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback`.
-- `[ ]` Legacy-compatible callback is included only if the selected Meta flow still requires it: `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[ ]` Current Instagram OAuth redirect URI in Meta Dashboard matches `https://inboxpilot.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- `[ ]` Generic provider callback `https://inboxpilot.carry-digital-nomad.in.net/api/oauth/meta-instagram/callback` is not submitted as the main Instagram callback unless the app flow is intentionally migrated and re-verified.
 - `[ ]` No localhost, staging, preview, or test callback is submitted for public production review unless explicitly required and explained.
 - `[ ]` Browser recording does not show full callback URL query parameters.
 
 ### Webhook / Data Deletion Fields
 
-- `[ ]` Webhook callback URL is `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
-- `[ ]` Webhook verify token is configured in Meta Dashboard, but not pasted here.
+- `[x]` Webhook callback URL is `https://inboxpilot.carry-digital-nomad.in.net/api/webhooks/meta`.
+- `[x]` Webhook verify token is configured in Meta Dashboard, but not pasted here.
 - `[ ]` Data deletion callback or instruction URL is configured as required by Meta.
 - `[ ]` Any verify token or app secret remains in the dashboard/secret manager only.
+- `[ ]` Do not move submission from Hold to Go until reviewer-safe remote evidence is complete, even though webhook callback / verify token are now configured.
 
 ### Permission Request Fields
 
@@ -225,6 +270,7 @@ Do not request permissions that are not visible in recording or screenshots.
 - `[ ]` Advanced Access status reviewed for every requested permission.
 - `[ ]` App mode / reviewer access status reviewed.
 - `[ ]` Reviewer test account can access the app without operator intervention.
+- `[ ]` Technical provider / access verification prompt on the app dashboard has been reviewed and accepted as either complete or intentionally deferred with a documented reason.
 
 ## Phase 5 - Submission Text Draft
 
