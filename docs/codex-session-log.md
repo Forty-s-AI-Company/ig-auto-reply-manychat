@@ -9646,6 +9646,23 @@ Launch impact:
   - 未切 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Social connect legacy Meta Page Login copy polish
+
+- 目標：接續 Channels / Social connect audit，降低舊版 Meta / Page 授權流程與主要 Instagram OAuth 流程混淆。
+- 產品修補：
+  - `Facebook / Meta Login` 改為 `Meta Page Login（舊流程）`。
+  - 描述補上正式主線仍以 Instagram OAuth 為主，舊流程只在需要透過 Facebook Page 找回 IG 商業帳號時使用。
+  - secondary action 從 `切換 Meta 帳號` 改為 `重新授權粉專`。
+- 測試：
+  - `tests/channels-connect-visibility.test.ts` 補 legacy Meta Page Login 文案 guard。
+- 安全：
+  - 純 UI 文案修補，未改 OAuth provider、callback、token 儲存、Webhook、付款、資料模型或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Channels controlled provider copy polish
 
 - 目標：接續 Channels / Connect audit，修正 disabled provider card 的描述仍可能讓使用者以為授權流程已接近可用。

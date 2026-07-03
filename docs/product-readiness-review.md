@@ -1,3 +1,18 @@
+# 2026-07-03 - Social connect legacy Meta Page Login copy polish
+
+Status: improved for account connection clarity; launch remains gated by real reviewer-safe channel evidence.
+
+What changed:
+
+- Social connect now labels the page-based compatibility path as `Meta Page Login（舊流程）` instead of `Facebook / Meta Login`.
+- Copy explicitly says Instagram OAuth remains the primary launch path.
+- The secondary action says `重新授權粉專`, which is clearer than a generic Meta account switch.
+
+Readiness implication:
+
+- Operators should better understand when to use the legacy page flow versus the primary Instagram OAuth flow.
+- Actual Meta App Review and real asset lane validation remain manual gates.
+
 # 2026-07-03 - Channels controlled provider copy polish
 
 Status: improved for channel settings clarity; launch remains focused on Instagram.

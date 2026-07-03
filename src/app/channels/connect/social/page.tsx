@@ -19,8 +19,8 @@ const providerCopy = {
     icon: Camera,
   },
   "meta-facebook": {
-    title: "Facebook / Meta Login",
-    description: "標準 Facebook OAuth popup。成功後會抓取可用的 Instagram 資產，並同步建立或更新 channel。",
+    title: "Meta Page Login（舊流程）",
+    description: "相容舊版粉專授權流程；只有在需要透過 Facebook Page 找回 Instagram 商業帳號時使用，正式主線仍以 Instagram OAuth 為主。",
     icon: MessageCircleMore,
   },
   "telegram-bot": {
@@ -334,7 +334,7 @@ export default async function SocialConnectPage({ searchParams }: SocialConnectP
             const isMetaProvider = provider.id === "meta-instagram" || provider.id === "meta-facebook";
             const disabledReasonId = `social-connect-${provider.id}-disabled-reason`;
             const secondaryLabel =
-              provider.id === "meta-instagram" ? "重新登入 IG 後連接" : provider.id === "meta-facebook" ? "切換 Meta 帳號" : "";
+              provider.id === "meta-instagram" ? "重新登入 IG 後連接" : provider.id === "meta-facebook" ? "重新授權粉專" : "";
 
             return (
               <div key={provider.id} className="rounded-lg border border-[#d7dbe0] bg-white p-5">

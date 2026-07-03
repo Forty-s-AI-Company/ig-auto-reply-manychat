@@ -119,9 +119,13 @@ describe("channel connect visibility", () => {
     expect(socialSource).toContain("連接社群帳號");
     expect(socialSource).toContain("返回設定");
     expect(socialSource).toContain("前往設定檢查");
+    expect(socialSource).toContain("Meta Page Login（舊流程）");
+    expect(socialSource).toContain("正式主線仍以 Instagram OAuth 為主");
+    expect(socialSource).toContain("重新授權粉專");
     expect(socialSource).toContain("const disabledReasonId = `social-connect-${provider.id}-disabled-reason`");
     expect(socialSource).toContain("aria-describedby={disabledReasonId}");
     expect(socialSource).not.toContain("連接 Social Accounts");
+    expect(socialSource).not.toContain("Facebook / Meta Login");
     expect(socialSource).not.toContain("前往 Channels 檢查");
     expect(socialSource).not.toContain("provider 開始測");
     expect(socialSource).not.toContain("個 ConnectedAccount");

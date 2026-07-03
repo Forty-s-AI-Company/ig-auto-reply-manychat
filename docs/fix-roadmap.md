@@ -1,3 +1,16 @@
+# Latest - 2026-07-03 Social connect legacy Meta Page Login copy polish
+
+Current status:
+
+- `[x]` Social connect no longer labels the legacy page-based flow as `Facebook / Meta Login`.
+- `[x]` The legacy flow is now described as `Meta Page Login（舊流程）`, with Instagram OAuth called out as the primary launch path.
+- `[x]` Secondary action copy now says `重新授權粉專`, reducing confusion with the main Instagram account switch action.
+
+Remaining:
+
+- `[ ]` Continue local-only reviewer-safe OAuth / channel evidence checks without sending Meta App Review.
+- `[ ]` Keep broader Meta Business Login changes behind App Review and account-asset validation.
+
 # Latest - 2026-07-03 Channels controlled provider copy polish
 
 Current status:
