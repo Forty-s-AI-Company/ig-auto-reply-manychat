@@ -1,3 +1,17 @@
+# 2026-07-03 - Contacts E2E seed preflight
+
+Status: improved for local Contacts QA reliability; no product behavior change.
+
+What changed:
+
+- `npm run test:e2e:contacts` now seeds the local E2E admin before running the authenticated Contacts smoke.
+- The observed Contacts smoke failure was HTTP 401 during login before Contacts assertions, so the fix is test setup, not Contacts product logic.
+
+Readiness implication:
+
+- Local Contacts smoke is now less likely to fail before reaching tag, filter, segment, and contact detail coverage.
+- This does not change Contacts behavior, auth behavior, production data, production deployment, or Meta / PayUNI gates.
+
 # 2026-07-03 - Inbox E2E seed preflight
 
 Status: improved for local Inbox QA reliability; no product behavior change.
