@@ -30,3 +30,14 @@ export function instagramChannelWhere(channelId: string | undefined, workspaceId
         },
       };
 }
+
+export function inboxChannelWhere(channelId: string | undefined, workspaceId?: string) {
+  return channelId
+    ? instagramChannelWhere(channelId, workspaceId)
+    : {
+        channel: {
+          ...(workspaceId ? { workspaceId } : {}),
+          enabled: true,
+        },
+      };
+}

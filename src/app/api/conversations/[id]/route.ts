@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
@@ -22,7 +22,7 @@ export async function GET(_request: Request, { params }: Params) {
   const { id } = await params;
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
 
   const conversation = await getDb().conversation.findFirst({
     where: { id, ...channelWhere },
@@ -30,7 +30,7 @@ export async function GET(_request: Request, { params }: Params) {
   });
 
   if (!conversation) {
-    return NextResponse.json({ error: "找不到這個 IG 帳號底下的對話。" }, { status: 404 });
+    return NextResponse.json({ error: "找不到這個工作區範圍內的對話。" }, { status: 404 });
   }
 
   return NextResponse.json(conversation);
@@ -56,13 +56,13 @@ export async function PATCH(request: Request, { params }: Params) {
 
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const existing = await getDb().conversation.findFirst({
     where: { id, ...channelWhere },
     select: { id: true },
   });
   if (!existing) {
-    return NextResponse.json({ error: "找不到這個 IG 帳號底下的對話。" }, { status: 404 });
+    return NextResponse.json({ error: "找不到這個工作區範圍內的對話。" }, { status: 404 });
   }
 
   if (parsed.data.assignedToId) {

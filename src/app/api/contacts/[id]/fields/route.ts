@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { upsertContactFieldValue } from "@/lib/contact-fields";
 import { getDb } from "@/lib/db";
@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: Params) {
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const contact = await getDb().contact.findFirst({
-    where: { id, ...instagramChannelWhere(selectedChannelId, workspaceId) },
+    where: { id, ...inboxChannelWhere(selectedChannelId, workspaceId) },
     select: { id: true },
   });
   if (!contact) return NextResponse.json({ error: "找不到這個工作區的聯絡人。" }, { status: 404 });

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { sendOutboundMessage } from "@/lib/messages";
@@ -29,13 +29,13 @@ export async function POST(request: Request, { params }: Params) {
 
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const existing = await getDb().conversation.findFirst({
     where: { id, ...channelWhere },
     select: { id: true },
   });
   if (!existing) {
-    return NextResponse.json({ error: "找不到這個 IG 帳號的對話。" }, { status: 404 });
+    return NextResponse.json({ error: "找不到這個工作區範圍內的對話。" }, { status: 404 });
   }
 
   try {
