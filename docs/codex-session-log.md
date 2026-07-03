@@ -9686,6 +9686,19 @@ Launch impact:
   - 只影響本機 / TEST_DATABASE_URL 的 E2E 前置資料流程，未改產品邏輯、production DB、部署、Meta App Review 或 PayUNI production
   - 未輸出任何 secret
 
+## 2026-07-03 - Simple release E2E runner
+
+- 目標：修正 `npm run test:e2e:simple` 會 exit 0 但 12 個案例全部 skipped 的假通過問題。
+- 發現：
+  - `simple-release.spec.ts` 需要 `INBOXPILOT_RELEASE_CHANNEL=simple`。
+  - 原本 npm script 沒有設定 release channel，因此只看到 skipped，不是真的跑過 simple release smoke。
+- 修補：
+  - 新增 `scripts/run-simple-release-e2e.mjs`。
+  - script 會先跑 `npm run e2e:admin:ensure`，再以 `INBOXPILOT_RELEASE_CHANNEL=simple` 執行 Playwright simple-release smoke。
+- 安全：
+  - 只影響本機測試入口，未改 simple/full release 產品邏輯、production DB、部署、Meta App Review 或 PayUNI production
+  - 未輸出任何 secret
+
 ## 2026-07-03 - Authenticated E2E seed preflight
 
 - 目標：修正本機 `test:e2e:auth` 容易因 TEST_DATABASE_URL 尚未 seed admin 而出現 401 的測試前置問題。

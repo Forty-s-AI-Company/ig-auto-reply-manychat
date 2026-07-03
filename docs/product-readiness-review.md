@@ -1,3 +1,17 @@
+# 2026-07-03 - Simple release E2E runner
+
+Status: improved for local simple-release QA reliability; no product behavior change.
+
+What changed:
+
+- `npm run test:e2e:simple` now runs through a small Node wrapper that seeds the local E2E admin and sets `INBOXPILOT_RELEASE_CHANNEL=simple`.
+- The previous command exited successfully while all 12 simple-release tests were skipped, so this closes a false-pass testing gap.
+
+Readiness implication:
+
+- Local QA can now actually exercise simple-release gating for Channels, Automations, Billing redirect notice, Analytics gated broadcast controls, and Inbox sequence disabled UX.
+- This does not change simple/full release product behavior, production data, production deployment, or Meta / PayUNI gates.
+
 # 2026-07-03 - Empty workspace E2E script entry
 
 Status: improved for local new-user activation QA reliability; no product behavior change.

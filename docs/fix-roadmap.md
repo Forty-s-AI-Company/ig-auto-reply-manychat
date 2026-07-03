@@ -1,3 +1,15 @@
+# Latest - 2026-07-03 Simple release E2E runner
+
+Current status:
+
+- `[x]` `npm run test:e2e:simple` now sets `INBOXPILOT_RELEASE_CHANNEL=simple` before running Playwright.
+- `[x]` The script also seeds the local E2E admin before the authenticated simple-release smoke.
+
+Remaining:
+
+- `[ ]` Keep simple-release smoke local / preview-safe; do not use it as a production deployment trigger.
+- `[ ]` Continue watching for skipped Playwright suites that should be executable local smoke.
+
 # Latest - 2026-07-03 Empty workspace E2E script entry
 
 Current status:
