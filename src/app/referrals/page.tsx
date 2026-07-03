@@ -128,6 +128,24 @@ export default async function ReferralsPage() {
               <p className="font-semibold text-[var(--text-primary)]">尚無推薦紀錄。</p>
               <p className="mt-1">分享上方推薦連結後，成功註冊的名單會出現在這裡。</p>
               <p className="mt-1">若你想確認折抵何時可用，可以先到「方案與用量」查看待確認與可用金額。</p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/billing"
+                  data-testid="referrals-empty-open-billing"
+                  className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                >
+                  查看方案與用量
+                </Link>
+                {!simpleRelease ? (
+                  <Link
+                    href="/wallet"
+                    data-testid="referrals-empty-open-wallet"
+                    className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                  >
+                    查看折抵金錢包
+                  </Link>
+                ) : null}
+              </div>
             </div>
           ) : null}
         </section>

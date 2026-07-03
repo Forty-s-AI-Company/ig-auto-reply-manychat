@@ -10076,3 +10076,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Referrals empty state CTA polish
+
+- 目標：接續 Billing / Referrals / Wallet 推薦折抵路徑 audit，讓推薦紀錄空狀態直接提供下一步，而不是只靠文字提醒使用者自己找入口。
+- 產品修補：
+  - `Referrals` 空狀態新增「查看方案與用量」CTA。
+  - Full release 下額外顯示「查看折抵金錢包」CTA；simple release 維持錢包受控分流。
+  - CTA 補 mobile-friendly wrapping 與 keyboard-visible focus treatment。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts` 補 referrals empty state CTA guard。
+- 安全：
+  - 純 UI / 文案修補，未改 referral attribution、wallet ledger、payment、PayUNI、payout 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

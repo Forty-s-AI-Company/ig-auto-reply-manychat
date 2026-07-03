@@ -4153,6 +4153,12 @@ Remaining:
 - 已完成：文件明確標示可錄製 evidence 與仍需人工完成的 reviewer-safe remote / live webhook proof。
 - 下一步：若要進入真實送審，先完成安全錄製、截圖 redaction、reviewer credential handoff，並由人工確認 Meta Dashboard 權限狀態；送審前仍不可自動 Submit。
 
+## 2026-07-03 - Referrals empty state CTA polish
+
+- 已完成：推薦紀錄空狀態補上「查看方案與用量」CTA，讓新使用者可直接確認待確認 / 可用折抵與方案安排。
+- 已完成：Full release 下空狀態額外提供折抵金錢包入口；simple release 維持只在推薦活動與方案頁呈現折抵規則。
+- 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Profile plan summary 的空狀態與 mobile CTA，或回到 Inbox / Contacts 的剩餘細節。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

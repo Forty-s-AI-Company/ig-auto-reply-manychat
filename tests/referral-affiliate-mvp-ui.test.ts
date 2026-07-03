@@ -25,6 +25,8 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain("查看方案與用量");
     expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).toContain("若你想確認折抵何時可用");
+    expect(source).toContain('data-testid="referrals-empty-open-billing"');
+    expect(source).toContain('data-testid="referrals-empty-open-wallet"');
     expect(source).toContain("formatReferralDate");
     expect(source).toContain("break-all");
     expect(source).not.toContain("<span>{item.status}</span>");
