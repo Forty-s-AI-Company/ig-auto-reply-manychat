@@ -4228,6 +4228,11 @@ Remaining:
 - 已完成：Segments 與 shared JSON CRUD 的錯誤提示改用 `role="alert"`，成功回饋維持 `role="status"`。
 - 下一步：若沒有人工阻塞，繼續掃 Sequences / Broadcasts 的錯誤語意與 mobile smoke，或切回 Inbox / Contacts 實際操作路徑。
 
+## 2026-07-03 - Channel danger toast alert semantics
+
+- 已完成：`DismissibleNoticeToast` 的 danger tone 改用 `role="alert"`，解除綁定 channel 失敗提示也改用 alert 語意。
+- 下一步：若沒有人工阻塞，繼續掃 Channel resync / Instagram profile refresh 的錯誤文案與 browser smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

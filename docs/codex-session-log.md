@@ -10304,3 +10304,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Channel danger toast alert semantics
+
+- 目標：接續 Channels / Social connect 錯誤語意 audit，補齊高感知 channel 操作失敗提示。
+- 產品修補：
+  - `DismissibleNoticeToast` 在 `tone="danger"` 時改用 `role="alert"`，其他 tone 維持 `role="status"`。
+  - 解除綁定 channel 失敗提示改用 `role="alert"`。
+  - 維持既有 channel delete API、resync API、PayUNI / dashboard notice 文字與 toast stack 行為不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 danger toast 與 disconnect error alert semantics guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 OAuth、channel disconnect、resync、billing 或 workspace scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

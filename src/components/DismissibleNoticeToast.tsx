@@ -31,7 +31,7 @@ export function DismissibleNoticeToast({
 
   return (
     <div
-      role="status"
+      role={tone === "danger" ? "alert" : "status"}
       style={{ bottom: `calc(1.25rem + ${stackIndex} * 11.5rem)` }}
       className={`fixed bottom-5 right-5 z-50 w-[min(360px,calc(100vw-40px))] rounded-md border bg-white px-4 py-3 text-sm leading-6 shadow-[0_16px_48px_rgba(16,24,40,0.18)] ${toneStyles[tone]}`}
     >

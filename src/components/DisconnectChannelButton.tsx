@@ -48,7 +48,7 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
         <Trash2 className="h-4 w-4" aria-hidden="true" />
       </button>
       {errorMessage ? (
-        <span className="max-w-52 text-right text-[11px] leading-4 text-red-700" role="status" aria-live="polite">
+        <span className="max-w-52 text-right text-[11px] leading-4 text-red-700" role="alert">
           {errorMessage}
         </span>
       ) : null}

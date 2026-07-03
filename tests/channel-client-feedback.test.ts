@@ -6,6 +6,7 @@ const clientFeedbackFiles = [
   "src/components/oauth/OAuthPopupConnectButton.tsx",
   "src/components/JsonCrudClient.tsx",
 ];
+const noticeToastSource = readFileSync("src/components/DismissibleNoticeToast.tsx", "utf8");
 
 describe("channel client feedback", () => {
   it("uses inline feedback instead of native alert dialogs for recoverable client errors", () => {
@@ -16,7 +17,7 @@ describe("channel client feedback", () => {
       expect(source, file).not.toMatch(/[^\w.]alert\s*\(/);
       expect(source, file).not.toMatch(/\bwindow\.confirm\s*\(/);
       expect(source, file).not.toMatch(/[^\w.]confirm\s*\(/);
-      if (file.includes("OAuthPopupConnectButton")) {
+      if (file.includes("OAuthPopupConnectButton") || file.includes("DisconnectChannelButton")) {
         expect(source, file).toContain('role="alert"');
       } else {
         expect(source, file).toContain('aria-live="polite"');
@@ -77,6 +78,7 @@ describe("channel client feedback", () => {
     expect(disconnect).toContain('aria-modal="true"');
     expect(disconnect).toContain('data-testid="disconnect-channel-confirm"');
     expect(disconnect).toContain("flex flex-col-reverse justify-end gap-2 sm:flex-row");
+    expect(disconnect).toContain('role="alert"');
     expect(disconnect).toContain("focus-visible:ring-[#b42318]");
     expect(disconnect).toContain("focus-visible:ring-[#006fe6]");
     expect(disconnect).not.toMatch(/red-900|red-950|text-red-300/);
@@ -111,5 +113,10 @@ describe("channel client feedback", () => {
     expect(tokenForm).toContain("focus-visible:ring-[#006fe6]");
     expect(resyncButton).toContain("focus-visible:ring-[#006fe6]");
     expect(resyncButton).toContain('aria-hidden="true"');
+  });
+
+  it("announces danger toasts as alerts while leaving normal notices as status", () => {
+    expect(noticeToastSource).toContain('role={tone === "danger" ? "alert" : "status"}');
+    expect(noticeToastSource).toContain('tone?: "neutral" | "success" | "warning" | "danger" | "info"');
   });
 });
