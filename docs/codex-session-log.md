@@ -9467,3 +9467,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Channels Instagram action focus polish
+
+- 目標：接續 Channels / connected-channel audit，補強 Instagram 功能檢查與 profile refresh 操作的鍵盤可見焦點。
+- 產品修補：
+  - `InstagramChannelActions` 的自動化連結、預設回覆連結與功能檢查按鈕補 `focus-visible` ring。
+  - `RefreshInstagramProfileButton` 補 amber focus ring，維持既有 safe error / disabled reason 行為不變。
+- 測試：
+  - `tests/channel-client-feedback.test.ts` 補 profile refresh 與 Instagram action focus guard。
+  - Channels planned settings authenticated desktop/mobile smoke 通過。
+- 安全：
+  - 未改 OAuth、Webhook、token refresh 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

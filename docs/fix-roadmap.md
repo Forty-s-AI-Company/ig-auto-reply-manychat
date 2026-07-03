@@ -3773,6 +3773,12 @@ Remaining:
 - 已完成：新增 `tests/inbox-focus-affordances.test.ts`，並通過 Inbox authenticated desktop/mobile smoke。
 - 下一步：若沒有人工阻塞，繼續切到 Channels connected-channel / reviewer-safe staging lane，或回到 Contacts list advanced filtering / mobile bulk actions 的細節掃描。
 
+## 2026-07-03 - Channels Instagram action focus polish
+
+- 已完成：Instagram 功能檢查卡的自動化 / 預設回覆連結與 action buttons 補齊 keyboard-visible focus treatment。
+- 已完成：Instagram profile refresh button 補齊 amber focus ring，維持 safe error redaction 與 token/permission disabled reason 不變。
+- 下一步：若沒有人工阻塞，繼續回到 onboarding / empty workspace full-flow 或 Billing / Referrals 的 mobile CTA 密度掃描。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

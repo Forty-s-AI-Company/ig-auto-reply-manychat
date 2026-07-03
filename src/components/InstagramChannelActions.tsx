@@ -127,13 +127,13 @@ export function InstagramChannelActions({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href="/automations"
-          className="rounded-md bg-[#006fe6] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0057b8]"
+          className="rounded-md bg-[#006fe6] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
         >
           開啟視覺化自動化
         </Link>
         <Link
           href="/automations/instagram-default-reply"
-          className="rounded-md border border-[#84caff] bg-white px-3 py-1.5 text-xs font-medium text-[#0057b8] hover:bg-[#e0f2fe]"
+          className="rounded-md border border-[#84caff] bg-white px-3 py-1.5 text-xs font-medium text-[#0057b8] hover:bg-[#e0f2fe] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
         >
           設定預設回覆
         </Link>
@@ -146,7 +146,7 @@ export function InstagramChannelActions({
             title={disabledReason || label}
             aria-describedby={disabledReason ? `${testId}-reason` : undefined}
             data-testid={testId}
-            className="rounded-md border border-[#d0d5dd] bg-white px-3 py-1.5 text-xs font-medium text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#98a2b3]"
+            className="rounded-md border border-[#d0d5dd] bg-white px-3 py-1.5 text-xs font-medium text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#98a2b3]"
           >
             {label}
           </button>

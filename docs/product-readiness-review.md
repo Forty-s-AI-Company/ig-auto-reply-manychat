@@ -1883,3 +1883,9 @@ Readiness implication:
 - Readiness update：Inbox 主要操作面補齊可見焦點，包含桌機篩選、手機 pane、對話 header、composer、提醒與聯絡人 side panel。
 - Result：收件匣在已具備實際回覆、備註、指派、標籤與提醒功能的前提下，鍵盤與手機操作體感更接近正式可販售產品。
 - Remaining risk：Channels connected-channel / staging reviewer evidence lane 與真正空 workspace 的遠端實機資料仍需獨立驗證。
+
+## 2026-07-03 - Channels Instagram action focus polish
+
+- Readiness update：已連結 Instagram channel 的功能檢查與帳號資料重新讀取操作具備更清楚的 keyboard focus treatment。
+- Result：設定頁中 reviewer / operator 會操作的 Instagram 檢查按鈕更像正式產品控制項，而不是僅能滑鼠點擊的測試工具。
+- Remaining risk：真實 staging connected-channel evidence lane 仍取決於 reviewer-safe Instagram asset 與 staging workspace 資料是否準備完成。

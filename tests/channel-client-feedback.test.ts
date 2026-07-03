@@ -70,6 +70,7 @@ describe("channel client feedback", () => {
     expect(profileRefresh).toContain('text-[#b54708]');
     expect(profileRefresh).toContain('aria-describedby={disabledReason || message ? "instagram-profile-refresh-status" : undefined}');
     expect(profileRefresh).toContain('id="instagram-profile-refresh-status"');
+    expect(profileRefresh).toContain("focus-visible:ring-[#b54708]");
     expect(profileRefresh).not.toMatch(/text-amber-100|bg-amber-900/);
     expect(instagramActions).toContain('bg-[#f0f9ff]');
     expect(instagramActions).toContain('text-[#0b4a6f]');
@@ -79,6 +80,7 @@ describe("channel client feedback", () => {
     expect(instagramActions).toContain("testId: `instagram-action-${action}`");
     expect(instagramActions).toContain("aria-describedby");
     expect(instagramActions).toContain("暫時停用原因");
+    expect(instagramActions).toContain("focus-visible:ring-[#006fe6]");
     expect(instagramActions).not.toContain("功能已開始實作");
     expect(instagramActions).not.toMatch(/維持 disabled/);
     expect(instagramActions).not.toMatch(/bg-cyan-950|text-cyan-100|text-zinc-100|border-zinc-700|hover:bg-zinc-800/);
