@@ -2248,3 +2248,9 @@ Readiness implication:
 - Readiness update：Signup 網路失敗與底部導覽連結的體感更清楚，不再可能把瀏覽器原始錯誤直接丟給使用者。
 - Result：新使用者從 Pricing / referral link 進入建立帳號流程時，錯誤與返回路徑更像正式產品。
 - Remaining risk：正式 Google signup 與 referral attribution 仍需依 staging/production OAuth 設定與真實帳號做最後人工檢查。
+
+## 2026-07-03 - Dashboard recent automation focus polish
+
+- Readiness update：Dashboard 最近自動化列表的可點擊項目現在有鍵盤可見焦點。
+- Result：首頁回到自動化工作流的路徑更完整，不只依賴滑鼠 hover。
+- Remaining risk：仍建議用 desktop/mobile Playwright smoke 重新走 Dashboard -> Automations -> Inbox activation path。

@@ -4393,6 +4393,12 @@ Remaining:
 - 已完成：Signup 底部「回到登入 / 回看方案與價格」連結補齊 keyboard-visible focus ring。
 - 下一步：若沒有人工阻塞，繼續掃 Pricing CTA / Dashboard activation path / Help Center 的 keyboard focus 與 mobile smoke。
 
+## 2026-07-03 - Dashboard recent automation focus polish
+
+- 已完成：Dashboard 最近自動化列表項目補齊 keyboard-visible focus ring，避免可點擊項目只支援 hover 體感。
+- 已完成：保留既有首頁 summary、channel scope、空狀態 CTA 與 quick automation 行為不變。
+- 下一步：若沒有人工阻塞，繼續掃 Dashboard / Inbox / Contacts activation path 的 mobile smoke，或切到 Help Center / Settings 低頻頁的可用性缺口。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

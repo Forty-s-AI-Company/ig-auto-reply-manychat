@@ -391,7 +391,7 @@ export default async function DashboardPage({
                 <Link
                   key={automation.id}
                   href="/automations"
-                  className="block px-4 py-3 text-sm hover:bg-[var(--ip-surface-muted)]"
+                  className="block px-4 py-3 text-sm hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-inset"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <span className="font-medium text-[var(--text-primary)]">{automation.name}</span>

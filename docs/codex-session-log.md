@@ -10706,3 +10706,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Dashboard recent automation focus polish
+
+- 目標：接續 Dashboard activation path audit，修正最近自動化列表項目是可點擊連結但缺少 keyboard-visible focus 的缺口。
+- 產品修補：
+  - 最近自動化項目補 `focus-visible` ring 與 inset ring，鍵盤操作時不只依賴 hover。
+  - 保留既有 dashboard summary、channel scope、recent automations query 與空狀態 CTA 不變。
+- 測試：
+  - `tests/dashboard-empty-state.test.ts` 補 recent automation link focus guard。
+- 安全：
+  - 純 UI / accessibility 修補，未改 dashboard API、workspace scope、schema 或 auth
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
