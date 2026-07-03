@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getAppUrl } from "@/lib/app-url";
 import { requireApiUser } from "@/lib/auth";
+import { getMetaBusinessLoginPreference, type MetaBusinessLoginPreference, type MetaOAuthMode } from "@/lib/meta-oauth-start";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 export const runtime = "nodejs";
@@ -11,8 +12,6 @@ const META_OAUTH_STATE_COOKIE = "meta_oauth_state";
 const META_OAUTH_WORKSPACE_COOKIE = "meta_oauth_workspace";
 const META_OAUTH_MODE_COOKIE = "meta_oauth_mode";
 const DEFAULT_GRAPH_API_VERSION = "v25.0";
-type MetaOAuthMode = "facebook" | "instagram";
-type MetaBusinessLoginPreference = "facebook" | "instagram";
 
 const DEFAULT_META_OAUTH_MODE: MetaOAuthMode = "instagram";
 const DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH = "/api/meta/oauth/callback";
@@ -31,13 +30,6 @@ function getOAuthRedirectUri(request: Request, mode: MetaOAuthMode) {
   const callbackPath =
     mode === "instagram" ? DEFAULT_INSTAGRAM_OAUTH_CALLBACK_PATH : DEFAULT_FACEBOOK_OAUTH_CALLBACK_PATH;
   return `${getAppUrl(request)}${callbackPath}`;
-}
-
-export function getMetaBusinessLoginPreference(
-  mode: MetaOAuthMode,
-  requestedLogin: string | null,
-): MetaBusinessLoginPreference {
-  return requestedLogin === "instagram" || requestedLogin === "facebook" ? requestedLogin : mode;
 }
 
 function buildMetaBusinessLoginUrl(nextUrl: string, loginPreference: MetaBusinessLoginPreference) {

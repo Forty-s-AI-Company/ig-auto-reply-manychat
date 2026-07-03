@@ -5,8 +5,8 @@ import {
   getInstagramAppSecret,
   getMetaOauthErrorCode,
   getMetaOauthUserMessage,
-} from "../src/app/api/meta/oauth/callback/route";
-import { getMetaBusinessLoginPreference } from "../src/app/api/meta/oauth/start/route";
+} from "../src/lib/meta-oauth-callback";
+import { getMetaBusinessLoginPreference } from "../src/lib/meta-oauth-start";
 
 describe("Meta OAuth configuration", () => {
   afterEach(() => {

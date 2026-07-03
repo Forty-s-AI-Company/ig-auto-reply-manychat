@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { getSelectedInstagramChannelId } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
+import { getDb } from "@/lib/db";
 import { handleInboundMessage } from "@/lib/messages";
 import { assertRateLimit, getClientIp } from "@/lib/security";
 import { mockInboundSchema } from "@/lib/validation";
@@ -16,10 +18,23 @@ export async function POST(request: Request) {
 
   const hasSecret = hasValidSharedSecret(request, "x-mock-webhook-secret", process.env.MOCK_WEBHOOK_SECRET);
   let workspaceId: string | undefined;
+  let selectedInstagramChannelId: string | undefined;
   if (!hasSecret && process.env.NODE_ENV === "production") {
     const auth = await requireApiUser();
     if (auth.response) return auth.response;
     workspaceId = await getCurrentWorkspaceId();
+    selectedInstagramChannelId = await getSelectedInstagramChannelId();
+
+    if (!selectedInstagramChannelId && workspaceId) {
+      const candidateChannels = await getDb().channel.findMany({
+        where: { workspaceId, type: "instagram", enabled: true },
+        select: { id: true },
+        take: 2,
+      });
+      if (candidateChannels.length === 1) {
+        selectedInstagramChannelId = candidateChannels[0].id;
+      }
+    }
   }
 
   const parsed = mockInboundSchema.safeParse(await request.json().catch(() => null));
@@ -28,8 +43,9 @@ export async function POST(request: Request) {
   }
 
   const result = await handleInboundMessage({
-    channelType: "mock",
-    channelName: "Local Mock",
+    channelType: selectedInstagramChannelId ? "instagram" : "mock",
+    channelId: selectedInstagramChannelId,
+    channelName: selectedInstagramChannelId ? undefined : "Local Mock",
     externalId: parsed.data.externalId,
     displayName: parsed.data.displayName,
     text: parsed.data.text,

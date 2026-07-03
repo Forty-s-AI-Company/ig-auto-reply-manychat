@@ -7,6 +7,7 @@ import { getDefaultWorkspaceId } from "@/lib/workspaces";
 
 export type InboundMessageInput = {
   channelType: ChannelType;
+  channelId?: string;
   channelName?: string;
   externalId: string;
   displayName: string;
@@ -65,7 +66,15 @@ export async function findOrCreateOpenConversation(contactId: string, channelId:
 
 export async function handleInboundMessage(input: InboundMessageInput) {
   const db = getDb();
-  const channel = await getOrCreateChannel(input.channelType, input.channelName, input.workspaceId);
+  const channel = input.channelId
+    ? await db.channel.findFirst({
+        where: {
+          id: input.channelId,
+          ...(input.workspaceId ? { workspaceId: input.workspaceId } : {}),
+        },
+      })
+    : await getOrCreateChannel(input.channelType, input.channelName, input.workspaceId);
+  if (!channel) throw new Error("找不到指定的渠道。");
   const now = new Date();
   const existingContact = await db.contact.findUnique({
     where: { channelId_externalId: { channelId: channel.id, externalId: input.externalId } },
@@ -116,7 +125,7 @@ export async function handleInboundMessage(input: InboundMessageInput) {
       workspaceId: channel.workspaceId,
       contactId: contact.id,
       type: "dm_received",
-      source: `${input.channelType}:inbound`,
+      source: `${channel.type}:inbound`,
       metadata: { providerMessageId: input.providerMessageId || null },
     });
   }
