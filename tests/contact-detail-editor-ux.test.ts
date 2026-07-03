@@ -18,4 +18,9 @@ describe("ContactDetailEditor UX affordances", () => {
     expect(source).toContain("inline-flex h-6 w-6");
     expect(source).toContain("focus-visible:ring-white");
   });
+
+  it("announces error toasts as alerts instead of passive status text", () => {
+    expect(source).toContain('role={toast.tone === "danger" ? "alert" : "status"}');
+    expect(source).toContain('aria-live="polite"');
+  });
 });

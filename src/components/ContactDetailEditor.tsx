@@ -319,7 +319,7 @@ export function ContactDetailEditor({
 
       {toast ? (
         <div
-          role="status"
+          role={toast.tone === "danger" ? "alert" : "status"}
           aria-live="polite"
           className={`fixed bottom-5 right-5 z-50 w-[min(360px,calc(100vw-40px))] rounded-md border bg-white px-4 py-3 text-sm shadow-[0_16px_48px_rgba(16,24,40,0.18)] ${
             toast.tone === "success" ? "border-green-200 text-green-900" : "border-red-200 text-red-900"

@@ -10209,3 +10209,14 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contact detail toast alert semantics
+
+- 目標：接續 Contact detail / Inbox side panel audit，補齊聯絡人詳情頁錯誤 toast 的輔助語意。
+- 產品修補：
+  - 聯絡人詳情頁 toast 在錯誤狀態改用 `role="alert"`，成功狀態維持 `role="status"`。
+  - 未改聯絡人更新 API、標籤管理 API、欄位資料或 workspace scope。
+- 測試：
+  - `tests/contact-detail-editor-ux.test.ts` 補 toast role guard。
+- 安全：
+  - 純 accessibility 修補，未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret

@@ -4197,6 +4197,11 @@ Remaining:
 - 已完成：Contacts 建立分眾 Dialog 補齊關閉按鈕 focus treatment、mobile-friendly footer 排版與 decorative icon `aria-hidden`。
 - 下一步：若沒有人工阻塞，繼續掃 Contact detail / Inbox side panel 的 tag 與 custom field mobile smoke。
 
+## 2026-07-03 - Contact detail toast alert semantics
+
+- 已完成：Contact detail 錯誤 toast 改用 `role="alert"`，成功 toast 維持 `role="status"`。
+- 下一步：若沒有人工阻塞，繼續掃 Automations / Sequences / Segments 的 mobile smoke，或切回 Billing / Wallet 檢查剩餘 CTA。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
