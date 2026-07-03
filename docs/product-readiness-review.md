@@ -1877,3 +1877,9 @@ Readiness implication:
 - Readiness update：聯絡人詳情頁的標籤管理不再只有靜默 disabled 狀態；當所有標籤都已套用時，使用者會看到下一步說明。
 - Result：Contacts detail 的編輯、儲存與標籤管理更接近正式 SaaS 後台互動標準，鍵盤與手機觸控使用者也能清楚操作。
 - Remaining risk：Contacts list 的進階篩選、批次操作與真正空 workspace flow 仍需持續用 desktop/mobile smoke 做完整回歸。
+
+## 2026-07-03 - Inbox focus affordance polish
+
+- Readiness update：Inbox 主要操作面補齊可見焦點，包含桌機篩選、手機 pane、對話 header、composer、提醒與聯絡人 side panel。
+- Result：收件匣在已具備實際回覆、備註、指派、標籤與提醒功能的前提下，鍵盤與手機操作體感更接近正式可販售產品。
+- Remaining risk：Channels connected-channel / staging reviewer evidence lane 與真正空 workspace 的遠端實機資料仍需獨立驗證。

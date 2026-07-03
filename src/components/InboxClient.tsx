@@ -1009,7 +1009,7 @@ export function InboxClient({
                       <button
                         type="button"
                         onClick={() => setMobilePane("list")}
-                        className="rounded-md border border-[#d7dbe0] px-2 py-1 text-xs text-[#344054] lg:hidden"
+                        className="rounded-md border border-[#d7dbe0] px-2 py-1 text-xs text-[#344054] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 lg:hidden"
                         data-testid="inbox-back-to-list"
                       >
                         返回清單
@@ -1023,7 +1023,7 @@ export function InboxClient({
                             event.target.value ? "已更新對話指派對象。" : "已清除對話指派。",
                           )
                         }
-                        className="rounded-md border-0 bg-transparent px-1 py-1 text-sm text-[#667085] outline-none"
+                        className="rounded-md border-0 bg-transparent px-1 py-1 text-sm text-[#667085] outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                         aria-label="指派對象"
                         data-testid="inbox-assignee-select"
                       >
@@ -1095,7 +1095,7 @@ export function InboxClient({
                           aria-label="更多對話操作目前暫時停用，因為批次封存、匯出、轉交與封鎖等操作仍需要完成權限與稽核紀錄。"
                           data-testid="inbox-more-actions-button"
                         >
-                          <MoreVertical className="h-5 w-5" />
+                          <MoreVertical className="h-5 w-5" aria-hidden="true" />
                         </button>
                       </div>
                       <p
@@ -1112,7 +1112,7 @@ export function InboxClient({
                             <button
                               key={item.label}
                               type="button"
-                              className="block w-full px-3 py-2 text-left hover:bg-[#f2f4f7]"
+                              className="block w-full rounded-md px-3 py-2 text-left hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-1"
                               onClick={() => addReminder(item.minutes)}
                               data-testid={`inbox-reminder-option-${item.minutes}`}
                             >
@@ -1121,7 +1121,7 @@ export function InboxClient({
                           ))}
                           <button
                             type="button"
-                            className="flex w-full items-center gap-2 px-3 py-2 text-left text-[#98a2b3] hover:bg-[#f8fafc]"
+                            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-[#98a2b3] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-1"
                             onClick={explainUnavailableCustomReminder}
                             aria-describedby="inbox-reminder-custom-disabled-reason"
                             title="自訂日期與時間提醒屬於受控開通功能，請先使用固定提醒時段。"
@@ -1135,9 +1135,9 @@ export function InboxClient({
                             自訂提醒需完成時區、排程與通知稽核；目前請先使用固定提醒時段。
                           </p>
                           {selected.reminderAt ? (
-                            <button
-                              type="button"
-                              className="block w-full px-3 py-2 text-left text-red-600 hover:bg-[#fff1f2]"
+                          <button
+                            type="button"
+                              className="block w-full rounded-md px-3 py-2 text-left text-red-600 hover:bg-[#fff1f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-1"
                               onClick={clearReminder}
                               data-testid="inbox-reminder-clear"
                             >
@@ -1199,14 +1199,16 @@ export function InboxClient({
                       <button
                         type="button"
                         onClick={() => setActiveTab("reply")}
-                        className={`px-3 py-3 text-sm ${activeTab === "reply" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                        className={`px-3 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${activeTab === "reply" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                        aria-pressed={activeTab === "reply"}
                       >
                         回覆
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab("note")}
-                        className={`px-3 py-3 text-sm ${activeTab === "note" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                        className={`px-3 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${activeTab === "note" ? "border-b-2 border-[#006fe6] text-[#111827]" : "text-[#667085]"}`}
+                        aria-pressed={activeTab === "note"}
                       >
                         備註
                       </button>
@@ -1215,7 +1217,7 @@ export function InboxClient({
                       <textarea
                         value={text}
                         onChange={(event) => setText(event.target.value)}
-                        className="h-20 w-full resize-none border-0 bg-white text-sm outline-none"
+                        className="h-20 w-full resize-none rounded-md border border-transparent bg-white px-2 py-2 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
                         placeholder={activeTab === "reply" ? "在這裡回覆" : "輸入內部備註"}
                         data-testid="inbox-composer-textarea"
                       />
@@ -1311,7 +1313,7 @@ function InboxNavItem({
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left ${
+      className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
         active ? "bg-[#d7d7d7] font-semibold text-[#111827]" : "text-[#4b5563] hover:bg-[#eceff3]"
       }`}
     >
@@ -1338,7 +1340,7 @@ function ToolbarButton({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs ${
+      className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
         active
           ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
           : "border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
@@ -1365,7 +1367,7 @@ function ComposerIconButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md p-1 hover:bg-[#f2f4f7] ${
+      className={`rounded-md p-1 hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
         unavailable ? "cursor-not-allowed border border-dashed border-[#d7dbe0] bg-[#f8fafc] text-[#98a2b3]" : ""
       }`}
       aria-label={unavailable ? `${label}，暫時停用` : label}
@@ -1413,7 +1415,7 @@ function MobileChip({
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs ${
+      className={`shrink-0 rounded-full border px-3 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
         active ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]" : "border-[#d7dbe0] bg-white text-[#344054]"
       }`}
     >
@@ -1448,7 +1450,7 @@ function MobilePaneButton({
         aria-describedby={disabledReasonId}
         title={disabledReason}
         data-testid={testId}
-        className={`w-full rounded-md border px-3 py-2 text-xs ${
+        className={`w-full rounded-md border px-3 py-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
           active
             ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
             : "border-[#d7dbe0] bg-white text-[#344054]"
@@ -1556,12 +1558,12 @@ function ContactPanel({
         <button
           type="button"
           onClick={() => setContactActionsOpen((current) => !current)}
-          className="ml-auto flex rounded-md border border-transparent p-1 text-[#667085] hover:border-[#d7dbe0] hover:bg-[#f2f4f7]"
+          className="ml-auto flex rounded-md border border-transparent p-1 text-[#667085] hover:border-[#d7dbe0] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
           aria-expanded={contactActionsOpen}
           aria-label="更多聯絡人操作"
           data-testid="inbox-contact-actions-button"
         >
-          <MoreVertical className="h-5 w-5" />
+          <MoreVertical className="h-5 w-5" aria-hidden="true" />
         </button>
         {contactActionsOpen ? (
           <div
@@ -1570,7 +1572,7 @@ function ContactPanel({
           >
             <Link
               href={`/contacts/${selected.contact.id}`}
-              className="block rounded-md px-3 py-2 text-[#006fe6] hover:bg-[#f8fafc]"
+              className="block rounded-md px-3 py-2 text-[#006fe6] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-1"
             >
               開啟聯絡人詳情
             </Link>
@@ -1618,7 +1620,10 @@ function ContactPanel({
         <p className="mt-1 text-sm font-medium text-[#006fe6]">
           {selected.contact.username ? `@${selected.contact.username}` : selected.contact.displayName}
         </p>
-        <Link href={`/contacts/${selected.contact.id}`} className="mt-4 inline-flex rounded-md border border-[#d7dbe0] px-3 py-2 text-xs text-[#006fe6] hover:bg-[#f8fafc]">
+        <Link
+          href={`/contacts/${selected.contact.id}`}
+          className="mt-4 inline-flex rounded-md border border-[#d7dbe0] px-3 py-2 text-xs text-[#006fe6] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+        >
           所有渠道紀錄
         </Link>
       </div>
@@ -1646,7 +1651,7 @@ function ContactPanel({
             type="button"
             onClick={() => toggleSystemTag(hotTag)}
             data-testid="inbox-quick-hot-tag"
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
           >
             <Flame className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
             {hotTag && selectedTagIds.has(hotTag.id) ? "移出熱門" : "加入熱門"}
@@ -1655,7 +1660,7 @@ function ContactPanel({
             type="button"
             onClick={() => toggleSystemTag(partnerTag)}
             data-testid="inbox-quick-partner-tag"
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc]"
+            className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d7dbe0] px-2 py-2 text-sm hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
           >
             <Handshake className="h-4 w-4 text-[#006fe6]" aria-hidden="true" />
             {partnerTag && selectedTagIds.has(partnerTag.id) ? "移出夥伴" : "加入夥伴"}
@@ -1671,7 +1676,7 @@ function ContactPanel({
               value=""
               onChange={(event) => addTag(event.target.value)}
               data-testid="inbox-apply-tag-select"
-              className="h-8 rounded-md border border-[#d7dbe0] bg-white px-2 text-xs text-[#344054] hover:bg-[#f8fafc]"
+              className="h-8 rounded-md border border-[#d7dbe0] bg-white px-2 text-xs text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
               aria-label="套用既有標籤"
             >
               <option value="">套用既有標籤</option>
@@ -1696,7 +1701,7 @@ function ContactPanel({
               key={tag.id}
               type="button"
               onClick={() => removeTag(tag.id)}
-              className="rounded-full px-2 py-1 text-xs text-white"
+              className="rounded-full px-2 py-1 text-xs text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
               style={{ backgroundColor: tag.color }}
               title="移除標籤"
               data-testid={`inbox-contact-tag-${tag.name}`}
@@ -1712,7 +1717,7 @@ function ContactPanel({
         title="訂閱到序列"
         action={
           allowSequenceSubscription ? (
-            <Link href="/sequences" className="text-xs text-[#006fe6] hover:underline">
+            <Link href="/sequences" className="rounded-sm text-xs text-[#006fe6] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
               訂閱
             </Link>
           ) : (
@@ -1757,12 +1762,12 @@ function ContactPanel({
                 <input
                   value={fieldValues[field.id] || ""}
                   onChange={(event) => setFieldValues((current) => ({ ...current, [field.id]: event.target.value }))}
-                  className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6]"
+                  className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
                 />
                 <button
                   type="button"
                   onClick={() => saveField(field.id)}
-                  className="rounded-md border border-[#d7dbe0] px-2 py-1.5 text-xs text-[#006fe6] hover:bg-[#f8fafc]"
+                  className="rounded-md border border-[#d7dbe0] px-2 py-1.5 text-xs text-[#006fe6] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                 >
                   儲存
                 </button>
@@ -1777,7 +1782,7 @@ function ContactPanel({
               placeholder="新增欄位，例如：課程興趣"
               aria-label="新增自訂欄位名稱"
               data-testid="inbox-new-field-label"
-              className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6]"
+              className="min-w-0 flex-1 rounded-md border border-[#d7dbe0] px-2 py-1.5 text-sm outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]"
             />
             <button
               type="button"
@@ -1785,7 +1790,7 @@ function ContactPanel({
               disabled={!canCreateCustomField}
               title={canCreateCustomField ? undefined : "請先輸入欄位名稱。"}
               data-testid="inbox-create-field-button"
-              className="rounded-md bg-[#006fe6] px-2 py-1.5 text-xs font-medium text-white disabled:cursor-not-allowed disabled:bg-[#cfe2ff]"
+              className="rounded-md bg-[#006fe6] px-2 py-1.5 text-xs font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#cfe2ff]"
             >
               新增
             </button>

@@ -3767,6 +3767,12 @@ Remaining:
 - 已完成：詳情頁取消、儲存、新增標籤、移除標籤補齊 keyboard-visible focus treatment；移除標籤按鈕也調整為更適合手機觸控的尺寸。
 - 下一步：若沒有人工阻塞，繼續檢查 Contacts list / Inbox detail / Channels connected-channel 的 remaining visible-but-unusable 或 mobile CTA 問題。
 
+## 2026-07-03 - Inbox focus affordance polish
+
+- 已完成：Inbox header、reminder menu、reply/note tabs、composer、sidebar filters、mobile chips 與 contact side panel controls 補齊 keyboard-visible focus treatment。
+- 已完成：新增 `tests/inbox-focus-affordances.test.ts`，並通過 Inbox authenticated desktop/mobile smoke。
+- 下一步：若沒有人工阻塞，繼續切到 Channels connected-channel / reviewer-safe staging lane，或回到 Contacts list advanced filtering / mobile bulk actions 的細節掃描。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

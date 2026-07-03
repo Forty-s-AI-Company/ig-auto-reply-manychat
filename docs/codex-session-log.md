@@ -9450,3 +9450,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Inbox focus affordance polish
+
+- 目標：接續 Inbox 完整性 audit，補強收件匣可用操作在鍵盤與手機情境下的可見焦點，避免功能已可用但體感像半成品。
+- 產品修補：
+  - 收件匣對話 header 的返回清單、指派 select、提醒選單、回覆/備註 tab 與 composer textarea 補齊 focus treatment。
+  - Inbox 共用控制 `InboxNavItem`、`ToolbarButton`、`ComposerIconButton`、`MobileChip`、`MobilePaneButton` 補齊 keyboard-visible focus ring。
+  - 右側聯絡人 panel 的更多操作、詳情連結、快速分類、標籤 select、移除標籤與自訂欄位操作補齊可見焦點。
+- 測試：
+  - 新增 `tests/inbox-focus-affordances.test.ts`，覆蓋 header、composer、共用控制與聯絡人 panel focus guard。
+  - Inbox authenticated desktop/mobile smoke 通過。
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
