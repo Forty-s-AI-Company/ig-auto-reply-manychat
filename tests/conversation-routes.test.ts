@@ -25,10 +25,10 @@ vi.mock("@/lib/messages", () => ({ addInternalNote: mocks.addInternalNote }));
 vi.mock("@/lib/channels/public", () => ({ publicChannelSelect: { id: true, name: true } }));
 vi.mock("@/lib/account-scope", () => ({
   getSelectedInstagramChannelId: mocks.getSelectedInstagramChannelId,
-  instagramChannelWhere: (channelId?: string, workspaceId?: string) =>
+  inboxChannelWhere: (channelId?: string, workspaceId?: string) =>
     channelId
       ? { channelId, ...(workspaceId ? { channel: { workspaceId } } : {}) }
-      : { channel: { workspaceId, type: "instagram", enabled: true } },
+      : { channel: { workspaceId, enabled: true } },
 }));
 vi.mock("@/lib/security", () => ({
   assertRateLimit: mocks.assertRateLimit,

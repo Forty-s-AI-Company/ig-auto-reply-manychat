@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { upsertContactFieldValue } from "@/lib/contact-fields";
@@ -43,7 +43,7 @@ export async function GET(_request: Request, { params }: Params) {
   const { id } = await params;
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
 
   const contact = await getDb().contact.findFirst({
     where: { id, ...channelWhere },
@@ -57,7 +57,7 @@ export async function GET(_request: Request, { params }: Params) {
     },
   });
 
-  if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  if (!contact) return NextResponse.json({ error: "找不到這個工作區範圍內的聯絡人。" }, { status: 404 });
   return NextResponse.json(contact);
 }
 
@@ -74,12 +74,12 @@ export async function PATCH(request: Request, { params }: Params) {
 
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const contact = await getDb().contact.findFirst({
     where: { id, ...channelWhere },
     select: { id: true },
   });
-  if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  if (!contact) return NextResponse.json({ error: "找不到這個工作區範圍內的聯絡人。" }, { status: 404 });
 
   const { customFields, ...contactFields } = parsed.data;
   const updated = await getDb().contact.update({

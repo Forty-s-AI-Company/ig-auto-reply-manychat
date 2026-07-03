@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { addInternalNote } from "@/lib/messages";
@@ -31,7 +31,7 @@ export async function POST(request: Request, { params }: Params) {
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
   const existing = await getDb().conversation.findFirst({
-    where: { id, ...instagramChannelWhere(selectedChannelId, workspaceId) },
+    where: { id, ...inboxChannelWhere(selectedChannelId, workspaceId) },
     select: { id: true },
   });
   if (!existing) {

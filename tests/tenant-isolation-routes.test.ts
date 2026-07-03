@@ -70,7 +70,7 @@ vi.mock("@/lib/account-scope", () => ({
   ALL_IG_ACCOUNTS: "all",
   IG_ACCOUNT_SCOPE_COOKIE: "ig_account_scope",
   getSelectedInstagramChannelId: mocks.getSelectedInstagramChannelId,
-  instagramChannelWhere: (channelId?: string, workspaceId?: string) =>
+  inboxChannelWhere: (channelId?: string, workspaceId?: string) =>
     channelId
       ? { channelId, ...(workspaceId ? { channel: { workspaceId } } : {}) }
       : { channel: { ...(workspaceId ? { workspaceId } : {}) } },
