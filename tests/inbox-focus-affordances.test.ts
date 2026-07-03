@@ -7,6 +7,8 @@ describe("Inbox focus affordances", () => {
   it("keeps the conversation header and composer keyboard-visible", () => {
     expect(source).toContain('data-testid="inbox-back-to-list"');
     expect(source).toContain('data-testid="inbox-assignee-select"');
+    expect(source).toContain('data-testid="inbox-select-all-disabled-reason"');
+    expect(source).toContain('aria-describedby={selectedVisibleIds.length === 0 ? "inbox-select-all-disabled-reason" : undefined}');
     expect(source).toContain('<ChevronDown className="h-4 w-4 text-[#98a2b3]" aria-hidden="true" />');
     expect(source).toContain('aria-pressed={activeTab === "reply"}');
     expect(source).toContain('aria-pressed={activeTab === "note"}');

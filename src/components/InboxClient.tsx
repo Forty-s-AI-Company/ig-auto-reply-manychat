@@ -736,13 +736,19 @@ export function InboxClient({
           <header className="relative flex shrink-0 flex-wrap items-center gap-2 border-b border-[#d7dbe0] bg-white px-3 py-3 lg:h-14 lg:flex-nowrap lg:px-5 lg:py-0">
             <input
               type="checkbox"
-              className="mr-1 h-4 w-4 rounded border-[#d7dbe0]"
+              className="mr-1 h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="選取全部對話"
+              aria-describedby={selectedVisibleIds.length === 0 ? "inbox-select-all-disabled-reason" : undefined}
               checked={allVisibleSelected}
               disabled={selectedVisibleIds.length === 0}
               onChange={toggleSelectAllVisible}
               data-testid="inbox-select-all"
             />
+            {selectedVisibleIds.length === 0 ? (
+              <span id="inbox-select-all-disabled-reason" data-testid="inbox-select-all-disabled-reason" className="sr-only">
+                目前沒有可選取的對話，請先清除篩選或等待新訊息進入收件匣。
+              </span>
+            ) : null}
             {selectedCount > 0 ? (
               <ToolbarButton onClick={markSelectedRead}>標記已讀 {selectedCount}</ToolbarButton>
             ) : null}

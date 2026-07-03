@@ -4159,6 +4159,12 @@ Remaining:
 - 已完成：Full release 下空狀態額外提供折抵金錢包入口；simple release 維持只在推薦活動與方案頁呈現折抵規則。
 - 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Profile plan summary 的空狀態與 mobile CTA，或回到 Inbox / Contacts 的剩餘細節。
 
+## 2026-07-03 - Inbox and Contacts selection control accessibility polish
+
+- 已完成：Inbox 全選 checkbox 在沒有可選對話時補停用原因，並補齊鍵盤焦點樣式。
+- 已完成：Contacts 表格全選與列選取 checkbox 補齊 keyboard-visible focus treatment。
+- 下一步：若沒有人工阻塞，繼續掃 Contacts detail / Inbox side panel 的 mobile overflow，或切到 Automations editor mobile smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

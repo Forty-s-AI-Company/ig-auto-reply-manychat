@@ -494,7 +494,13 @@ export function ContactsListClient({
             <thead className="sticky top-0 z-10 border-b border-[#d7dbe0] bg-[#f8fafc] text-[#667085]">
               <tr>
                 <th className="w-10 px-4 py-3">
-                  <input type="checkbox" aria-label="選取全部聯絡人" checked={allVisibleSelected} onChange={toggleAllVisible} />
+                  <input
+                    type="checkbox"
+                    aria-label="選取全部聯絡人"
+                    checked={allVisibleSelected}
+                    onChange={toggleAllVisible}
+                    className="h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                  />
                 </th>
                 <th className="px-4 py-3">聯絡人</th>
                 <th className="px-4 py-3">渠道</th>
@@ -513,6 +519,7 @@ export function ContactsListClient({
                       aria-label={`選取 ${contact.displayName}`}
                       checked={selectedSet.has(contact.id)}
                       onChange={() => toggleContact(contact.id)}
+                      className="h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     />
                   </td>
                   <td className="px-4 py-4">

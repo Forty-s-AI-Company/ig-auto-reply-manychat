@@ -98,6 +98,9 @@ describe("contacts empty state", () => {
     expect(source).toContain("data-testid=\"contacts-batch-remove-tag\"");
     expect(source).toContain("取消選取");
     expect(source).toContain("rounded-sm font-semibold text-[#111827]");
+    expect(source).toContain('aria-label="選取全部聯絡人"');
+    expect(source).toContain('aria-label={`選取 ${contact.displayName}`}');
+    expect(source).toContain("h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2");
   });
 
   it("keeps the contact tag creation dialog accessible and keyboard-visible", () => {

@@ -10093,3 +10093,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Inbox and Contacts selection control accessibility polish
+
+- 目標：接續 Inbox / Contacts 批次操作 audit，補齊選取 checkbox 的鍵盤焦點與停用說明，避免批次操作入口在空狀態或篩選後看起來像壞掉。
+- 產品修補：
+  - Inbox 全選 checkbox 補 focus ring、disabled cursor/opacity 與 `aria-describedby` 停用原因。
+  - Contacts 表格全選與列選取 checkbox 補一致的 keyboard-visible focus treatment。
+- 測試：
+  - `tests/inbox-focus-affordances.test.ts` 補 Inbox select-all disabled reason guard。
+  - `tests/contacts-empty-state.test.ts` 補 Contacts checkbox focus guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 Inbox / Contacts API、批次操作邏輯、workspace scope 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
