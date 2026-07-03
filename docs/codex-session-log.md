@@ -9679,3 +9679,18 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Dashboard referral credit label alignment
+
+- 目標：接續新使用者啟用路徑與推薦折抵制度 v1 audit，修正 Dashboard gated feature notice 的 affiliate 文案。
+- 產品修補：
+  - Dashboard feature gate 中的 `affiliate` 顯示從「聯盟行銷」改為「推薦折抵」，避免使用者誤以為公開主線是現金分潤。
+- 測試：
+  - `tests/dashboard-empty-state.test.ts` 補 gated affiliate label guard。
+- 安全：
+  - 純文案 / UX 修正，未改 billing、affiliate、payout、payment、OAuth、Webhook 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

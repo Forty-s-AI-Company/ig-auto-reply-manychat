@@ -3845,6 +3845,11 @@ Remaining:
 - 已完成：Dialog 文案明確標示不會執行銀行匯款、PayUNI 付款或現金提領，只建立內部對帳批次。
 - 下一步：若沒有人工阻塞，繼續掃 Admin financial surfaces / Wallet / Billing 的 mobile smoke，或切回新使用者首次啟用路徑。
 
+## 2026-07-03 - Dashboard referral credit label alignment
+
+- 已完成：Dashboard feature-gated `affiliate` label 改為「推薦折抵」，與非現金推薦制度 v1 對齊。
+- 下一步：若沒有人工阻塞，繼續掃 Dashboard / Billing / Referrals 之間的文案一致性與 mobile smoke。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

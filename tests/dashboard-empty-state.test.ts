@@ -48,4 +48,9 @@ describe("dashboard recent message empty state", () => {
     expect(source).toContain('<Inbox className="h-4 w-4" aria-hidden="true" />');
     expect(source).toContain('<ArrowRight className="h-4 w-4 text-[var(--text-muted)]" aria-hidden="true" />');
   });
+
+  it("labels gated affiliate routes as referral credit instead of cash affiliate marketing", () => {
+    expect(source).toContain('affiliate: "推薦折抵"');
+    expect(source).not.toContain('affiliate: "聯盟行銷"');
+  });
 });

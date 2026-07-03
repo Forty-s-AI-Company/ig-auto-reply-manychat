@@ -36,7 +36,7 @@ const gatedFeatureLabels: Record<string, string> = {
   tags: "標籤管理",
   wallet: "錢包",
   admin: "管理後台",
-  affiliate: "聯盟行銷",
+  affiliate: "推薦折抵",
   templates: "範本",
   "mock-tester": "測試工具",
 };
