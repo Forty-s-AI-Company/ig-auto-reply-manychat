@@ -1871,3 +1871,9 @@ Readiness implication:
 - Readiness update：Sequences / Segments 的刪除與移除確認 Dialog 在手機版下不再擠壓按鈕，序列列表操作也有鍵盤可見焦點。
 - Result：自動化周邊的破壞性操作更接近正式 SaaS 後台標準，降低誤點與鍵盤操作不清楚的體感問題。
 - Remaining risk：Automations editor 本體仍有既有髒檔變更，後續整理時需避免混入不相關修補。
+
+## 2026-07-03 - Contact detail tag control disabled UX polish
+
+- Readiness update：聯絡人詳情頁的標籤管理不再只有靜默 disabled 狀態；當所有標籤都已套用時，使用者會看到下一步說明。
+- Result：Contacts detail 的編輯、儲存與標籤管理更接近正式 SaaS 後台互動標準，鍵盤與手機觸控使用者也能清楚操作。
+- Remaining risk：Contacts list 的進階篩選、批次操作與真正空 workspace flow 仍需持續用 desktop/mobile smoke 做完整回歸。

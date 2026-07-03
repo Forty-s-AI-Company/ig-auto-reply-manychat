@@ -3761,6 +3761,12 @@ Remaining:
 - 已完成：Sequence delete、Sequence step remove、Segment delete Dialog footer 改成手機版不擠壓的直向排列。
 - 下一步：若沒有人工阻塞，繼續檢查 Inbox / Contacts 詳情互動或 Channels connected-channel evidence lane 的剩餘 product gap。
 
+## 2026-07-03 - Contact detail tag control disabled UX polish
+
+- 已完成：聯絡人詳情頁的標籤管理在沒有可新增標籤時，會顯示明確 disabled reason，並連到 selector / button 的 `aria-describedby`。
+- 已完成：詳情頁取消、儲存、新增標籤、移除標籤補齊 keyboard-visible focus treatment；移除標籤按鈕也調整為更適合手機觸控的尺寸。
+- 下一步：若沒有人工阻塞，繼續檢查 Contacts list / Inbox detail / Channels connected-channel 的 remaining visible-but-unusable 或 mobile CTA 問題。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

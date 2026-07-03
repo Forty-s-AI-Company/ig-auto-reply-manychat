@@ -9434,3 +9434,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contact detail tag control disabled UX polish
+
+- 目標：接續 Contacts 完整性 audit，收斂聯絡人詳情頁標籤管理在「沒有可新增標籤」時的靜默 disabled 體感。
+- 產品修補：
+  - `ContactDetailEditor` 的取消、儲存、新增標籤與移除標籤控制補齊 keyboard-visible focus treatment。
+  - 詳情頁標籤 selector / 新增標籤按鈕在所有標籤已套用時，會顯示清楚 disabled reason，不再只是灰掉。
+  - 標籤工具列改為 mobile-friendly 直向排列，移除標籤按鈕加大觸控尺寸。
+- 測試：
+  - 新增 `tests/contact-detail-editor-ux.test.ts`，覆蓋 disabled reason、`aria-describedby`、title、mobile layout 與 focus guard。
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

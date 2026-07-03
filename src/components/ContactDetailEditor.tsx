@@ -61,6 +61,10 @@ export function ContactDetailEditor({
 
   const selectedTags = allTags.filter((tag) => selectedTagIds.has(tag.id));
   const availableTags = allTags.filter((tag) => !selectedTagIds.has(tag.id));
+  const noAvailableTags = availableTags.length === 0;
+  const tagDisabledReason = noAvailableTags
+    ? "這個聯絡人已套用所有標籤。若要新增其他分類，請先到聯絡人列表建立新標籤。"
+    : null;
   const hasChanges =
     username !== (contact.username || "") ||
     email !== (contact.email || "") ||
@@ -182,14 +186,14 @@ export function ContactDetailEditor({
               type="button"
               onClick={resetFields}
               disabled={!hasChanges || isSaving || isPending}
-              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               取消
             </button>
             <button
               type="submit"
               disabled={!hasChanges || isSaving || isPending}
-              className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white transition hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
+              className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white transition hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSaving || isPending ? "儲存中" : "儲存變更"}
             </button>
@@ -250,18 +254,19 @@ export function ContactDetailEditor({
             <h3 className="text-sm font-semibold text-[#111827]">標籤</h3>
             <p className="mt-1 text-sm text-[#667085]">直接為此聯絡人新增或移除標籤。</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <select
               ref={tagSelectRef}
               data-testid="contact-detail-tag-select"
               value={tagToAdd}
               onChange={(event) => setTagToAdd(event.target.value)}
               onInput={(event) => setTagToAdd(event.currentTarget.value)}
-              disabled={availableTags.length === 0 || isTagUpdating}
+              disabled={noAvailableTags || isTagUpdating}
               className="h-9 min-w-[180px] rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] outline-none focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe] disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="選擇要新增的標籤"
+              aria-describedby={tagDisabledReason ? "contact-detail-tag-disabled-reason" : undefined}
             >
-              <option value="">{availableTags.length === 0 ? "沒有可新增標籤" : "選擇標籤"}</option>
+              <option value="">{noAvailableTags ? "沒有可新增標籤" : "選擇標籤"}</option>
               {availableTags.map((tag) => (
                 <option key={tag.id} value={tag.id}>
                   {tag.name}
@@ -272,14 +277,21 @@ export function ContactDetailEditor({
               type="button"
               onClick={addTag}
               data-testid="contact-detail-add-tag"
-              disabled={availableTags.length === 0 || isTagUpdating}
-              className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={noAvailableTags || isTagUpdating}
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm font-medium text-[#344054] transition hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              aria-describedby={tagDisabledReason ? "contact-detail-tag-disabled-reason" : undefined}
+              title={tagDisabledReason || undefined}
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               新增標籤
             </button>
           </div>
         </div>
+        {tagDisabledReason ? (
+          <p id="contact-detail-tag-disabled-reason" className="mb-3 text-sm text-[#667085]">
+            {tagDisabledReason}
+          </p>
+        ) : null}
 
         <div className="flex flex-wrap gap-2">
           {selectedTags.map((tag) => (
@@ -294,7 +306,7 @@ export function ContactDetailEditor({
                 onClick={() => removeTag(tag.id)}
                 data-testid={`contact-detail-remove-tag-${tag.name}`}
                 disabled={isTagUpdating}
-                className="inline-flex h-5 w-5 items-center justify-center rounded-full hover:bg-black/15 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-black/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label={`移除標籤 ${tag.name}`}
               >
                 <X className="h-3.5 w-3.5" aria-hidden="true" />
