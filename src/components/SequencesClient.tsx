@@ -50,8 +50,14 @@ export function SequencesClient({
   const [deleteTargetId, setDeleteTargetId] = useState("");
   const [pendingRemoveStepIndex, setPendingRemoveStepIndex] = useState<number | null>(null);
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"success" | "warning" | "danger">("success");
   const [hasHydrated, setHasHydrated] = useState(false);
   const nameInputRef = useRef<HTMLInputElement | null>(null);
+
+  function showMessage(nextMessage: string, tone: "success" | "warning" | "danger" = "success") {
+    setMessageTone(tone);
+    setMessage(nextMessage);
+  }
 
   const trimmedName = name.trim();
   const selectedSequence = useMemo(
@@ -111,7 +117,7 @@ export function SequencesClient({
       if (!selectedSequenceId && next[0]) setSelectedSequenceId(next[0].id);
       return;
     }
-    setMessage("重新載入序列失敗，請稍後再試。");
+    showMessage("重新載入序列失敗，請稍後再試。", "danger");
   }
 
   function updateStep(index: number, patch: Partial<StepDraft>) {
@@ -145,7 +151,7 @@ export function SequencesClient({
     const removedOrder = pendingRemoveStepIndex + 1;
     removeStep(pendingRemoveStepIndex);
     setPendingRemoveStepIndex(null);
-    setMessage(`已從草稿移除第 ${removedOrder} 封，儲存後才會套用。`);
+    showMessage(`已從草稿移除第 ${removedOrder} 封，儲存後才會套用。`, "success");
   }
 
   function editSequence(sequence: SequenceItem) {
@@ -180,7 +186,7 @@ export function SequencesClient({
 
   async function createSequence() {
     if (!canSaveSequence) {
-      setMessage(saveDisabledReason || "請先完成序列內容。");
+      showMessage(saveDisabledReason || "請先完成序列內容。", "warning");
       return;
     }
     setMessage("");
@@ -201,13 +207,13 @@ export function SequencesClient({
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      setMessage(data.error || "建立序列失敗。");
+      showMessage(data.error || "建立序列失敗。", "danger");
       return;
     }
-    setMessage("序列已建立。");
+    showMessage("序列已建立。", "success");
     setSelectedSequenceId(data.id);
     if (editingSequenceId) {
-      setMessage("序列已更新。");
+      showMessage("序列已更新。", "success");
       setEditingSequenceId("");
     }
     await reload();
@@ -218,7 +224,7 @@ export function SequencesClient({
     const response = await fetch(`/api/sequences/${id}`, { method: "DELETE" });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
-      setMessage(data.error || "刪除序列失敗，請稍後再試。");
+      showMessage(data.error || "刪除序列失敗，請稍後再試。", "danger");
       return;
     }
     if (selectedSequenceId === id) setSelectedSequenceId("");
@@ -228,7 +234,7 @@ export function SequencesClient({
 
   async function subscribe() {
     if (subscribeDisabledReason) {
-      setMessage(subscribeDisabledReason);
+      showMessage(subscribeDisabledReason, "warning");
       return;
     }
     const response = await fetch(`/api/sequences/${selectedSequenceId}/subscribe`, {
@@ -238,10 +244,10 @@ export function SequencesClient({
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      setMessage(data.error || "訂閱序列失敗。");
+      showMessage(data.error || "訂閱序列失敗。", "danger");
       return;
     }
-    setMessage("已把聯絡人加入序列，worker 會依時間送出訊息。");
+    showMessage("已把聯絡人加入序列，worker 會依時間送出訊息。", "success");
     await reload();
   }
 
@@ -321,7 +327,17 @@ export function SequencesClient({
 
       <aside className="space-y-4">
         {message ? (
-          <p className="rounded-md border border-[#d7dbe0] bg-white px-3 py-2 text-sm text-[#344054]" role="status" aria-live="polite">
+          <p
+            className={`rounded-md border px-3 py-2 text-sm ${
+              messageTone === "danger"
+                ? "border-red-200 bg-red-50 text-red-700"
+                : messageTone === "warning"
+                  ? "border-amber-200 bg-amber-50 text-amber-800"
+                  : "border-[#d7dbe0] bg-white text-[#344054]"
+            }`}
+            role={messageTone === "danger" ? "alert" : "status"}
+            aria-live="polite"
+          >
             {message}
           </p>
         ) : null}

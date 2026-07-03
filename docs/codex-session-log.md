@@ -10398,3 +10398,22 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Sequences feedback tone clarity
+
+- 目標：接續 Automations / Sequences 產品收尾，修正 Sequences 操作回饋成功、受控限制與錯誤都使用同一種中性狀態樣式的體感問題。
+- 產品修補：
+  - `SequencesClient` 增加 `messageTone` 與 `showMessage` helper。
+  - 建立 / 更新 / 加入序列成功維持 success tone。
+  - 表單未完成、目前無法訂閱聯絡人等可恢復限制改用 warning tone。
+  - 重新載入、建立、刪除、訂閱失敗改用 danger tone 與 `role="alert"`，成功 / warning 維持 `role="status"`。
+  - 維持既有 Sequences API、folder / segment / subscription 流程、worker 與 tenant scope 不變。
+- 測試：
+  - `tests/sequences-form-state.test.ts` 補 message tone 與 alert/status semantics source guard。
+- 安全：
+  - 純 client UI feedback 修補，未改 sequence API、schema、worker、payment 或 OAuth 邏輯
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

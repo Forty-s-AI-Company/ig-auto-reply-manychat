@@ -4257,6 +4257,12 @@ Remaining:
 - 已完成：測試模型失敗、儲存失敗、模型清單讀取失敗會走 danger toast；成功操作走 success；前置條件不足走 warning。
 - 下一步：若沒有人工阻塞，繼續掃 AI settings / Billing / Channels 這類設定型頁面的錯誤提示與 mobile overflow。
 
+## 2026-07-03 - Sequences feedback tone clarity
+
+- 已完成：Sequences 建立 / 更新 / 訂閱成功、受控限制與真正錯誤不再共用同一種中性提示。
+- 已完成：重新載入、建立、刪除、訂閱失敗會走 danger tone 與 `role="alert"`；表單未完成與目前無法訂閱走 warning；成功操作維持 status。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox / Billing / Settings 等剩餘 client-side feedback，或用 Playwright 跑新使用者 activation route smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
