@@ -9711,3 +9711,18 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Inbox assignee icon accessibility polish
+
+- 目標：接續 Inbox contact side panel audit，修補指派對象控制旁裝飾 icon 的輔助朗讀細節。
+- 產品修補：
+  - `InboxClient` 的 assignee select 旁 `ChevronDown` 補 `aria-hidden`，避免裝飾 icon 被輔助工具重複朗讀。
+- 測試：
+  - `tests/inbox-focus-affordances.test.ts` 補 assignee decorative icon guard。
+- 安全：
+  - 純 UI accessibility 修補，未改 Inbox API、message、assignment、tag、workspace scope 或資料模型
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

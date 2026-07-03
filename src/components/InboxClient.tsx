@@ -1034,7 +1034,7 @@ export function InboxClient({
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="h-4 w-4 text-[#98a2b3]" />
+                      <ChevronDown className="h-4 w-4 text-[#98a2b3]" aria-hidden="true" />
                     </div>
 
                     <div className="flex flex-col items-end gap-1 text-[#667085]">

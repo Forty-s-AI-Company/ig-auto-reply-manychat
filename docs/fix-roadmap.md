@@ -3856,6 +3856,11 @@ Remaining:
 - 已完成：新增標籤錯誤訊息補 `role="alert"`，避免失敗時只靠靜態文字。
 - 下一步：若沒有人工阻塞，繼續掃 Contacts 詳情頁 / Inbox contact side panel 的 tag 與 custom field mobile smoke。
 
+## 2026-07-03 - Inbox assignee icon accessibility polish
+
+- 已完成：Inbox 對話指派 select 旁的裝飾 `ChevronDown` 補 `aria-hidden`。
+- 下一步：若沒有人工阻塞，繼續掃 Inbox contact side panel 的 mobile overflow / disabled UX，或切回 Automations editor。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

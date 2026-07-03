@@ -7,6 +7,7 @@ describe("Inbox focus affordances", () => {
   it("keeps the conversation header and composer keyboard-visible", () => {
     expect(source).toContain('data-testid="inbox-back-to-list"');
     expect(source).toContain('data-testid="inbox-assignee-select"');
+    expect(source).toContain('<ChevronDown className="h-4 w-4 text-[#98a2b3]" aria-hidden="true" />');
     expect(source).toContain('aria-pressed={activeTab === "reply"}');
     expect(source).toContain('aria-pressed={activeTab === "note"}');
     expect(source).toContain("focus:border-[#006fe6] focus:ring-2 focus:ring-[#dbeafe]");
