@@ -4299,6 +4299,12 @@ Remaining:
 - 已完成：維持既有聯絡人資料更新、標籤管理、toast alert semantics 與 tenant scope 不變。
 - 下一步：若沒有人工阻塞，繼續掃 Contacts list bulk actions / detail mobile smoke，或切到 Inbox / Dashboard activation route smoke。
 
+## 2026-07-03 - OAuth popup bridge error alert semantics
+
+- 已完成：OAuth popup callback bridge 的失敗訊息改用 `role="alert"`，成功狀態維持 `role="status"`。
+- 已完成：popup 內失敗狀態補紅色視覺語意與穩定 test id，不改 token exchange、callback payload 或 popup auto-close 流程。
+- 下一步：若沒有人工阻塞，繼續掃 Social connect / Channels reviewer-safe UX，或補 reviewer rehearsal / simple release smoke。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

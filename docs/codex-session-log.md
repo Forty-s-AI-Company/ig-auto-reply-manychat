@@ -10517,3 +10517,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - OAuth popup bridge error alert semantics
+
+- 目標：接續 Channels / Social connect / reviewer-safe UX audit，修正 OAuth popup callback bridge 成功與失敗都用 `role="status"` 的語意缺口。
+- 產品修補：
+  - `OAuthPopupBridge` 改成失敗狀態使用 `role="alert"`，成功狀態維持 `role="status"`。
+  - popup 內失敗狀態補紅色邊框與文字，避免 callback 失敗時看起來只是一般等待訊息。
+  - 保留既有 `window.opener.postMessage`、自動關閉 popup 與 callback payload 流程不變。
+- 測試：
+  - 新增 `tests/oauth-popup-bridge.test.ts` 鎖住 popup callback success / error semantics。
+- 安全：
+  - 純 client UI semantics 修補，未改 OAuth token exchange、Meta / Instagram callback、webhook、schema 或 tenant scope
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

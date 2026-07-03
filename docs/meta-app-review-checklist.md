@@ -901,3 +901,14 @@ App Review implication:
 
 - This improves reviewer/operator diagnostics only.
 - It does not submit Meta App Review, grant Advanced Access, change requested permissions, or bypass Meta platform requirements.
+
+## 2026-07-03 - OAuth popup bridge error semantics
+
+- OAuth popup callback bridge now announces failed callback payloads with `role="alert"` while successful callbacks remain `role="status"`.
+- The popup failure state uses a red visual treatment and stable test id so reviewer rehearsal can distinguish a real connection error from a normal redirect/status message.
+- The change does not alter token exchange, callback payload handling, popup postMessage, Meta Dashboard configuration, or requested permissions.
+
+App Review implication:
+
+- This improves reviewer-safe error evidence and operator diagnosis during Instagram connection rehearsal.
+- It does not submit Meta App Review, grant Advanced Access, change permissions, or complete the reviewer asset lane.
