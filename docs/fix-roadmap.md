@@ -4405,6 +4405,13 @@ Remaining:
 - 已完成：公開狀態頁明確說明正式金流會在 Return URL / Notify URL / 簽章 / idempotency 受控檢查後才啟用。
 - 下一步：若沒有人工阻塞，繼續掃 About / Contact / Billing / Pricing 對外 PayUNI wording 是否一致。
 
+## 2026-07-03 - Local product smoke convergence sweep
+
+- 已完成：本機依序跑完 empty workspace、Inbox、Contacts、Automations editor、authenticated route、simple release smoke。
+- 已完成：Inbox / Contacts / Automations / Billing / Referrals / Wallet / Affiliate 主要 desktop / mobile gate 都維持可讀、可操作或有清楚 disabled UX。
+- 已完成：本輪未發現新的假按鈕、粗糙原生 confirm / alert、raw provider error 外溢或 simple/full release 立即破口。
+- 下一步：若仍維持本機模式，建議切到低頻 admin / settings QA 或 reviewer-safe staging evidence lane 的本機替代檢查；若要上線交付，等 Vercel Preview quota 恢復後再批次 push / PR / merge。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

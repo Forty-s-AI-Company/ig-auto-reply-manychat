@@ -2260,3 +2260,9 @@ Readiness implication:
 - Readiness update：公開 Status 頁的付款狀態不再像金流只是預留位置，而是清楚標示目前使用 PayUNI Sandbox 驗證。
 - Result：付費前使用者、reviewer 或營運人員看到狀態頁時，比較不會誤判正式金流已開或尚未實作。
 - Remaining risk：PayUNI production 仍需正式切換 SOP、低額 live smoke、退款 / 對帳 owner sign-off 後才能啟用。
+
+## 2026-07-03 - Local product smoke convergence sweep
+
+- Readiness update：本機 smoke 已重新覆蓋 empty workspace activation、Inbox、Contacts、Automations editor、authenticated route、simple release gates。
+- Result：目前本機 sellable path 的主要操作面沒有新發現 visible-but-unusable 控制項；Inbox / Contacts / Automations / Billing / Referrals / Wallet / Affiliate 均有 desktop / mobile 或 source-level guard 支撐。
+- Remaining risk：這不是 staging / production sign-off。Meta reviewer-safe staging connected-channel evidence、PayUNI production 切換、production DB 與正式 App Review 仍維持人工 gate。

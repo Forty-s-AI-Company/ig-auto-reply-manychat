@@ -10739,3 +10739,24 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Local product smoke convergence sweep
+
+- 目標：接續本機開發驗證模式，確認核心產品主線在不推 Vercel Preview、不碰 production DB 的前提下是否仍有明顯 visible-but-unusable 缺口。
+- 驗證結果：
+  - `npm run test:e2e:empty` 通過，真正空 workspace 的 Dashboard / Channels connect / Inbox empty / Contacts empty / Automations empty / Sequences / Segments 啟用路徑仍可讀且無 mobile overflow。
+  - `npm run test:e2e:inbox` 通過，收件匣 desktop / mobile 可載入、可切 IG scope、可篩選、可選 conversation，且送出限制會顯示清楚回饋。
+  - `npm run test:e2e:contacts` 通過，Contacts desktop / mobile 的篩選、批次加標籤、建立分眾、詳情頁編輯與標籤管理仍正常。
+  - `npx playwright test tests/e2e/automations-editor.spec.ts --workers=1` 通過，Automations editor desktop / mobile 的 React Flow 樣式、刪除確認、mobile canvas notice 與 dialog scroll safety 仍正常。
+  - `npm run test:e2e:auth` 通過，受保護主要路由、Automations clarity、Analytics data-state、Sequences / Segments explicit actions、Channels planned settings、Billing Sandbox gate、Referrals / Affiliate / Wallet 都維持可讀。
+  - `npm run test:e2e:simple` 通過，simple release 的 Instagram-only connect、Billing gate、Analytics broadcast gate、Automations sequence gate 與 Inbox sequence gate 仍穩定。
+- 產品判斷：
+  - 這一輪未發現需要立刻修補的假按鈕、原生 confirm / alert 或 raw provider error 外溢。
+  - Inbox / Contacts / Automations / Billing / Referrals 的本機 smoke 已覆蓋主要 sellable path；下一步應往 staging reviewer-safe evidence lane 或較低頻 admin / settings QA 收斂。
+- 安全：
+  - 未改產品 source code
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret
