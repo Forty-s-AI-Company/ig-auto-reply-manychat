@@ -8769,3 +8769,21 @@ Launch impact:
 - 安全：
   - 未碰 production DB、未部署 Production、未跑 migration/db push、未送 Meta App Review。
   - 仍未在 staging 完成真實 Instagram reviewer-safe OAuth asset lane；那部分依舊需要真實帳號 session。
+
+## 2026-07-03 - Staging reviewer-safe lane green and master scope sync
+
+- 目標：確認 reviewer-safe synthetic inbound 在遠端 staging 真的可見，並把同一個 workspace-scope 修補同步回 `master`，避免 production / local lane 仍停留在「未選 IG scope 時只看 instagram channels」的舊邏輯。
+- 變更：
+  - 在 staging 實際用 `/mock-tester` 對 reviewer-safe tenant 送出 synthetic inbound，確認 Inbox / Contacts 已可看到新 conversation 與 contact。
+  - 找出剩餘缺口其實不是 mock inbound 寫入，而是「未選 IG scope 時」資料層仍硬性使用 `instagramChannelWhere`。
+  - 將 `src/lib/account-scope.ts` 擴成 `inboxChannelWhere`：已選 IG scope 時沿用既有 instagram 範圍；未選時改為工作區內所有 enabled channels。
+  - 同步調整 Inbox / Contacts / conversation routes 與 tenant-isolation 測試，讓 reviewer-safe Local Mock channel、未來非 IG channel、以及沒有選定 IG scope 的工作區都能正確讀到資料。
+  - 將這組修補從 staging clean worktree cherry-pick 回 `master` 整理分支，準備交付。
+- 驗證：
+  - staging 瀏覽器驗證：`/mock-tester` 回傳 `ok: true, queued: true`，Inbox 顯示 `Reviewer Safe Contact 2` conversation，Contacts 顯示對應 contact。
+  - `npx vitest run tests/account-scope.test.ts tests/mock-webhook-route.test.ts tests/conversation-routes.test.ts tests/tenant-isolation-routes.test.ts`
+  - `npm run lint`
+  - `npm run build`
+- 安全：
+  - 未碰 production DB、未部署 Production、未跑 migration/db push、未送 Meta App Review。
+  - 這次只修 non-production/reviewer-safe lane 與 workspace scope 邏輯；真實 Instagram reviewer-safe OAuth asset lane 仍需真實帳號 session 才能完成最終 reviewer evidence。
