@@ -9301,3 +9301,26 @@ Launch impact:
   - 未部署 Production
   - 未送 Meta App Review
   - 未輸出任何 secret
+
+## 2026-07-03 - Contacts / Inbox first-run disabled UX cleanup
+
+- 目標：接續空 workspace 啟用路徑，收掉 Contacts 與 Inbox 中仍可能讓新手誤會「按鈕壞掉」的低風險控制項。
+- 產品修補：
+  - `src/components/ContactsListClient.tsx` 在目前沒有任何符合條件的聯絡人時，會停用「建立分眾」並顯示明確原因；不再讓使用者建立 0 人空分眾。
+  - `src/components/InboxClient.tsx` 在手機版未選對話時，`訊息內容 / 聯絡人` pane button 會提供 title 與 `aria-describedby`，說明需先從對話清單選一則對話。
+- 測試：
+  - `tests/contacts-empty-state.test.ts` 補 Contacts 空分眾 disabled reason source-level 覆蓋。
+  - 新增 `tests/inbox-mobile-pane-disabled.test.ts`，鎖住 Inbox mobile pane 不可再退回靜默 disabled。
+- 驗證：
+  - `npx vitest run tests/contacts-empty-state.test.ts tests/inbox-mobile-pane-disabled.test.ts`: passed
+  - `npx playwright test tests/e2e/empty-workspace-activation.spec.ts --workers=1`: passed
+  - `npm run e2e:admin:ensure`: passed，重新建立本機 E2E admin fixture
+  - `npx playwright test tests/e2e/contacts-auth.spec.ts tests/e2e/inbox-auth.spec.ts --workers=1`: passed
+  - `npm run lint`: passed
+  - `npm run build -- --webpack`: passed
+  - `npm test`: passed
+- 安全：
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未輸出任何 secret

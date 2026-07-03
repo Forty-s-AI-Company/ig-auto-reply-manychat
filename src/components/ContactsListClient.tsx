@@ -111,6 +111,12 @@ export function ContactsListClient({
         ? "請先選擇要套用的標籤。"
         : "";
   const batchActionDisabledReason = isPending ? "正在處理批次標籤操作，請稍候。" : batchTagDisabledReason;
+  const createSegmentDisabledReason =
+    filteredContactCount === 0
+      ? hasActiveFilters
+        ? "目前篩選條件沒有任何聯絡人，請先清除或調整條件後再建立分眾。"
+        : "目前還沒有聯絡人，請先連接 Instagram 或匯入資料後再建立分眾。"
+      : "";
 
   useEffect(() => {
     queueMicrotask(() => setIsHydrated(true));
@@ -327,16 +333,26 @@ export function ContactsListClient({
             <button
               type="button"
               onClick={() => {
+                if (createSegmentDisabledReason) return;
                 setSegmentName(activeTag ? `${activeTag.name} 分眾` : q ? `${q} 搜尋分眾` : "Contacts 篩選分眾");
                 setSegmentDescription("由聯絡人目前篩選條件建立。");
                 setIsSegmentDialogOpen(true);
               }}
+              disabled={Boolean(createSegmentDisabledReason)}
+              aria-disabled={Boolean(createSegmentDisabledReason)}
+              aria-describedby={createSegmentDisabledReason ? "contacts-create-segment-disabled-reason" : undefined}
+              title={createSegmentDisabledReason || undefined}
               data-testid="contacts-create-segment-button"
-              className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:w-auto"
+              className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-[#e4e7ec] disabled:bg-[#f8fafc] disabled:text-[#98a2b3] sm:w-auto"
             >
               <Users className="h-4 w-4" aria-hidden="true" />
               建立分眾
             </button>
+            {createSegmentDisabledReason ? (
+              <p id="contacts-create-segment-disabled-reason" data-testid="contacts-create-segment-disabled-reason" className="w-full text-xs leading-5 text-[#b54708]">
+                {createSegmentDisabledReason}
+              </p>
+            ) : null}
 
             {isFilterOpen ? (
               <form

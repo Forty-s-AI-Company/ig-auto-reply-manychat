@@ -1829,3 +1829,9 @@ Readiness implication:
 
 - Readiness update：新使用者進入 Contacts 空狀態時，mobile header actions 不再依賴單行擠壓；篩選、標籤與分眾入口保留清楚 focus state。
 - Remaining risk：仍需逐頁掃描 Dashboard / Inbox / Automations 在真實手機 viewport 下的 CTA 密度與 disabled UX。
+
+## 2026-07-03 - Contacts / Inbox first-run disabled UX cleanup
+
+- Readiness update：Contacts 在沒有可用聯絡人時不再允許建立 0 人分眾，Inbox 手機版未選對話時也會說明為何「訊息內容 / 聯絡人」pane 暫不可用。
+- Result：新使用者第一次進入 Contacts / Inbox 時，比較不會把空資料或未選取狀態誤認成產品壞掉。
+- Remaining risk：仍需繼續掃描 Dashboard、Automations、Analytics 在 mobile 與空資料狀態下的 CTA 密度與下一步提示。

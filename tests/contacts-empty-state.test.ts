@@ -76,4 +76,14 @@ describe("contacts empty state", () => {
     expect(source).toContain('aria-describedby={`${action.testId}-reason`}');
     expect(source).toContain('id={`${action.testId}-reason`}');
   });
+
+  it("prevents creating empty segments without a clear reason", () => {
+    const source = readFileSync("src/components/ContactsListClient.tsx", "utf8");
+
+    expect(source).toContain("contacts-create-segment-disabled-reason");
+    expect(source).toContain("目前還沒有聯絡人，請先連接 Instagram 或匯入資料後再建立分眾。");
+    expect(source).toContain("目前篩選條件沒有任何聯絡人，請先清除或調整條件後再建立分眾。");
+    expect(source).toContain('aria-describedby={createSegmentDisabledReason ? "contacts-create-segment-disabled-reason" : undefined}');
+    expect(source).toContain("disabled={Boolean(createSegmentDisabledReason)}");
+  });
 });

@@ -3716,6 +3716,13 @@ Remaining:
 - 已完成：Inbox 回覆/備註 composer 在空內容時顯示明確 disabled reason、title 與 aria-describedby，不再只是灰色不可按。
 - 下一步：繼續檢查 Inbox / Dashboard / Automations 是否還有可見但不可理解的 disabled controls。
 
+## 2026-07-03 - Contacts / Inbox first-run disabled UX cleanup
+
+- 已完成：Contacts 在沒有任何可用聯絡人時，停用「建立分眾」並提示先連接 IG、匯入資料或調整篩選，避免建立 0 人分眾造成誤解。
+- 已完成：Inbox 手機版未選對話時，「訊息內容 / 聯絡人」pane 會提供 title 與 `aria-describedby`，不再只是靜默灰掉。
+- 驗證：focused Vitest、empty workspace activation smoke、Contacts / Inbox authenticated smoke 皆通過。
+- 下一步：若沒有人工阻塞，繼續檢查 Dashboard / Analytics / Automations 的 first-run CTA、mobile RWD 與 disabled UX 是否仍有可見但不可理解的控制項。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。

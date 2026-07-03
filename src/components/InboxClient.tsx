@@ -637,10 +637,22 @@ export function InboxClient({
           <MobilePaneButton active={mobilePane === "list"} onClick={() => setMobilePane("list")} testId="inbox-pane-list">
             對話清單
           </MobilePaneButton>
-          <MobilePaneButton active={mobilePane === "detail"} onClick={() => setMobilePane("detail")} disabled={!selected} testId="inbox-pane-detail">
+          <MobilePaneButton
+            active={mobilePane === "detail"}
+            onClick={() => setMobilePane("detail")}
+            disabled={!selected}
+            disabledReason={!selected ? "請先從對話清單選一則對話，才能查看訊息內容。" : undefined}
+            testId="inbox-pane-detail"
+          >
             訊息內容
           </MobilePaneButton>
-          <MobilePaneButton active={mobilePane === "contact"} onClick={() => setMobilePane("contact")} disabled={!selected} testId="inbox-pane-contact">
+          <MobilePaneButton
+            active={mobilePane === "contact"}
+            onClick={() => setMobilePane("contact")}
+            disabled={!selected}
+            disabledReason={!selected ? "請先從對話清單選一則對話，才能查看聯絡人摘要。" : undefined}
+            testId="inbox-pane-contact"
+          >
             聯絡人
           </MobilePaneButton>
         </div>
@@ -1414,29 +1426,42 @@ function MobilePaneButton({
   children,
   active = false,
   disabled = false,
+  disabledReason,
   testId,
   onClick,
 }: {
   children: ReactNode;
   active?: boolean;
   disabled?: boolean;
+  disabledReason?: string;
   testId?: string;
   onClick?: () => void;
 }) {
+  const disabledReasonId = disabled && disabledReason && testId ? `${testId}-disabled-reason` : undefined;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      data-testid={testId}
-      className={`rounded-md border px-3 py-2 text-xs ${
-        active
-          ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
-          : "border-[#d7dbe0] bg-white text-[#344054]"
-      } disabled:cursor-not-allowed disabled:border-[#e4e7ec] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]`}
-    >
-      {children}
-    </button>
+    <span className="min-w-0">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={disabled}
+        aria-describedby={disabledReasonId}
+        title={disabledReason}
+        data-testid={testId}
+        className={`w-full rounded-md border px-3 py-2 text-xs ${
+          active
+            ? "border-[#0057b8] bg-[#eef6ff] text-[#0057b8]"
+            : "border-[#d7dbe0] bg-white text-[#344054]"
+        } disabled:cursor-not-allowed disabled:border-[#e4e7ec] disabled:bg-[#f8fafc] disabled:text-[#98a2b3]`}
+      >
+        {children}
+      </button>
+      {disabledReasonId ? (
+        <span id={disabledReasonId} data-testid={disabledReasonId} className="sr-only">
+          {disabledReason}
+        </span>
+      ) : null}
+    </span>
   );
 }
 
