@@ -54,6 +54,9 @@ describe("referral and affiliate MVP UX guards", () => {
     expect(source).toContain('data-testid="affiliate-open-referrals"');
     expect(source).toContain('data-testid="affiliate-open-wallet"');
     expect(source).toContain('data-testid="affiliate-open-billing"');
+    expect(source).toContain('aria-describedby="affiliate-apply-disabled-reason"');
+    expect(source).toContain('id="affiliate-apply-disabled-reason"');
+    expect(source).toContain("title={applyHelp}");
     expect(source).toContain("focus-visible:ring-2 focus-visible:ring-[var(--primary)]");
     expect(source).not.toContain("現金分潤後續開放");
     expect(source).not.toContain("現金提領後續開放");

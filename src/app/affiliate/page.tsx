@@ -125,11 +125,15 @@ export default async function AffiliatePage() {
             <button
               type="submit"
               disabled={applyDisabled}
+              aria-describedby="affiliate-apply-disabled-reason"
+              title={applyHelp}
               className="inline-flex h-10 items-center rounded-md bg-[var(--primary)] px-4 text-sm font-semibold text-[#063a3d] hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[var(--ip-surface-muted)] disabled:text-[var(--text-muted)]"
             >
               {applyLabel}
             </button>
-            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{applyHelp}</p>
+            <p id="affiliate-apply-disabled-reason" className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+              {applyHelp}
+            </p>
           </form>
         </section>
 

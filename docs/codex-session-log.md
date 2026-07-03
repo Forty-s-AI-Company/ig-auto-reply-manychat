@@ -10451,3 +10451,19 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Affiliate controlled-apply disabled UX
+
+- 目標：接續 Billing / Referrals / Affiliate 產品收尾，讓受控聯盟申請按鈕的 disabled reason 不只靠旁邊文字呈現。
+- 產品修補：
+  - `AffiliatePage` 的受控聯盟申請按鈕補 `aria-describedby` 與 `title`，明確連到「正式主線目前以推薦折抵為主、現金型合作後續受控開放」說明。
+  - 維持推薦折抵制度 v1、不提現、受控聯盟暫不開放與既有 affiliate service / payout service 邏輯不變。
+- 測試：
+  - `tests/referral-affiliate-mvp-ui.test.ts` 補 disabled reason linkage guard。
+- 安全：
+  - 純 UI accessibility / wording linkage 修補，未改 affiliate API、commission、payout、billing、PayUNI 或 schema
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

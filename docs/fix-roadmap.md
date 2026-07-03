@@ -4275,6 +4275,12 @@ Remaining:
 - 已完成：維持既有草稿建立、預覽、排程、刪除確認與 disabled reason，不改廣播 API 或 worker。
 - 下一步：若沒有人工阻塞，繼續掃 Billing / Wallet / Admin financial surfaces 的 action feedback，或回到 activation route mobile smoke。
 
+## 2026-07-03 - Affiliate controlled-apply disabled UX
+
+- 已完成：受控聯盟申請按鈕補 `aria-describedby` 與 `title`，讓「目前以推薦折抵為主，現金型合作後續受控開放」不只是旁邊文字。
+- 已完成：維持推薦折抵制度 v1 與受控聯盟 gate，不開放現金提領、不改 payout / commission 邏輯。
+- 下一步：若沒有人工阻塞，繼續掃 Billing checkout / Wallet / Referrals mobile smoke，或切回 Channels / Inbox reviewer-safe UX。
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:
