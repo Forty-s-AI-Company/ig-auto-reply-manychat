@@ -99,4 +99,15 @@ describe("contacts empty state", () => {
     expect(source).toContain("取消選取");
     expect(source).toContain("rounded-sm font-semibold text-[#111827]");
   });
+
+  it("keeps the contact tag creation dialog accessible and keyboard-visible", () => {
+    const source = readFileSync("src/components/ContactTagCreateButton.tsx", "utf8");
+
+    expect(source).toContain('role="dialog"');
+    expect(source).toContain('aria-modal="true"');
+    expect(source).toContain('aria-label="選擇標籤顏色"');
+    expect(source).toContain('role="alert"');
+    expect(source).toContain("focus-visible:ring-[#006fe6]");
+    expect(source).toContain("使用顏色");
+  });
 });

@@ -133,7 +133,7 @@ export function ContactTagCreateButton({
                     type="color"
                     value={color}
                     onChange={(event) => setColor(event.target.value)}
-                    className="h-10 w-12 cursor-pointer rounded-md border border-[#d7dbe0] bg-white p-1"
+                    className="h-10 w-12 cursor-pointer rounded-md border border-[#d7dbe0] bg-white p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                     aria-label="選擇標籤顏色"
                   />
                   <div className="flex flex-wrap gap-2">
@@ -143,7 +143,7 @@ export function ContactTagCreateButton({
                         type="button"
                         onClick={() => setColor(preset)}
                         aria-label={`使用顏色 ${preset}`}
-                        className="h-7 w-7 rounded-full border-2"
+                        className="h-7 w-7 rounded-full border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
                         style={{
                           backgroundColor: preset,
                           borderColor: color === preset ? "#111827" : "transparent",
@@ -154,21 +154,25 @@ export function ContactTagCreateButton({
                 </div>
               </div>
 
-              {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
+              {error ? (
+                <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+                  {error}
+                </p>
+              ) : null}
 
               <div className="flex justify-end gap-2 pt-1">
                 <button
                   type="button"
                   onClick={closeDialog}
                   disabled={isSaving || isPending}
-                  className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="h-9 rounded-md border border-[#d7dbe0] bg-white px-3 text-sm text-[#344054] hover:bg-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   取消
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving || isPending}
-                  className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="h-9 rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isSaving || isPending ? "儲存中" : "建立標籤"}
                 </button>

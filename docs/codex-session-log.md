@@ -9694,3 +9694,20 @@ Launch impact:
   - 未送 Meta App Review
   - 未切 PayUNI production
   - 未輸出任何 secret
+
+## 2026-07-03 - Contact tag create dialog accessibility polish
+
+- 目標：回到 Contacts 標籤 `+` 的實際互動品質，補齊新增標籤彈窗的鍵盤與錯誤提示細節。
+- 產品修補：
+  - 色彩選擇器與預設色票補 keyboard-visible focus treatment。
+  - 錯誤訊息補 `role="alert"`，讓空名稱 / API 失敗不只是靜態文字。
+  - 取消與建立標籤按鈕補 focus ring，避免彈窗在鍵盤操作時像半成品。
+- 測試：
+  - `tests/contacts-empty-state.test.ts` 補 ContactTagCreateButton dialog / alert / focus guard。
+- 安全：
+  - 未改 tags API、workspace scope、資料模型、OAuth、Webhook 或付款
+  - 未碰 production DB
+  - 未部署 Production
+  - 未送 Meta App Review
+  - 未切 PayUNI production
+  - 未輸出任何 secret

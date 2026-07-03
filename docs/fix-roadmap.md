@@ -3850,6 +3850,12 @@ Remaining:
 - 已完成：Dashboard feature-gated `affiliate` label 改為「推薦折抵」，與非現金推薦制度 v1 對齊。
 - 下一步：若沒有人工阻塞，繼續掃 Dashboard / Billing / Referrals 之間的文案一致性與 mobile smoke。
 
+## 2026-07-03 - Contact tag create dialog accessibility polish
+
+- 已完成：Contacts / Inbox 共用的新增標籤彈窗補齊色彩選擇、色票、取消與建立按鈕的 keyboard-visible focus treatment。
+- 已完成：新增標籤錯誤訊息補 `role="alert"`，避免失敗時只靠靜態文字。
+- 下一步：若沒有人工阻塞，繼續掃 Contacts 詳情頁 / Inbox contact side panel 的 tag 與 custom field mobile smoke。
+
 ## 2026-07-03 - Reviewer-safe local rehearsal helper
 
 - 已完成：新增 `npm run e2e:reviewer:ensure`，只針對 `TEST_DATABASE_URL` 建立 reviewer-safe 本機演練資料，包含獨立 workspace、contact、conversation 與 automation draft。
