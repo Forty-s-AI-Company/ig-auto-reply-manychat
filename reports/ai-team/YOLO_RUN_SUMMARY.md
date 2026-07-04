@@ -1,17 +1,17 @@
 # YOLO Run Summary
 
-- Generated: 2026-07-04 09:38:23
+- Generated: 2026-07-04 10:52:26
 - Target: `sale-ready`
 - Environments: `local, staging`
-- Max rounds requested: `30`
-- Max hours requested: `12.0`
-- Allow large diffs: `True`
-- Allow refactor: `True`
-- Allow package upgrades: `True`
-- Allow staging DB migrations: `True`
+- Max rounds requested: `1`
+- Max hours requested: `1.0`
+- Allow large diffs: `False`
+- Allow refactor: `False`
+- Allow package upgrades: `False`
+- Allow staging DB migrations: `False`
 - Auto commit: `True`
-- Auto push branch: `True`
-- Stop when beta ready: `True`
+- Auto push branch: `False`
+- Stop when beta ready: `False`
 - Write final report: `True`
 - Docs check exit: `0`
 - Inventory exit: `0`
