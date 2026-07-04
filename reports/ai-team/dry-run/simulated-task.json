@@ -1,0 +1,17 @@
+{
+  "id": "dry-run-sale-ready-001",
+  "target": "sale-ready",
+  "max_rounds": 1,
+  "mode": "dry-run",
+  "scope": [
+    "Read canonical docs",
+    "Simulate release task selection",
+    "Do not modify production source code",
+    "Do not run Codex product fixes"
+  ],
+  "suggested_local_checks": [
+    "npm run lint",
+    "npm run build",
+    "npm test"
+  ]
+}

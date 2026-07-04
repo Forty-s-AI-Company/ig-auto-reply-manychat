@@ -4495,6 +4495,29 @@ Remaining:
 - [ ] Use `scripts/ai_release_autopilot.py` for future local / staging release loops; do not resurrect old Node AI_TEAM runner state.
 - [ ] Production deploy, production DB mutation, Meta App Review submission, and PayUNI production switch remain explicit human gates.
 
+# Latest - 2026-07-04 AI_TEAM verification fix mode
+
+Current status:
+
+- [x] Antigravity verification FAIL items were scoped and fixed without entering product work.
+- [x] `scripts/ai_release_autopilot.py --doctor` works without requiring `--mode`.
+- [x] `scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1` works without requiring `--mode`.
+- [x] Legacy `--profile dry-run` remains compatible.
+- [x] Missing mode now prints help instead of traceback.
+- [x] Active `videos/` residual `AGENTS.md` / `CLAUDE.md` copies were removed from active tree and archived under `docs/archive/ai-legacy-2026-07-04/videos/`.
+- [x] Verification report written to `reports/ai-team/AI_TEAM_VERIFICATION_FIX_REPORT.md`.
+
+Validation:
+
+- [x] `python scripts/ai_cli_probe.py`
+- [x] `python scripts/ai_release_autopilot.py --doctor`
+- [x] `python scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1`
+
+Remaining:
+
+- [ ] Hand this fix back to Antigravity for recheck.
+- [ ] Keep `YOLO_RELEASE_READY=FAIL` until Antigravity independently verifies the fix.
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

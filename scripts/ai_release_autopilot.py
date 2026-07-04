@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -195,6 +196,102 @@ def docs_check() -> int:
     write_report("docs-check.md", "\n".join(lines) + "\n")
     print(f"DOCS_CHECK_STATUS={decision}")
     return 0 if decision == "PASS" else 1
+
+
+def doctor() -> int:
+    config = load_config()
+    scripts = load_json(ROOT / "package.json", {}).get("scripts", {})
+    report_path = REPORTS / "doctor-report.md"
+    report_write_ok = True
+    try:
+        REPORTS.mkdir(parents=True, exist_ok=True)
+        probe_file = REPORTS / ".doctor-write-test"
+        probe_file.write_text("ok", encoding="utf-8")
+        probe_file.unlink(missing_ok=True)
+    except Exception:
+        report_write_ok = False
+
+    antigravity_ok = tool_found("antigravity") or tool_found("agy")
+    antigravity_value = shutil.which("antigravity") or shutil.which("agy") or "NOT_FOUND"
+    checks = [
+        ("Python version", sys.version.split()[0], sys.version_info >= (3, 11)),
+        ("OS", platform.platform(), True),
+        ("Codex CLI", shutil.which("codex") or "NOT_FOUND", tool_found("codex")),
+        ("Antigravity / agy CLI", antigravity_value, antigravity_ok),
+        ("Git branch", current_branch() or "UNKNOWN", bool(current_branch())),
+        ("scripts/ai_cli_probe.py", "exists" if (ROOT / "scripts" / "ai_cli_probe.py").exists() else "missing", (ROOT / "scripts" / "ai_cli_probe.py").exists()),
+        ("reports/ai-team writable", str(report_write_ok), report_write_ok),
+        ("package manager", "npm" if (ROOT / "package-lock.json").exists() else "UNKNOWN", (ROOT / "package-lock.json").exists()),
+        ("npm run lint", scripts.get("lint", "MISSING"), bool(scripts.get("lint"))),
+        ("npm run build", scripts.get("build", "MISSING"), bool(scripts.get("build"))),
+        ("npm test", scripts.get("test", "MISSING"), bool(scripts.get("test"))),
+    ]
+    for doc in CANONICAL_DOCS:
+        checks.append((doc.relative_to(ROOT).as_posix(), "exists" if doc.exists() else "missing", doc.exists()))
+
+    checks.append(("Antigravity compatible entry", "ok" if antigravity_ok else "missing", antigravity_ok))
+
+    lines = ["# AI Team Doctor Report\n", f"- Generated: {now()}", ""]
+    lines.append("| Check | Value | Status |")
+    lines.append("|---|---|---:|")
+    for name, value, ok in checks:
+        lines.append(f"| {name} | `{value}` | {'PASS' if ok else 'FAIL'} |")
+    doctor_pass = all(ok for _, _, ok in checks)
+    lines.append("")
+    lines.append(f"DOCTOR_READY={'PASS' if doctor_pass else 'FAIL'}")
+    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(report_path)
+    print(f"DOCTOR_READY={'PASS' if doctor_pass else 'FAIL'}")
+    return 0 if doctor_pass else 1
+
+
+def dry_run(target: str, max_rounds: int) -> int:
+    dry_run_dir = REPORTS / "dry-run"
+    dry_run_dir.mkdir(parents=True, exist_ok=True)
+    scripts = load_json(ROOT / "package.json", {}).get("scripts", {})
+    missing_docs = [doc.relative_to(ROOT).as_posix() for doc in CANONICAL_DOCS if not doc.exists()]
+    task = {
+        "id": "dry-run-sale-ready-001",
+        "target": target,
+        "max_rounds": max_rounds,
+        "mode": "dry-run",
+        "scope": [
+            "Read canonical docs",
+            "Simulate release task selection",
+            "Do not modify production source code",
+            "Do not run Codex product fixes",
+        ],
+        "suggested_local_checks": [
+            "npm run lint" if scripts.get("lint") else "MISSING lint",
+            "npm run build" if scripts.get("build") else "MISSING build",
+            "npm test" if scripts.get("test") else "MISSING test",
+        ],
+    }
+    (dry_run_dir / "simulated-task.json").write_text(json.dumps(task, indent=2), encoding="utf-8")
+
+    lines = [
+        "# AI Team Dry Run Report",
+        "",
+        f"- Generated: {now()}",
+        f"- Target: `{target}`",
+        f"- Max rounds: `{max_rounds}`",
+        "- Production source modified: `false`",
+        "- Codex product fixes executed: `false`",
+        "- Real product changes executed: `false`",
+        f"- Missing canonical docs: `{missing_docs}`",
+        "",
+        "## Simulated Task",
+        "",
+        "- Review current release state from canonical docs.",
+        "- Select the smallest safe P0/P1 or release-readiness task.",
+        "- Require local checks before any real delivery.",
+        "",
+        "DRY_RUN_READY=PASS" if not missing_docs else "DRY_RUN_READY=FAIL",
+    ]
+    (dry_run_dir / "dry-run-report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(dry_run_dir / "dry-run-report.md")
+    print("DRY_RUN_READY=PASS" if not missing_docs else "DRY_RUN_READY=FAIL")
+    return 0 if not missing_docs else 1
 
 
 def fail(name: str, message: str) -> int:
@@ -646,8 +743,10 @@ def resume() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", required=True, choices=["status", "docs-check", "inventory", "run-once", "run", "qa-only", "resume", "yolo"])
-    parser.add_argument("--profile", default="dry-run")
+    parser.add_argument("--doctor", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--mode", choices=["status", "docs-check", "inventory", "run-once", "run", "qa-only", "resume", "yolo"])
+    parser.add_argument("--profile", default=None)
     parser.add_argument("--max-rounds", type=int, default=1)
     parser.add_argument("--target", default="sale-ready")
     parser.add_argument("--env", action="append", choices=["local", "staging"], default=[])
@@ -661,6 +760,17 @@ def main() -> int:
     parser.add_argument("--stop-when-beta-ready", action="store_true")
     parser.add_argument("--write-final-report", action="store_true")
     args = parser.parse_args()
+
+    if args.doctor:
+        return doctor()
+    if args.dry_run or args.profile == "dry-run":
+        return dry_run(args.target, args.max_rounds)
+    if not args.mode:
+        parser.print_help(sys.stderr)
+        return 2
+
+    if args.profile is None:
+        args.profile = "dry-run"
 
     if args.mode == "status":
         return status()

@@ -10929,3 +10929,23 @@ Launch impact:
   - 未送 Meta App Review。
   - 未切 PayUNI production。
   - 未輸出任何 secret。
+
+## 2026-07-04 - AI_TEAM verification fix mode
+
+- 目標：只修復 Antigravity 驗收報告列出的 AI_TEAM verification FAIL 項目，不進產品 bug、不啟動長時間 YOLO、不新增第二套 autopilot。
+- 修復：
+  - `scripts/ai_release_autopilot.py` 新增 `--doctor` shortcut，不再要求 `--mode`。
+  - `scripts/ai_release_autopilot.py` 新增 standalone `--dry-run` shortcut。
+  - 保留 `--profile dry-run` 相容路徑，等同 dry-run。
+  - 無 `--mode` / shortcut 時改成顯示 help，不再 traceback 崩潰。
+  - doctor 檢查接受 `antigravity` 或 `agy` 任一 CLI 入口。
+  - `videos/` 目錄內殘留的 `AGENTS.md` / `CLAUDE.md` 已移出 active tree，封存到 `docs/archive/ai-legacy-2026-07-04/videos/` 並標記 deprecated。
+- 驗證：
+  - `python -m py_compile scripts/ai_release_autopilot.py` 通過。
+  - `python scripts/ai_cli_probe.py` 通過，exit code 0。
+  - `python scripts/ai_release_autopilot.py --doctor` 通過，exit code 0，產出 `reports/ai-team/doctor-report.md`。
+  - `python scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1` 通過，exit code 0，產出 `reports/ai-team/dry-run/dry-run-report.md`。
+  - `python scripts/ai_release_autopilot.py --profile dry-run --target sale-ready --max-rounds 1` 通過，保留舊用法相容性。
+- 報告：新增 `reports/ai-team/AI_TEAM_VERIFICATION_FIX_REPORT.md`。
+- 安全：未修產品功能、未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret。
+- 狀態：`AI_TEAM_FIX_STATUS=PASS`、`DOCTOR_READY=PASS`、`DRY_RUN_READY=PASS`、`READY_FOR_ANTIGRAVITY_RECHECK=PASS`、`YOLO_RELEASE_READY=FAIL`。
