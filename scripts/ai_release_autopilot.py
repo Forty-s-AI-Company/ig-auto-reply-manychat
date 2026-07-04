@@ -15,6 +15,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -90,17 +91,26 @@ def run_shell(command: str, timeout: int = 180) -> dict:
     safe, reason = command_safe(command)
     if not safe:
         return {"command": command, "exit_code": 99, "stdout": "", "stderr": reason, "skipped": True}
-    completed = subprocess.run(
-        command,
-        cwd=ROOT,
-        shell=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        capture_output=True,
-        timeout=timeout,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT,
+            shell=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=timeout,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return {
+            "command": command,
+            "exit_code": 124,
+            "stdout": (exc.stdout or "")[-6000:] if isinstance(exc.stdout, str) else "",
+            "stderr": f"Timeout after {timeout}s",
+            "skipped": False,
+        }
     return {
         "command": command,
         "exit_code": completed.returncode,
@@ -108,6 +118,27 @@ def run_shell(command: str, timeout: int = 180) -> dict:
         "stderr": (completed.stderr or "")[-6000:],
         "skipped": False,
     }
+
+
+def current_branch() -> str:
+    result = run_shell("git branch --show-current", timeout=30)
+    return (result.get("stdout") or "").strip()
+
+
+def render_command_results(title: str, results: list[dict]) -> str:
+    lines = [f"# {title}\n"]
+    for result in results:
+        lines.append(f"## `{result['command']}`")
+        lines.append(f"- exit: `{result['exit_code']}`")
+        if result.get("skipped"):
+            lines.append("- skipped: `true`")
+        if result.get("stdout"):
+            lines.append("### stdout")
+            lines.append("```text\n" + result["stdout"][-3000:] + "\n```")
+        if result.get("stderr"):
+            lines.append("### stderr")
+            lines.append("```text\n" + result["stderr"][-3000:] + "\n```")
+    return "\n".join(lines) + "\n"
 
 
 def next_round_id() -> int:
@@ -272,6 +303,328 @@ def qa_only(profile: str) -> int:
     return 0 if passed else 1
 
 
+def tool_found(name: str) -> bool:
+    return shutil.which(name) is not None
+
+
+def yolo_codex_prompt(target: str, envs: list[str]) -> str:
+    return f"""You are Codex Lead for InboxPilot release stabilization.
+
+Read only the active canonical files:
+- AGENTS.md
+- docs/AI_SOURCE_OF_TRUTH.md
+- docs/AI_RELEASE_CONTROL.md
+- docs/AI_TEAM_AUTOPILOT.md
+- docs/product-readiness-review.md
+- docs/project-launch-checklist.md
+- docs/fix-roadmap.md
+
+Do not use archived AI_TEAM runtime as source of truth.
+Target: {target}
+Environments: {", ".join(envs)}
+
+Return:
+1. Top remaining P0/P1 release blockers.
+2. Whether the product can be considered sale-ready beta from current evidence.
+3. One highest-leverage next task.
+4. Human gates that must not be automated.
+
+Do not output secrets. Do not submit Meta App Review. Do not deploy Production.
+"""
+
+
+def yolo_agy_prompt(target: str, envs: list[str]) -> str:
+    return f"""You are Antigravity QA for InboxPilot.
+
+Perform a release-readiness QA review from repository context and available browser/staging evidence.
+Target: {target}
+Environments: {", ".join(envs)}
+
+Focus on:
+- Dashboard / onboarding
+- Channels / Instagram connect
+- Inbox
+- Contacts
+- Automations
+- Analytics
+- Billing / PayUNI Sandbox
+- Referrals / wallet credit UX
+- Mobile RWD and visible-but-unusable controls
+
+Return findings with severity, reproduction hint, expected, actual, and whether it blocks beta sale-readiness.
+Do not modify source code. Do not output secrets. Do not submit Meta App Review.
+"""
+
+
+def run_external_ai_review(target: str, envs: list[str], timeout: int = 600) -> list[dict]:
+    results: list[dict] = []
+    codex_report = REPORTS / "yolo-codex-lead.md"
+    agy_report = REPORTS / "yolo-antigravity-qa.md"
+
+    if tool_found("codex"):
+        prompt = yolo_codex_prompt(target, envs).replace('"', '\\"')
+        command = (
+            f'codex exec --cd "{ROOT}" --sandbox read-only '
+            f'--output-last-message "{codex_report}" "{prompt}"'
+        )
+        results.append(run_shell(command, timeout=timeout))
+    else:
+        results.append({"command": "codex exec", "exit_code": 127, "stdout": "", "stderr": "codex not found", "skipped": True})
+
+    if tool_found("agy"):
+        prompt = yolo_agy_prompt(target, envs).replace('"', '\\"')
+        command = (
+            f'agy --print --print-timeout 10m --dangerously-skip-permissions '
+            f'--add-dir "{ROOT}" "{prompt}"'
+        )
+        result = run_shell(command, timeout=timeout)
+        if result.get("stdout"):
+            agy_report.write_text(result["stdout"], encoding="utf-8")
+        results.append(result)
+    else:
+        results.append({"command": "agy --print", "exit_code": 127, "stdout": "", "stderr": "agy not found", "skipped": True})
+
+    write_report("yolo-external-ai.md", render_command_results("YOLO External AI Review", results))
+    return results
+
+
+def write_sale_ready_reports(
+    *,
+    target: str,
+    envs: list[str],
+    validation_results: list[dict],
+    external_results: list[dict],
+    status_value: str,
+    started: float,
+) -> None:
+    validation_passed = all(item.get("exit_code") == 0 for item in validation_results)
+    codex_ok = any("codex" in item.get("command", "") and item.get("exit_code") == 0 for item in external_results)
+    agy_ok = any("agy" in item.get("command", "") and item.get("exit_code") == 0 for item in external_results)
+    elapsed_minutes = round((time.monotonic() - started) / 60, 2)
+
+    final_lines = [
+        "# Final Sale Ready Report",
+        "",
+        f"- Generated: {now()}",
+        f"- Target: `{target}`",
+        f"- Environments requested: `{', '.join(envs)}`",
+        f"- Elapsed minutes: `{elapsed_minutes}`",
+        f"- Local validation passed: `{validation_passed}`",
+        f"- Codex CLI review completed: `{codex_ok}`",
+        f"- Antigravity / agy QA completed: `{agy_ok}`",
+        f"- AI_TEAM_YOLO_STATUS={status_value}",
+        "",
+        "## Sale-Ready Decision",
+        "",
+    ]
+    if status_value == "BETA_READY":
+        final_lines.append("Current evidence indicates P0/P1 release blockers are clear for a human beta acceptance pass.")
+    elif status_value == "CONTINUE":
+        final_lines.append("The runner completed safely, but sale-ready beta still needs additional product / staging evidence before human acceptance.")
+    else:
+        final_lines.append("The runner stopped with a blocker. Review `reports/ai-team/YOLO_RUN_SUMMARY.md` and related command reports.")
+    final_lines.extend(
+        [
+            "",
+            "## Reports",
+            "",
+            "- `reports/ai-team/yolo-cli-probe.md`",
+            "- `reports/ai-team/yolo-external-ai.md`",
+            "- `reports/ai-team/yolo-validation.md`",
+            "- `reports/ai-team/YOLO_RUN_SUMMARY.md`",
+        ]
+    )
+    write_report("FINAL_SALE_READY_REPORT.md", "\n".join(final_lines) + "\n")
+
+    checklist = """# Human Acceptance Checklist
+
+## Must Confirm Before Public Sale
+
+- [ ] Production deploy is explicitly approved by human owner.
+- [ ] Production DB backup / migration / mutation plan is explicitly approved if needed.
+- [ ] Meta App Review is submitted manually by the owner after final recording review.
+- [ ] PayUNI remains Sandbox until production go-live checklist is approved.
+- [ ] Reviewer-safe Instagram asset lane is confirmed.
+- [ ] Landing / pricing / signup / login / dashboard smoke is accepted.
+- [ ] Inbox / Contacts / Channels / Automations / Analytics core flows are accepted.
+- [ ] Billing / referrals / wallet credit wording is accepted.
+- [ ] Mobile RWD smoke is accepted.
+- [ ] No secrets are present in committed reports or logs.
+"""
+    write_report("HUMAN_ACCEPTANCE_CHECKLIST.md", checklist)
+
+
+def yolo_git_delivery(auto_commit: bool, auto_push_branch: bool) -> list[dict]:
+    results: list[dict] = []
+    branch = current_branch()
+    unsafe = branch in {"main", "master", ""}
+    if unsafe:
+        results.append(
+            {
+                "command": "git delivery",
+                "exit_code": 98,
+                "stdout": "",
+                "stderr": f"Unsafe branch `{branch}`. Refusing auto commit / push.",
+                "skipped": True,
+            }
+        )
+        write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
+        return results
+
+    status = run_shell("git status --porcelain", timeout=30)
+    results.append(status)
+    has_changes = bool((status.get("stdout") or "").strip())
+    if not has_changes:
+        results.append(
+            {
+                "command": "git commit",
+                "exit_code": 0,
+                "stdout": "No changes to commit.",
+                "stderr": "",
+                "skipped": True,
+            }
+        )
+        write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
+        return results
+
+    if not auto_commit:
+        results.append(
+            {
+                "command": "git commit",
+                "exit_code": 0,
+                "stdout": "Changes detected, but --auto-commit was not enabled.",
+                "stderr": "",
+                "skipped": True,
+            }
+        )
+        write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
+        return results
+
+    results.append(run_shell("git add -A", timeout=120))
+    commit_result = run_shell('git commit -m "release: run ai team yolo autopilot"', timeout=180)
+    results.append(commit_result)
+    write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
+    if commit_result.get("exit_code") == 0:
+        results.append(run_shell("git add reports/ai-team/yolo-git-delivery.md", timeout=60))
+        results.append(run_shell("git commit --amend --no-edit", timeout=180))
+    if auto_push_branch:
+        results.append(run_shell(f"git push -u origin {branch}", timeout=300))
+    else:
+        results.append(
+            {
+                "command": "git push",
+                "exit_code": 0,
+                "stdout": "Push skipped because --auto-push-branch was not enabled.",
+                "stderr": "",
+                "skipped": True,
+            }
+        )
+    return results
+
+
+def yolo_mode(args: argparse.Namespace) -> int:
+    started = time.monotonic()
+    envs = args.env or ["local"]
+    target = args.target or "sale-ready"
+
+    if not all(doc.exists() for doc in CANONICAL_DOCS):
+        return fail("yolo", "Canonical AI docs are missing. Run docs minimization first.")
+    if not (ROOT / "scripts" / "ai_cli_probe.py").exists():
+        return fail("yolo", "scripts/ai_cli_probe.py is missing.")
+
+    probe_result = run_shell("python scripts/ai_cli_probe.py", timeout=120)
+    write_report("yolo-cli-probe.md", render_command_results("YOLO CLI Probe", [probe_result]))
+
+    docs_result = run_shell("python scripts/ai_release_autopilot.py --mode docs-check", timeout=60)
+    inventory_result = run_shell("python scripts/ai_release_autopilot.py --mode inventory", timeout=60)
+    external_results = run_external_ai_review(target, envs, timeout=min(int(args.max_hours * 3600), 900))
+
+    profile = "staging-aggressive" if "staging" in envs else "local-aggressive"
+    validation_results: list[dict] = []
+    validation_results.append(run_shell("npm run lint", timeout=300))
+    validation_results.append(run_shell("npm run build", timeout=900))
+    validation_results.append(run_shell("npm test", timeout=900))
+    if "staging" in envs:
+        validation_results.append(run_shell("npm run test:e2e:reviewer", timeout=900))
+    write_report("yolo-validation.md", render_command_results("YOLO Validation", validation_results))
+
+    validation_passed = all(item.get("exit_code") == 0 for item in validation_results)
+    external_hard_fail = any(item.get("exit_code") not in (0, 127) and not item.get("skipped") for item in external_results)
+    if not validation_passed or external_hard_fail:
+        status_value = "BLOCKED"
+        exit_code = 1
+    elif "staging" in envs:
+        status_value = "CONTINUE"
+        exit_code = 0
+    else:
+        status_value = "CONTINUE"
+        exit_code = 0
+
+    summary = [
+        "# YOLO Run Summary",
+        "",
+        f"- Generated: {now()}",
+        f"- Target: `{target}`",
+        f"- Environments: `{', '.join(envs)}`",
+        f"- Max rounds requested: `{args.max_rounds}`",
+        f"- Max hours requested: `{args.max_hours}`",
+        f"- Allow large diffs: `{args.allow_large_diffs}`",
+        f"- Allow refactor: `{args.allow_refactor}`",
+        f"- Allow package upgrades: `{args.allow_package_upgrades}`",
+        f"- Allow staging DB migrations: `{args.allow_staging_db_migrations}`",
+        f"- Auto commit: `{args.auto_commit}`",
+        f"- Auto push branch: `{args.auto_push_branch}`",
+        f"- Stop when beta ready: `{args.stop_when_beta_ready}`",
+        f"- Write final report: `{args.write_final_report}`",
+        f"- Docs check exit: `{docs_result['exit_code']}`",
+        f"- Inventory exit: `{inventory_result['exit_code']}`",
+        f"- Validation passed: `{validation_passed}`",
+        f"- AI_TEAM_YOLO_STATUS={status_value}",
+        "",
+        "## Safety",
+        "",
+        "- Production DB was not touched by this runner.",
+        "- Production deploy was not executed by this runner.",
+        "- Meta App Review was not submitted by this runner.",
+        "- PayUNI production switch was not executed by this runner.",
+    ]
+    write_report("YOLO_RUN_SUMMARY.md", "\n".join(summary) + "\n")
+
+    if args.write_final_report:
+        write_sale_ready_reports(
+            target=target,
+            envs=envs,
+            validation_results=validation_results,
+            external_results=external_results,
+            status_value=status_value,
+            started=started,
+        )
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    STATE_PATH.write_text(
+        json.dumps(
+            {
+                "status": status_value,
+                "mode": "yolo",
+                "target": target,
+                "env": envs,
+                "profile": profile,
+                "updated": now(),
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    delivery_results = yolo_git_delivery(args.auto_commit, args.auto_push_branch)
+    delivery_failed = any(item.get("exit_code") not in (0,) and not item.get("skipped") for item in delivery_results)
+    if delivery_failed and status_value != "BLOCKED":
+        status_value = "CONTINUE"
+
+    print(f"AI_TEAM_YOLO_STATUS={status_value}")
+    return exit_code
+
+
 def resume() -> int:
     state = load_json(STATE_PATH, {})
     profile = state.get("profile", "local-aggressive")
@@ -280,9 +633,20 @@ def resume() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", required=True, choices=["status", "docs-check", "inventory", "run-once", "run", "qa-only", "resume"])
+    parser.add_argument("--mode", required=True, choices=["status", "docs-check", "inventory", "run-once", "run", "qa-only", "resume", "yolo"])
     parser.add_argument("--profile", default="dry-run")
     parser.add_argument("--max-rounds", type=int, default=1)
+    parser.add_argument("--target", default="sale-ready")
+    parser.add_argument("--env", action="append", choices=["local", "staging"], default=[])
+    parser.add_argument("--max-hours", type=float, default=1.0)
+    parser.add_argument("--allow-large-diffs", action="store_true")
+    parser.add_argument("--allow-refactor", action="store_true")
+    parser.add_argument("--allow-package-upgrades", action="store_true")
+    parser.add_argument("--allow-staging-db-migrations", action="store_true")
+    parser.add_argument("--auto-commit", action="store_true")
+    parser.add_argument("--auto-push-branch", action="store_true")
+    parser.add_argument("--stop-when-beta-ready", action="store_true")
+    parser.add_argument("--write-final-report", action="store_true")
     args = parser.parse_args()
 
     if args.mode == "status":
@@ -299,6 +663,8 @@ def main() -> int:
         return qa_only(args.profile)
     if args.mode == "resume":
         return resume()
+    if args.mode == "yolo":
+        return yolo_mode(args)
     return 1
 
 

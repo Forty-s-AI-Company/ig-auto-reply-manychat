@@ -1,6 +1,11 @@
 {
   "status": "CONTINUE",
-  "round": 3,
-  "profile": "local-aggressive",
-  "updated": "2026-07-04 09:06:03"
+  "mode": "yolo",
+  "target": "sale-ready",
+  "env": [
+    "local",
+    "staging"
+  ],
+  "profile": "staging-aggressive",
+  "updated": "2026-07-04 09:30:14"
 }
