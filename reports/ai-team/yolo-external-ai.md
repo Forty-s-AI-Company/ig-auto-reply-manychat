@@ -4,119 +4,121 @@
 - exit: `0`
 ### stdout
 ```text
-**結論**
+**1. Top Remaining P0/P1 Release Blockers**
 
-目前沒有看到需要程式碼修改的 `PRODUCT_BLOCKER` P0/P1。  
-本機驗證已通過：`lint / build / npm test / reviewer e2e` 都是 exit `0`，所以不應再把 local validation 缺失列為 blocker。
+1. `EVIDENCE_GAP`：`npm run test:e2e:reviewer` 目前 exit `1`  
+   失敗點在 reviewer-safe rehearsal 的 `beforeEach` login：`POST /api/auth/login` timeout / browser context closed。  
+   這目前不能直接判成產品 P0/P1 bug，因為 lint/build/unit 都綠，而且錯誤比較像本機 reviewer E2E seed、測試帳號、dev server 或 Playwright context 穩定性問題。但在它重跑綠以前，不能把 local reviewer evidence 當作有效通過。
 
-但從目前 evidence 來看，狀態仍是 `CONTINUE`，還不能直接宣告 `BETA_READY_CANDIDATE` 或 sale-ready beta。主要卡在 staging / 第三方 / 人工接受證據，不是產品 bug。
+2. `EVIDENCE_GAP`：staging reviewer-safe / browser / real asset evidence 尚未完成  
+   文件與報告都指向 `STAGING_EVIDENCE_REQUIRED`。這不是產品 bug，但 sale-ready 目標包含 local + staging，所以 staging 證據還沒收齊前不能升級成 sale-ready beta。
 
-**Top P0/P1 Blockers**
+3. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification 仍未人工完成  
+   Meta permissions 仍是 `可供測試`，App Review 不可自動送出。這是外部人工 gate，不是產品 code blocker。
 
-1. `EVIDENCE_GAP`：staging reviewer-safe real asset evidence 還不完整  
-   需要 staging-safe tenant、reviewer-safe IG asset、實際 browser / webhook / connected-channel evidence。這不是本機產品壞掉，是遠端實證還不夠。
+4. `HUMAN_BLOCKER`：PayUNI production switch、production deploy、production DB / live payment smoke 都必須人工核准  
+   目前 PayUNI 仍預設 Sandbox。正式金流與 production 部署不能由 autopilot 自動完成。
 
-2. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification  
-   Meta 權限仍是 `可供測試`，App Review 尚未 approved。不能自動送審，也不能把這列成產品 bug。
+**2. Sale-Ready Beta 判定**
 
-3. `HUMAN_BLOCKER`：PayUNI production go-live  
-   目前 PayUNI 仍是 Sandbox。正式 merchant approval、production switch、低額 live smoke 都必須人工核准。
+目前不能從現有證據判定為 sale-ready beta。
 
-4. `HUMAN_BLOCKER`：Production deploy / production DB gate  
-   不可自動 production deploy，不可碰 production DB，不可跑 production migration。任何正式上線切換都需要人工 release gate。
+比較精準地說：核心 local engineering gate 已經有強證據通過，包含：
 
-**Sale-Ready Beta 判定**
+- `npm run lint` exit `0`
+- `npm run build` exit `0`
+- `npm test` exit `0`
 
-目前可以說：`LOCAL_VALIDATION_PASS`，而且本機 evidence 沒有顯示 P0/P1 產品缺陷。  
-但不能只靠目前 evidence 判定為 sale-ready beta；缺 staging 實證與人工 gates，所以 release state 應維持：
+但 `LOCAL_VALIDATION_PASS=False`，且 reviewer E2E exit `1`，再加上 staging / third-party / human gate 還沒收齊，所以目前狀態應維持：
 
 `CONTINUE`
 
-**最高槓桿下一步**
+不是 `BETA_READY_CANDIDATE`。  
+我原本也差點被 `FINAL_SALE_READY_REPORT` 的 local passed 帶走，還好你前面有先塞最新 evidence，不然這種 release 判斷很容易變成「報告很漂亮，現場很尷尬」。
 
-跑一輪短的 staging certification / QA-only pass，目標只收集 evidence，不做 production、不送審、不碰正式金流：
+**3. One Highest-Leverage Next Task**
 
-```bash
-python scripts/ai_release_autopilot.py --mode qa-only --profile staging-aggressive
-```
+先修正並重跑 `npm run test:e2e:reviewer` 的本機 reviewer-safe rehearsal。
 
-重點驗證 staging reviewer-safe tenant、connected Instagram channel、Inbox / Contacts / Automations reviewer path、console/network/browser evidence。這一步最能把「本機已過」往「可交給人類接受」推近一格。
+範圍要很窄：只查 reviewer seed、測試帳密、`TEST_DATABASE_URL`、dev server `127.0.0.1:3041`、Playwright login request timeout / context close，不要順手改產品流程。這一個綠了之後，才切 staging `qa-only --profile staging-aggressive` 收證據。
 
-**不可自動化的人類 Gate**
+**4. Human Gates Must Not Be Automated**
+
+以下都必須保留人工 gate：
 
 - Meta App Review final submit
-- Business Verification / Advanced Access approval
-- Reviewer credential handoff
-- PayUNI production switch
-- Real payment smoke
-- Production deployment
-- Production DB mutation / migration
+- Meta Business Verification / Advanced Access approval
+- Reviewer-safe credential handoff
+- Final recording / screenshot redaction approval
+- PayUNI production merchant switch
+- Real payment smoke / refund or reconciliation approval
+- Production deploy
+- Production DB migration / mutation
 - Final `BETA_READY_CANDIDATE` acceptance
 
-Diff summary：未修改檔案。  
-Validation evidence：本回合只讀 evidence；採用既有報告中的 local pass 證據。  
-Remaining risks：staging / Meta / PayUNI / production gates。  
+Diff summary：本輪沒有改檔案。  
+Validation evidence：只讀取指定 reports / canonical docs，沒有執行新的測試。  
+Remaining risks：reviewer E2E 紅燈原因尚未重新定位；staging evidence 未完成。  
 Human blockers：如上。  
 State：`CONTINUE`。
 
 ```
 ### stderr
 ```text
-要卡在 staging / 第三方 / 人工接受證據，不是產品 bug。
+3. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification 仍未人工完成  
+   Meta permissions 仍是 `可供測試`，App Review 不可自動送出。這是外部人工 gate，不是產品 code blocker。
 
-**Top P0/P1 Blockers**
+4. `HUMAN_BLOCKER`：PayUNI production switch、production deploy、production DB / live payment smoke 都必須人工核准  
+   目前 PayUNI 仍預設 Sandbox。正式金流與 production 部署不能由 autopilot 自動完成。
 
-1. `EVIDENCE_GAP`：staging reviewer-safe real asset evidence 還不完整  
-   需要 staging-safe tenant、reviewer-safe IG asset、實際 browser / webhook / connected-channel evidence。這不是本機產品壞掉，是遠端實證還不夠。
+**2. Sale-Ready Beta 判定**
 
-2. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification  
-   Meta 權限仍是 `可供測試`，App Review 尚未 approved。不能自動送審，也不能把這列成產品 bug。
+目前不能從現有證據判定為 sale-ready beta。
 
-3. `HUMAN_BLOCKER`：PayUNI production go-live  
-   目前 PayUNI 仍是 Sandbox。正式 merchant approval、production switch、低額 live smoke 都必須人工核准。
+比較精準地說：核心 local engineering gate 已經有強證據通過，包含：
 
-4. `HUMAN_BLOCKER`：Production deploy / production DB gate  
-   不可自動 production deploy，不可碰 production DB，不可跑 production migration。任何正式上線切換都需要人工 release gate。
+- `npm run lint` exit `0`
+- `npm run build` exit `0`
+- `npm test` exit `0`
 
-**Sale-Ready Beta 判定**
-
-目前可以說：`LOCAL_VALIDATION_PASS`，而且本機 evidence 沒有顯示 P0/P1 產品缺陷。  
-但不能只靠目前 evidence 判定為 sale-ready beta；缺 staging 實證與人工 gates，所以 release state 應維持：
+但 `LOCAL_VALIDATION_PASS=False`，且 reviewer E2E exit `1`，再加上 staging / third-party / human gate 還沒收齊，所以目前狀態應維持：
 
 `CONTINUE`
 
-**最高槓桿下一步**
+不是 `BETA_READY_CANDIDATE`。  
+我原本也差點被 `FINAL_SALE_READY_REPORT` 的 local passed 帶走，還好你前面有先塞最新 evidence，不然這種 release 判斷很容易變成「報告很漂亮，現場很尷尬」。
 
-跑一輪短的 staging certification / QA-only pass，目標只收集 evidence，不做 production、不送審、不碰正式金流：
+**3. One Highest-Leverage Next Task**
 
-```bash
-python scripts/ai_release_autopilot.py --mode qa-only --profile staging-aggressive
-```
+先修正並重跑 `npm run test:e2e:reviewer` 的本機 reviewer-safe rehearsal。
 
-重點驗證 staging reviewer-safe tenant、connected Instagram channel、Inbox / Contacts / Automations reviewer path、console/network/browser evidence。這一步最能把「本機已過」往「可交給人類接受」推近一格。
+範圍要很窄：只查 reviewer seed、測試帳密、`TEST_DATABASE_URL`、dev server `127.0.0.1:3041`、Playwright login request timeout / context close，不要順手改產品流程。這一個綠了之後，才切 staging `qa-only --profile staging-aggressive` 收證據。
 
-**不可自動化的人類 Gate**
+**4. Human Gates Must Not Be Automated**
+
+以下都必須保留人工 gate：
 
 - Meta App Review final submit
-- Business Verification / Advanced Access approval
-- Reviewer credential handoff
-- PayUNI production switch
-- Real payment smoke
-- Production deployment
-- Production DB mutation / migration
+- Meta Business Verification / Advanced Access approval
+- Reviewer-safe credential handoff
+- Final recording / screenshot redaction approval
+- PayUNI production merchant switch
+- Real payment smoke / refund or reconciliation approval
+- Production deploy
+- Production DB migration / mutation
 - Final `BETA_READY_CANDIDATE` acceptance
 
-Diff summary：未修改檔案。  
-Validation evidence：本回合只讀 evidence；採用既有報告中的 local pass 證據。  
-Remaining risks：staging / Meta / PayUNI / production gates。  
+Diff summary：本輪沒有改檔案。  
+Validation evidence：只讀取指定 reports / canonical docs，沒有執行新的測試。  
+Remaining risks：reviewer E2E 紅燈原因尚未重新定位；staging evidence 未完成。  
 Human blockers：如上。  
 State：`CONTINUE`。
-2026-07-04T03:15:00.503189Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: Environment variable GITHUB_PAT_TOKEN for MCP server 'github' is not set
-2026-07-04T03:15:00.596073Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: handshaking with MCP server failed: Send message error Transport [rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>] error: Auth required, when send initialize request
-2026-07-04T03:15:00.691147Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: handshaking with MCP server failed: Send message error Transport [rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>] error: Auth required, when send initialize request
-2026-07-04T03:15:00.691168Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: Environment variable ntn_b13598993816oyegRjVnXTvb1QgL9i0kwnfuOfbom96ck7 for MCP server 'notion-2' is not set
+2026-07-04T03:29:42.778006Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: handshaking with MCP server failed: Send message error Transport [rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>] error: Auth required, when send initialize request
+2026-07-04T03:29:42.983731Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: Environment variable ntn_b13598993816oyegRjVnXTvb1QgL9i0kwnfuOfbom96ck7 for MCP server 'notion-2' is not set
+2026-07-04T03:29:42.983751Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: Environment variable GITHUB_PAT_TOKEN for MCP server 'github' is not set
+2026-07-04T03:29:43.090254Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: handshaking with MCP server failed: Send message error Transport [rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>] error: Auth required, when send initialize request
 tokens used
-55,053
+72,536
 
 ```
 ## `agy --print-timeout 10m --dangerously-skip-permissions --add-dir "C:\Users\eden\Downloads\AI\ig-auto-reply-manychat" -p "You are Antigravity QA for InboxPilot.
@@ -127,11 +129,11 @@ Environments: local, staging
 
 ## Local Validation Evidence
 
-- LOCAL_VALIDATION_PASS: `True`
+- LOCAL_VALIDATION_PASS: `False`
 - `npm run lint` exit `0`
 - `npm run build` exit `0`
 - `npm test` exit `0`
-- `npm run test:e2e:reviewer` exit `0`
+- `npm run test:e2e:reviewer` exit `1`
 
 If LOCAL_VALIDATION_PASS is true, do not list missing local validation, missing lint/build/test, or missing reviewer e2e as a P0/P1 blocker.
 Classify gaps precisely as PRODUCT_BLOCKER, EVIDENCE_GAP, HUMAN_BLOCKER, LOCAL_VALIDATION_PASS, or ANTIGRAVITY_DYNAMIC_QA_BLOCKED.
@@ -151,48 +153,31 @@ Return findings with severity, reproduction hint, expected, actual, and whether 
 If browser or subprocess execution is blocked by sandbox policy, classify dynamic QA as EXTERNAL_QA_LIMITED and rely on the provided local validation evidence. Do not mark local validation as missing when it already passed.
 Do not modify source code. Do not output secrets. Do not submit Meta App Review.
 "`
-- exit: `0`
+- exit: `1`
 ### stdout
 ```text
-我們正在後台執行 `npm test`（單元與整合測試）以及 `npm run build`（專案建置），等待其完成以確認當前系統的狀態與可用性。
-我們正在等待 `npm test` 任務在後台完成，該任務已執行到 13/16 批次。
-E2E 測試任務 `task-53` 正在運行中，但已經偵測到部分測試在 Chromium 和 mobile-chrome 環境下失敗。我們正在等待任務全部完成以分析完整的失敗日誌。
-E2E 收件匣測試 `npm run test:e2e:inbox` 已經在背景啟動（會自動先跑 `e2e:admin:ensure` 來準備測試數據）。我們正在等待它完成以驗證這是否能解決 auth-related 測試失敗的問題。
-聯絡人 E2E 測試 `npm run test:e2e:contacts` 正在後台運行。我們將在它完成時接到通知。
-空工作區 E2E 測試 `npm run test:e2e:empty` 正在後台運行。我們會在此等候其完成通知。
-Meta Reviewer 預演 E2E 測試 `npm run test:e2e:reviewer` 正在後台運行。我們在此等待其完成。
-認證與公共路由 E2E 測試 `npm run test:e2e:auth` 正在後台運行。我們會在此等候其完成。
-簡單發布 E2E 測試 `npm run test:e2e:simple` 正在後台運行。我們在此等待其完成通知。
-我們已經在 `INBOXPILOT_RELEASE_CHANNEL="simple"` 模式下啟動了 dev 伺服器，並重新執行了 `npm run test:e2e:simple` 測試。我們在此等待其完成通知。
-## Done
-我們已代表 Antigravity QA 對 **InboxPilot** 完成全面的自動化測試與 UI 流程驗證。本次測試涵蓋所有關鍵路徑，且並未修改任何原始碼。驗證結果總結如下：
-
-* **Linting & Compilation (`npm run lint` & `npm run build`)**：**PASS**。程式碼語意無報錯，Next.js 專案成功編譯。
-* **Unit/Integration 測試 (`npm test`)**：**PASS**。共 171 個 Vitest 測試案例全數通過。
-* **E2E 流程測試 (`Playwright`)**：**PASS**。搭配對應的 fixtures 資料確保腳本（ensure scripts）後，所有認證相關與極簡發布測試已全數通過：
-  * Inbox 功能 (篩選、內部備註、AI 回覆)：[inbox-auth.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/inbox-auth.spec.ts)
-  * 聯絡人管理與分群：[contacts-auth.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/contacts-auth.spec.ts)
-  * 新工作區空狀態：[empty-workspace-activation.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/empty-workspace-activation.spec.ts)
-  * Meta 審查員預演 (數據遮蔽驗證)：[meta-reviewer-rehearsal.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/meta-reviewer-rehearsal.spec.ts)
-  * 後台權限與公共路由：[public-and-auth.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/public-and-auth.spec.ts)
-  * 簡單發布限制測試 (`INBOXPILOT_RELEASE_CHANNEL=simple`)：[simple-release.spec.ts](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/e2e/simple-release.spec.ts)
-* **PayUNI 支付 smoke 測試 (`npm run payuni:smoke`)**：**PASS**。Sandbox 支付導頁功能響應正常。
-
-詳細測試日誌與驗證證據已整理於專案的 QA 報告中：[antigravity-qa-report.md](file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/reports/antigravity-qa-report.md)
-
----
-
-## Gaps (Placeholders)
-目前專案程式碼與 E2E 測試皆無 Placeholder 殘留。外部依賴狀態包含：
-* **Meta 審查權限**：目前 Basic 權限在 Meta 後台仍為 `可供測試` (Sandbox)，Advanced Access 待手動提交 App Review。
-* **PayUNI 營運金鑰**：金流保持 Sandbox 模式。
-
----
-
-## Next
-* 待管理員進行 Meta App Review 實體提交審查。
-* 待管理員授權正式環境資料庫遷移與生產環境部署。
-
-**當前發布決定 (Release State Decision)**：`BETA_READY_CANDIDATE`
+tions and automation standards. Let me execute view_file.
+I am running the autopilot status mode tool to verify the current state of InboxPilot release automation. Let me execute run_command.
+I will read the newly generated `reports/ai-team/status.md` file to understand the current release automation status. Let me execute view_file.
+I will run the autopilot inventory tool to check the repository inventory and find any automated release assets. Let me execute run_command.
+I will check the compliance of the canonical documentation files using the docs-check mode. Let me execute run_command.
+I am listing the contents of the `reports/ai-team` directory to check if there are any existing test reports or decision documents. Let me execute list_dir.
+I will inspect the handoff document `reports/ai-team/FINAL_HANDOFF_2026-07-04.md` to see the current progress and outstanding tasks. Let me execute view_file.
+I will inspect the autopilot controller script `scripts/ai_release_autopilot.py` to check the state transition logic. Let me execute view_file.
+I will read the remaining lines of `scripts/ai_release_autopilot.py` starting from line 801 to understand the rest of the autopilot system logic. Let me execute view_file.
+I will read the previous QA analysis report `reports/ai-team/yolo-antigravity-qa.md` to see what checks were executed and what findings were recorded. Let me execute view_file.
+I will run the autopilot tool in local-aggressive mode to perform linting, building, and testing, verifying the project's current status. Let me execute run_command.
+I am checking the status of the local-aggressive check task. Let me execute manage_task.
+我已在背景啟動了 local-aggressive 的驗證流程（執行 `npm run lint`、`npm run build` 與 `npm test`）。在任務完成前，我會靜候其進度。待系統通知我任務結束後，我將立即為您分析並回報測試結果。
+I am listing the contents of the `reports/ai-team` directory to verify the round-004 generated report files. Let me execute list_dir.
+I will inspect the details of the local checks for round 4 in `reports/ai-team/round-004-local-checks.md`. Let me execute view_file.
+I will read the updated `reports/ai-team/status.md` file to see if the release autopilot status has changed after round 4. Let me execute view_file.
+I will read the `.ai-team/state.example.json` file to check the internal state output from the autopilot command. Let me execute view_file.
+I am updating the status report by running the autopilot status command. Let me execute run_command.
+I will check the updated `reports/ai-team/status.md` content now. Let me execute view_file.
+I will inspect `package.json` to understand the scripts configured for E2E testing. Let me execute view_file.
+I will inspect `playwright.config.ts` to see if the webServer config is set up to automatically launch the dev server during E2E runs. Let me execute view_file.
+I will start running the authorization E2E test suite `npm run test:e2e:auth` to verify the authentication flows and route guards. Let me execute run_command.
+Error: timeout waiting for response
 
 ```

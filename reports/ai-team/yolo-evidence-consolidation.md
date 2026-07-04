@@ -1,18 +1,18 @@
 # YOLO Evidence Consolidation
 
-- Generated: 2026-07-04 11:23:42
-- Local validation evidence: `PASS`
+- Generated: 2026-07-04 11:39:46
+- Local validation evidence: `FAIL`
 - External QA classification: `EXTERNAL_QA_LIMITED`
 - Human blocker evidence present: `True`
 - Environments requested: `local, staging`
-- AI_TEAM_YOLO_STATUS=STAGING_EVIDENCE_REQUIRED
+- AI_TEAM_YOLO_STATUS=PRODUCT_FIX_REQUIRED
 
 ## Local Validation Commands
 
 - `npm run lint` -> `0`
 - `npm run build` -> `0`
 - `npm test` -> `0`
-- `npm run test:e2e:reviewer` -> `0`
+- `npm run test:e2e:reviewer` -> `1`
 
 ## Classification Rules Applied
 

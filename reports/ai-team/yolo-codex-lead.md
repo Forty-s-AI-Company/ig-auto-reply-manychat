@@ -1,54 +1,57 @@
-**結論**
+**1. Top Remaining P0/P1 Release Blockers**
 
-目前沒有看到需要程式碼修改的 `PRODUCT_BLOCKER` P0/P1。  
-本機驗證已通過：`lint / build / npm test / reviewer e2e` 都是 exit `0`，所以不應再把 local validation 缺失列為 blocker。
+1. `EVIDENCE_GAP`：`npm run test:e2e:reviewer` 目前 exit `1`  
+   失敗點在 reviewer-safe rehearsal 的 `beforeEach` login：`POST /api/auth/login` timeout / browser context closed。  
+   這目前不能直接判成產品 P0/P1 bug，因為 lint/build/unit 都綠，而且錯誤比較像本機 reviewer E2E seed、測試帳號、dev server 或 Playwright context 穩定性問題。但在它重跑綠以前，不能把 local reviewer evidence 當作有效通過。
 
-但從目前 evidence 來看，狀態仍是 `CONTINUE`，還不能直接宣告 `BETA_READY_CANDIDATE` 或 sale-ready beta。主要卡在 staging / 第三方 / 人工接受證據，不是產品 bug。
+2. `EVIDENCE_GAP`：staging reviewer-safe / browser / real asset evidence 尚未完成  
+   文件與報告都指向 `STAGING_EVIDENCE_REQUIRED`。這不是產品 bug，但 sale-ready 目標包含 local + staging，所以 staging 證據還沒收齊前不能升級成 sale-ready beta。
 
-**Top P0/P1 Blockers**
+3. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification 仍未人工完成  
+   Meta permissions 仍是 `可供測試`，App Review 不可自動送出。這是外部人工 gate，不是產品 code blocker。
 
-1. `EVIDENCE_GAP`：staging reviewer-safe real asset evidence 還不完整  
-   需要 staging-safe tenant、reviewer-safe IG asset、實際 browser / webhook / connected-channel evidence。這不是本機產品壞掉，是遠端實證還不夠。
+4. `HUMAN_BLOCKER`：PayUNI production switch、production deploy、production DB / live payment smoke 都必須人工核准  
+   目前 PayUNI 仍預設 Sandbox。正式金流與 production 部署不能由 autopilot 自動完成。
 
-2. `HUMAN_BLOCKER`：Meta App Review / Advanced Access / Business Verification  
-   Meta 權限仍是 `可供測試`，App Review 尚未 approved。不能自動送審，也不能把這列成產品 bug。
+**2. Sale-Ready Beta 判定**
 
-3. `HUMAN_BLOCKER`：PayUNI production go-live  
-   目前 PayUNI 仍是 Sandbox。正式 merchant approval、production switch、低額 live smoke 都必須人工核准。
+目前不能從現有證據判定為 sale-ready beta。
 
-4. `HUMAN_BLOCKER`：Production deploy / production DB gate  
-   不可自動 production deploy，不可碰 production DB，不可跑 production migration。任何正式上線切換都需要人工 release gate。
+比較精準地說：核心 local engineering gate 已經有強證據通過，包含：
 
-**Sale-Ready Beta 判定**
+- `npm run lint` exit `0`
+- `npm run build` exit `0`
+- `npm test` exit `0`
 
-目前可以說：`LOCAL_VALIDATION_PASS`，而且本機 evidence 沒有顯示 P0/P1 產品缺陷。  
-但不能只靠目前 evidence 判定為 sale-ready beta；缺 staging 實證與人工 gates，所以 release state 應維持：
+但 `LOCAL_VALIDATION_PASS=False`，且 reviewer E2E exit `1`，再加上 staging / third-party / human gate 還沒收齊，所以目前狀態應維持：
 
 `CONTINUE`
 
-**最高槓桿下一步**
+不是 `BETA_READY_CANDIDATE`。  
+我原本也差點被 `FINAL_SALE_READY_REPORT` 的 local passed 帶走，還好你前面有先塞最新 evidence，不然這種 release 判斷很容易變成「報告很漂亮，現場很尷尬」。
 
-跑一輪短的 staging certification / QA-only pass，目標只收集 evidence，不做 production、不送審、不碰正式金流：
+**3. One Highest-Leverage Next Task**
 
-```bash
-python scripts/ai_release_autopilot.py --mode qa-only --profile staging-aggressive
-```
+先修正並重跑 `npm run test:e2e:reviewer` 的本機 reviewer-safe rehearsal。
 
-重點驗證 staging reviewer-safe tenant、connected Instagram channel、Inbox / Contacts / Automations reviewer path、console/network/browser evidence。這一步最能把「本機已過」往「可交給人類接受」推近一格。
+範圍要很窄：只查 reviewer seed、測試帳密、`TEST_DATABASE_URL`、dev server `127.0.0.1:3041`、Playwright login request timeout / context close，不要順手改產品流程。這一個綠了之後，才切 staging `qa-only --profile staging-aggressive` 收證據。
 
-**不可自動化的人類 Gate**
+**4. Human Gates Must Not Be Automated**
+
+以下都必須保留人工 gate：
 
 - Meta App Review final submit
-- Business Verification / Advanced Access approval
-- Reviewer credential handoff
-- PayUNI production switch
-- Real payment smoke
-- Production deployment
-- Production DB mutation / migration
+- Meta Business Verification / Advanced Access approval
+- Reviewer-safe credential handoff
+- Final recording / screenshot redaction approval
+- PayUNI production merchant switch
+- Real payment smoke / refund or reconciliation approval
+- Production deploy
+- Production DB migration / mutation
 - Final `BETA_READY_CANDIDATE` acceptance
 
-Diff summary：未修改檔案。  
-Validation evidence：本回合只讀 evidence；採用既有報告中的 local pass 證據。  
-Remaining risks：staging / Meta / PayUNI / production gates。  
+Diff summary：本輪沒有改檔案。  
+Validation evidence：只讀取指定 reports / canonical docs，沒有執行新的測試。  
+Remaining risks：reviewer E2E 紅燈原因尚未重新定位；staging evidence 未完成。  
 Human blockers：如上。  
 State：`CONTINUE`。
