@@ -4531,6 +4531,34 @@ Remaining:
 - [ ] Re-run AI_TEAM doctor / dry-run verification after the merge.
 - [ ] Keep older sibling worktrees as read-only references until this consolidated branch is confirmed.
 
+# Latest - 2026-07-04 YOLO status machine evidence classification fix
+
+Current status:
+
+- [x] YOLO runner now runs local validation before external AI review.
+- [x] Codex Lead / Antigravity prompts receive local validation evidence and cannot reclassify passing lint/build/test/e2e as missing evidence.
+- [x] Status machine now supports:
+  - `PRODUCT_FIX_REQUIRED`
+  - `STAGING_EVIDENCE_REQUIRED`
+  - `HUMAN_ACCEPTANCE_REQUIRED`
+  - `HUMAN_BLOCKED`
+  - `SALE_READY_CANDIDATE`
+  - `CONTINUE`
+  - `FAIL`
+- [x] Antigravity dynamic QA sandbox limitation is classified as `EXTERNAL_QA_LIMITED` when local validation passed.
+- [x] Report-only YOLO delivery uses `release: collect ai team yolo evidence` when `--write-final-report` is enabled.
+- [x] Fix report written to `reports/ai-team/YOLO_STATUS_MACHINE_FIX_REPORT.md`.
+
+Validation:
+
+- [x] `python -m py_compile scripts/ai_release_autopilot.py`
+- [x] `python scripts/ai_release_autopilot.py --doctor`
+- [x] `python scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1`
+
+Remaining:
+
+- [ ] Run one short certification pass only after user explicitly approves; do not start long YOLO from this fix mode.
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

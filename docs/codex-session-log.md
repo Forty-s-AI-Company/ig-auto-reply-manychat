@@ -10958,3 +10958,19 @@ Launch impact:
   - 合併 `origin/master`，納入 reviewer-safe staging scope / all-channel scope 相關 master 修正。
   - 程式衝突中保留 AI_TEAM 分支的 reviewer-safe selected Instagram channel mock webhook 行為，並納入 master 的 account scope 相關修正。
 - 安全：未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret。
+
+## 2026-07-04 - YOLO status machine evidence classification fix
+
+- 目標：修正 YOLO runner 將 evidence gap / external QA limitation 誤判成產品 P0 的問題。
+- 修復：
+  - YOLO 流程改成先跑 local validation，再把 validation summary 餵給 Codex Lead / Antigravity prompt。
+  - prompt 明確要求先讀 `reports/ai-team/yolo-validation.md`、`YOLO_RUN_SUMMARY.md`、`FINAL_SALE_READY_REPORT.md`、`docs/AI_RELEASE_CONTROL.md`、`docs/AI_SOURCE_OF_TRUTH.md`。
+  - 新增 `PRODUCT_FIX_REQUIRED`、`STAGING_EVIDENCE_REQUIRED`、`HUMAN_ACCEPTANCE_REQUIRED`、`HUMAN_BLOCKED`、`SALE_READY_CANDIDATE`、`CONTINUE`、`FAIL` 狀態。
+  - Antigravity sandbox / subprocess 權限受限時歸類為 `EXTERNAL_QA_LIMITED`，local validation 已通過時不阻塞整個 autopilot。
+  - report-only commit 在 `--write-final-report` 開啟時改用 `release: collect ai team yolo evidence`。
+- 驗證：
+  - `python -m py_compile scripts/ai_release_autopilot.py` 通過。
+  - `python scripts/ai_release_autopilot.py --doctor` 通過。
+  - `python scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1` 通過。
+- 報告：新增 `reports/ai-team/YOLO_STATUS_MACHINE_FIX_REPORT.md`。
+- 安全：未修產品功能、未啟動長時間 YOLO、未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production。

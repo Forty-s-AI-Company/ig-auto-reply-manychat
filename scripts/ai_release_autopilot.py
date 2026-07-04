@@ -404,10 +404,141 @@ def tool_found(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def yolo_codex_prompt(target: str, envs: list[str]) -> str:
+YOLO_STATUS_VALUES = {
+    "PRODUCT_FIX_REQUIRED",
+    "STAGING_EVIDENCE_REQUIRED",
+    "HUMAN_ACCEPTANCE_REQUIRED",
+    "HUMAN_BLOCKED",
+    "SALE_READY_CANDIDATE",
+    "CONTINUE",
+    "FAIL",
+}
+
+
+def validation_summary(validation_results: list[dict]) -> dict:
+    required = ["npm run lint", "npm run build", "npm test"]
+    summary = {
+        "passed": all(item.get("exit_code") == 0 for item in validation_results),
+        "commands": [],
+        "missing_required": [],
+    }
+    seen = set()
+    for item in validation_results:
+        command = item.get("command", "")
+        exit_code = item.get("exit_code")
+        summary["commands"].append({"command": command, "exit_code": exit_code})
+        for required_command in required:
+            if command.startswith(required_command):
+                seen.add(required_command)
+    summary["missing_required"] = [command for command in required if command not in seen]
+    return summary
+
+
+def validation_prompt_context(validation: dict) -> str:
+    lines = [
+        "## Local Validation Evidence",
+        "",
+        f"- LOCAL_VALIDATION_PASS: `{validation['passed'] and not validation['missing_required']}`",
+    ]
+    for item in validation["commands"]:
+        lines.append(f"- `{item['command']}` exit `{item['exit_code']}`")
+    if validation["missing_required"]:
+        lines.append(f"- Missing required commands: `{', '.join(validation['missing_required'])}`")
+    lines.extend(
+        [
+            "",
+            "If LOCAL_VALIDATION_PASS is true, do not list missing local validation, missing lint/build/test, or missing reviewer e2e as a P0/P1 blocker.",
+            "Classify gaps precisely as PRODUCT_BLOCKER, EVIDENCE_GAP, HUMAN_BLOCKER, LOCAL_VALIDATION_PASS, or ANTIGRAVITY_DYNAMIC_QA_BLOCKED.",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def external_text(results: list[dict]) -> str:
+    return "\n".join((item.get("stdout") or "") + "\n" + (item.get("stderr") or "") for item in results)
+
+
+def external_qa_limited(results: list[dict]) -> bool:
+    text = external_text(results).lower()
+    markers = [
+        "blocked by policy",
+        "access is denied",
+        "sandbox",
+        "subprocess",
+        "terminal",
+        "needs_verification",
+        "本機執行權限不足",
+        "沙盒",
+        "權限",
+        "無法動態",
+    ]
+    return any(marker in text for marker in markers)
+
+
+def human_blocker_present(results: list[dict]) -> bool:
+    text = external_text(results)
+    markers = [
+        "Meta App Review",
+        "Business Verification",
+        "PayUNI production",
+        "Production deploy",
+        "Production DB",
+        "正式部署",
+        "正式金鑰",
+        "人工",
+    ]
+    return any(marker in text for marker in markers)
+
+
+def write_evidence_consolidation_report(
+    *,
+    validation: dict,
+    external_results: list[dict],
+    status_value: str,
+    envs: list[str],
+) -> None:
+    external_limited = external_qa_limited(external_results)
+    human_blocked = human_blocker_present(external_results)
+    lines = [
+        "# YOLO Evidence Consolidation",
+        "",
+        f"- Generated: {now()}",
+        f"- Local validation evidence: `{'PASS' if validation['passed'] and not validation['missing_required'] else 'FAIL'}`",
+        f"- External QA classification: `{'EXTERNAL_QA_LIMITED' if external_limited else 'EXTERNAL_QA_AVAILABLE'}`",
+        f"- Human blocker evidence present: `{human_blocked}`",
+        f"- Environments requested: `{', '.join(envs)}`",
+        f"- AI_TEAM_YOLO_STATUS={status_value}",
+        "",
+        "## Local Validation Commands",
+        "",
+    ]
+    for item in validation["commands"]:
+        lines.append(f"- `{item['command']}` -> `{item['exit_code']}`")
+    lines.extend(
+        [
+            "",
+            "## Classification Rules Applied",
+            "",
+            "- Passing `yolo-validation.md` is treated as `LOCAL_VALIDATION_PASS`.",
+            "- Missing staging / third-party screenshots or reviewer-safe proof is `EVIDENCE_GAP`, not a product bug.",
+            "- Meta App Review, Business Verification, PayUNI production keys, production deploy, and production DB work are `HUMAN_BLOCKER` / `HUMAN_ACCEPTANCE_REQUIRED`.",
+            "- Antigravity sandbox or subprocess limitations are `EXTERNAL_QA_LIMITED` when local validation already passed.",
+        ]
+    )
+    write_report("yolo-evidence-consolidation.md", "\n".join(lines) + "\n")
+
+
+def yolo_codex_prompt(target: str, envs: list[str], validation_context: str) -> str:
     return f"""You are Codex Lead for InboxPilot release stabilization.
 
-Read only the active canonical files:
+Before listing any P0/P1 blocker, read these evidence reports first:
+- reports/ai-team/yolo-validation.md
+- reports/ai-team/YOLO_RUN_SUMMARY.md
+- reports/ai-team/FINAL_SALE_READY_REPORT.md
+- docs/AI_RELEASE_CONTROL.md
+- docs/AI_SOURCE_OF_TRUTH.md
+
+Then read only the active canonical files:
 - AGENTS.md
 - docs/AI_SOURCE_OF_TRUTH.md
 - docs/AI_RELEASE_CONTROL.md
@@ -420,22 +551,33 @@ Do not use archived AI_TEAM runtime as source of truth.
 Target: {target}
 Environments: {", ".join(envs)}
 
+{validation_context}
+
 Return:
 1. Top remaining P0/P1 release blockers.
 2. Whether the product can be considered sale-ready beta from current evidence.
 3. One highest-leverage next task.
 4. Human gates that must not be automated.
 
+Rules:
+- Do not classify missing staging, third-party, or human acceptance evidence as a product P0/P1 bug.
+- If local validation evidence says lint/build/test/reviewer e2e exit 0, never claim local validation has not run.
+- Use PRODUCT_BLOCKER only for concrete product bugs that need code changes.
+- Use EVIDENCE_GAP for missing staging/browser/third-party proof.
+- Use HUMAN_BLOCKER for Meta App Review, Business Verification, PayUNI production, production deploy, or production DB gates.
+
 Do not output secrets. Do not submit Meta App Review. Do not deploy Production.
 """
 
 
-def yolo_agy_prompt(target: str, envs: list[str]) -> str:
+def yolo_agy_prompt(target: str, envs: list[str], validation_context: str) -> str:
     return f"""You are Antigravity QA for InboxPilot.
 
 Perform a release-readiness QA review from repository context and available browser/staging evidence.
 Target: {target}
 Environments: {", ".join(envs)}
+
+{validation_context}
 
 Focus on:
 - Dashboard / onboarding
@@ -449,11 +591,12 @@ Focus on:
 - Mobile RWD and visible-but-unusable controls
 
 Return findings with severity, reproduction hint, expected, actual, and whether it blocks beta sale-readiness.
+If browser or subprocess execution is blocked by sandbox policy, classify dynamic QA as EXTERNAL_QA_LIMITED and rely on the provided local validation evidence. Do not mark local validation as missing when it already passed.
 Do not modify source code. Do not output secrets. Do not submit Meta App Review.
 """
 
 
-def run_external_ai_review(target: str, envs: list[str], timeout: int = 600) -> list[dict]:
+def run_external_ai_review(target: str, envs: list[str], validation_context: str, timeout: int = 600) -> list[dict]:
     results: list[dict] = []
     codex_report = REPORTS / "yolo-codex-lead.md"
     agy_report = REPORTS / "yolo-antigravity-qa.md"
@@ -461,7 +604,7 @@ def run_external_ai_review(target: str, envs: list[str], timeout: int = 600) -> 
     agy_prompt_file = REPORTS / "yolo-antigravity-qa-prompt.md"
 
     if tool_found("codex"):
-        prompt = yolo_codex_prompt(target, envs)
+        prompt = yolo_codex_prompt(target, envs, validation_context)
         codex_prompt_file.write_text(prompt, encoding="utf-8")
         command = (
             f'codex exec --cd "{ROOT}" --sandbox read-only - < "{codex_prompt_file}"'
@@ -477,7 +620,7 @@ def run_external_ai_review(target: str, envs: list[str], timeout: int = 600) -> 
         results.append({"command": "codex exec", "exit_code": 127, "stdout": "", "stderr": "codex not found", "skipped": True})
 
     if tool_found("agy"):
-        prompt = yolo_agy_prompt(target, envs)
+        prompt = yolo_agy_prompt(target, envs, validation_context)
         agy_prompt_file.write_text(prompt, encoding="utf-8")
         escaped_prompt = prompt.replace('"', '\\"')
         command = (
@@ -527,12 +670,16 @@ def write_sale_ready_reports(
         "## Sale-Ready Decision",
         "",
     ]
-    if status_value == "BETA_READY":
+    if status_value == "SALE_READY_CANDIDATE":
         final_lines.append("Current evidence indicates P0/P1 release blockers are clear for a human beta acceptance pass.")
-    elif status_value == "CONTINUE":
-        final_lines.append("The runner completed safely, but sale-ready beta still needs additional product / staging evidence before human acceptance.")
+    elif status_value == "PRODUCT_FIX_REQUIRED":
+        final_lines.append("Local validation or concrete product blockers require Codex product fixes before sale-ready beta can be considered.")
+    elif status_value == "STAGING_EVIDENCE_REQUIRED":
+        final_lines.append("Local validation passed. Remaining work is staging / third-party evidence collection, not a confirmed product P0/P1 code blocker.")
+    elif status_value in {"HUMAN_ACCEPTANCE_REQUIRED", "HUMAN_BLOCKED"}:
+        final_lines.append("Local validation passed. Remaining gates require human acceptance or third-party account / production authorization.")
     else:
-        final_lines.append("The runner stopped with a blocker. Review `reports/ai-team/YOLO_RUN_SUMMARY.md` and related command reports.")
+        final_lines.append("The runner completed safely but still has release-readiness follow-up. Review `reports/ai-team/YOLO_RUN_SUMMARY.md` and related command reports.")
     final_lines.extend(
         [
             "",
@@ -564,7 +711,12 @@ def write_sale_ready_reports(
     write_report("HUMAN_ACCEPTANCE_CHECKLIST.md", checklist)
 
 
-def yolo_git_delivery(auto_commit: bool, auto_push_branch: bool) -> list[dict]:
+def yolo_git_delivery(
+    auto_commit: bool,
+    auto_push_branch: bool,
+    *,
+    allow_report_only_commit: bool,
+) -> list[dict]:
     results: list[dict] = []
     branch = current_branch()
     unsafe = branch in {"main", "master", ""}
@@ -597,6 +749,28 @@ def yolo_git_delivery(auto_commit: bool, auto_push_branch: bool) -> list[dict]:
         write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
         return results
 
+    product_paths = []
+    report_only_paths = []
+    for line in (status.get("stdout") or "").splitlines():
+        path = line[3:].strip()
+        if path.startswith("reports/ai-team/") or path in {".ai-team/state.example.json", ".ai-team/state.json"}:
+            report_only_paths.append(path)
+        else:
+            product_paths.append(path)
+
+    if report_only_paths and not product_paths and not allow_report_only_commit:
+        results.append(
+            {
+                "command": "git commit",
+                "exit_code": 0,
+                "stdout": "Only reports/state changed and --write-final-report was not enabled; skipping report-only commit.",
+                "stderr": "",
+                "skipped": True,
+            }
+        )
+        write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
+        return results
+
     if not auto_commit:
         results.append(
             {
@@ -610,8 +784,9 @@ def yolo_git_delivery(auto_commit: bool, auto_push_branch: bool) -> list[dict]:
         write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
         return results
 
+    commit_message = "release: run ai team yolo autopilot" if product_paths else "release: collect ai team yolo evidence"
     results.append(run_shell("git add -A", timeout=120))
-    commit_result = run_shell('git commit -m "release: run ai team yolo autopilot"', timeout=180)
+    commit_result = run_shell(f'git commit -m "{commit_message}"', timeout=180)
     results.append(commit_result)
     write_report("yolo-git-delivery.md", render_command_results("YOLO Git Delivery", results))
     if commit_result.get("exit_code") == 0:
@@ -645,10 +820,6 @@ def yolo_mode(args: argparse.Namespace) -> int:
     probe_result = run_shell("python scripts/ai_cli_probe.py", timeout=120)
     write_report("yolo-cli-probe.md", render_command_results("YOLO CLI Probe", [probe_result]))
 
-    docs_result = run_shell("python scripts/ai_release_autopilot.py --mode docs-check", timeout=60)
-    inventory_result = run_shell("python scripts/ai_release_autopilot.py --mode inventory", timeout=60)
-    external_results = run_external_ai_review(target, envs, timeout=min(int(args.max_hours * 3600), 900))
-
     profile = "staging-aggressive" if "staging" in envs else "local-aggressive"
     validation_results: list[dict] = []
     validation_results.append(run_shell("npm run lint", timeout=300))
@@ -658,17 +829,38 @@ def yolo_mode(args: argparse.Namespace) -> int:
         validation_results.append(run_shell("npm run test:e2e:reviewer", timeout=900))
     write_report("yolo-validation.md", render_command_results("YOLO Validation", validation_results))
 
-    validation_passed = all(item.get("exit_code") == 0 for item in validation_results)
+    validation = validation_summary(validation_results)
+    validation_passed = bool(validation["passed"] and not validation["missing_required"])
+    context = validation_prompt_context(validation)
+
+    docs_result = run_shell("python scripts/ai_release_autopilot.py --mode docs-check", timeout=60)
+    inventory_result = run_shell("python scripts/ai_release_autopilot.py --mode inventory", timeout=60)
+    external_results = run_external_ai_review(target, envs, context, timeout=min(int(args.max_hours * 3600), 900))
+
+    external_limited = external_qa_limited(external_results)
     external_hard_fail = any(item.get("exit_code") not in (0, 127) and not item.get("skipped") for item in external_results)
-    if not validation_passed or external_hard_fail:
-        status_value = "BLOCKED"
+    if not validation_passed:
+        status_value = "PRODUCT_FIX_REQUIRED"
+        exit_code = 1
+    elif external_hard_fail and not external_limited:
+        status_value = "FAIL"
         exit_code = 1
     elif "staging" in envs:
-        status_value = "CONTINUE"
+        status_value = "STAGING_EVIDENCE_REQUIRED"
+        exit_code = 0
+    elif human_blocker_present(external_results):
+        status_value = "HUMAN_ACCEPTANCE_REQUIRED"
         exit_code = 0
     else:
-        status_value = "CONTINUE"
+        status_value = "SALE_READY_CANDIDATE"
         exit_code = 0
+
+    write_evidence_consolidation_report(
+        validation=validation,
+        external_results=external_results,
+        status_value=status_value,
+        envs=envs,
+    )
 
     summary = [
         "# YOLO Run Summary",
@@ -689,6 +881,8 @@ def yolo_mode(args: argparse.Namespace) -> int:
         f"- Docs check exit: `{docs_result['exit_code']}`",
         f"- Inventory exit: `{inventory_result['exit_code']}`",
         f"- Validation passed: `{validation_passed}`",
+        f"- External QA status: `{'EXTERNAL_QA_LIMITED' if external_limited else 'EXTERNAL_QA_AVAILABLE'}`",
+        f"- Status values supported: `{', '.join(sorted(YOLO_STATUS_VALUES))}`",
         f"- AI_TEAM_YOLO_STATUS={status_value}",
         "",
         "## Safety",
@@ -726,9 +920,13 @@ def yolo_mode(args: argparse.Namespace) -> int:
         encoding="utf-8",
     )
 
-    delivery_results = yolo_git_delivery(args.auto_commit, args.auto_push_branch)
+    delivery_results = yolo_git_delivery(
+        args.auto_commit,
+        args.auto_push_branch,
+        allow_report_only_commit=args.write_final_report,
+    )
     delivery_failed = any(item.get("exit_code") not in (0,) and not item.get("skipped") for item in delivery_results)
-    if delivery_failed and status_value != "BLOCKED":
+    if delivery_failed and status_value not in {"PRODUCT_FIX_REQUIRED", "FAIL"}:
         status_value = "CONTINUE"
 
     print(f"AI_TEAM_YOLO_STATUS={status_value}")
