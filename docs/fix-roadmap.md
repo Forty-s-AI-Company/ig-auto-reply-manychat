@@ -4518,6 +4518,19 @@ Remaining:
 - [ ] Hand this fix back to Antigravity for recheck.
 - [ ] Keep `YOLO_RELEASE_READY=FAIL` until Antigravity independently verifies the fix.
 
+# Latest - 2026-07-04 Single-folder latest-state consolidation
+
+Current status:
+
+- [x] Main local folder `ig-auto-reply-manychat` is the active workspace for AI_TEAM / YOLO verification.
+- [x] `ai-team-yolo-release` has been merged with `origin/master` so verification can run against the latest product baseline plus AI_TEAM changes.
+- [x] Reviewer-safe mock webhook selected-channel behavior was preserved during conflict resolution.
+
+Remaining:
+
+- [ ] Re-run AI_TEAM doctor / dry-run verification after the merge.
+- [ ] Keep older sibling worktrees as read-only references until this consolidated branch is confirmed.
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

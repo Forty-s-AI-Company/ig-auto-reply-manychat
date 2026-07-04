@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSelectedInstagramChannelId, instagramChannelWhere } from "@/lib/account-scope";
+import { getSelectedInstagramChannelId, inboxChannelWhere } from "@/lib/account-scope";
 import { requireApiUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { assertSameOriginRequest } from "@/lib/security";
@@ -19,12 +19,12 @@ export async function POST(request: Request, { params }: Params) {
   if (!tagId) return NextResponse.json({ error: "tagId is required." }, { status: 400 });
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const contact = await getDb().contact.findFirst({
     where: { id, ...channelWhere },
     select: { id: true },
   });
-  if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  if (!contact) return NextResponse.json({ error: "找不到這個工作區範圍內的聯絡人。" }, { status: 404 });
   const tag = await getDb().tag.findFirst({ where: { id: tagId, workspaceId }, select: { id: true } });
   if (!tag) return NextResponse.json({ error: "找不到這個工作區的標籤。" }, { status: 404 });
 
@@ -48,12 +48,12 @@ export async function DELETE(request: Request, { params }: Params) {
   if (!tagId) return NextResponse.json({ error: "tagId is required." }, { status: 400 });
   const workspaceId = await getCurrentWorkspaceId();
   const selectedChannelId = await getSelectedInstagramChannelId();
-  const channelWhere = instagramChannelWhere(selectedChannelId, workspaceId);
+  const channelWhere = inboxChannelWhere(selectedChannelId, workspaceId);
   const contact = await getDb().contact.findFirst({
     where: { id, ...channelWhere },
     select: { id: true },
   });
-  if (!contact) return NextResponse.json({ error: "找不到這個 IG 帳號的聯絡人。" }, { status: 404 });
+  if (!contact) return NextResponse.json({ error: "找不到這個工作區範圍內的聯絡人。" }, { status: 404 });
   const tag = await getDb().tag.findFirst({ where: { id: tagId, workspaceId }, select: { id: true } });
   if (!tag) return NextResponse.json({ error: "找不到這個工作區的標籤。" }, { status: 404 });
 

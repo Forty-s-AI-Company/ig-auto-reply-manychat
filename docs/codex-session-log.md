@@ -10949,3 +10949,12 @@ Launch impact:
 - 報告：新增 `reports/ai-team/AI_TEAM_VERIFICATION_FIX_REPORT.md`。
 - 安全：未修產品功能、未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret。
 - 狀態：`AI_TEAM_FIX_STATUS=PASS`、`DOCTOR_READY=PASS`、`DRY_RUN_READY=PASS`、`READY_FOR_ANTIGRAVITY_RECHECK=PASS`、`YOLO_RELEASE_READY=FAIL`。
+
+## 2026-07-04 - Consolidate AI_TEAM branch with latest master
+
+- 目標：將主資料夾 `ig-auto-reply-manychat` 更新成單一最新整合狀態，讓後續 AI_TEAM / YOLO verification 不再落在舊 master 之前的分支。
+- 整合：
+  - 以 `ai-team-yolo-release` 為工作分支。
+  - 合併 `origin/master`，納入 reviewer-safe staging scope / all-channel scope 相關 master 修正。
+  - 程式衝突中保留 AI_TEAM 分支的 reviewer-safe selected Instagram channel mock webhook 行為，並納入 master 的 account scope 相關修正。
+- 安全：未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出 secret。

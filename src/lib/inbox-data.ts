@@ -1,4 +1,4 @@
-import { instagramChannelWhere } from "@/lib/account-scope";
+import { inboxChannelWhere } from "@/lib/account-scope";
 import { publicChannelSelect } from "@/lib/channels/public";
 import { getDb } from "@/lib/db";
 import { getServerCache } from "@/lib/server-cache";
@@ -37,7 +37,7 @@ export function ensureInboxDefaultTags(workspaceId: string) {
 export function getConversationList(input: ScopedListInput) {
   return getServerCache(scopedCacheKey("conversation-list", input), INBOX_DATA_CACHE_TTL_MS, async () => {
     const limit = Math.min(Math.max(input.limit || 25, 1), 50);
-    const channelWhere = instagramChannelWhere(input.selectedChannelId, input.workspaceId);
+    const channelWhere = inboxChannelWhere(input.selectedChannelId, input.workspaceId);
 
     return getDb().conversation.findMany({
       where: channelWhere,
@@ -61,7 +61,7 @@ export function getConversationList(input: ScopedListInput) {
 export function getConversationApiList(input: ScopedListInput) {
   return getServerCache(scopedCacheKey("conversation-api-list", input), INBOX_DATA_CACHE_TTL_MS, async () => {
     const limit = Math.min(Math.max(input.limit || 25, 1), 50);
-    const channelWhere = instagramChannelWhere(input.selectedChannelId, input.workspaceId);
+    const channelWhere = inboxChannelWhere(input.selectedChannelId, input.workspaceId);
 
     return getDb().conversation.findMany({
       where: channelWhere,
@@ -85,7 +85,7 @@ export function getConversationApiList(input: ScopedListInput) {
 export function getContactApiList(input: ScopedListInput) {
   return getServerCache(scopedCacheKey("contact-api-list", input), INBOX_DATA_CACHE_TTL_MS, async () => {
     const limit = Math.min(Math.max(input.limit || 25, 1), 50);
-    const channelWhere = instagramChannelWhere(input.selectedChannelId, input.workspaceId);
+    const channelWhere = inboxChannelWhere(input.selectedChannelId, input.workspaceId);
 
     return getDb().contact.findMany({
       where: channelWhere,
