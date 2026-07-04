@@ -145,7 +145,7 @@ Loaded Prisma config from prisma.config.ts.
 
 Prisma config detected, skipping environment variable loading.
 Error: 
-EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node.tmp12036' -> 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node'
+EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node.tmp2256' -> 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node'
 
 
 [prisma-generate-safe] Prisma engine is locked by a local Node process; reusing existing generated client.
@@ -155,7 +155,7 @@ EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply
 - exit: `0`
 ### stdout
 ```text
-333ms, tests 294ms, environment 3ms)
+rm 349ms, setup 0ms, import 417ms, tests 535ms, environment 1ms)
 
 Running batch 12/16: tests\meta-webhook.test.ts, tests\mock-tester-light-theme.test.ts, tests\mock-webhook-flow.test.ts, tests\mock-webhook-route.test.ts, tests\oauth-popup-bridge.test.ts, tests\official-landing-channel-scope.test.ts
 
@@ -165,31 +165,31 @@ Running batch 12/16: tests\meta-webhook.test.ts, tests\mock-tester-light-theme.t
 
  Test Files  6 passed (6)
       Tests  16 passed (16)
-   Start at  11:26:20
-   Duration  4.55s (transform 301ms, setup 0ms, import 1.26s, tests 1.70s, environment 3ms)
+   Start at  11:51:04
+   Duration  4.43s (transform 319ms, setup 0ms, import 1.26s, tests 1.83s, environment 1ms)
 
 Running batch 13/16: tests\official-v3-footer-links.test.ts, tests\payuni-billing.test.ts, tests\pricing-page-polish.test.ts, tests\profile-menu-ia.test.ts, tests\rate-limit.test.ts, tests\referral-affiliate-docs.test.ts
 
  RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
 
 stdout | tests/payuni-billing.test.ts
-◇ injected env (58) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (58) from .env.local // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
 
 ·······················
 
  Test Files  6 passed (6)
       Tests  23 passed (23)
-   Start at  11:26:25
-   Duration  2.31s (transform 160ms, setup 0ms, import 414ms, tests 628ms, environment 1ms)
+   Start at  11:51:09
+   Duration  2.45s (transform 169ms, setup 0ms, import 440ms, tests 618ms, environment 1ms)
 
 Running batch 14/16: tests\referral-affiliate-mvp-ui.test.ts, tests\referral-credit-refund-lifecycle.test.ts, tests\referral-credit-wallet-lifecycle.test.ts, tests\release-mode.test.ts, tests\release-proxy.test.ts, tests\security.test.ts
 
  RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
 
 ········stdout | tests/referral-credit-refund-lifecycle.test.ts
-◇ injected env (58) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+◇ injected env (58) from .env.local // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
 
 ··stdout | tests/referral-credit-wallet-lifecycle.test.ts
 ◇ injected env (58) from .env.local // tip: ◈ secrets for agents [www.dotenvx.com]
@@ -199,8 +199,8 @@ Running batch 14/16: tests\referral-affiliate-mvp-ui.test.ts, tests\referral-cre
 
  Test Files  6 passed (6)
       Tests  27 passed (27)
-   Start at  11:26:28
-   Duration  3.77s (transform 263ms, setup 0ms, import 980ms, tests 1.38s, environment 1ms)
+   Start at  11:51:12
+   Duration  3.46s (transform 221ms, setup 0ms, import 912ms, tests 1.34s, environment 1ms)
 
 Running batch 15/16: tests\segments-empty-state.test.ts, tests\segments-light-theme.test.ts, tests\segments.test.ts, tests\sequences-form-state.test.ts, tests\sequences-jobs.test.ts, tests\signup-light-theme.test.ts
 
@@ -210,8 +210,8 @@ Running batch 15/16: tests\segments-empty-state.test.ts, tests\segments-light-th
 
  Test Files  6 passed (6)
       Tests  11 passed (11)
-   Start at  11:26:32
-   Duration  7.18s (transform 300ms, setup 0ms, import 1.30s, tests 4.24s, environment 1ms)
+   Start at  11:51:16
+   Duration  6.29s (transform 248ms, setup 0ms, import 1.06s, tests 4.04s, environment 1ms)
 
 Running batch 16/16: tests\tenant-isolation-routes.test.ts, tests\wallet-light-theme.test.ts, tests\webhook-security.test.ts
 
@@ -221,8 +221,8 @@ Running batch 16/16: tests\tenant-isolation-routes.test.ts, tests\wallet-light-t
 
  Test Files  3 passed (3)
       Tests  19 passed (19)
-   Start at  11:26:40
-   Duration  1.52s (transform 216ms, setup 0ms, import 617ms, tests 49ms, environment 1ms)
+   Start at  11:51:23
+   Duration  1.10s (transform 181ms, setup 0ms, import 478ms, tests 41ms, environment 0ms)
 
 
 ```
@@ -242,70 +242,38 @@ stderr | tests/meta-webhook.test.ts > Meta webhook > rejects Meta webhook reques
 
 ```
 ## `npm run test:e2e:reviewer`
-- exit: `1`
+- exit: `0`
 ### stdout
 ```text
-= await page.request.post("/api/auth/login", {
-         |                                       ^
-      16 |     data: { email: reviewerEmail, password: reviewerPassword },
-      17 |     headers: {
-      18 |       origin: "http://127.0.0.1:3041",
-        at loginAsReviewer (C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\tests\e2e\meta-reviewer-rehearsal.spec.ts:15:39)
-        at C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\tests\e2e\meta-reviewer-rehearsal.spec.ts:38:11
 
-    Error Context: test-results\meta-reviewer-rehearsal-me-cdd51-tacts-and-automations-flows-chromium\error-context.md
-
-  2) [mobile-chrome] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows 
-
-    [31mTest timeout of 60000ms exceeded while running "beforeEach" hook.[39m
-
-      35 |   test.skip(guard.shouldSkip, guard.reason);
-      36 |
-    > 37 |   test.beforeEach(async ({ page }, testInfo) => {
-         |        ^
-      38 |     await loginAsReviewer(page, testInfo);
-      39 |   });
-      40 |
-        at C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\tests\e2e\meta-reviewer-rehearsal.spec.ts:37:8
-
-    Error: apiRequestContext.post: Target page, context or browser has been closed
-    Call log:
-    [2m  - → POST http://127.0.0.1:3041/api/auth/login[22m
-    [2m    - user-agent: Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.7778.96 Mobile Safari/537.36[22m
-    [2m    - accept: */*[22m
-    [2m    - accept-encoding: gzip,deflate,br[22m
-    [2m    - origin: http://127.0.0.1:3041[22m
-    [2m    - x-forwarded-for: reviewer-rehearsal-1783135667176-jjr7xpjz1y-mobile-chrome-1-0-734619e04167d4895d13-0f64ab1ff3a19497b489[22m
-    [2m    - content-type: application/json[22m
-    [2m    - content-length: 67[22m
+> inboxpilot@0.1.0 test:e2e:reviewer
+> npm run e2e:reviewer:ensure && playwright test tests/e2e/meta-reviewer-rehearsal.spec.ts --workers=1
 
 
-      13 |
-      14 | async function loginAsReviewer(page: Page, testInfo: TestInfo) {
-    > 15 |   const response = await page.request.post("/api/auth/login", {
-         |                                       ^
-      16 |     data: { email: reviewerEmail, password: reviewerPassword },
-      17 |     headers: {
-      18 |       origin: "http://127.0.0.1:3041",
-        at loginAsReviewer (C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\tests\e2e\meta-reviewer-rehearsal.spec.ts:15:39)
-        at C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\tests\e2e\meta-reviewer-rehearsal.spec.ts:38:11
+> inboxpilot@0.1.0 e2e:reviewer:ensure
+> tsx scripts/ensure-reviewer-demo-data.ts
 
-    Error Context: test-results\meta-reviewer-rehearsal-me-cdd51-tacts-and-automations-flows-mobile-chrome\error-context.md
+◇ injected env (58) from .env.local // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[ensure-reviewer-demo-data] reviewer-safe local demo data is ready.
 
-  2 failed
-    [chromium] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows 
-    [mobile-chrome] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows 
+Running 2 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (7.3s)
+  ok 2 [mobile-chrome] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (5.8s)
+
+  2 passed (15.1s)
 
 ```
 ### stderr
 ```text
-(node:2324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:23944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:2324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:23944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:22300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:14628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:22300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:14628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 ```
