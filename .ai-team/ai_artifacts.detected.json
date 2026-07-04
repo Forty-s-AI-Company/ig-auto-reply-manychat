@@ -1,0 +1,3489 @@
+{
+  "generated": "2026-07-04",
+  "count": 387,
+  "artifacts": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "kind": "WORKFLOW",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: .github/workflows/ci.yml"
+    },
+    {
+      "path": ".github/workflows/update-production-alias.yml",
+      "kind": "WORKFLOW",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: .github/workflows/update-production-alias.yml"
+    },
+    {
+      "path": ".github/workflows/update-staging-alias.yml",
+      "kind": "WORKFLOW",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: .github/workflows/update-staging-alias.yml"
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: active entrypoint contains old AI_TEAM references.",
+      "reuse_decision": "REWRITE",
+      "reason": "path match: AGENTS.md"
+    },
+    {
+      "path": "AI_TEAM/LAUNCH_CRITERIA.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/LAUNCH_CRITERIA.md"
+    },
+    {
+      "path": "AI_TEAM/MODEL_ASSIGNMENT.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# AI_TEAM Model Assignment AI_TEAM 現在分成兩層： 1. `Codex CLI` 是主開發引擎，負責真正讀碼、改碼、驗證、更新文件。 2. 本地模型是輔助層，負責摘要、報告、下一輪提示詞、低風險小修建議。 這樣做的原因很直接： - 真正會改產品程式的主體要單一，避免多個代理同時亂改。 - 本地模型便宜、快，適合做整理與分流，不適合主導高風險產品修改。"
+    },
+    {
+      "path": "AI_TEAM/PROJECT_STATE.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "- Channels / IG 串接與多帳號顯示 - Automations 的作用範圍與使用者理解 - Analytics 的資料一致性 - PayUNI Sandbox 驗證與正式上線前 SOP ## High Risk Areas - Meta / Instagram OAuth - Webhook - Supabase / Prisma migration - production DB - PayUNI production - te"
+    },
+    {
+      "path": "AI_TEAM/README.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# AI_TEAM 總控 AI_TEAM 是 InboxPilot 的本機無人值守開發控制層。 現在的版本已經改成「開發閉環」： - `Codex CLI` 主導實作 - `QA runner` 做驗證 - `本地模型` 做摘要 / review / 報告 / 下一輪提示詞 - `Playwright` 做 browser QA - 整輪做完會直接進下一輪，不再只停在回報 ## 先讀哪些檔案 1. `AI_TEAM/PROJE"
+    },
+    {
+      "path": "AI_TEAM/reports/browser-qa-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/reports/browser-qa-report.md"
+    },
+    {
+      "path": "AI_TEAM/reports/dev-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "on, or PayUNI production action was performed. # 2026-06-30 - Billing / PayUNI sandbox checkout gate clarity Task: - 讓 Billing 頁面不要把尚未開通的正式金流 checkout 做成看起來可直接送出的按鈕。 - 保留 sandbox 可驗證的流程，但把 production gate 的原因提前在 UI 說清楚。 - 補上"
+    },
+    {
+      "path": "AI_TEAM/reports/final-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "/ Advanced Access / Business Verification 仍是人工門檻。 - PayUNI production merchant approval、controlled enablement、第一筆低額 production smoke 仍是人工門檻。 - No production DB mutation, migration, Production deployment, Meta App Review action,"
+    },
+    {
+      "path": "AI_TEAM/reports/launch-readiness-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/reports/launch-readiness-report.md"
+    },
+    {
+      "path": "AI_TEAM/reports/next-codex-prompt.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "品完成為目標，先處理 Inbox，再依序處理 Channels、Contacts、Automations、Analytics、Billing / PayUNI Sandbox。 - 不要再優先處理 runner / delivery 機器本身，除非它阻止產品閉環繼續。 本輪規則： 1. 先讀 `AI_TEAM/tasks/current-task.md`、`AI_TEAM/tasks/backlog.md`、`AI_TEAM/tasks/queue"
+    },
+    {
+      "path": "AI_TEAM/reports/project-audit.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/reports/project-audit.md"
+    },
+    {
+      "path": "AI_TEAM/reports/qa-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/reports/qa-report.md"
+    },
+    {
+      "path": "AI_TEAM/reports/runner-log.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "- Channels / IG 串接與多帳號顯示 - Automations 的作用範圍與使用者理解 - Analytics 的資料一致性 - PayUNI Sandbox 驗證與正式上線前 SOP ## High Risk Areas - Meta / Instagram OAuth - Webhook - Supabase / Prisma migration - production DB - PayUNI production - te"
+    },
+    {
+      "path": "AI_TEAM/reports/security-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/reports/security-report.md"
+    },
+    {
+      "path": "AI_TEAM/reports/setup-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# Setup Report ## Status - AI_TEAM baseline created - Old autopilot entrypoints marked for retirement - Product code untouched ## Created - `AI_TEAM/README.md` - `AI_TEAM/PROJECT_STATE.md` - `AI_TEAM/LAUNC"
+    },
+    {
+      "path": "AI_TEAM/reports/worktree-dirty-files-audit.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "omation-scope-policy.test.ts` - AI provider / local CLI opt-in: - `src/lib/ai/gemini-cli.ts` - `tests/ai-providers.test.ts` - `tests/unit/gemini-cli.test.ts` - Shared authenticated route smoke: - `tests/e2e/public-and-"
+    },
+    {
+      "path": "AI_TEAM/roles/01-project-lead.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/01-project-lead.md"
+    },
+    {
+      "path": "AI_TEAM/roles/02-system-architect.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/02-system-architect.md"
+    },
+    {
+      "path": "AI_TEAM/roles/03-backend-lead.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/03-backend-lead.md"
+    },
+    {
+      "path": "AI_TEAM/roles/04-frontend-worker.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/04-frontend-worker.md"
+    },
+    {
+      "path": "AI_TEAM/roles/05-qa-runner.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/05-qa-runner.md"
+    },
+    {
+      "path": "AI_TEAM/roles/06-bug-fixer.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/06-bug-fixer.md"
+    },
+    {
+      "path": "AI_TEAM/roles/07-browser-qa.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/07-browser-qa.md"
+    },
+    {
+      "path": "AI_TEAM/roles/08-security-reviewer.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# Security Reviewer ## 職責 - secret / token / cookie / callback URL / DB URL 檢查 - OAuth / webhook / payment / admin / tenant isolation 檢查 - 停止危險動作，而不是替風險找藉口"
+    },
+    {
+      "path": "AI_TEAM/roles/09-report-writer.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/09-report-writer.md"
+    },
+    {
+      "path": "AI_TEAM/roles/10-prompt-engineer.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/roles/10-prompt-engineer.md"
+    },
+    {
+      "path": "AI_TEAM/RUNNER_DESIGN.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "制器。 ## 核心目標 在不碰 production DB、不部署 Production 的前提下，持續做這幾件事： 1. 讀目前任務與狀態 2. 呼叫 Codex CLI 做本輪實作 3. 跑適合這一輪的 QA 4. 用本地模型整理結果 5. 直接進下一輪，而不是停在「下一步建議」 ## 目前閉環順序 每一輪 runner 從 `AI_TEAM/tasks/queue.json` 取第一個可執行 task，接著依序做： 1. `planne"
+    },
+    {
+      "path": "AI_TEAM/runtime/.gitkeep",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/.gitkeep"
+    },
+    {
+      "path": "AI_TEAM/runtime/browser-qa.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/browser-qa.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/code-review.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# Code Reviewer - STATUS: FAIL - MODEL: `deepseek-coder-v2:lite` - REASON: \u001b[?2026h\u001b[?25l\u001b[1G⠙ \u001b[K\u001b[?25h\u001b[?2026l\u001b[?2026h\u001b[?25l\u001b[1G⠹ \u001b[K\u001b[?25h\u001b[?2026l\u001b[?20"
+    },
+    {
+      "path": "AI_TEAM/runtime/codex-exec-prompt.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "oyment。 高級模式模型與 QA 分工： - 若本輪是大型功能重構、多檔案聯動修復、API / auth / tenant / data flow，建議 Codex CLI 使用 GPT-5.5，reasoning high。 - 若本輪是一般產品修復或稍大功能閉環，建議 Codex CLI 使用 GPT-5.4，reasoning medium 到 high。 - 若本輪只是文件、摘要、prompt 或 backlog 整理，建議 Codex C"
+    },
+    {
+      "path": "AI_TEAM/runtime/codex-last-message.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/codex-last-message.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/current-worker.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/current-worker.json"
+    },
+    {
+      "path": "AI_TEAM/runtime/delivery-state.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/delivery-state.json"
+    },
+    {
+      "path": "AI_TEAM/runtime/error-summary.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "cts、Channels 以及 Automations 的功能完整性。同時，Analy Analytics 的資料一致性也是一個高風險區域。此外，PayUNI Sandbox 的驗證和正式 上線前的 SOP 執行也是當前的重點工作。 ### 主要阻塞（P0/P1/P2） - **Inbox visible-but-unusable product sweep** (P1)：Inbox 功能尚未完成，用 戶無法正常操作。 - **Channels"
+    },
+    {
+      "path": "AI_TEAM/runtime/final-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/final-report.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/health-summary.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "- Channels / IG 串接與多帳號顯示 - Automations 的作用範圍與使用者理解 - Analytics 的資料一致性 - PayUNI Sandbox 驗證與正式上線前 SOP ## High Risk Areas - Meta / Instagram OAuth - Webhook - Supabase / Prisma migration - production DB - PayUNI production - te"
+    },
+    {
+      "path": "AI_TEAM/runtime/heartbeat.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/heartbeat.json"
+    },
+    {
+      "path": "AI_TEAM/runtime/loop-state.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/loop-state.json"
+    },
+    {
+      "path": "AI_TEAM/runtime/next-codex-prompt.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/next-codex-prompt.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/qa-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "證範圍 - AI_TEAM 入口腳本 - lint / test / build gate - 非 production 測試資料庫 preflight - Antigravity CLI Browser QA ## 結果 - `ai-team:check`：PASS，AI_TEAM 骨架完整。 - `npm run lint`：PASS，通過。 - `npm test`：SKIP，一般模式 lite QA 略過完整測試，交由大功能階段或睡覺模式執行。"
+    },
+    {
+      "path": "AI_TEAM/runtime/runner-log.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/runner-log.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/static-qa.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/static-qa.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/visible-ai-team-qa-utf8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "st.ts, tests\\instagram-profile-refresh-route.test.ts, tests\\meta-business-login-sandbox-production-isolation.test.ts RUN v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat ·············· Test Files 6 passed (6)"
+    },
+    {
+      "path": "AI_TEAM/runtime/visible-ai-team-qa-with-db.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ndered as static content ? (Dynamic) server-rendered on demand [AI_TEAM] ?瑁? Antigravity Browser QA... [AI_TEAM] QA 摰?嚗?霅血?嚗?瘝? code failure?底閬?AI_TEAM/runtime/qa-report.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/visible-ai-team-qa.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ndered as static content ? (Dynamic) server-rendered on demand [AI_TEAM] ?瑁? Antigravity Browser QA... [AI_TEAM] QA 摰?嚗?霅血?嚗?瘝? code failure?底閬?AI_TEAM/runtime/qa-report.md"
+    },
+    {
+      "path": "AI_TEAM/runtime/worker-result.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/runtime/worker-result.json"
+    },
+    {
+      "path": "AI_TEAM/scripts/ai-team-runner.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "來像壞掉\", \"補 focused tests 或 smoke\", ], }, { id: \"billing-payuni-sandbox-autofill\", title: \"Billing / PayUNI Sandbox product readiness sweep\", priority: 7, lane: \"product\", scope: [ \"src/app"
+    },
+    {
+      "path": "AI_TEAM/scripts/ai-team.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ot, \"roles\", \"07-browser-qa.md\"), path.join(aiTeamRoot, \"roles\", \"08-security-reviewer.md\"), path.join(aiTeamRoot, \"roles\", \"09-report-writer.md\"), path.join(aiTeamRoot, \"roles\", \"10-prompt-engineer.md\"), path.join(aiTea"
+    },
+    {
+      "path": "AI_TEAM/scripts/browser-qa-prompt.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/browser-qa-prompt.md"
+    },
+    {
+      "path": "AI_TEAM/scripts/codex-dev.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "`- EXIT_CODE: ${result.code}`, \"\", \"## SUMMARY\", isTimeout ? \"Codex CLI 已成功啟動，但超過 AI_TEAM_CODEX_TIMEOUT_MS。請調高 timeout、縮小 current task，或改用 sleep mode 長跑。\" : \"Codex CLI 已啟動但回傳非 0 exit code。請優先看 STDERR 摘要。\","
+    },
+    {
+      "path": "AI_TEAM/scripts/lib/ai-team-paths.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/lib/ai-team-paths.mjs"
+    },
+    {
+      "path": "AI_TEAM/scripts/lib/process-lock.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/lib/process-lock.mjs"
+    },
+    {
+      "path": "AI_TEAM/scripts/local-ai-team.ps1",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "dvanced\") { $env:AI_TEAM_QA_LEVEL = \"full\" $env:AI_TEAM_BROWSER_QA_MODEL = \"Gemini 3.5 Flash\" $env:AI_TEAM_BROWSER_QA_FALLBACK_MODEL = \"Gemini 3.5 Pro\" } if ($EnableGitDelivery) { $env:AI_TEAM_ENABLE_GIT_DELIVERY = \"1"
+    },
+    {
+      "path": "AI_TEAM/scripts/local-models.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "test 狀態，整理成精簡繁體中文 Markdown。\", \"只輸出這三段：\", \"1. 現況摘要\", \"2. 主要阻塞（P0/P1/P2）\", \"3. 建議先修哪一件\", \"\", context, ].join(\"\\n\"), }, { key: \"static-qa\", role: \"Bug Fixer\", model: mo"
+    },
+    {
+      "path": "AI_TEAM/scripts/local-qa.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "onst preferredModels = [ process.env.AI_TEAM_BROWSER_QA_MODEL?.trim(), \"Gemini 3.5 Flash\", \"Gemini 3.5 Flash (High)\", \"Gemini 3.5 Flash (Medium)\", process.env.AI_TEAM_BROWSER_QA_FALLBACK_MODEL?.trim(),"
+    },
+    {
+      "path": "AI_TEAM/scripts/local-qa.ps1",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/local-qa.ps1"
+    },
+    {
+      "path": "AI_TEAM/scripts/playwright-browser-qa.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/playwright-browser-qa.mjs"
+    },
+    {
+      "path": "AI_TEAM/scripts/qa-staging.js",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old runner competes with new Python autopilot.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/scripts/qa-staging.js"
+    },
+    {
+      "path": "AI_TEAM/skills/design-md-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/design-md-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/impeccable-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/impeccable-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/meta-api-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/meta-api-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/nextjs-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/nextjs-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/payuni-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# PayUNI Skill - Sandbox 優先，production 需另案核准。 - checkout / notify / return 都要重視簽章與 idempotency。 - 不要假裝正式金流已經能直接上線。"
+    },
+    {
+      "path": "AI_TEAM/skills/README.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/README.md"
+    },
+    {
+      "path": "AI_TEAM/skills/security-best-practices-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/security-best-practices-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/security-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/security-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/shadcn-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/shadcn-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/supabase-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/supabase-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/testing-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/testing-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/ui-ux-pro-max-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/ui-ux-pro-max-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/vercel-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/vercel-skill.md"
+    },
+    {
+      "path": "AI_TEAM/skills/web-design-guidelines-skill.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Low: skill references remain useful but not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: AI_TEAM/skills/web-design-guidelines-skill.md"
+    },
+    {
+      "path": "AI_TEAM/tasks/acceptance.md",
+      "kind": "TASK",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/tasks/acceptance.md"
+    },
+    {
+      "path": "AI_TEAM/tasks/backlog.md",
+      "kind": "TASK",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "目，並把阻塞原因寫進 `AI_TEAM/reports/final-report.md`。 ## Queue Snapshot - [COMPLETED][P1][ai-team] AI_TEAM delivery autonomy closeout - [BLOCKED][P1][product] Inbox visible-but-unusable product sweep - [COMPLETED][P2][ai-team] A"
+    },
+    {
+      "path": "AI_TEAM/tasks/current-task.md",
+      "kind": "TASK",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/tasks/current-task.md"
+    },
+    {
+      "path": "AI_TEAM/tasks/queue.json",
+      "kind": "TASK",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": ", \"pipeline 補到 merge-delivery 與 deploy gate\", \"一般模式 / 睡覺模式啟動器支援 unattended delivery flags\", \"smoke 覆蓋 git-delivery / merge-delivery / deploy\", \"README / RUNNER_DESIGN / docs 狀態同步\" ], \"co"
+    },
+    {
+      "path": "AI_TEAM/WORKTREE_POLICY.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: old AI_TEAM docs are superseded by compact canonical docs.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: AI_TEAM/WORKTREE_POLICY.md"
+    },
+    {
+      "path": "CODEX_DESKTOP_AI_DOCS_AND_RELEASE_AUTOPILOT_V2_MINIMAL.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "# Codex Desktop Master Task V2 — AI 文件去重重整 + 既有無人值守系統整併 + 最小化 Release Autopilot > 使用方式：把本文件放到專案根目錄，使用 **Codex Desktop** 開啟該專案後，要求 Codex 讀取並完整執行。 > 本文件的重點不是套公版模板，而是讓 Codex **自動找出此 repo 裡所有 AI 文件、歷史紀錄、舊限制、舊 autopilot 腳"
+    },
+    {
+      "path": "docs/adr-meta-business-login-before-implementation.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "# ADR: Meta Business Login 實作前技術決策 狀態：Proposed，僅供文件決策與 sandbox-only 實驗使用 日期：2026-06-15 範圍：Meta / Instagram 帳號連接流程、App Review、OAuth callback、workspace linking、channel sync ## 背景 InboxPilot 目前新增 Ins"
+    },
+    {
+      "path": "docs/assets/ai-settings-cli-connection-local.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/ai-settings-cli-connection-local.png"
+    },
+    {
+      "path": "docs/assets/ai-settings-db-only.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/ai-settings-db-only.png"
+    },
+    {
+      "path": "docs/assets/botcommerce/screenshots/81-faq-are-there-additional-costs-for-whatsapp-or-ai.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/botcommerce/screenshots/81-faq-are-there-additional-costs-for-whatsapp-or-ai.png"
+    },
+    {
+      "path": "docs/assets/debug-_ai-settings.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/debug-_ai-settings.png"
+    },
+    {
+      "path": "docs/assets/debug-_automations.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/debug-_automations.png"
+    },
+    {
+      "path": "docs/assets/fullsite-AI.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/fullsite-AI.png"
+    },
+    {
+      "path": "docs/assets/local-ai-cli-enabled.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/local-ai-cli-enabled.png"
+    },
+    {
+      "path": "docs/assets/local-settings-automation.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/local-settings-automation.png"
+    },
+    {
+      "path": "docs/assets/main-ui-smoke-results.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": ": 9, \"clicked\": [ \"改用 ChatGPT API 連接 Codex 模型\", \"改用 Gemini API 連接 Antigravity 模型\" ], \"skipped\": [ \"PRO\\n\\nCarry凱睿｜IG x AI x 不露臉起號\", \"A\\n我的個人檔案\", \"儲存設定\","
+    },
+    {
+      "path": "docs/assets/manychat-ui-automations.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/manychat-ui-automations.png"
+    },
+    {
+      "path": "docs/assets/prod-ai-settings-cli-connection.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/prod-ai-settings-cli-connection.png"
+    },
+    {
+      "path": "docs/assets/prod-ai-settings-db-only-final.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/prod-ai-settings-db-only-final.png"
+    },
+    {
+      "path": "docs/assets/prod-ai-settings-db-only-fixed.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/prod-ai-settings-db-only-fixed.png"
+    },
+    {
+      "path": "docs/assets/prod-ai-settings-db-only.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/assets/prod-ai-settings-db-only.png"
+    },
+    {
+      "path": "docs/automation-template-catalog.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/automation-template-catalog.md"
+    },
+    {
+      "path": "docs/automation-webhooks.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/automation-webhooks.md"
+    },
+    {
+      "path": "docs/billing-affiliate-readiness.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ion: - Users who briefly see the payment redirect fallback now get a localized handoff to PayUNI. - No production DB action, production deployment, migration / db push, PayUNI production switch, Meta App Review action, push, o"
+    },
+    {
+      "path": "docs/billing/PLANS.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "path match: docs/billing/PLANS.md"
+    },
+    {
+      "path": "docs/botcommerce-site-notes.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "CRMs, forms, and automation tools to build powerful workflows without coding. | OpenAI | OpenAI icon | DeepSeek | WhatsApp | <img decoding=\"async\" src=\"https://botcommerce.b-cdn.net/wp-content/uploads/2025/03/whatsapp-2.svg\" a"
+    },
+    {
+      "path": "docs/codex-session-log.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Medium: logs are useful history, not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ensure && npx playwright test tests/e2e/public-and-auth.spec.ts --grep \"billing sandbox gate guidance|referral URL|Affiliate cash payout|wallet lifecycle\" --workers=1` - `npm test` still hits the known Windows Vitest batch cr"
+    },
+    {
+      "path": "docs/codex-windows-setup.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/codex-windows-setup.md"
+    },
+    {
+      "path": "docs/environment-variables.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "| | `AI_DEFAULT_MODEL` | 工作區尚未設定時的預設 model。 | | `OPENAI_API_KEY` | OpenAI-compatible provider key。 | | `GEMINI_API_KEY` | Gemini API key。"
+    },
+    {
+      "path": "docs/final-release-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "xplain what data is being shown. - [ ] Billing and referral copy clearly states Sandbox / non-cash credit limits where applicable. ## Security / Data - [ ] Workspace / tenant scope is enforced for authenticated data routes. -"
+    },
+    {
+      "path": "docs/final-release-qa-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "ealth/staging` read-only check only | Manual / post-merge | | Payments | PayUNI Sandbox only | Manual sandbox smoke | | Meta | OAuth UX only, no App Review submission | Manual reviewer-safe smoke | ## Page matrix | Area | Rou"
+    },
+    {
+      "path": "docs/final-release-qa-report.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "ESLint, Next build | | Integrations | Meta / Instagram OAuth + webhooks, PayUNI Sandbox, Vercel | ## Findings | Severity | Count | Summary | | --- | ---: | --- | | P0 | 0 | No production data-loss, secret exposure, or payment"
+    },
+    {
+      "path": "docs/fix-roadmap.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "Medium: logs are useful history, not source of truth.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "still not approved. - `[ ]` App icon still appears as an upload target; prepare reviewer-safe branding before final submission if required. - `[ ]` Final reviewer recording, redaction pass, reviewer-safe asset handoff, and manua"
+    },
+    {
+      "path": "docs/functional-test-report.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "雖然成功，但出現 5 個 warning，集中在以下 import trace： ```text ./next.config.ts ./src/lib/ai/gemini-cli.ts ./src/lib/ai/faq.ts ./src/app/api/ai-model-test/route.ts ``` 警告內容指出 Turbopack 追蹤到過於動態的檔案路徑或 require，可能造成部署 artifact 把不必要的專案檔案一起追蹤進去"
+    },
+    {
+      "path": "docs/go-live-final-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "] Meta App 必須切到 Live mode。 - [ ] 必須完成 App Review / Advanced Access。 - [ ] 必須確認 reviewer / 客戶帳號能正確授權指定資產。 - [ ] 若 Meta 要求，必須完成 Business Verification。 - [ ] 必須用正式 Instagram professional account 實測： connect -> 收 DM -> Inbox 顯示 -"
+    },
+    {
+      "path": "docs/go-live-status.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "Access / 實際授權。 | | ⚠️ | Business Verification | 不一定每個測試情境都要，但正式商用很常需要。 | | ⚠️ | Reviewer demo | 還需要正式網址、乾淨測試帳號與完整 demo。 | ## 安全與營運 | 狀態 | 項目 | 判定 | |---|---|---| | ✅ | `AUTH_SECRET` / server-only env 分層 | 已有。 | | ✅ | Webhook H"
+    },
+    {
+      "path": "docs/inbox-manychat-test-report.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/inbox-manychat-test-report.md"
+    },
+    {
+      "path": "docs/inboxpilot-domain-setup.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/inboxpilot-domain-setup.md"
+    },
+    {
+      "path": "docs/manual-qa-script.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "e local app or open staging. 2. Use a seeded QA account only. 3. Keep PayUNI in Sandbox. 4. Do not submit Meta App Review. 5. Do not mutate production DB. ## Public / auth flow 1. Open `/`. 2. Verify landing CTA routes to sig"
+    },
+    {
+      "path": "docs/manychat-feature-reference.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "icles/14281308423452-Instagram-automation-troubleshooting ## 對本專案的功能優先級建議 ### P0：先補齊核心骨架 - Workspace / Channel / Contact / Conversation 的資料關係。 - Inbox 可以看 inbound 與 automation outbound。 - Keyword trigger automation。 - S"
+    },
+    {
+      "path": "docs/manychat-redesign-spec.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "\": \"...\", \"tokenExpiresAt\": \"...\" } ``` ## 7. 第一階段實作清單 建議先做這 6 件事，最有感。 ### P0-1 修中文亂碼 影響檔案： - `src/components/AdminShell.tsx` - `src/components/LoginForm.tsx` - `src/components/AutomationBuilderClient.tsx` - `src/co"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/08-payment-details.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/manychat-settings-screenshots/08-payment-details.json"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/08-payment-details.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/manychat-settings-screenshots/08-payment-details.png"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/16-email.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/manychat-settings-screenshots/16-email.json"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/16-email.png",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: docs/manychat-settings-screenshots/16-email.png"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/23-integrations.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "handling various types of requests and offering personalized support.\\nConnect Claude Account\\nUPGRADE\\nUpgrade required: This feature requires upgrading your plan to access.\\nBETA\\nClaude\\nAPI Secret \\nConnect Claude Account"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/24-payments.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": ": \"INPUT\", \"role\": \"\", \"type\": \"\", \"text\": \"\", \"aria\": \"Sandbox Client ID\", \"href\": \"\", \"placeholder\": \"Sandbox Client ID\", \"value\": \"\", \"checked\": false, \"disabled\": false"
+    },
+    {
+      "path": "docs/manychat-settings-screenshots/records.json",
+      "kind": "CONFIG",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "handling various types of requests and offering personalized support.\\nConnect Claude Account\\nUPGRADE\\nUpgrade required: This feature requires upgrading your plan to access.\\nBETA\\nClaude\\nAPI Secret \\nConnect Claude Account"
+    },
+    {
+      "path": "docs/master-staging-prelaunch-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "ET GOOGLE_CLIENT_SECRET GOOGLE_CLIENT_ID CODEX_CLI_TIMEOUT_MS CODEX_CLI_COMMAND OPENAI_API_KEY TELEGRAM_WEBHOOK_SECRET TELEGRAM_BOT_TOKEN SUPABASE_SERVICE_ROLE_KEY NEXT_PUBLIC_SUPABASE_ANON_KEY NEXT_PUBLIC_SUPABASE_URL PAYUNI_"
+    },
+    {
+      "path": "docs/meta-app-review-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "d website URL. - Basic Settings still show the App icon upload/drop area; add a reviewer-safe InboxPilot icon before final submission if Meta requires branded app presentation. - Webhooks callback is now persisted in Meta Develo"
+    },
+    {
+      "path": "docs/meta-app-review-day-of-recording-run-card.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "st updated: 2026-07-03. ## 2026-07-03 Preflight Notes - The current Instagram reviewer-facing OAuth callback path is `/api/instagram/oauth/callback`. - Do not fill or narrate `/api/oauth/meta-instagram/callback` as the main ca"
+    },
+    {
+      "path": "docs/meta-app-review-final-recording-preflight.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "before recording the InboxPilot Meta App Review walkthrough. Use it after the reviewer-safe local rehearsal and staging tenant SOP are prepared, but before recording videos, capturing screenshots, or pressing any Meta App Revi"
+    },
+    {
+      "path": "docs/meta-app-review-operator-submission-workbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ebsite URL. - Basic Settings still show an App icon upload/drop area; prepare a reviewer-safe InboxPilot icon before final recording or submission if required. - Webhooks callback is persisted as `https://inboxpilot.carry-digita"
+    },
+    {
+      "path": "docs/meta-app-review-screenshot-redaction-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "is checklist prepares the still-image screenshot package that supports the Meta reviewer recording. Do not log in to Meta Developer Dashboard from this flow. Do not submit App Review. Do not include secrets, tokens, authorizati"
+    },
+    {
+      "path": "docs/meta-app-review-submission-package.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "c Settings gap: the App icon area still appears as an upload/drop target; add a reviewer-safe app icon before final package capture if Meta requires branded presentation. - Webhooks callback: persisted as `https://inboxpilot.car"
+    },
+    {
+      "path": "docs/meta-business-login-account-selection-test-matrix.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "dia sync / inbox query 都限制 workspace + channel。 ## 是否接近 ManyChat UX 的判定標準 ### P0 必須達成 - 使用者能在 Meta dialog 中明確選擇 Business。 - 使用者能在 Meta dialog 中明確選擇 Page。 - 使用者能在 Meta dialog 中明確選擇 Instagram Professional / Business Accou"
+    },
+    {
+      "path": "docs/meta-business-login-app-review-demo-script.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "view，說明 InboxPilot 若導入 Facebook Login for Business / Instagram Business Login 時，reviewer 應如何完成 demo、每個 permission 的使用目的、資料在產品中的顯示位置，以及 callback / workspace linking / channel sync 的安全驗證重點。 本文件只描述審核腳本與安全規格，不代表目前產品已導入新的 Business L"
+    },
+    {
+      "path": "docs/meta-business-login-experiment-spec.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "時的處理。 - 使用者如何解除連接與資料刪除。 可能仍需要： - Advanced Access。 - Business Verification。 - Reviewer demo account。 - 測試用 Facebook Page。 - 測試用 Instagram Professional / Business Account。 - Meta App Dashboard 的 login configuration 截圖或設定說明。 ##"
+    },
+    {
+      "path": "docs/meta-business-login-final-app-review-demo-package-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "hecklist defines the final evidence package required before Meta Business Login sandbox can request an internal beta go/no-go review. This document does not approve production implementation and does not change: - OAuth flow"
+    },
+    {
+      "path": "docs/meta-business-login-final-app-review-package-assembly-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "al-redaction-search-execution-report-template.md docs/meta-business-login-final-reviewer-recording-shot-list.md docs/meta-business-login-final-permission-usage-proof-matrix.md docs/meta-business-login-final-app-review-demo-packa"
+    },
+    {
+      "path": "docs/meta-business-login-final-doc-index-and-production-decision-map.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "index for the current Meta Business Login / Instagram Business Login research, sandbox, internal beta, App Review, monitoring, and closeout documentation set. It summarizes the current decision path before any future producti"
+    },
+    {
+      "path": "docs/meta-business-login-final-permission-usage-proof-matrix.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "equested and candidate Meta / Instagram permissions for the Meta Business Login sandbox App Review package. This document does not change: - OAuth flow - callback route - login button - environment variables - Prisma schema -"
+    },
+    {
+      "path": "docs/meta-business-login-final-redaction-search-execution-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Meta token exchange Source documents: ```text docs/meta-business-login-final-reviewer-recording-shot-list.md docs/meta-business-login-final-permission-usage-proof-matrix.md docs/meta-business-login-final-app-review-demo-packa"
+    },
+    {
+      "path": "docs/meta-business-login-final-reviewer-recording-shot-list.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Final Reviewer Recording Shot List Date: 2026-06-16 Status: Draft recording plan / App Review readiness Hold / internal beta Hold / production implementa"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-final-package-gate-readiness-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "adiness review date | | | Readiness owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Artifact package root | `meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-first-execution-blank-run.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "| | | Run owner | | | Release owner | | | Engineering owner | | | Security reviewer | | | App Review owner | | | Product owner | | | Operations owner | | | Artifact package root | `meta-business-login-internal-beta-arti"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-live-execution-closeout-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "N` | | Closeout date | | | Closeout owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Artifact package root | `meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-live-execution-log-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ution end time | | | Live execution owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Artifact package root | `meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-operator-preflight-signoff.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Product owner | | | Engineering owner | | | Operations owner | | | Security reviewer | | | Internal beta decision before preflight | Hold | | App Review submission preparation decision before preflight | Hold | | Production"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-preflight-decision-memo-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Product owner | | | Engineering owner | | | Operations owner | | | Security reviewer | | | Target artifact package root | `meta-business-login-internal-beta-artifacts/IBE-RUN-YYYYMMDD-NNN/` | | Target manifest path | | | P"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-preflight-execution-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Product owner | | | Engineering owner | | | Operations owner | | | Security reviewer | | | Source sign-off sheet version | | | Source operator runbook version | | | Target artifact package root | `meta-business-login-inte"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-collection-start-authorization-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "horization date | | | Authorization owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Target artifact package root | `meta-b"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-folder-structure-spec.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "-login-internal-beta-artifacts/ IBE-RUN-YYYYMMDD-NNN/ 00_manifest/ 01_reviewer_recording/ 02_screenshots/ 03_permission_proof/ 04_test_asset_proof/ 05_callback_evidence/ 06_workspace_linking_dry_run"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-manifest-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "s | Draft | | Run date | | | Run owner | | | Release owner | | | Engineering reviewer | | | Security reviewer | | | App Review owner | | | Product owner | | | Operations owner | | | Source folder structure spec version |"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-artifact-redaction-review-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "1 page:masked-001 ig:masked-001 workspace:masked-001 user:masked-001 ``` ## 1. Reviewer Recording Redaction Checklist Artifact: ```text IBE-ART-01 reviewer-recording ``` | Check | Required result | Actual result | Status | N"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-closeout-readiness-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Monitoring start | | | Monitoring end | | | Monitoring owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Release owner | | | Workspaces monito"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-closeout-report-execution-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "| | Closeout date | | | Closeout owner | | | Monitoring owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Release owner | | | Workspaces monito"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-closeout-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "in-internal-beta-evidence-execution-report-template.md docs/meta-business-login-sandbox-go-no-go-checklist.md docs/security-review.md ``` ## 1. Beta Closeout Metadata ```text Closeout report ID: Beta run ID: Closeout date: Be"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-continuation-decision-memo-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Decision owner | | | Monitoring owner | | | Engineering owner | | | Security reviewer | | | Operations owner | | | App Review owner | | | Rollback owner | | | Workspaces monitored | Masked workspace markers only | | Users"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-doc-index.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "reporting. | Blank template / not executed | | `docs/meta-business-login-final-reviewer-recording-shot-list.md` | Defines the reviewer recording shots and visual redaction requirements. | Draft recording plan / recording not ca"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-evidence-collection-runbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "llect and record evidence before Meta Business Login / Instagram Business Login sandbox can move from internal beta Hold to internal beta Go. This document does not change: - OAuth flow - callback route - login button - envir"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-evidence-execution-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "llection-runbook.md ``` ## 1. Evidence Run Metadata ```text Run ID: Run date: Executor: Reviewer: Branch / commit: Environment: Internal beta package version: App Review package version: Reviewer workspace marker: Workspace al"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-evidence-execution-summary-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "NNN` | | Summary date | | | Summary owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Artifact package root | `meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-extended-monitoring-plan-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "y + weekly review | | Monitoring owner | | | Engineering owner | | | Security reviewer | | | Operations owner | | | App Review owner | | | Product owner | | | Rollback owner | | | Release owner | | | Workspaces monitored"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-final-package-gate-review-execution-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Gate review date | | | Gate review owner | | | Release owner | | | Security reviewer | | | Engineering owner | | | Operations owner | | | App Review owner | | | Product owner | | | Artifact package root | `meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-final-package-gate-review-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "elease decision memo path | | | Run owner | | | Release owner | | | Security reviewer | | | App Review owner | | | Engineering reviewer | | | Product owner | | | Operations owner | | | Internal beta decision | Hold | | P"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-final-preflight-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "preflight gate before releasing Meta Business Login / Instagram Business Login sandbox from internal beta Hold. This document does not change: - OAuth flow - callback route - login button - environment variables - Prisma sch"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-first-24h-monitoring-execution-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "| | Launch owner | | | Rollback owner | | | Engineering owner | | | Security reviewer | | | Operations owner | | | App Review owner | | | Workspaces monitored | Masked workspace markers only | | Users monitored | Masked us"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-first-artifact-collection-operator-runbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "Owns run timing, Go/Hold routing, rollback owner assignment, and final package handoff. | Yes | | `app-review-owner` | Captures reviewer recording, screenshots, scope reconciliation, and App Review package evidence. | Yes | |"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-launch-authorization-memo-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "roduct owner decision | Hold | | Engineering owner decision | Hold | | Security reviewer decision | Hold | | App Review owner decision | Hold | | Operations owner decision | Hold | | Release owner decision | Hold | | Final packa"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-launch-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "iness-login-internal-beta-final-preflight-checklist.md docs/meta-business-login-sandbox-go-no-go-checklist.md docs/security-review.md ``` ## 1. Launch Metadata ```text Launch checklist ID: Launch date: Launch owner: Reviewer:"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-launch-execution-runbook-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "| Launch owner | | | Operations owner | | | Engineering owner | | | Security reviewer | | | App Review owner | | | Rollback owner | | | Monitoring owner | | | Launch status | Draft | | Internal beta launch authorization |"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-monitoring-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ess-login-internal-beta-evidence-collection-runbook.md docs/meta-business-login-sandbox-go-no-go-checklist.md docs/security-review.md ``` ## 1. Beta Run Metadata ```text Monitoring report ID: Beta run ID: Run date: Monitoring"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-real-artifact-collection-execution-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "| | Hold | | Release owner assigned. | Role marker only | | Hold | | Security reviewer assigned. | Role marker only | | Hold | | App Review owner assigned. | Role marker only | | Hold | | Product owner assigned. | Role marke"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-real-evidence-execution-plan.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "on | Owner | Version | Redaction gate | | --- | --- | --- | --- | --- | --- | | Reviewer recording | End-to-end reviewer-safe recording covering account selection, consent, redacted callback, workspace linking dry-run, channel s"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-real-evidence-execution-report-blank-run.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "un ID | `IBE-RUN-YYYYMMDD-001` | | Run date | | | Run owner | | | Engineering reviewer | | | Security reviewer | | | App Review owner | | | Product owner | | | Operations owner | | | Workspace under test | Masked workspac"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-release-decision-memo-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "ds the final decision on whether Meta Business Login / Instagram Business Login sandbox can move from internal beta Hold to internal beta Go. This document does not change: - OAuth flow - callback route - login button - envir"
+    },
+    {
+      "path": "docs/meta-business-login-internal-beta-release-sign-off-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "t sign off before internal beta can become Go. | Role | Required review area | Reviewer | Decision | Date | Required follow-up | Notes | | --- | --- | --- | --- | --- | --- | --- | | Product owner | Permission proof, product-sc"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-authenticated-browser-evidence-run-2026-06-15.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Authenticated Browser Evidence Run - 2026-06-15 Date: 2026-06-15 Status: Partial Pass / Hold before account authorization Scope: Authe"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-browser-evidence-run-2026-06-15.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Browser Evidence Run - 2026-06-15 Date: 2026-06-15 Status: Hold Scope: Browser-based external evidence attempt for Meta Business Login"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-coding-kickoff-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Coding Kickoff Checklist 日期：2026-06-15 狀態：Kickoff checklist only，尚未進入 sandbox coding 範圍：Meta Business Login sandbox coding kickoff rea"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-coding-risk-test-plan.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Coding Risk & Test Plan ## 2026-06-15 - SBL-06 To SBL-08 Implemented Coverage Status: targeted helper tests passed. | Coverage Area | St"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-coding-spec-draft.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Coding Spec Draft 日期：2026-06-15 狀態：Draft only，尚未進入 coding 適用範圍：`meta-business-facebook-sandbox`、`meta-business-instagram-sandbox` ##"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-coding-task-breakdown.md",
+      "kind": "TASK",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Coding Task Breakdown 日期：2026-06-15 狀態：Task breakdown only，尚未進入 sandbox coding 範圍：Meta Business Login sandbox internal-only / dry-run-"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-controlled-callback-capture-plan.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Controlled Callback Capture Plan Date: 2026-06-16 Status: Sandbox helper and signed-state route guard implemented Scope: Controlled call"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-controlled-consent-run-2026-06-16.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Controlled Consent Run - 2026-06-16 ## Scope This run validated the sandbox callback capture guard after production deployment and then c"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-doc-index.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Document Index 日期：2026-06-15 狀態：Index only，文件索引與決策路徑圖 範圍：Meta Business Login sandbox research / ADR / experiment / App Review / go-no-"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-experiment-report-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Experiment Report Template ## 2026-06-16 - SBL-13 Workspace Linking / Channel Sync Dry-Run Result Summary Status: dry-run workspace linki"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-external-evidence-handoff.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox External Evidence Handoff Date: 2026-06-15 Status: Handoff required Scope: Real Meta App Dashboard and dialog evidence collection ##"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-final-readiness-review.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Final Readiness Review 日期：2026-06-15 狀態：Final readiness review，documentation-only 範圍：Meta Business Login sandbox coding 前檢查 ## 結論 目前"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-go-no-go-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Go/No-Go Checklist ## Latest Current Status - 2026-06-16 Internal Beta Real Evidence Execution Plan Evidence: ```text docs/meta-business"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-implementation-final-report.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Implementation Final Report Date: 2026-06-15 Status: Sandbox coding complete, production implementation blocked Scope: Internal-only /"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-implementation-plan.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox-Only 技術實驗計畫 日期：2026-06-15 狀態：Planning only，尚未進入產品實作 範圍：Facebook Login for Business / Instagram Business Login sandbox provider、authori"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-internal-beta-access-rollback-runbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Internal Beta Access / Rollback Runbook Date: 2026-06-16 Status: Draft runbook / internal beta still Hold / production implementation No-G"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-internal-beta-go-no-go-review.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Internal Beta Go/No-Go Review Date: 2026-06-16 Status: Hold before internal beta / No-Go for production implementation ## Scope This rev"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-next-controlled-callback-prompt.md",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Next Controlled Callback Prompt Date: 2026-06-16 Status: Ready to copy Scope: Next safe Codex prompt before completing Instagram Busin"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-oauth-profile-selection-run-2026-06-16.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox OAuth Profile Selection Run - 2026-06-16 Date: 2026-06-16 Status: Partial Pass / Hold before callback Scope: Instagram Business Login"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-production-isolation-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Production Isolation Test Command Date: 2026-06-15 Status: Added Scope: SBL production isolation regression test ## Purpose This tes"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-runbook-template.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox Runbook Template ## 2026-06-16 - SBL-12 Controlled Callback Capture Run Record Status: helper completed, route integration on Hold. | Fi"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl01-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-01 Test Command Date: 2026-06-15 Status: SBL-01 targeted test command reference Scope: Internal-only route skeleton tests ## Comm"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl03-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-03 Test Command Date: 2026-06-15 Status: SBL-03 targeted test command reference Scope: Sandbox-only state and nonce helpers ## Co"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl04-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-04 Test Command Date: 2026-06-15 Status: SBL-04 targeted test command reference Scope: Sandbox-only code exchange helper ## Comma"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl05-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-05 Test Command Date: 2026-06-15 Status: SBL-05 targeted test command reference Scope: Sandbox-only redacted logging helper ## Co"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl06-08-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-06 To SBL-08 Test Command Date: 2026-06-15 Status: SBL-06 / SBL-07 / SBL-08 targeted test command reference ## Command ```bash npx"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl09-coding-readiness-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-09 Coding Readiness Checklist Date: 2026-06-15 Status: Readiness checklist for SBL-09 sandbox coding only Scope: Decide whether SB"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl09-fixture-redaction-spec.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-09 Fixture And Redaction Assertion Spec Date: 2026-06-15 Status: Draft for sandbox coding only Scope: SBL-09 test fixture, snapsho"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl09-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-09 Test Command Date: 2026-06-15 Status: SBL-09 targeted test command reference Scope: Test scaffold only ## Command Run the SBL"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl09-test-suite-spec.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-09 Test Suite Spec Date: 2026-06-15 Status: Draft for sandbox coding only Scope: SBL-09 minimum test suite specification before SB"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl11-evidence-packet-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-11 Evidence Packet Test Command Date: 2026-06-15 Status: Added Scope: Local dry-run evidence packet only ## Purpose SBL-11 creat"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl12-callback-capture-test-command.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-12 Callback Capture Test Command Date: 2026-06-16 Status: Added Scope: Sandbox-only callback capture helper and signed-state callb"
+    },
+    {
+      "path": "docs/meta-business-login-sandbox-sbl13-workspace-linking-sync-dry-run.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Business Login Sandbox SBL-13 Workspace Linking / Channel Sync Dry-Run Date: 2026-06-16 Status: Pass for dry-run validation / Hold for internal beta ## Scope S"
+    },
+    {
+      "path": "docs/meta-reviewer-demo-data-prep-runbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Reviewer Demo Data Preparation Runbook Last updated: 2026-07-03. ## Purpose This runbook explains how to prepare reviewer-safe demo assets for Me"
+    },
+    {
+      "path": "docs/meta-reviewer-recording-shot-list.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Reviewer Recording Shot List Last updated: 2026-07-04. ## 2026-07-04 Final Recording Preflight Link - Before recording, use `docs/meta-app-review"
+    },
+    {
+      "path": "docs/meta-reviewer-staging-rehearsal-gap-audit.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Reviewer-Safe Staging Rehearsal Gap Audit Last updated: 2026-07-03. ## Purpose This document separates what the current local reviewer rehearsal"
+    },
+    {
+      "path": "docs/meta-reviewer-staging-tenant-sop.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Reviewer-Safe Staging Tenant SOP Last updated: 2026-07-03 (staging tenant + connected Instagram channel + Inbox / Contacts / Automations evidence v"
+    },
+    {
+      "path": "docs/meta-reviewer-test-asset-handoff-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "# Meta Reviewer-Safe Test Asset Handoff Checklist Last updated: 2026-06-26. ## Purpose This checklist prepares the reviewer-safe accounts, workspace, In"
+    },
+    {
+      "path": "docs/payuni-production-go-live-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "actual go-live window. Do not execute them from this document without explicit approval. 1. Announce short payment maintenance window. 2. Confirm production health is ok. 3. Confirm production alias points to intended deployme"
+    },
+    {
+      "path": "docs/payuni-production-sop.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "26-06-26. ## Purpose This SOP controls when InboxPilot can switch PayUNI from sandbox to production payments. The goal is to avoid accidental public charging before merchant review, callback verification, refund handling, an"
+    },
+    {
+      "path": "docs/performance-load-test-plan.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "pe Authenticated flows should be added once staging test accounts and provider sandbox credentials are available: - `/api/dashboard` - `/api/conversations` - `/api/conversations/:id/messages` - `/api/broadcasts` - `/api/broad"
+    },
+    {
+      "path": "docs/product-readiness-review.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "- New users and operators get clearer login feedback during local, staging, and reviewer-safe rehearsal flows. - This does not change login credentials, auth cookies, workspace scope, production data, production deployment, Meta"
+    },
+    {
+      "path": "docs/production-prisma-baseline-maintenance-runbook.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "rations` state has been read recently - clone verification passed - maintenance approval is explicit ## Production Procedure 1. Load production `DATABASE_URL` / `DIRECT_URL` through a safe secret input path. 2. Confirm the tar"
+    },
+    {
+      "path": "docs/project-launch-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "fund automation / callback integration remains blocked until production go-live approval. # 2026-07-02 - Billing invoice status copy polish - `[x]` Billing invoice statuses are localized for users. - `[x]` Recent PayUNI order"
+    },
+    {
+      "path": "docs/public-paid-launch-control-room.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "are hardened in the latest merged launch package. - Meta submission package and reviewer handoff documents exist. - PayUNI production go-live checklist and SOP exist. Public paid launch is still Hold because these cannot be com"
+    },
+    {
+      "path": "docs/qa-analysis-report.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "備實體行為。點擊後透過 `<form action=\"/api/billing/payuni/checkout\">` 正常跳轉至 PayUNI (測試環境下為 Sandbox)，無壞死按鈕。 ## 7. Channels / IG OAuth `/channels/connect/social` - ✅ **狀態**：正常運作 - **重點驗證**： - **IG 授權**：點擊「連接帳號」會正確啟動 OAuth Popup 流程。 - *"
+    },
+    {
+      "path": "docs/referral-affiliate/AFFILIATE_RULES.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "本文件只保留後續受控聯盟現金流程的內部規劃，不代表已對使用者開放提領。 ## 受控開通資格 - Creator 以上付費用戶可以申請 - 需 admin approval - Starter 只能使用推薦折抵制度，不開放現金流程 - 正式開放前必須完成法務、稅務、反作弊、退款 / clawback、對帳與營運付款 SOP ## 等級 | 等級 | 條件 | 主方案月費分潤 | | --- | --- | ---: | | Partner |"
+    },
+    {
+      "path": "docs/security-review.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "CURRENT",
+      "risk": "Low/Medium: product docs feed canonical summary.",
+      "reuse_decision": "REUSE_PART",
+      "reason": "mapping into a pure helper. - Mapped unsupported / permission failures to safe reviewer-facing guidance without provider trace details. Security decision: - Media picker failures no longer rely on generic raw-message matching"
+    },
+    {
+      "path": "docs/staging-preview-env-gap-checklist.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "OAuth-connected account records over global fallback env values - do not store reviewer credentials or tokens in docs ## PayUNI Sandbox Readiness - `PAYUNI_ALLOW_PRODUCTION=false` - `PAYUNI_GATEWAY_URL` - `PAYUNI_MERCHANT_ID`"
+    },
+    {
+      "path": "README.md",
+      "kind": "DOC",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "PARTIAL",
+      "risk": "High: active entrypoint contains old AI_TEAM references.",
+      "reuse_decision": "REWRITE",
+      "reason": "m run lint npm test npm run test:unit npm run test:e2e ``` ## AI_TEAM 舊的 root autopilot 入口已退場。現在請以 [AI_TEAM/README.md](./AI_TEAM/README.md) 作為無人值守開發與 QA 的總控文件。 AI_TEAM 的重點是： - 文件先行，不把流程藏在單一 runner 裡 - 角色分工清楚 - 每輪都會留下報告與下一輪 pr"
+    },
+    {
+      "path": "reports/.gitkeep",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/.gitkeep"
+    },
+    {
+      "path": "reports/agy-diagnostic.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ed to poll ListExperiments: error getting token source: You are not logged into Antigravity. W0628 01:58:38.335637 43384 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: Yo"
+    },
+    {
+      "path": "reports/agy-qa-run-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "I0628 01:59:30.214362 34116 resolver.go:85] Model ID Gemini 3.5 Flash (Medium) not in local config, defaulting to CCPA I0628 01:59:30.244499 34116 resolver.go:111] Model resolved via default I0628 01"
+    },
+    {
+      "path": "reports/agy-qa-run.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ed to poll ListExperiments: error getting token source: You are not logged into Antigravity. W0628 01:59:05.189897 24440 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: Yo"
+    },
+    {
+      "path": "reports/agy-stdout-test.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "I0628 02:01:42.961258 33828 resolver.go:85] Model ID Gemini 3.5 Flash (Medium) not in local config, defaulting to CCPA I0628 02:01:42.991183 33828 resolver.go:111] Model resolved via default I0628 02"
+    },
+    {
+      "path": "reports/antigravity-qa-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# InboxPilot / ReplyPilot Antigravity QA 測試報告 QA_STATUS=FAIL ## 測試範圍 本測試為針對 **InboxPilot** 線上環境的唯讀 QA 檢測，測試範圍包含以下： 1. **Production 環境 (`https://inboxpilot.carry-digital-nomad."
+    },
+    {
+      "path": "reports/autopilot-live.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/autopilot-live.log"
+    },
+    {
+      "path": "reports/browser-qa-raw-report.json",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/browser-qa-raw-report.json"
+    },
+    {
+      "path": "reports/build-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-1.log"
+    },
+    {
+      "path": "reports/build-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-2.log"
+    },
+    {
+      "path": "reports/build-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-3.log"
+    },
+    {
+      "path": "reports/build-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-4.log"
+    },
+    {
+      "path": "reports/build-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-5.log"
+    },
+    {
+      "path": "reports/build-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-6.log"
+    },
+    {
+      "path": "reports/build-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-7.log"
+    },
+    {
+      "path": "reports/build-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/build-loop-8.log"
+    },
+    {
+      "path": "reports/codex-dev-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "ker。 ## 是否新增風險 - 沒有新增 runtime、DB、部署、Meta 或 PayUNI 風險。 - 只是把舊的誤判 blocker 移除，避免 autopilot 之後被假訊號誤導。 ## 文件更新清單 - `docs/fix-roadmap.md` - `docs/codex-session-log.md` - `reports/final-report.md` - `reports/human-required.md` - `re"
+    },
+    {
+      "path": "reports/codex-output-loop-1.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:32:43.6"
+    },
+    {
+      "path": "reports/codex-output-loop-1.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-2.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:42:46.8"
+    },
+    {
+      "path": "reports/codex-output-loop-2.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-3.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/codex-output-loop-3.md"
+    },
+    {
+      "path": "reports/codex-output-loop-3.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-4.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:59:34.7"
+    },
+    {
+      "path": "reports/codex-output-loop-4.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-5.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/codex-output-loop-5.md"
+    },
+    {
+      "path": "reports/codex-output-loop-5.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-6.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/codex-output-loop-6.md"
+    },
+    {
+      "path": "reports/codex-output-loop-6.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-7.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/codex-output-loop-7.md"
+    },
+    {
+      "path": "reports/codex-output-loop-7.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/codex-output-loop-8.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/codex-output-loop-8.md"
+    },
+    {
+      "path": "reports/codex-output-loop-8.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot unattended Codex developer. Read first: - AGENTS.md - README.md - AUTOPILOT.md - docs/project-launch-checklist.md - docs/product-readiness-review.md"
+    },
+    {
+      "path": "reports/dev-server.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/dev-server.log"
+    },
+    {
+      "path": "reports/final-output-maxloops.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:38:20.4"
+    },
+    {
+      "path": "reports/final-output-maxloops.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "Create reports/final-report.md. The autopilot stopped before all gates passed. Summarize: 1. completed work 2. latest failing gate 3. latest QA issues 4. latest safety issues 5. latest"
+    },
+    {
+      "path": "reports/final-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# InboxPilot Autopilot Final Report ## 1. 已完成工作 - 已完成 Instagram channel dropdown visibility 修正，讓 sidebar / mobile account selector 會列出所有啟用中的 Instagram channels。"
+    },
+    {
+      "path": "reports/health-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/health-report.md"
+    },
+    {
+      "path": "reports/human-required.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "IRED: 需要非 production 的 `TEST_DATABASE_URL` 才能讓 `npm test` 完整通過。 HUMAN_REQUIRED: Autopilot report mentions forbidden command pattern: \\bprisma\\s+db\\s+push\\b"
+    },
+    {
+      "path": "reports/lint-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-1.log"
+    },
+    {
+      "path": "reports/lint-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-2.log"
+    },
+    {
+      "path": "reports/lint-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-3.log"
+    },
+    {
+      "path": "reports/lint-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-4.log"
+    },
+    {
+      "path": "reports/lint-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-5.log"
+    },
+    {
+      "path": "reports/lint-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-6.log"
+    },
+    {
+      "path": "reports/lint-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-7.log"
+    },
+    {
+      "path": "reports/lint-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/lint-loop-8.log"
+    },
+    {
+      "path": "reports/npm-install-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-1.log"
+    },
+    {
+      "path": "reports/npm-install-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-2.log"
+    },
+    {
+      "path": "reports/npm-install-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-3.log"
+    },
+    {
+      "path": "reports/npm-install-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-4.log"
+    },
+    {
+      "path": "reports/npm-install-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-5.log"
+    },
+    {
+      "path": "reports/npm-install-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-6.log"
+    },
+    {
+      "path": "reports/npm-install-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-7.log"
+    },
+    {
+      "path": "reports/npm-install-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/npm-install-loop-8.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-1.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-2.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-3.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-4.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-5.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-6.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-7.log"
+    },
+    {
+      "path": "reports/payuni-smoke-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/payuni-smoke-loop-8.log"
+    },
+    {
+      "path": "reports/preflight-codex.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-codex.log"
+    },
+    {
+      "path": "reports/preflight-git.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-git.log"
+    },
+    {
+      "path": "reports/preflight-node.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-node.log"
+    },
+    {
+      "path": "reports/preflight-npm.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-npm.log"
+    },
+    {
+      "path": "reports/preflight-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "# Autopilot preflight - `git`: ok - `node`: ok - `npm`: ok - `vercel`: ok - `supabase`: ok - `codex`: ok"
+    },
+    {
+      "path": "reports/preflight-supabase.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-supabase.log"
+    },
+    {
+      "path": "reports/preflight-vercel.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/preflight-vercel.log"
+    },
+    {
+      "path": "reports/qa-output-loop-1.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:40:49.3"
+    },
+    {
+      "path": "reports/qa-output-loop-1.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-1.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-2.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:48:57.5"
+    },
+    {
+      "path": "reports/qa-output-loop-2.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-2.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-3.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:57:26.6"
+    },
+    {
+      "path": "reports/qa-output-loop-3.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-3.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-4.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:05:10.9"
+    },
+    {
+      "path": "reports/qa-output-loop-4.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-4.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-5.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "_core_plugins::loader: skipping duplicate plugin MCP server name plugin=\"notion@openai-curated-remote\" previous_plugin=\"notion@openai-curated\" server=\"notion\" 2026-06-27T03:12:34.204069Z WARN codex_core_plugins::loader: skipp"
+    },
+    {
+      "path": "reports/qa-output-loop-5.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-5.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-6.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:20:25.0"
+    },
+    {
+      "path": "reports/qa-output-loop-6.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-6.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-7.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:28:42.0"
+    },
+    {
+      "path": "reports/qa-output-loop-7.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-7.log - r"
+    },
+    {
+      "path": "reports/qa-output-loop-8.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:36:15.6"
+    },
+    {
+      "path": "reports/qa-output-loop-8.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot QA reviewer for an unattended autopilot run. Read: - AUTOPILOT.md - reports/codex-dev-report.md - reports/route-smoke.md - reports/lint-loop-8.log - r"
+    },
+    {
+      "path": "reports/qa-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "PASS TIMESTAMP=2026-06-27T16:03:00+08:00 Scope: - Continued InboxPilot QA loop autopilot from open PR cleanup. - Merged safe, single-topic PRs after checks passed. - Did not deploy Production. - Did not touch production DB. - Di"
+    },
+    {
+      "path": "reports/route-smoke.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/route-smoke.md"
+    },
+    {
+      "path": "reports/safety-output-loop-1.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T02:41:43.9"
+    },
+    {
+      "path": "reports/safety-output-loop-1.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-2.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "_core_plugins::loader: skipping duplicate plugin MCP server name plugin=\"notion@openai-curated-remote\" previous_plugin=\"notion@openai-curated\" server=\"notion\" 2026-06-27T02:50:32.246368Z WARN codex_core_plugins::loader: skipp"
+    },
+    {
+      "path": "reports/safety-output-loop-2.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-3.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "_core_plugins::loader: skipping duplicate plugin MCP server name plugin=\"notion@openai-curated-remote\" previous_plugin=\"notion@openai-curated\" server=\"notion\" 2026-06-27T02:58:30.595888Z WARN codex_core_plugins::loader: skipp"
+    },
+    {
+      "path": "reports/safety-output-loop-3.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-4.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:05:52.4"
+    },
+    {
+      "path": "reports/safety-output-loop-4.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-5.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:13:35.0"
+    },
+    {
+      "path": "reports/safety-output-loop-5.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-6.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:21:07.0"
+    },
+    {
+      "path": "reports/safety-output-loop-6.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-7.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "core::session::session: failed to load skill C:\\Users\\eden\\.codex\\plugins\\cache\\openai-curated\\heygen\\3fdeeb49\\skills\\heygen-avatar\\SKILL.md: invalid description: exceeds maximum length of 1024 characters 2026-06-27T03:29:22.1"
+    },
+    {
+      "path": "reports/safety-output-loop-7.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-output-loop-8.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "_core_plugins::loader: skipping duplicate plugin MCP server name plugin=\"notion@openai-curated-remote\" previous_plugin=\"notion@openai-curated\" server=\"notion\" 2026-06-27T03:36:58.992681Z WARN codex_core_plugins::loader: skipp"
+    },
+    {
+      "path": "reports/safety-output-loop-8.prompt.txt",
+      "kind": "PROMPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "You are the InboxPilot safety reviewer for an unattended autopilot run. Review: - source code changes - docs changes - reports - git diff Check: 1. hardcoded secrets or leaked"
+    },
+    {
+      "path": "reports/safety-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/safety-report.md"
+    },
+    {
+      "path": "reports/supabase-check-1-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-1-1.log"
+    },
+    {
+      "path": "reports/supabase-check-2-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-2-1.log"
+    },
+    {
+      "path": "reports/supabase-check-3-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-3-1.log"
+    },
+    {
+      "path": "reports/supabase-check-4-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-4-1.log"
+    },
+    {
+      "path": "reports/supabase-check-5-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-5-1.log"
+    },
+    {
+      "path": "reports/supabase-check-6-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-6-1.log"
+    },
+    {
+      "path": "reports/supabase-check-7-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-7-1.log"
+    },
+    {
+      "path": "reports/supabase-check-8-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-check-8-1.log"
+    },
+    {
+      "path": "reports/supabase-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/supabase-report.md"
+    },
+    {
+      "path": "reports/test-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-1.log"
+    },
+    {
+      "path": "reports/test-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-2.log"
+    },
+    {
+      "path": "reports/test-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-3.log"
+    },
+    {
+      "path": "reports/test-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-4.log"
+    },
+    {
+      "path": "reports/test-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-5.log"
+    },
+    {
+      "path": "reports/test-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-6.log"
+    },
+    {
+      "path": "reports/test-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-7.log"
+    },
+    {
+      "path": "reports/test-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/test-loop-8.log"
+    },
+    {
+      "path": "reports/vercel-inspect-1-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-1-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-1-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-1-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-1-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-1-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-2-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-2-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-2-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-2-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-2-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-2-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-3-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-3-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-3-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-3-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-3-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-3-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-4-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-4-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-4-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-4-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-4-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-4-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-5-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-5-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-5-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-5-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-5-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-5-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-6-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-6-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-6-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-6-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-6-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-6-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-7-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-7-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-7-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-7-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-7-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-7-3.log"
+    },
+    {
+      "path": "reports/vercel-inspect-8-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-8-1.log"
+    },
+    {
+      "path": "reports/vercel-inspect-8-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-8-2.log"
+    },
+    {
+      "path": "reports/vercel-inspect-8-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-inspect-8-3.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-1.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-1.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-2.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-2.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-3.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-3.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-4.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-4.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-5.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-5.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-6.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-6.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-7.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-7.log"
+    },
+    {
+      "path": "reports/vercel-preview-deploy-loop-8.log",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-preview-deploy-loop-8.log"
+    },
+    {
+      "path": "reports/vercel-report.md",
+      "kind": "REPORT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "STALE",
+      "risk": "High: runtime/report output must not be source of truth.",
+      "reuse_decision": "ARCHIVE",
+      "reason": "path match: reports/vercel-report.md"
+    },
+    {
+      "path": "scripts/__pycache__/autopilot-full.cpython-313.pyc",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/__pycache__/autopilot-full.cpython-313.pyc"
+    },
+    {
+      "path": "scripts/__pycache__/autopilot_full_start.cpython-313.pyc",
+      "kind": "UNKNOWN",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/__pycache__/autopilot_full_start.cpython-313.pyc"
+    },
+    {
+      "path": "scripts/ensure-reviewer-demo-data.ts",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "v.mjs\"; const PRODUCTION_SUPABASE_PROJECT_REF = \"lmwvzskffzozuiamjxvc\"; const REVIEWER_WORKSPACE_ID = \"reviewer-demo-workspace\"; const REVIEWER_WORKSPACE_SLUG = \"reviewer-demo-workspace\"; const REVIEWER_WORKSPACE_NAME = \"Inbox"
+    },
+    {
+      "path": "scripts/refresh-ai-models.ts",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/refresh-ai-models.ts"
+    },
+    {
+      "path": "scripts/restore-canva-automation.ts",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/restore-canva-automation.ts"
+    },
+    {
+      "path": "scripts/run-simple-release-e2e.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/run-simple-release-e2e.mjs"
+    },
+    {
+      "path": "scripts/run-tests-plan.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/run-tests-plan.mjs"
+    },
+    {
+      "path": "scripts/test-main-pages-ui.mjs",
+      "kind": "SCRIPT",
+      "purpose": "AI/autopilot/release/QA related artifact inferred from path or content.",
+      "currentness": "UNKNOWN",
+      "risk": "Medium: may conflict with canonical AI docs if treated as source of truth.",
+      "reuse_decision": "MERGE_INTO_NEW",
+      "reason": "path match: scripts/test-main-pages-ui.mjs"
+    }
+  ]
+}

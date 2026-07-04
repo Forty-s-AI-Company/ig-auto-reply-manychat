@@ -4454,6 +4454,47 @@ Remaining:
 - 剩餘：Meta App Review / Advanced Access / Business Verification、staging reviewer-safe real asset lane、PayUNI production go-live、Production deploy、production DB 變更與正式低額金流 smoke 仍是人工 gate。
 - 下一步：若仍不推遠端，建議停止本機亂修，改為整理 batch delivery diff；若要繼續產品 QA，需用 staging-safe tenant / reviewer-safe IG asset 做實機 evidence，但不可碰 production DB。
 
+# Latest - 2026-07-04 AI model cache refresh automation
+
+Current status:
+
+- [x] `npm run ai-models:refresh` completed successfully at 2026-07-04 05:31 +08:00.
+- [x] Refreshed API provider model counts for `failed-workspace` and `available-refund-workspace`: `chatgpt=10`, `gemini=7`, `deepseek=2`, `xai=2`.
+- [x] No provider failure was reported by the script.
+
+Remaining:
+
+- [ ] `codex_cli` / `antigravity_cli` remain local opt-in providers and are not refreshed unless `AI_ENABLE_LOCAL_CLI` is enabled on this machine.
+
+# Latest - 2026-07-04 AI docs minimization and release autopilot consolidation
+
+Current status:
+
+- [x] AI artifact discovery completed: 387 AI / release / QA / autopilot artifacts detected.
+- [x] Canonical AI source of truth minimized to:
+  - `AGENTS.md`
+  - `docs/AI_SOURCE_OF_TRUTH.md`
+  - `docs/AI_RELEASE_CONTROL.md`
+  - `docs/AI_TEAM_AUTOPILOT.md`
+- [x] Old `AI_TEAM` docs / tasks / reports / roles archived under `docs/archive/ai-legacy-2026-07-04/`.
+- [x] Old `AI_TEAM/scripts/*` automation archived under `.ai-team/archive/automation-legacy-2026-07-04/scripts/`.
+- [x] Single active autopilot entry created: `scripts/ai_release_autopilot.py`.
+- [x] CLI probe created: `scripts/ai_cli_probe.py`.
+- [x] Validation passed:
+  - `python -m py_compile scripts/ai_cli_probe.py scripts/ai_release_autopilot.py`
+  - `python scripts/ai_cli_probe.py`
+  - `python scripts/ai_release_autopilot.py --mode status`
+  - `python scripts/ai_release_autopilot.py --mode inventory`
+  - `python scripts/ai_release_autopilot.py --mode docs-check`
+  - `python scripts/ai_release_autopilot.py --mode run-once --profile dry-run`
+  - `python scripts/ai_release_autopilot.py --mode run-once --profile local-aggressive`
+
+Remaining:
+
+- [ ] Keep root-level untracked historical reports excluded unless they are separately redacted and intentionally archived.
+- [ ] Use `scripts/ai_release_autopilot.py` for future local / staging release loops; do not resurrect old Node AI_TEAM runner state.
+- [ ] Production deploy, production DB mutation, Meta App Review submission, and PayUNI production switch remain explicit human gates.
+
 # Latest - 2026-07-03 AI model cache refresh automation
 
 Current status:

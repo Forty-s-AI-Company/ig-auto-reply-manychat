@@ -66,36 +66,32 @@ npm run test:unit
 npm run test:e2e
 ```
 
-## AI_TEAM
+## AI Release Autopilot
 
-舊的 root autopilot 入口已退場。現在請以 [AI_TEAM/README.md](./AI_TEAM/README.md) 作為無人值守開發與 QA 的總控文件。
+AI 文件與舊 AI_TEAM runner 已重整成最小 source of truth。
 
-AI_TEAM 的重點是：
+Active AI 文件：
 
-- 文件先行，不把流程藏在單一 runner 裡
-- 角色分工清楚
-- 每輪都會留下報告與下一輪 prompt
-- 高風險動作先停下來做人工作業確認
+- [AGENTS.md](./AGENTS.md)
+- [AI Source Of Truth](./docs/AI_SOURCE_OF_TRUTH.md)
+- [AI Release Control](./docs/AI_RELEASE_CONTROL.md)
+- [AI Team Autopilot](./docs/AI_TEAM_AUTOPILOT.md)
 
-如果你只是想開始下一輪工作，先讀：
-
-- [AI_TEAM/PROJECT_STATE.md](./AI_TEAM/PROJECT_STATE.md)
-- [AI_TEAM/LAUNCH_CRITERIA.md](./AI_TEAM/LAUNCH_CRITERIA.md)
-- [AI_TEAM/tasks/current-task.md](./AI_TEAM/tasks/current-task.md)
-- [AI_TEAM/tasks/backlog.md](./AI_TEAM/tasks/backlog.md)
-
-常用指令：
+唯一 autopilot 入口：
 
 ```bash
-npm run ai-team
-npm run ai-team:next
-npm run ai-team:check
-npm run ai-team:qa
-npm run ai-team:models
-npm run ai-team:loop:once
+python scripts/ai_release_autopilot.py --mode status
+python scripts/ai_release_autopilot.py --mode inventory
+python scripts/ai_release_autopilot.py --mode docs-check
+python scripts/ai_release_autopilot.py --mode run-once --profile local-aggressive
 ```
 
-執行期輸出現在會寫到 `AI_TEAM/runtime/`，避免長跑 runner 一直把 tracked 報告檔弄髒。
+舊 AI_TEAM 文件與 runner 已封存：
+
+- `docs/archive/ai-legacy-2026-07-04/`
+- `.ai-team/archive/automation-legacy-2026-07-04/`
+
+舊 runtime / report / queue / prompt 只能當歷史參考，不再是 source of truth。
 
 ## 環境變數
 

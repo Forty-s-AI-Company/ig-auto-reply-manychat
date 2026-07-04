@@ -1,95 +1,82 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# InboxPilot Agent Entry
 
-This version has breaking changes -- APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+InboxPilot 是一個 Instagram-first 的訊息營運 SaaS，使用 Next.js App Router、React、TypeScript、Prisma、PostgreSQL、Vercel、Meta / Instagram OAuth + Webhooks、PayUNI Sandbox billing，以及 Playwright / Vitest 做驗證。
 
-# InboxPilot Codex Working Rules
+## Canonical Source Of Truth
 
-本專案是 InboxPilot，一個類似 ManyChat 的中文化 Instagram 訊息營運 SaaS 工具。所有開發都必須以「可上線、可維運、可收費、可通過平台審核」為標準。
+所有 AI agent 開始工作前只需要先讀這四份 active 文件：
 
-## 每次任務開始前必讀
+1. `AGENTS.md`
+2. `docs/AI_SOURCE_OF_TRUTH.md`
+3. `docs/AI_RELEASE_CONTROL.md`
+4. `docs/AI_TEAM_AUTOPILOT.md`
 
-請先閱讀：
+舊的 AI_TEAM 文件、handoff、runtime report、prompt、memory、task queue、舊 autopilot script 已封存到：
 
-- `AGENTS.md`
-- `README.md`
-- `docs/project-launch-checklist.md`
-- `docs/product-readiness-review.md`
-- `docs/security-review.md`
-- `docs/meta-app-review-checklist.md`
-- `docs/billing-affiliate-readiness.md`
-- `docs/fix-roadmap.md`
-- `docs/codex-session-log.md`
+- `docs/archive/ai-legacy-2026-07-04/`
+- `.ai-team/archive/automation-legacy-2026-07-04/`
 
-如果文件不存在，先建立基本版本，不要忽略。
+封存內容只能當歷史參考，不可當 source of truth。
 
-## 每次修改原則
+## Safety Rules
 
-1. 優先小範圍修改。
-2. 不要大重構，除非任務明確要求。
-3. 不要破壞既有成功流程。
-4. 涉及 OAuth、Webhook、Payment、Subscription、Affiliate、Database schema、Security 的修改，必須先列出風險。
-5. 不得把 token、secret、authorization code、API key 寫入前端、URL、console、log、audit 或文件。
-6. 所有高風險 API 必須考慮 auth、tenant isolation、rate limit、CSRF / Origin 驗證。
-7. 所有 Prisma query 必須檢查 workspace / tenant 限制。
-8. 所有 Webhook 必須檢查 signature、idempotency、重送保護。
-9. 所有付款通知必須檢查簽章與 idempotency。
-10. 涉及 Meta / Instagram 權限時，必須說明是否需要 App Review。
+- 不輸出 secret、token、password、cookie、app secret、verify token、DB URL、PAYUNi key。
+- 不碰 production DB。
+- 不跑 production migration / `db push`。
+- 不部署 Production，除非使用者明確切換到 production release task。
+- 不送 Meta App Review，除非使用者明確說可以送審。
+- PayUNI 預設只用 Sandbox。
+- OAuth、Webhook、Payment、Subscription、Affiliate、Database schema、Security 變更必須先標明風險。
+- 所有 Prisma query 與 API 必須考慮 workspace / tenant isolation。
+- 不可自行宣布 production-ready；最多輸出 `BETA_READY_CANDIDATE`，最後由人類決定。
 
-## 每次任務完成後必更新
+## Codex / Antigravity 分工
 
-- `docs/codex-session-log.md`
-- `docs/fix-roadmap.md`
+- Codex：讀碼、改碼、補測試、補文件、整理 git、產出 release decision。
+- Antigravity / `agy`：Browser QA、RWD、console/network、visual / integration QA；只做 QA，不直接改 source。
+- 本地模型：摘要、分類、低風險 review、報告草稿；不可主導高風險產品修改。
 
-如果有改 Meta / Instagram：
+## Release Stabilization Mode
 
-- `docs/meta-app-review-checklist.md`
+Local / staging 可以 aggressive 測試與修復，但必須守住 production guard。
 
-如果有改 Billing / Affiliate：
+唯一 autopilot 入口：
 
-- `docs/billing-affiliate-readiness.md`
+```bash
+python scripts/ai_release_autopilot.py --mode status
+python scripts/ai_release_autopilot.py --mode inventory
+python scripts/ai_release_autopilot.py --mode docs-check
+python scripts/ai_release_autopilot.py --mode run-once --profile local-aggressive
+python scripts/ai_release_autopilot.py --mode run --profile local-aggressive --max-rounds 10
+python scripts/ai_release_autopilot.py --mode run --profile staging-aggressive --max-rounds 10
+```
 
-如果有改 Security：
+## Core Validation
 
-- `docs/security-review.md`
+一般修改至少跑：
 
-如果有改產品狀態：
+```bash
+npm run lint
+npm run build
+npm test
+```
 
-- `docs/product-readiness-review.md`
-- `docs/project-launch-checklist.md`
+依任務加跑：
 
-## 每次回報格式
+```bash
+npm run test:e2e
+npm run test:e2e:reviewer
+npm run payuni:smoke
+```
 
-請用以下格式回報：
+如果無法執行，必須在報告中寫明原因，不可假裝通過。
 
-1. 本次任務目標
-2. 修改檔案
-3. 修改內容
-4. 驗證指令與結果
-5. 是否影響上線狀態
-6. 是否新增風險
-7. 文件更新清單
-8. 下一個建議 Codex Prompt
+## Required Output For Any Task
 
-## 驗證標準
+每次完成都要留下：
 
-一般修改至少執行：
-
-- `npm run lint`
-- `npm run build`
-- `npm test`
-
-涉及 UI / onboarding：
-
-- `npm run test:e2e`
-
-涉及付款：
-
-- `npm run payuni:smoke`
-
-涉及高併發 / worker：
-
-- `npm run load:test`
-
-如果無法執行，必須說明原因。
+- diff summary
+- validation evidence
+- remaining risks
+- human blockers
+- whether state is `CONTINUE`, `BLOCKED`, or `BETA_READY_CANDIDATE`

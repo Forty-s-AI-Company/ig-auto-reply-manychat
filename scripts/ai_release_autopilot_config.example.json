@@ -1,0 +1,77 @@
+{
+  "reports_dir": "reports/ai-team",
+  "state_file": ".ai-team/state.example.json",
+  "cli_profiles_file": ".ai-team/cli_profiles.detected.json",
+  "branch_allow_patterns": [
+    "^codex/",
+    "^release-",
+    "^staging-"
+  ],
+  "release": {
+    "max_rounds_default": 3,
+    "max_attempts_per_blocker": 2
+  },
+  "commands": {
+    "install": "npm install",
+    "lint": "npm run lint",
+    "typecheck": "",
+    "test": "npm test",
+    "build": "npm run build",
+    "e2e": "npm run test:e2e",
+    "reviewer_e2e": "npm run test:e2e:reviewer",
+    "payuni_sandbox": "npm run payuni:smoke",
+    "local_dev": "npm run dev",
+    "staging_deploy": "",
+    "staging_smoke": "",
+    "staging_seed": "",
+    "staging_db_reset": ""
+  },
+  "profiles": {
+    "dry-run": {
+      "commands": [],
+      "qa_commands": [],
+      "allow_staging": false,
+      "allow_git_delivery": false
+    },
+    "local-aggressive": {
+      "commands": [
+        "npm run lint",
+        "npm run build",
+        "npm test"
+      ],
+      "qa_commands": [
+        "npm run test:e2e:reviewer"
+      ],
+      "allow_staging": false,
+      "allow_git_delivery": true
+    },
+    "staging-aggressive": {
+      "commands": [
+        "npm run lint",
+        "npm run build",
+        "npm test",
+        "npm run test:e2e:reviewer"
+      ],
+      "qa_commands": [
+        "npm run test:e2e:reviewer"
+      ],
+      "allow_staging": true,
+      "allow_git_delivery": true
+    }
+  },
+  "secret_redaction_patterns": [
+    "sk-[A-Za-z0-9_\\\\-]{16,}",
+    "sbp_[A-Za-z0-9_\\\\-]{16,}",
+    "postgres(?:ql)?://[^\\\\s)]+",
+    "(?i)(secret|token|password|hash_key|hash_iv)\\\\s*[:=]\\\\s*[^\\\\s]+"
+  ],
+  "production_guard_patterns": [
+    "vercel\\\\s+deploy\\\\s+--prod",
+    "prisma\\\\s+db\\\\s+push",
+    "migrate\\\\s+deploy",
+    "production\\\\s+db",
+    "PAYUNI_PRODUCTION",
+    "META_APP_REVIEW_SUBMIT"
+  ]
+}
+

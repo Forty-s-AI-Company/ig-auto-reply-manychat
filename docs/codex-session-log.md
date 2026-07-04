@@ -10881,3 +10881,51 @@ Launch impact:
   - 未碰 production DB
   - 未部署 Production
   - 未輸出任何 secret / token / app secret / verify token
+
+## 2026-07-04 05:31 +08:00 - AI model cache refresh automation
+
+- 目標：執行每日 `npm run ai-models:refresh`，刷新 ChatGPT、Gemini、DeepSeek、XAI 與本機 CLI provider 的模型快取狀態。
+- 結果：指令成功完成，輸出 2 個 workspace：`failed-workspace`、`available-refund-workspace`。
+- Provider counts：
+  - `chatgpt=10`
+  - `gemini=7`
+  - `deepseek=2`
+  - `xai=2`
+- 失敗供應商：無。
+- 備註：`codex_cli` / `antigravity_cli` 未出現在本次 refresh payload，延續 `AI_ENABLE_LOCAL_CLI` 未啟用時的 local CLI opt-in gating。
+- 安全：未改產品 source code、未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production、未輸出任何 secret。
+
+## 2026-07-04 - AI docs minimization and release autopilot consolidation
+
+- 目標：依 `CODEX_DESKTOP_AI_DOCS_AND_RELEASE_AUTOPILOT_V2_MINIMAL.md` Phase 0 到 Phase 8，盤點舊 AI 文件、舊 handoff、舊 report、舊 task、舊 prompt 與舊 autopilot，整併成最小 canonical docs 與單一 Python autopilot 入口。
+- Discovery：
+  - 建立 `reports/ai-team/00_REPO_DISCOVERY.md`。
+  - 建立 `reports/ai-team/01_AI_ARTIFACT_DISCOVERY.md` 與 `.ai-team/ai_artifacts.detected.json`。
+  - 共偵測 387 個 AI / release / QA / autopilot artifacts。
+- 整併：
+  - `AGENTS.md` 縮成短入口。
+  - 新增 `docs/AI_SOURCE_OF_TRUTH.md`、`docs/AI_RELEASE_CONTROL.md`、`docs/AI_TEAM_AUTOPILOT.md`。
+  - 舊 `AI_TEAM` docs / tasks / reports / roles 移到 `docs/archive/ai-legacy-2026-07-04/`。
+  - 舊 `AI_TEAM/scripts/*` runner 移到 `.ai-team/archive/automation-legacy-2026-07-04/scripts/`。
+  - 保留 `AI_TEAM/skills/*` 作為可選 local skills，不當作 canonical source of truth。
+- Autopilot：
+  - 新增唯一入口 `scripts/ai_release_autopilot.py`。
+  - 新增 CLI probe `scripts/ai_cli_probe.py`。
+  - 新增 `.ai-team/prompts/*` prompt contracts、`.ai-team/state.example.json`、`scripts/ai_release_autopilot_config.example.json`。
+- 驗證：
+  - `python -m py_compile scripts/ai_cli_probe.py scripts/ai_release_autopilot.py` 通過。
+  - `python scripts/ai_cli_probe.py` 通過，偵測到 `codex`、`codex exec`、`agy`、`gemini`、`node`、`npm`、`python`、`git`。
+  - `python scripts/ai_release_autopilot.py --mode status` 通過。
+  - `python scripts/ai_release_autopilot.py --mode inventory` 通過。
+  - `python scripts/ai_release_autopilot.py --mode docs-check` 回傳 `DOCS_CHECK_STATUS=PASS`。
+  - `python scripts/ai_release_autopilot.py --mode run-once --profile dry-run` 通過。
+  - `python scripts/ai_release_autopilot.py --mode run-once --profile local-aggressive` 通過，完成 `npm run lint`、`npm run build`、`npm test`。
+- 修正：
+  - Windows `.CMD` CLI probe 改用 shell-friendly 呼叫。
+  - Autopilot subprocess 改用 UTF-8 + `errors="replace"`，避免 CP950 亂碼造成 runner crash。
+- 安全：
+  - 未碰 production DB。
+  - 未部署 Production。
+  - 未送 Meta App Review。
+  - 未切 PayUNI production。
+  - 未輸出任何 secret。

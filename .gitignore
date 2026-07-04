@@ -36,7 +36,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-reports/
+reports/*
+!reports/ai-team/
+!reports/ai-team/**
 !AI_TEAM/reports/
 !AI_TEAM/reports/**
 AI_TEAM/reports/runner-log.md
