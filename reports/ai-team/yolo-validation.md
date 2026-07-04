@@ -145,7 +145,7 @@ Loaded Prisma config from prisma.config.ts.
 
 Prisma config detected, skipping environment variable loading.
 Error: 
-EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node.tmp12600' -> 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node'
+EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node.tmp6160' -> 'C:\Users\eden\Downloads\AI\ig-auto-reply-manychat\node_modules\.prisma\client\query_engine-windows.dll.node'
 
 
 [prisma-generate-safe] Prisma engine is locked by a local Node process; reusing existing generated client.
@@ -155,33 +155,7 @@ EPERM: operation not permitted, rename 'C:\Users\eden\Downloads\AI\ig-auto-reply
 - exit: `0`
 ### stdout
 ```text
-ration  4.11s (transform 348ms, setup 0ms, import 821ms, tests 2.02s, environment 1ms)
-
-Running batch 12/16: tests\mock-tester-light-theme.test.ts, tests\mock-webhook-flow.test.ts, tests\mock-webhook-route.test.ts, tests\oauth-popup-bridge.test.ts, tests\official-landing-channel-scope.test.ts, tests\official-v3-footer-links.test.ts
-
- RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
-
-···········
-
- Test Files  6 passed (6)
-      Tests  11 passed (11)
-   Start at  09:29:36
-   Duration  2.45s (transform 215ms, setup 0ms, import 656ms, tests 615ms, environment 1ms)
-
-Running batch 13/16: tests\payuni-billing.test.ts, tests\pricing-page-polish.test.ts, tests\profile-menu-ia.test.ts, tests\rate-limit.test.ts, tests\referral-affiliate-docs.test.ts, tests\referral-affiliate-mvp-ui.test.ts
-
- RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
-
-stdout | tests/payuni-billing.test.ts
-◇ injected env (58) from .env.local // tip: ⌘ override existing { override: true }
-◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
-
-·························
-
- Test Files  6 passed (6)
-      Tests  25 passed (25)
-   Start at  09:29:38
-   Duration  2.07s (transform 142ms, setup 0ms, import 382ms, tests 534ms, environment 1ms)
+ms, tests 534ms, environment 1ms)
 
 Running batch 14/16: tests\referral-credit-refund-lifecycle.test.ts, tests\referral-credit-wallet-lifecycle.test.ts, tests\release-mode.test.ts, tests\release-proxy.test.ts, tests\security.test.ts, tests\segments-empty-state.test.ts
 
@@ -189,29 +163,82 @@ Running batch 14/16: tests\referral-credit-refund-lifecycle.test.ts, tests\refer
 
 ········stdout | tests/referral-credit-refund-lifecycle.test.ts
 ◇ injected env (58) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
 
 ··stdout | tests/referral-credit-wallet-lifecycle.test.ts
 ◇ injected env (58) from .env.local // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
-◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
 
 ··············
 
  Test Files  6 passed (6)
       Tests  24 passed (24)
-   Start at  09:29:41
-   Duration  3.69s (transform 209ms, setup 0ms, import 797ms, tests 1.53s, environment 1ms)
+   Start at  09:37:45
+   Duration  3.69s (transform 240ms, setup 0ms, import 859ms, tests 1.39s, environment 1ms)
 
 Running batch 15/16: tests\segments-light-theme.test.ts, tests\segments.test.ts, tests\sequences-form-state.test.ts, tests\sequences-jobs.test.ts, tests\signup-light-theme.test.ts, tests\tenant-isolation-routes.test.ts
 
  RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
 
-························
+····
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
 
- Test Files  6 passed (6)
-      Tests  24 passed (24)
-   Start at  09:29:45
-   Duration  7.23s (transform 336ms, setup 0ms, import 1.44s, tests 4.33s, environment 1ms)
+··
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  09:37:55
+   Duration  257ms (transform 19ms, setup 0ms, import 36ms, tests 4ms, environment 0ms)
+
+
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
+
+··
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  09:37:56
+   Duration  2.69s (transform 230ms, setup 0ms, import 617ms, tests 1.84s, environment 0ms)
+
+
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
+
+·
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  09:37:59
+   Duration  259ms (transform 21ms, setup 0ms, import 38ms, tests 5ms, environment 0ms)
+
+
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
+
+··
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  09:38:00
+   Duration  3.55s (transform 273ms, setup 0ms, import 709ms, tests 2.63s, environment 0ms)
+
+
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
+
+···
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  09:38:04
+   Duration  281ms (transform 21ms, setup 0ms, import 38ms, tests 5ms, environment 0ms)
+
+
+ RUN  v4.1.7 C:/Users/eden/Downloads/AI/ig-auto-reply-manychat
+
+··············
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  09:38:05
+   Duration  661ms (transform 150ms, setup 0ms, import 423ms, tests 29ms, environment 0ms)
 
 Running batch 16/16: tests\wallet-light-theme.test.ts, tests\webhook-security.test.ts
 
@@ -221,8 +248,8 @@ Running batch 16/16: tests\wallet-light-theme.test.ts, tests\webhook-security.te
 
  Test Files  2 passed (2)
       Tests  5 passed (5)
-   Start at  09:29:53
-   Duration  840ms (transform 52ms, setup 0ms, import 102ms, tests 11ms, environment 0ms)
+   Start at  09:38:06
+   Duration  454ms (transform 30ms, setup 0ms, import 67ms, tests 9ms, environment 0ms)
 
 
 ```
@@ -231,6 +258,14 @@ Running batch 16/16: tests\wallet-light-theme.test.ts, tests\webhook-security.te
 Loaded Prisma config from prisma.config.ts.
 
 Prisma config detected, skipping environment variable loading.
+Vitest crashed while running a multi-file batch with exit 3221225477. Re-running files one by one to isolate the trigger.
+Diagnostic rerun: tests\automation-triggers.test.ts
+Diagnostic rerun: tests\automation.test.ts
+Diagnostic rerun: tests\billing-calculations.test.ts
+Diagnostic rerun: tests\billing-checkout-route.test.ts
+Diagnostic rerun: tests\billing-entitlements.test.ts
+Diagnostic rerun: tests\billing-page-status-copy.test.ts
+Vitest batch crashed with Windows access violation exit 3221225477, but every file passed when rerun individually. Continuing after confirming this is batch-level runner instability: tests\automation-triggers.test.ts, tests\automation.test.ts, tests\billing-calculations.test.ts, tests\billing-checkout-route.test.ts, tests\billing-entitlements.test.ts, tests\billing-page-status-copy.test.ts
 stderr | tests/meta-webhook.test.ts > Meta webhook > rejects Meta webhook requests with an invalid signature
 [audit] failed to record event TypeError: Cannot read properties of undefined (reading 'create')
     at recordAuditEvent (C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/src/lib/audit.ts:28:19)
@@ -239,6 +274,14 @@ stderr | tests/meta-webhook.test.ts > Meta webhook > rejects Meta webhook reques
     at C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/tests/meta-webhook.test.ts:99:22
     at file:///C:/Users/eden/Downloads/AI/ig-auto-reply-manychat/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
 
+Vitest crashed while running a multi-file batch with exit 3221225477. Re-running files one by one to isolate the trigger.
+Diagnostic rerun: tests\segments-light-theme.test.ts
+Diagnostic rerun: tests\segments.test.ts
+Diagnostic rerun: tests\sequences-form-state.test.ts
+Diagnostic rerun: tests\sequences-jobs.test.ts
+Diagnostic rerun: tests\signup-light-theme.test.ts
+Diagnostic rerun: tests\tenant-isolation-routes.test.ts
+Vitest batch crashed with Windows access violation exit 3221225477, but every file passed when rerun individually. Continuing after confirming this is batch-level runner instability: tests\segments-light-theme.test.ts, tests\segments.test.ts, tests\sequences-form-state.test.ts, tests\sequences-jobs.test.ts, tests\signup-light-theme.test.ts, tests\tenant-isolation-routes.test.ts
 
 ```
 ## `npm run test:e2e:reviewer`
@@ -253,27 +296,27 @@ stderr | tests/meta-webhook.test.ts > Meta webhook > rejects Meta webhook reques
 > inboxpilot@0.1.0 e2e:reviewer:ensure
 > tsx scripts/ensure-reviewer-demo-data.ts
 
-◇ injected env (58) from .env.local // tip: ⌁ auth for agents [www.vestauth.com]
-◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+◇ injected env (58) from .env.local // tip: ⌘ override existing { override: true }
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
 [ensure-reviewer-demo-data] reviewer-safe local demo data is ready.
 
 Running 2 tests using 1 worker
 
-  ok 1 [chromium] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (7.9s)
-  ok 2 [mobile-chrome] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (6.2s)
+  ok 1 [chromium] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (6.0s)
+  ok 2 [mobile-chrome] › tests\e2e\meta-reviewer-rehearsal.spec.ts:41:7 › meta reviewer-safe rehearsal smoke › walks reviewer-safe dashboard, channels, inbox, contacts, and automations flows (5.5s)
 
-  2 passed (17.2s)
+  2 passed (13.8s)
 
 ```
 ### stderr
 ```text
-(node:20560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:7816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:20560) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:7816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:18644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:23064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:18644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:23064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 ```

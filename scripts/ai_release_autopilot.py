@@ -360,26 +360,39 @@ def run_external_ai_review(target: str, envs: list[str], timeout: int = 600) -> 
     results: list[dict] = []
     codex_report = REPORTS / "yolo-codex-lead.md"
     agy_report = REPORTS / "yolo-antigravity-qa.md"
+    codex_prompt_file = REPORTS / "yolo-codex-lead-prompt.md"
+    agy_prompt_file = REPORTS / "yolo-antigravity-qa-prompt.md"
 
     if tool_found("codex"):
-        prompt = yolo_codex_prompt(target, envs).replace('"', '\\"')
+        prompt = yolo_codex_prompt(target, envs)
+        codex_prompt_file.write_text(prompt, encoding="utf-8")
         command = (
-            f'codex exec --cd "{ROOT}" --sandbox read-only '
-            f'--output-last-message "{codex_report}" "{prompt}"'
+            f'codex exec --cd "{ROOT}" --sandbox read-only - < "{codex_prompt_file}"'
         )
-        results.append(run_shell(command, timeout=timeout))
+        codex_result = run_shell(command, timeout=timeout)
+        if codex_result.get("stdout"):
+            codex_report.write_text(codex_result["stdout"], encoding="utf-8")
+        if not (codex_result.get("stdout") or "").strip():
+            codex_result["exit_code"] = 96
+            codex_result["stderr"] = (codex_result.get("stderr") or "") + "\nCodex CLI produced empty output."
+        results.append(codex_result)
     else:
         results.append({"command": "codex exec", "exit_code": 127, "stdout": "", "stderr": "codex not found", "skipped": True})
 
     if tool_found("agy"):
-        prompt = yolo_agy_prompt(target, envs).replace('"', '\\"')
+        prompt = yolo_agy_prompt(target, envs)
+        agy_prompt_file.write_text(prompt, encoding="utf-8")
+        escaped_prompt = prompt.replace('"', '\\"')
         command = (
-            f'agy --print --print-timeout 10m --dangerously-skip-permissions '
-            f'--add-dir "{ROOT}" "{prompt}"'
+            f'agy --print-timeout 10m --dangerously-skip-permissions '
+            f'--add-dir "{ROOT}" -p "{escaped_prompt}"'
         )
         result = run_shell(command, timeout=timeout)
         if result.get("stdout"):
             agy_report.write_text(result["stdout"], encoding="utf-8")
+        if not (result.get("stdout") or "").strip():
+            result["exit_code"] = 96
+            result["stderr"] = (result.get("stderr") or "") + "\nAntigravity / agy produced empty output."
         results.append(result)
     else:
         results.append({"command": "agy --print", "exit_code": 127, "stdout": "", "stderr": "agy not found", "skipped": True})

@@ -1,9 +1,9 @@
 # Final Sale Ready Report
 
-- Generated: 2026-07-04 09:30:14
+- Generated: 2026-07-04 09:38:23
 - Target: `sale-ready`
 - Environments requested: `local, staging`
-- Elapsed minutes: `2.76`
+- Elapsed minutes: `5.62`
 - Local validation passed: `True`
 - Codex CLI review completed: `True`
 - Antigravity / agy QA completed: `True`
