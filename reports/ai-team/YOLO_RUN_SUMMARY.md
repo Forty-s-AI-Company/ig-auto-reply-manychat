@@ -1,6 +1,6 @@
 # YOLO Run Summary
 
-- Generated: 2026-07-04 10:52:26
+- Generated: 2026-07-04 11:23:42
 - Target: `sale-ready`
 - Environments: `local, staging`
 - Max rounds requested: `1`
@@ -16,7 +16,9 @@
 - Docs check exit: `0`
 - Inventory exit: `0`
 - Validation passed: `True`
-- AI_TEAM_YOLO_STATUS=CONTINUE
+- External QA status: `EXTERNAL_QA_LIMITED`
+- Status values supported: `CONTINUE, FAIL, HUMAN_ACCEPTANCE_REQUIRED, HUMAN_BLOCKED, PRODUCT_FIX_REQUIRED, SALE_READY_CANDIDATE, STAGING_EVIDENCE_REQUIRED`
+- AI_TEAM_YOLO_STATUS=STAGING_EVIDENCE_REQUIRED
 
 ## Safety
 

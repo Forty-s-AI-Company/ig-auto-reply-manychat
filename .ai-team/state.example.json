@@ -1,5 +1,5 @@
 {
-  "status": "CONTINUE",
+  "status": "STAGING_EVIDENCE_REQUIRED",
   "mode": "yolo",
   "target": "sale-ready",
   "env": [
@@ -7,5 +7,5 @@
     "staging"
   ],
   "profile": "staging-aggressive",
-  "updated": "2026-07-04 10:52:26"
+  "updated": "2026-07-04 11:23:42"
 }
