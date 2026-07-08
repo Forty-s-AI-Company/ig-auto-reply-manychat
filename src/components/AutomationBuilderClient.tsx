@@ -774,7 +774,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "對話開場白",
     description: "在 Instagram 私訊入口顯示常見問題按鈕，點擊後觸發指定回覆。",
     status: "規劃中",
-    action: "受控開通",
+    action: "即將推出",
     disabledReason: "對話開場白需要先接好 Instagram 入口按鈕與對應流程，目前只保留說明。",
     testId: "automation-basic-disabled-opening-prompts",
   },
@@ -782,7 +782,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "限動提及回覆",
     description: "當用戶在限動提及你的帳號時，自動送出感謝訊息或啟動流程。",
     status: "規劃中",
-    action: "受控開通",
+    action: "即將推出",
     disabledReason: "限動提及觸發還沒有完整的資料與事件串接，先不讓它看起來像已可直接使用。",
     testId: "automation-basic-disabled-story-mentions",
   },
@@ -790,7 +790,7 @@ const basicAutomations: BasicAutomationItem[] = [
     title: "主選單",
     description: "建立私訊底部的選單，協助追蹤者快速找到常見資訊。",
     status: "規劃中",
-    action: "受控開通",
+    action: "即將推出",
     disabledReason: "主選單會牽涉 Instagram 訊息入口配置，還沒整理成可直接啟用的流程。",
     testId: "automation-basic-disabled-main-menu",
   },
@@ -1947,14 +1947,14 @@ function FlowBuilderInner({
                       aria-disabled="true"
                       aria-describedby="automation-trash-disabled-reason"
                       data-testid="automation-trash-disabled"
-                      title="回收桶屬於受控開通功能，需先完成流程還原、永久刪除與稽核紀錄設計。"
+                      title="功能即將推出"
                       className="inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-md px-3 text-sm font-semibold text-[var(--ip-muted-2)] opacity-70"
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
                       回收桶
                     </button>
                     <p id="automation-trash-disabled-reason" className="mt-1 max-w-[220px] text-xs leading-5 text-[var(--ip-muted-2)]">
-                      回收桶需先完成還原、永久刪除與稽核紀錄設計後再開放。
+                      功能即將推出。
                     </p>
                   </div>
                 </div>
@@ -2100,7 +2100,7 @@ function FlowBuilderInner({
                     <button
                       type="button"
                       disabled
-                      title={basic.disabledReason}
+                    title="功能即將推出"
                       aria-disabled="true"
                       aria-describedby={`${basic.testId}-reason`}
                       data-testid={basic.testId}
@@ -2132,7 +2132,7 @@ function FlowBuilderInner({
                   <button
                     type="button"
                     disabled
-                    title="序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。"
+                    title="功能即將推出"
                     aria-disabled="true"
                     aria-describedby="automation-sequence-disabled-reason"
                     data-testid="automation-sequence-disabled"
@@ -2406,18 +2406,18 @@ function FlowBuilderInner({
             <button
               type="button"
               disabled
-              title="更多操作屬於受控開通功能，需先完成複製、封存、匯出與稽核紀錄設計。"
-              aria-label="更多操作受控開通"
+              title="功能即將推出"
+              aria-label="更多操作即將推出"
               aria-describedby="automation-editor-more-disabled-reason"
               aria-disabled="true"
               data-testid="automation-editor-more-disabled"
               className="inline-flex cursor-not-allowed items-center gap-2 rounded-md border border-zinc-300 px-3 py-2 text-sm text-zinc-500 opacity-70"
             >
               <MoreVertical className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">更多操作受控</span>
+              <span className="hidden sm:inline">更多操作</span>
             </button>
             <p id="automation-editor-more-disabled-reason" className="mt-1 max-w-[220px] text-xs leading-5 text-zinc-500">
-              複製、封存與匯出需完成權限與稽核紀錄後再開放。
+              功能即將推出。
             </p>
           </div>
         </div>
@@ -2458,55 +2458,6 @@ function FlowBuilderInner({
                 刪除節點
               </button>
             ) : null}
-            <div className="border-t border-zinc-200 pt-4">
-              <label className="flex items-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm">
-                <Search className="h-4 w-4 text-zinc-400" />
-                <input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="搜尋其他自動化…"
-                  className="min-w-0 flex-1 outline-none"
-                />
-              </label>
-              <div className="mt-3 flex gap-2 text-xs">
-                {[
-                  ["all", "全部"],
-                  ["active", "啟用中"],
-                  ["stopped", "已停止"],
-                ].map(([value, label]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setStatusFilter(value as typeof statusFilter)}
-                    className={`rounded-md px-2 py-1 ${
-                      statusFilter === value ? "bg-[#006fe6] text-white" : "bg-zinc-100 text-zinc-500"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-3 space-y-2">
-                {visibleItems.slice(0, 5).map((item) => (
-                  <article key={item.id} className="rounded-md border border-zinc-200 p-3 text-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <button type="button" onClick={() => loadAutomation(item)} className="min-w-0 text-left">
-                        <p className="truncate font-medium text-zinc-950">{item.name}</p>
-                        <p className="mt-1 text-xs text-zinc-500">{formatDateTime(item.updatedAt)}</p>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => requestDeleteFlow(item)}
-                        aria-label={`刪除自動化 ${item.name}`}
-                        className="rounded-sm text-zinc-400 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
-                      >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
           </div>
         </aside>
 
@@ -2717,7 +2668,7 @@ function DeleteNodeDialog({
             <Trash2 className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <h2 id="automation-node-delete-title" className="text-base font-semibold text-zinc-950">
+            <h2 id="automation-node-delete-title" className="text-lg font-semibold text-zinc-950">
               刪除流程節點？
             </h2>
             <p className="mt-2 text-sm leading-6 text-zinc-600">
@@ -2772,7 +2723,7 @@ function DeleteAutomationDialog({
             <Trash2 className="h-5 w-5" aria-hidden="true" />
           </div>
           <div className="min-w-0">
-            <h2 id="automation-delete-title" className="text-base font-semibold text-zinc-950">
+            <h2 id="automation-delete-title" className="text-lg font-semibold text-zinc-950">
               刪除自動化？
             </h2>
             <p className="mt-2 text-sm leading-6 text-zinc-600">

@@ -81,6 +81,44 @@ export function MarketingInfoPage({
           </article>
         ))}
       </section>
+
+      <footer className="border-t border-[#d7dbe0] bg-white px-5 py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 text-sm text-slate-600 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl space-y-2">
+            <p className="font-semibold text-slate-900">InboxPilot is a software product operated by Luo Shih Lin.</p>
+            <p>InboxPilot 為羅仕林個人開發與營運之自動化行銷工具。</p>
+            <p>
+              Contact:{" "}
+              <a href="mailto:zeroyuanbrothers@gmail.com" className="font-semibold text-cyan-700 hover:text-cyan-800">
+                zeroyuanbrothers@gmail.com
+              </a>
+            </p>
+            <p>
+              Website:{" "}
+              <a
+                href="https://inboxpilot.carry-digital-nomad.in.net/"
+                className="font-semibold text-cyan-700 hover:text-cyan-800"
+              >
+                https://inboxpilot.carry-digital-nomad.in.net/
+              </a>
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-semibold text-slate-700">
+            <Link href="/privacy-policy" className="hover:text-cyan-700">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-service" className="hover:text-cyan-700">
+              Terms
+            </Link>
+            <Link href="/data-deletion" className="hover:text-cyan-700">
+              Data Deletion
+            </Link>
+            <Link href="/contact" className="hover:text-cyan-700">
+              Contact
+            </Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

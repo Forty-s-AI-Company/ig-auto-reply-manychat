@@ -22,7 +22,8 @@ describe("signup light theme", () => {
     expect(formSource).toContain('data-testid="signup-referral-helper"');
     expect(formSource).toContain('data-testid="signup-selected-plan"');
     expect(formSource).toContain('data-testid="signup-back-to-pricing"');
-    expect(formSource).toContain("PayUNI Sandbox");
+    expect(formSource).toContain("確認付款、推薦折抵與升級安排");
+    expect(formSource).not.toContain("PayUNI Sandbox");
     expect(formSource).toContain('role="alert"');
     expect(formSource).toContain('aria-live="polite"');
     expect(formSource).toContain("建立中…");
@@ -47,5 +48,15 @@ describe("signup light theme", () => {
     expect(formSource).toContain("encodeURIComponent(effectiveReferralCode)");
     expect(formSource).toContain("已從邀請連結帶入推薦碼");
     expect(formSource).toContain("折抵只能用於方案費，不可提現");
+  });
+
+  it("places referral helper copy directly under the referral code field", () => {
+    const referralInputIndex = formSource.indexOf('id="signup-referral-code"');
+    const helperIndex = formSource.indexOf('data-testid="signup-referral-helper"');
+    const nameInputIndex = formSource.indexOf('id="signup-name"');
+
+    expect(nameInputIndex).toBeGreaterThan(-1);
+    expect(referralInputIndex).toBeGreaterThan(nameInputIndex);
+    expect(helperIndex).toBeGreaterThan(referralInputIndex);
   });
 });

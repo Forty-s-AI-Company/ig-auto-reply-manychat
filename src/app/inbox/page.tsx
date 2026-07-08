@@ -20,6 +20,7 @@ export default async function InboxPage() {
     getInboxReferenceData(workspaceId),
   ]);
   const { tags, teamMembers, contactFields } = referenceData;
+  const uniqueTags = Array.from(new Map(tags.map((tag) => [tag.id, tag])).values());
 
   return (
     <AdminShell title="收件匣" headerCenter={<InboxHeaderSearch />}>
@@ -28,7 +29,7 @@ export default async function InboxPage() {
           ...conversation,
           messages: [...conversation.messages].reverse(),
         }))))}
-        tags={JSON.parse(JSON.stringify(tags))}
+        tags={JSON.parse(JSON.stringify(uniqueTags))}
         teamMembers={JSON.parse(JSON.stringify(teamMembers.map((member) => member.user)))}
         contactFields={JSON.parse(JSON.stringify(contactFields))}
         currentUserId={user.id}

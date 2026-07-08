@@ -53,7 +53,7 @@ function formatDate(value: Date) {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ alert?: string; feature?: string }>;
+  searchParams?: Promise<{ alert?: string; toast?: string; feature?: string }>;
 }) {
   await requireUser();
   const params = searchParams ? await searchParams : {};
@@ -167,13 +167,14 @@ export default async function DashboardPage({
             icon: Megaphone,
           };
   const PrimaryDashboardActionIcon = primaryDashboardAction.icon;
+  const featureGatedToast = params.toast === "feature_gated" || params.alert === "feature_gated";
 
   return (
     <AdminShell title="首頁">
       <div className="space-y-6">
-        {params.alert === "feature_gated" ? (
-          <DismissibleNoticeToast title="此功能目前受控開通" tone="warning">
-            {`此功能${params.feature ? `（${gatedFeatureLabels[params.feature] || params.feature}）` : ""}在正式營運版中受控開通。若您是白名單測試用戶或想體驗完整版，請使用我們的 Staging 測試站台：`}
+        {featureGatedToast ? (
+          <DismissibleNoticeToast title="本功能在目前版本尚未開放" tone="warning">
+            {`本功能${params.feature ? `（${gatedFeatureLabels[params.feature] || params.feature}）` : ""}在目前版本尚未開放。若您是白名單測試用戶或想體驗完整版，請使用我們的 Staging 測試站台：`}
             <a
               href="https://staging.carry-digital-nomad.in.net"
               className="font-semibold text-[#0057b8] underline underline-offset-2"

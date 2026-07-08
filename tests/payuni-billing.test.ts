@@ -69,17 +69,17 @@ describe("PayUNI billing callback", () => {
       true,
     );
 
-    expect(sandboxStatus.label).toBe("PayUNI 測試站");
+    expect(sandboxStatus.label).toBe("線上付款可用");
     expect(sandboxStatus.checkoutEnabled).toBe(true);
     expect(sandboxStatus.checkoutDisabledReason).toBeNull();
-    expect(sandboxStatus.detail).toContain("sandbox");
-    expect(productionStatus.label).toBe("PayUNI 正式站");
+    expect(sandboxStatus.detail).toContain("安全付款頁");
+    expect(productionStatus.label).toBe("付款服務準備中");
     expect(productionStatus.checkoutEnabled).toBe(false);
-    expect(productionStatus.checkoutDisabledReason).toContain("請先切回測試站驗證流程");
+    expect(productionStatus.checkoutDisabledReason).toContain("付款服務尚未完成啟用");
     expect(productionStatus.detail).toContain("付款按鈕已先停用");
     expect(enabledProductionStatus.checkoutEnabled).toBe(true);
     expect(enabledProductionStatus.checkoutDisabledReason).toBeNull();
-    expect(enabledProductionStatus.detail).toContain("正式站已受控開通");
+    expect(enabledProductionStatus.detail).toContain("付款服務已啟用");
   });
 
   it("can describe the gateway state even when billing secrets are unavailable", () => {
@@ -88,10 +88,10 @@ describe("PayUNI billing callback", () => {
 
     const status = getPayuniGatewayStatus();
 
-    expect(status.label).toBe("PayUNI 正式站");
+    expect(status.label).toBe("付款服務準備中");
     expect(status.checkoutEnabled).toBe(false);
-    expect(status.checkoutDisabledReason).toContain("正式金流尚未開通");
-    expect(status.detail).toContain("正式站尚未開通自動扣款");
+    expect(status.checkoutDisabledReason).toContain("付款服務尚未完成啟用");
+    expect(status.detail).toContain("付款服務尚未完成啟用");
   });
 
   it("renders a localized PayUNI redirect fallback page", () => {

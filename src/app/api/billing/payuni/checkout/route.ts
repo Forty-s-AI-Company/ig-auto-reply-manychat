@@ -44,6 +44,15 @@ export async function POST(request: Request) {
   if (!plan || amount === null) {
     return NextResponse.json({ error: "此方案需要聯絡管理員手動開通。" }, { status: 404 });
   }
+  if (parsed.data.addonKeys.length > 0) {
+    return NextResponse.json(
+      {
+        error:
+          "加量包線上購買尚未開放。目前只接受方案訂閱 checkout，避免在 entitlement 疊加與退款規則完成前產生誤扣款。",
+      },
+      { status: 409 },
+    );
+  }
 
   const workspaceId = await getCurrentWorkspaceId();
   const idempotencyKey = request.headers.get("idempotency-key")?.trim() || "";

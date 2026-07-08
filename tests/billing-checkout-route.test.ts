@@ -135,4 +135,22 @@ describe("billing checkout route", () => {
     expect(response.headers.get("location")).toBe("http://local.test/billing?payuni=production_gate_pending");
     expect(mocks.createPayuniCheckout).not.toHaveBeenCalled();
   });
+
+  it("rejects addon checkout until addon entitlement fulfillment is implemented", async () => {
+    const response = await checkoutRoute.POST(
+      formRequest({
+        planKey: "creator",
+        interval: "month",
+        addonKeys: "events_20000",
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toMatchObject({
+      error: expect.stringContaining("加量包線上購買尚未開放"),
+    });
+    expect(mocks.createPlanInvoice).not.toHaveBeenCalled();
+    expect(mocks.createPayuniCheckout).not.toHaveBeenCalled();
+    expect(mocks.db.paymentOrder.create).not.toHaveBeenCalled();
+  });
 });

@@ -1,17 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import {
-  Bell,
-  Bot,
   Camera,
-  CreditCard,
-  Inbox,
-  MessageCircle,
   Plug,
-  Settings,
-  Tags,
-  Users,
-  Workflow,
 } from "lucide-react";
 import { AdminShell } from "@/components/AdminShell";
 import { DismissibleNoticeToast } from "@/components/DismissibleNoticeToast";
@@ -19,12 +10,9 @@ import { DisconnectChannelButton } from "@/components/DisconnectChannelButton";
 import { InstagramChannelActions } from "@/components/InstagramChannelActions";
 import { RefreshInstagramProfileButton } from "@/components/RefreshInstagramProfileButton";
 import { requireUser } from "@/lib/auth";
-import { getChannelConnectOptionState } from "@/lib/channels/channel-connect-visibility";
 import { getMetaChannelConfig } from "@/lib/channels/meta";
 import { getSafeInstagramProfileRefreshError } from "@/lib/channels/instagram-profile-errors";
 import { getDb } from "@/lib/db";
-import { getInboxPilotDeploymentEnv } from "@/lib/deployment-env";
-import { isSimpleRelease } from "@/lib/release-mode";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
 
 type Props = {
@@ -37,109 +25,37 @@ type Props = {
 
 const INSTAGRAM_TESTER_INVITES_URL = "https://www.instagram.com/accounts/manage_access/";
 
-const settingsGroups = [
-  {
-    title: "主要設定",
-    items: [
-      { label: "一般設定", href: "#general" },
-      { label: "通知設定", href: "#notifications" },
-      { label: "團隊成員", href: "#team" },
-      { label: "操作紀錄", href: "#logs" },
-      { label: "顯示設定", href: "#display" },
-    ],
-  },
-  {
-    title: "方案與用量",
-    items: [
-      { label: "訂閱方案", href: "#billing" },
-      { label: "發票紀錄", href: "#billing" },
-      { label: "付款資料", href: "#billing" },
-    ],
-  },
-  {
-    title: "收件匣",
-    items: [
-      { label: "收件匣行為", href: "#inbox" },
-      { label: "自動指派", href: "#assignment" },
-    ],
-  },
-  {
-    title: "平台連線",
-    items: [
-      { label: "Instagram", href: "#instagram" },
-      { label: "其他平台", href: "#platform-connect" },
-    ],
-  },
-  {
-    title: "自動化",
-    items: [
-      { label: "自動化清單", href: "#automation-settings" },
-      { label: "基礎規則", href: "#automation-settings" },
-      { label: "序列設定", href: "#automation-settings" },
-      { label: "自訂欄位", href: "#automation-data" },
-      { label: "標籤", href: "#automation-data" },
-      { label: "轉換事件", href: "#automation-data" },
-    ],
-  },
-  {
-    title: "擴充整合",
-    items: [
-      { label: "AI 設定", href: "#ai-settings" },
-      { label: "API 存取", href: "#extensions" },
-      { label: "應用程式", href: "#extensions" },
-      { label: "第三方整合", href: "#extensions" },
-      { label: "付款整合", href: "#extensions" },
-      { label: "已安裝模板", href: "#extensions" },
-      { label: "追蹤像素", href: "#extensions" },
-    ],
-  },
-];
+const settingsNavItems = [
+  { label: "方案與用量", href: "/billing" },
+  { label: "AI 設定", href: "/ai-settings" },
+  { label: "社群平台", href: "/channels", current: true },
+  { label: "關於 InboxPilot", href: "#about-inboxpilot" },
+] as const;
 
 const channelCards = [
   {
-    kind: "connect" as const,
     id: "instagram" as const,
     name: "Instagram",
-    description: "正式站先只開放 Instagram 帳號連線；測試站仍可從社群帳號頁驗證其他 provider。",
+    description: "目前正式主線只開放 Instagram。收件匣、聯絡人、自動化與分析都會以已連結的 IG 帳號為 scope。",
     href: "/channels/connect/social",
+    enabled: true,
+    statusLabel: "可連線",
   },
   {
-    kind: "connect" as const,
-    id: "telegram-bot" as const,
-    name: "Telegram Bot",
-    description: "Telegram 屬於後續受控通路；正式開放前不會打開 token 授權或儲存流程。",
-    href: "/channels/connect/social",
-  },
-  {
-    kind: "connect" as const,
-    id: "mock" as const,
-    name: "Mock OAuth Provider",
-    description: "本機測試用 provider，完整走 popup、callback、postMessage 流程。",
-    href: "/channels/connect/social",
-  },
-  {
-    kind: "connect" as const,
     id: "tiktok" as const,
     name: "TikTok",
-    description: "TikTok 尚未納入本次付費版可用範圍，需完成官方 API、權限與客服流程後才會開放。",
+    description: "尚未開放。需要完成官方 API、權限、客服與資料同步流程後，才會加入正式產品範圍。",
     href: "",
+    enabled: false,
+    statusLabel: "未開放",
   },
   {
-    kind: "connect" as const,
     id: "whatsapp" as const,
     name: "WhatsApp",
-    description: "WhatsApp Business 尚未納入本次付費版可用範圍，正式開放前不會啟動授權流程。",
+    description: "尚未開放。WhatsApp Business 授權、訊息範本與 webhook 驗證完成前，不會顯示可連線操作。",
     href: "",
-  },
-  {
-    kind: "static" as const,
-    name: "簡訊",
-    description: "簡訊供應商與地區規則會集中在此管理。",
-  },
-  {
-    kind: "static" as const,
-    name: "電子郵件",
-    description: "寄件網域與寄件者驗證會集中在此管理。",
+    enabled: false,
+    statusLabel: "未開放",
   },
 ];
 
@@ -185,76 +101,66 @@ export default async function ChannelsPage({ searchParams }: Props) {
   await requireUser();
   const workspaceId = await getCurrentWorkspaceId();
   const params = searchParams ? await searchParams : {};
-  const simpleRelease = await isSimpleRelease();
-  const deploymentEnv = getInboxPilotDeploymentEnv();
-  const [channels, tagCount, contactCount, automationCount, teamCount] = await Promise.all([
-    getDb().channel.findMany({
-      where: { workspaceId },
-      orderBy: [{ type: "asc" }, { createdAt: "asc" }],
-    }),
-    getDb().tag.count({ where: { workspaceId } }),
-    getDb().contact.count({ where: { channel: { workspaceId } } }),
-    getDb().automation.count({ where: { workspaceId } }),
-    getDb().workspaceUser.count({ where: { workspaceId } }),
-  ]);
+  const channels = await getDb().channel.findMany({
+    where: { workspaceId },
+    orderBy: [{ type: "asc" }, { createdAt: "asc" }],
+  });
   const instagramChannels = channels.filter((channel) => {
     if (channel.type !== "instagram") return false;
     const config = getMetaChannelConfig(channel.configJson);
     return Boolean(config.instagramUsername || config.instagramBusinessAccountId || config.instagramProfilePictureUrl || channel.name.startsWith("Instagram @"));
   });
-  const visibleChannelCards = channelCards
-    .map((card) => {
-      if (card.kind === "static") {
-        return card;
-      }
-
-      return {
-        ...card,
-        uiState: getChannelConnectOptionState(card.id, { simpleRelease, deploymentEnv }),
-      };
-    })
-    .filter((entry) => (entry.kind === "static" ? true : entry.uiState.visible));
 
   return (
     <AdminShell title="設定">
-      <div className="flex w-full gap-6">
-        <aside className="sticky top-20 hidden h-[calc(100vh-6rem)] w-64 shrink-0 overflow-y-auto border-r border-[#d7dbe0] pr-4 lg:block">
-          <div className="mb-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#667085]">設定</p>
-            <h2 className="mt-1 text-xl font-semibold text-[#111827]">工作區設定</h2>
-          </div>
-          <nav className="space-y-5 text-sm">
-            {settingsGroups.map((group) => (
-              <div key={group.title}>
-                <p className="mb-2 px-2 text-xs font-medium uppercase tracking-wide text-[#98a2b3]">{group.title}</p>
-                <div className="space-y-1">
-                  {group.items.map((item) => (
-                    <Link
-                      key={`${group.title}-${item.label}`}
-                      href={item.href}
-                      className="block rounded-md px-2 py-1.5 text-[#4b5563] hover:bg-[#eceff3] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+      <div className="flex w-full gap-5 lg:h-[calc(100dvh-104px)] lg:overflow-hidden xl:gap-6">
+        <aside className="hidden w-52 shrink-0 overflow-y-auto border-r border-[#d7dbe0] pr-5 xl:w-56 lg:block">
+          <nav className="space-y-1 text-sm">
+            {settingsNavItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                aria-current={"current" in item && item.current ? "page" : undefined}
+                className={`block rounded-md px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 ${
+                  "current" in item && item.current
+                    ? "bg-[#e6f8fa] font-semibold text-[#064e54]"
+                    : "text-[#4b5563] hover:bg-[#eceff3] hover:text-[#111827]"
+                }`}
+              >
+                {item.label}
+              </Link>
             ))}
           </nav>
         </aside>
 
-        <div className="min-w-0 flex-1 space-y-5">
+        <div className="min-w-0 flex-1 space-y-5 pb-6 pr-1 lg:overflow-y-auto lg:pb-0">
+          <nav className="flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 lg:hidden" aria-label="設定快速導覽">
+            {settingsNavItems.map((item) => (
+              <Link
+                key={`mobile-${item.label}`}
+                href={item.href}
+                aria-current={"current" in item && item.current ? "page" : undefined}
+                className={`shrink-0 snap-start rounded-full border px-3 py-2 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 sm:text-sm ${
+                  "current" in item && item.current
+                    ? "border-[#b6eef2] bg-[#e6f8fa] text-[#064e54]"
+                    : "border-[#d7dbe0] bg-white text-[#344054] hover:bg-[#f8fafc]"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
           <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[#d7dbe0] pb-5">
             <div>
-              <p className="text-sm font-medium text-[#006fe6]">設定</p>
-              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">工作區、Instagram 與自動化設定</h1>
+              <h1 className="mt-1 text-2xl font-semibold text-[#111827]">社群平台</h1>
               <p className="mt-2 max-w-3xl text-sm text-[#667085]">
-                管理工作區、通知、收件匣行為、平台連線、方案與整合。低頻設定集中在這裡，主選單保留日常操作。
+                管理 Instagram 連線與後續社群平台開放狀態。方案、AI 與其他設定已拆到各自頁面，避免設定頁變成一大串雜項。
               </p>
             </div>
             <Link href="/channels/connect" className="inline-flex items-center gap-2 rounded-md bg-[#006fe6] px-4 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2">
               <Camera className="h-4 w-4" aria-hidden="true" />
-              + 新增平台帳號
+              <span className="sm:hidden">新增帳號</span>
+              <span className="hidden sm:inline">+ 新增平台帳號</span>
             </Link>
           </header>
 
@@ -269,73 +175,30 @@ export default async function ChannelsPage({ searchParams }: Props) {
             </Notice>
           ) : null}
 
-          <section id="general" className="grid gap-3 md:grid-cols-5">
-            <Metric label="已連結 IG" value={instagramChannels.length} />
-            <Metric label="聯絡人" value={contactCount} />
-            <Metric label="自動化" value={automationCount} />
-            <Metric label="標籤" value={tagCount} />
-            <Metric label="團隊成員" value={teamCount} />
-          </section>
-
-          <section className="grid gap-3 lg:grid-cols-2">
-            <SettingPanel id="notifications" icon={<Bell className="h-5 w-5" />} title="通知設定">
-              Inbox 新訊息、指派、提醒與系統通知會集中管理。Email 通知與細部頻率完成權限與退訂規則後再開放。
-              <div>
-                <DisabledFeatureButton
-                  testId="channels-notifications-disabled"
-                  reason="Email 通知需要完成退訂、頻率與寄送紀錄規則後才會開放。"
-                >
-                  Email 通知受控開通
-                </DisabledFeatureButton>
-              </div>
-            </SettingPanel>
-            <SettingPanel id="team" icon={<Users className="h-5 w-5" />} title="團隊成員">
-              目前共有 {teamCount} 位成員。Inbox 已支援將對話指派給團隊成員。
-            </SettingPanel>
-            <SettingPanel id="logs" icon={<MessageCircle className="h-5 w-5" />} title="操作紀錄" badge="規劃中">
-              設定變更、登入、權限刷新與自動化發布紀錄會集中在此，方便上線後稽核。
-              <div>
-                <DisabledFeatureButton
-                  testId="channels-logs-disabled"
-                  reason="稽核紀錄會等登入、權限刷新與設定變更事件都接上後再開放查看。"
-                >
-                  稽核紀錄受控開通
-                </DisabledFeatureButton>
-              </div>
-            </SettingPanel>
-            <SettingPanel id="display" icon={<Settings className="h-5 w-5" />} title="顯示設定">
-              目前介面固定使用繁體中文與 InboxPilot 淺色版面；主題與語言切換會在設定穩定後開放。
-              <div>
-                <DisabledFeatureButton
-                  testId="channels-display-disabled"
-                  reason="主題與語言切換會在設計語言與多語系文案穩定後再開放。"
-                >
-                  主題與語言受控開通
-                </DisabledFeatureButton>
-              </div>
-            </SettingPanel>
-          </section>
-
           <section id="platform-connect" className="space-y-3">
-            <SectionTitle title="新增平台帳號" description="依照平台授權流程整理成：先選擇平台，再登入授權，成功後回到本頁顯示已連結帳號。" />
+            <SectionTitle title="社群平台" description="依照平台授權流程整理成：先選擇平台，再登入授權，成功後回到本頁顯示已連結帳號。" />
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {visibleChannelCards.map((entry) => (
-                <div key={entry.name} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
+              {channelCards.map((entry) => (
+                <div
+                  key={entry.name}
+                  aria-disabled={!entry.enabled}
+                  className={`flex h-full flex-col rounded-lg border border-[#d7dbe0] bg-white p-4 transition ${
+                    entry.enabled ? "" : "cursor-not-allowed opacity-60"
+                  }`}
+                >
                   <div className="flex items-start justify-between gap-3">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-medium text-[#111827]">{entry.name}</h3>
-                      <p className="mt-1 text-sm leading-6 text-[#667085]">{entry.description}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#667085]">{entry.description}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <ConnectionStateBadge tone={entry.kind === "static" ? "neutral" : entry.uiState.enabled ? "success" : "warning"}>
-                        {entry.kind === "static" ? "規劃中" : entry.uiState.statusLabel || "暫停中"}
+                    <div className="flex shrink-0 items-start gap-2 md:flex-col md:items-end">
+                      <ConnectionStateBadge tone={entry.enabled ? "success" : "neutral"}>
+                        {entry.statusLabel}
                       </ConnectionStateBadge>
                       <Plug className="h-5 w-5 text-[#98a2b3]" aria-hidden="true" />
                     </div>
                   </div>
-                  {entry.kind === "static" ? (
-                    <DisabledFeatureButton reason="這個平台入口仍在規劃中，完成供應商串接、權限與訊息收發驗證後才會開放。">正式開放後可連線</DisabledFeatureButton>
-                  ) : entry.uiState.enabled ? (
+                  {entry.enabled ? (
                     <Link
                       href={entry.href}
                       className="mt-4 inline-flex rounded-md bg-[#006fe6] px-3 py-2 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
@@ -344,10 +207,12 @@ export default async function ChannelsPage({ searchParams }: Props) {
                     </Link>
                   ) : (
                     <>
-                      <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-6 text-[#b54708]">
-                        {entry.uiState.disabledReason}
+                      <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-6 text-slate-600">
+                        目前未開放線上連線。這個入口只用來讓使用者知道平台狀態，不會打開無效授權流程。
                       </div>
-                      <DisabledFeatureButton>{entry.id === "mock" ? "僅限本機 / QA 使用" : entry.uiState.statusLabel || "受控開通"}</DisabledFeatureButton>
+                      <DisabledFeatureButton reason="此平台尚未開放，完成官方 API、權限與訊息收發驗證後才會提供連線。">
+                        未開放
+                      </DisabledFeatureButton>
                     </>
                   )}
                 </div>
@@ -380,7 +245,7 @@ export default async function ChannelsPage({ searchParams }: Props) {
                         <DisconnectChannelButton channelId={channel.id} channelName={channel.name} />
                       </div>
                     </div>
-                    <dl className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+                    <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-4">
                       <Info label="IG 使用者 ID" value={config.instagramBusinessAccountId || config.instagramOauthUserId || "-"} mono />
                       <Info label="權杖" value={config.tokenSource ? "已加密儲存" : "未設定"} />
                       <Info label="連結時間" value={formatDate(config.connectedAt)} />
@@ -403,108 +268,39 @@ export default async function ChannelsPage({ searchParams }: Props) {
             </div>
           </section>
 
-          <section id="inbox" className="grid gap-3 md:grid-cols-2">
-            <SettingPanel icon={<Inbox className="h-5 w-5" />} title="收件匣行為">
-              已支援未指派、指派給我、提醒、收藏、熱門名單、合作夥伴與團隊指派。
-            </SettingPanel>
-            <SettingPanel id="assignment" icon={<Users className="h-5 w-5" />} title="自動指派" badge="部分啟用">
-              目前支援手動指派；自動輪派、工作時段與條件分派會在此管理。
-            </SettingPanel>
-          </section>
-
-          <section id="automation-settings" className="space-y-3">
-            <SectionTitle title="自動化設定" description="整理自動化清單、基礎規則與序列設定。" />
-            <div className="grid gap-3 md:grid-cols-3">
-              <SettingPanel icon={<Workflow className="h-5 w-5" />} title="自動化清單">
-                顯示平台帳號的自動化數量、啟用狀態，實際編輯入口在「自動化」頁。
-              </SettingPanel>
-              <SettingPanel icon={<Bot className="h-5 w-5" />} title="基礎規則">
-                預設回覆、關鍵字、留言觸發、延遲、公開回覆與按讚設定已接在自動化流程中。
-              </SettingPanel>
-              <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="序列設定" badge="規劃中">
-                序列推播、訂閱序列與時間間隔會集中在序列頁與此設定區。
-                <div>
-                  <DisabledFeatureButton
-                    testId="channels-sequence-settings-disabled"
-                    reason="序列推播設定會等排程、退訂與發送限制驗證完成後再開放。"
-                  >
-                    序列設定受控開通
-                  </DisabledFeatureButton>
-                </div>
-              </SettingPanel>
-            </div>
-          </section>
-
-          <section id="automation-data" className="grid gap-3 md:grid-cols-3">
-            <SettingPanel icon={<Bot className="h-5 w-5" />} title="自訂欄位">
-              使用者欄位可先使用聯絡人的 email、phone、locale、source；欄位管理會集中在此。
-            </SettingPanel>
-            <SettingPanel icon={<Tags className="h-5 w-5" />} title="標籤">
-              目前有 {tagCount} 個標籤，可用於分眾、條件判斷與 Inbox 快速分類。
-            </SettingPanel>
-            <SettingPanel icon={<MessageCircle className="h-5 w-5" />} title="轉換事件" badge="規劃中">
-              Meta CAPI 與購買、預約、領取等轉換事件會集中在此管理。
-              <div>
-                <DisabledFeatureButton
-                  testId="channels-conversion-events-disabled"
-                  reason="轉換事件需要完成 Meta CAPI、購買事件與重送保護後再開放。"
-                >
-                  轉換事件受控開通
-                </DisabledFeatureButton>
-              </div>
-            </SettingPanel>
-          </section>
-
-          <section id="billing" className="grid gap-3 md:grid-cols-2">
-            <SettingPanel icon={<CreditCard className="h-5 w-5" />} title="方案與用量">
-              方案、發票與付款方式集中在方案頁管理。
-              <div className="mt-3">
-                <Link className="rounded-sm text-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2" href="/billing">
-                  前往方案頁
-                </Link>
-              </div>
-            </SettingPanel>
-            <SettingPanel id="ai-settings" icon={<Bot className="h-5 w-5" />} title="AI 設定" badge={simpleRelease ? "測試站開放" : undefined}>
-              AI 供應商、模型、API Key 與本機 CLI 橋接集中在 AI 設定頁管理。
-              <div className="mt-3">
-                {simpleRelease ? (
-                  <DisabledFeatureButton
-                    testId="channels-ai-settings-disabled"
-                    reason="正式簡版暫不開放 AI 供應商設定；完整版測試站可先驗證模型與 API Key。"
-                  >
-                    完整版測試站可設定
-                  </DisabledFeatureButton>
-                ) : (
-                  <Link className="rounded-sm text-sm font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2" href="/ai-settings">
-                    前往 AI 設定
-                  </Link>
-                )}
-              </div>
-            </SettingPanel>
-          </section>
-
-          <section id="extensions" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
+          <section id="about-inboxpilot" className="rounded-lg border border-[#d7dbe0] bg-white p-4">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-[#111827]">擴充整合</h2>
-              <StatusBadge>規劃中</StatusBadge>
+              <h2 className="text-lg font-semibold text-[#111827]">關於 InboxPilot</h2>
             </div>
-            <p className="mt-1 text-sm leading-6 text-[#667085]">
-              API、應用程式、第三方整合、付款整合、模板與追蹤像素統一放在同一組，避免低頻工具擠在左側主選單。
-            </p>
-            <DisabledFeatureButton>第三方整合受控開通</DisabledFeatureButton>
+            <div className="mt-3 space-y-3 text-sm leading-6 text-[#667085]">
+              <p>2026 Luo Shih Lin All rights reserved.</p>
+              <p>Copyright© Luo Shih Lin</p>
+              <p>InboxPilot is operated by Luo Shih Lin.</p>
+              <p>
+                Contact:{" "}
+                <a
+                  href="mailto:zeroyuanbrothers@gmail.com"
+                  className="font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                >
+                  zeroyuanbrothers@gmail.com
+                </a>
+              </p>
+              <p>
+                Website:{" "}
+                <a
+                  href="https://inboxpilot.carry-digital-nomad.in.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-[#006fe6] hover:text-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2"
+                >
+                  https://inboxpilot.carry-digital-nomad.in.net/
+                </a>
+              </p>
+            </div>
           </section>
         </div>
       </div>
     </AdminShell>
-  );
-}
-
-function Metric({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-lg border border-[#d7dbe0] bg-white p-4">
-      <p className="text-sm text-[#667085]">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-[#111827]">{value}</p>
-    </div>
   );
 }
 
@@ -523,41 +319,6 @@ function Info({ label, value, mono = false }: { label: string; value: string; mo
       <dt className="text-xs text-[#667085]">{label}</dt>
       <dd className={mono ? "mt-1 break-all font-mono text-xs text-[#111827]" : "mt-1 text-[#111827]"}>{value}</dd>
     </div>
-  );
-}
-
-function SettingPanel({
-  id,
-  icon,
-  title,
-  badge,
-  children,
-}: {
-  id?: string;
-  icon: ReactNode;
-  title: string;
-  badge?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div id={id} className="rounded-lg border border-[#d7dbe0] bg-white p-4">
-      <div className="flex items-center justify-between gap-2 text-[#111827]">
-        <div className="flex items-center gap-2">
-          <span className="text-[#667085]" aria-hidden="true">{icon}</span>
-          <h3 className="font-medium">{title}</h3>
-        </div>
-        {badge ? <StatusBadge>{badge}</StatusBadge> : null}
-      </div>
-      <div className="mt-2 text-sm leading-6 text-[#667085]">{children}</div>
-    </div>
-  );
-}
-
-function StatusBadge({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
-      {children}
-    </span>
   );
 }
 

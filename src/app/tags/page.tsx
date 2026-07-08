@@ -1,5 +1,5 @@
 ﻿import { AdminShell } from "@/components/AdminShell";
-import { JsonCrudClient } from "@/components/JsonCrudClient";
+import { TagsManagerClient } from "@/components/TagsManagerClient";
 import { requireUser } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { getCurrentWorkspaceId } from "@/lib/workspaces";
@@ -10,13 +10,7 @@ export default async function TagsPage() {
   const tags = await getDb().tag.findMany({ where: { workspaceId }, orderBy: { name: "asc" } });
   return (
     <AdminShell title="標籤管理">
-      <JsonCrudClient
-        title="標籤"
-        description="建立、編輯、刪除聯絡人標籤。"
-        endpoint="/api/tags"
-        initialItems={JSON.parse(JSON.stringify(tags))}
-        createTemplate={{ name: "重要客戶", color: "#2563eb" }}
-      />
+      <TagsManagerClient initialTags={JSON.parse(JSON.stringify(tags))} />
     </AdminShell>
   );
 }

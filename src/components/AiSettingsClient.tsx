@@ -383,6 +383,19 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
         </DismissibleNoticeToast>
       ) : null}
 
+      <div className="rounded-lg border border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#344054]" data-testid="ai-current-model-info">
+        <p className="font-medium text-[#111827]">目前模型資訊</p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <p>供應商：{activeProvider?.label || provider}</p>
+          <p>模型：{model}</p>
+          <p>智慧程度：{activeModel ? intelligenceLabels[activeModel.intelligenceTier] : "-"}</p>
+          <p>速度：{activeModel ? speedLabels[activeModel.speedTier] : "-"}</p>
+          <p>Reasoning：{activeModel?.supportsReasoning ? "支援" : "不支援 / 未知"}</p>
+          <p>Thinking：{activeModel?.supportsThinking ? "支援" : "不支援 / 未知"}</p>
+        </div>
+        {activeModel?.description ? <p className="mt-3 text-xs text-[#667085]">{activeModel.description}</p> : null}
+      </div>
+
       <ManualActionNotice title="SaaS 連接方式：API Key" tone="cyan" stackIndex={message ? 1 : 0}>
         <p>
           ChatGPT、Gemini、DeepSeek、XAI 由目前帳號自行填入 API Key。正式站只顯示雲端 SaaS 可直接使用的 API 供應商。
@@ -518,19 +531,6 @@ export function AiSettingsClient({ initialState }: { initialState: InitialState 
               </p>
             </div>
           )}
-
-          <div className="rounded-lg border border-[#d7dbe0] bg-[#f8fafc] p-4 text-sm text-[#344054]">
-            <p className="font-medium text-[#111827]">目前模型資訊</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <p>供應商：{activeProvider?.label || provider}</p>
-              <p>模型：{model}</p>
-              <p>智慧程度：{activeModel ? intelligenceLabels[activeModel.intelligenceTier] : "-"}</p>
-              <p>速度：{activeModel ? speedLabels[activeModel.speedTier] : "-"}</p>
-              <p>Reasoning：{activeModel?.supportsReasoning ? "支援" : "不支援 / 未知"}</p>
-              <p>Thinking：{activeModel?.supportsThinking ? "支援" : "不支援 / 未知"}</p>
-            </div>
-            {activeModel?.description ? <p className="mt-3 text-xs text-[#667085]">{activeModel.description}</p> : null}
-          </div>
 
           {initialState.localCliEnabled ? <div className="grid gap-3 xl:grid-cols-2">
             {cliConnectionCards.map((card) => (

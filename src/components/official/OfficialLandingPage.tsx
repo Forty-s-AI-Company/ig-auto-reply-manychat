@@ -110,7 +110,7 @@ const copy = {
     footer: {
       company: "InboxPilot",
       resources: "資源",
-      copyright: "© 2026 InboxPilot. All rights reserved.",
+      copyright: "© 2026 InboxPilot · 羅仕林個人開發與營運。",
     },
   },
   en: {
@@ -202,7 +202,7 @@ const copy = {
     footer: {
       company: "InboxPilot",
       resources: "Resources",
-      copyright: "© 2026 InboxPilot. All rights reserved.",
+      copyright: "© 2026 InboxPilot. Operated by Luo Shih Lin.",
     },
   },
 } satisfies Record<Locale, Record<string, unknown>>;
@@ -832,7 +832,10 @@ export function OfficialLandingPage() {
           ))}
         </div>
         <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm text-white/50">
-          {footer.copyright}
+          <p>{footer.copyright}</p>
+          <p className="mt-2 text-white/45">InboxPilot is a software product operated by Luo Shih Lin.</p>
+          <p className="mt-2 text-white/45">Contact: zeroyuanbrothers@gmail.com</p>
+          <p className="mt-1 text-white/45">Website: https://inboxpilot.carry-digital-nomad.in.net/</p>
         </div>
       </footer>
     </main>

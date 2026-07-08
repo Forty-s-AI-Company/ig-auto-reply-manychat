@@ -47,3 +47,12 @@ Retention：
 - `retention_365`：NT$599 / 月，保存天數 +365
 
 加量包當月有效，不累積到下月，可併入 invoice。推薦折抵制度 v1 只承諾折抵方案費；加量包是否可折抵或產生現金型聯盟分潤，維持受控開通並需另行審核成本與退款規則。
+
+目前狀態補充：
+
+- `billingAddons`、invoice item、`SubscriptionAddon` entitlement 疊加模型已存在。
+- 但公開線上購買仍未開放，因為以下三段還沒有一起完成並驗證：
+  - add-on checkout 建單與前台選購流程
+  - 付款完成後自動寫入 `SubscriptionAddon`
+  - 退款 / 作廢後的 entitlement 沖回與對帳
+- 在上述流程完成前，正式產品只開放方案訂閱 checkout，不開放加量包獨立收款。

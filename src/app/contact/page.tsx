@@ -2,7 +2,7 @@ import { MarketingInfoPage } from "@/components/marketing/MarketingInfoPage";
 
 export const metadata = {
   title: "聯絡 InboxPilot",
-  description: "聯絡 InboxPilot 團隊，處理產品、Meta 串接、PayUNI 與技術支援需求。",
+  description: "聯絡 InboxPilot 營運者，處理產品、Meta 串接、PayUNI 與技術支援需求。",
 };
 
 export default function ContactPage() {
@@ -10,10 +10,15 @@ export default function ContactPage() {
     <MarketingInfoPage
       eyebrow="聯絡我們"
       title="有問題，直接把情境丟給我們。"
-      description="如果你在 Instagram、Meta App、PayUNI 付款或自動化流程遇到問題，可以先附上頁面、錯誤訊息、發生時間與操作步驟；敏感資料請先遮蔽，我們會比較快抓到問題。"
+      description="InboxPilot is operated by Luo Shih Lin。若你在 Instagram、Meta App、PayUNI 付款或自動化流程遇到問題，可以先附上頁面、錯誤訊息、發生時間與操作步驟；敏感資料請先遮蔽，會比較快抓到問題。"
       ctaLabel="寄信聯絡"
       ctaHref="mailto:zeroyuanbrothers@gmail.com"
       sections={[
+        {
+          title: "營運主體",
+          body: "InboxPilot is a software product operated by Luo Shih Lin. InboxPilot 為羅仕林個人開發與營運之自動化行銷工具。",
+          items: ["Operator / Owner: Luo Shih Lin", "中文：羅仕林", "Website: https://inboxpilot.carry-digital-nomad.in.net/"],
+        },
         {
           title: "聯絡信箱",
           body: "目前先以 Email 作為主要支援入口。寄信時請盡量附上截圖、發生時間與你當時操作到哪一步，這樣排查會快很多。",

@@ -971,12 +971,18 @@ function FaqSection({ t }: { t: Copy }) {
 function Footer({ t }: { t: Copy }) {
   return (
     <footer className="bg-zinc-950 px-5 py-10 text-white lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 md:flex-row">
-        <div className="flex items-center gap-3 font-black">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ff00d4]">
-            <Bot className="h-5 w-5" />
-          </span>
-          InboxPilot
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 md:flex-row md:items-start">
+        <div className="text-center md:text-left">
+          <div className="flex items-center gap-3 font-black">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ff00d4]">
+              <Bot className="h-5 w-5" />
+            </span>
+            InboxPilot
+          </div>
+          <p className="mt-3 text-sm text-zinc-300">InboxPilot is a software product operated by Luo Shih Lin.</p>
+          <p className="mt-1 text-sm text-zinc-400">InboxPilot 為羅仕林個人開發與營運之自動化行銷工具。</p>
+          <p className="mt-2 text-sm text-zinc-400">Contact: zeroyuanbrothers@gmail.com</p>
+          <p className="mt-1 text-sm text-zinc-500">Website: https://inboxpilot.carry-digital-nomad.in.net/</p>
         </div>
         <div className="flex flex-wrap justify-center gap-5 text-sm font-bold text-zinc-300">
           {footerLinks.map((item) => (
