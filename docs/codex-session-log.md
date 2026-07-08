@@ -10974,3 +10974,733 @@ Launch impact:
   - `python scripts/ai_release_autopilot.py --dry-run --target sale-ready --max-rounds 1` 通過。
 - 報告：新增 `reports/ai-team/YOLO_STATUS_MACHINE_FIX_REPORT.md`。
 - 安全：未修產品功能、未啟動長時間 YOLO、未碰 production DB、未部署 Production、未送 Meta App Review、未切 PayUNI production。
+
+## 2026-07-06 06:20 - Meta 924 Instagram platform setup audit
+
+- Goal: inspect the correct Meta Developers app `InboxPilot / 924285843989683` to understand why staging Instagram OAuth returns `Invalid platform app` when using 924 as `META_INSTAGRAM_APP_ID`.
+- Browser evidence:
+  - Opened Meta Developers app `924285843989683`.
+  - Captured dashboard, basic settings, Instagram use case, permissions, webhooks, roles, and App Review screenshots under `reports/ai-team/meta-924-platform-audit/`.
+  - Confirmed the parent Meta app is `InboxPilot` and the dashboard shows the Instagram business use case.
+  - Instagram API Setup / Permissions / Webhooks panels did not fully render in the in-app browser; console showed Meta-side `Failed to fetch` / MutationObserver errors.
+- Code evidence:
+  - `src/app/api/meta/oauth/start/route.ts` sends `META_INSTAGRAM_APP_ID || META_APP_ID` directly as `client_id` to `https://api.instagram.com/oauth/authorize`.
+  - Therefore, `924285843989683` must be accepted as an Instagram OAuth platform app id before staging can use it.
+- Result:
+  - No Meta Dashboard setting was changed.
+  - No App Review was submitted.
+  - Added `reports/ai-team/META_924_INSTAGRAM_PLATFORM_SETUP_AUDIT.md`.
+  - Updated Meta evidence reports to mark `META_924_PLATFORM_AUDIT=HUMAN_ACTION_REQUIRED` and `INSTAGRAM_PLATFORM_SETUP_CONFIRMED=NO`.
+- Safety: did not deploy Production, did not touch production DB, did not switch PayUNI production, did not output Meta secrets.
+
+## 2026-07-06 07:35 - Meta 924 full unification feasibility
+
+- Goal: determine whether InboxPilot can use `924285843989683` as the single Meta / Instagram OAuth client id.
+- Meta Developers evidence:
+  - Correct parent app remains `InboxPilot / 924285843989683`.
+  - The 924 Instagram API setup rendered and showed Instagram app name `manychat-auto-reply-IG` with Instagram app id `1530009762118735`.
+- OAuth smoke evidence:
+  - `client_id=924285843989683` at `https://api.instagram.com/oauth/authorize` returned `Invalid platform app`.
+  - `client_id=1530009762118735` opened the Instagram consent flow.
+- Decision:
+  - Full runtime unification by setting `META_INSTAGRAM_APP_ID=924285843989683` is not feasible for the current Instagram Platform OAuth flow.
+  - Keep `META_APP_ID=924285843989683` for the parent Meta app / review lane.
+  - Use `META_INSTAGRAM_APP_ID=1530009762118735` for Instagram Platform OAuth with its matching secret.
+- Reports:
+  - Added `reports/ai-team/META_924_FULL_UNIFICATION_FEASIBILITY_REPORT.md`.
+  - Updated Meta App Review / name consistency / release decision reports.
+- Safety: did not deploy Production, did not touch production DB, did not submit Meta App Review, did not switch PayUNI production, and did not output Meta secrets.
+
+## 2026-07-06 07:50 - Meta OAuth client id / app name decision accepted
+
+- Decision:
+  - Continue using `1530009762118735` as `META_INSTAGRAM_APP_ID`.
+  - Keep `924285843989683` as the parent Meta app under review.
+  - Document in App Review package that the Instagram OAuth client id is the Instagram app id shown inside InboxPilot's Instagram API setup.
+  - If Meta later exposes a safe rename / recreate path for the Instagram app display name, handle it later.
+  - Do not block final recording on the consent name `manychat-auto-reply-IG`; use an explicit reviewer note.
+- Updated reports:
+  - `reports/ai-team/META_APP_REVIEW_EVIDENCE_CHECKLIST.md`
+  - `reports/ai-team/META_APP_NAME_CONSISTENCY_CHECK.md`
+  - `reports/ai-team/META_FINAL_PACKAGE_STATUS.md`
+  - `reports/ai-team/RELEASE_DECISION_AFTER_HUMAN_GATES.md`
+- Status:
+  - `CLIENT_ID_REVIEW_REQUIRED=NO`
+  - `APP_NAME_CONSISTENCY=WARNING_ACCEPTED`
+  - `READY_TO_CONTINUE_FINAL_RECORDING=YES`
+- Safety: no product code changed, no Production deploy, no production DB, no Meta App Review submission, no PayUNI production switch, no secrets printed.
+
+## 2026-07-06 - Meta new clean InboxPilot app lane setup attempt
+
+- Goal: create a new clean Meta App / Instagram OAuth lane named `InboxPilot` so future OAuth consent can avoid the legacy `manychat-auto-reply-IG` display name.
+- Browser actions:
+  - Opened Meta Developers app list.
+  - Started `建立應用程式`.
+  - Filled app name `InboxPilot`.
+  - Selected use case `管理 Instagram 的訊息和內容` / Instagram API.
+  - Selected business portfolio `零元兄弟`.
+  - Reached final overview and clicked `建立應用程式`.
+- Blocker:
+  - Meta required password re-authentication.
+  - Codex did not enter or request the password in chat.
+- Report:
+  - Added `reports/ai-team/META_NEW_INBOXPILOT_APP_LANE_REPORT.md`.
+- Status:
+  - `META_NEW_APP_LANE_CREATED=NO`
+  - `HUMAN_PASSWORD_REAUTH_REQUIRED=YES`
+  - `READY_TO_UPDATE_STAGING_ENV=NO`
+- Safety: no Production deploy, no production DB, no Meta App Review submission, no PayUNI production switch, no product code change, no secret output.
+
+## 2026-07-06 - Meta new clean InboxPilot app lane created
+
+- Goal: continue the new clean Meta / Instagram OAuth lane after the owner completed Meta password re-authentication in the browser.
+- Result:
+  - Created new parent Meta app `InboxPilot / 1383365527078199`.
+  - Confirmed new Instagram API setup app display name `InboxPilot-IG`.
+  - Confirmed new Instagram OAuth client id / platform app id `2542520412924029`.
+  - Saved Privacy Policy, Terms, and Data Deletion URLs to the new app basic settings.
+  - Saved staging Instagram Business Login redirect URI `https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback`.
+- OAuth smoke:
+  - `client_id=2542520412924029` no longer returns `Invalid platform app`.
+  - Instagram returned `開發人員角色不足`, so the new lane is recognized but needs reviewer-safe tester / app role setup.
+- Evidence:
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/01-new-app-instagram-api-setup.png`
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/02-basic-settings-policy-urls-saved.png`
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/03-instagram-redirect-uri-saved.png`
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/04-oauth-smoke-developer-role-insufficient.png`
+- Updated:
+  - `reports/ai-team/META_NEW_INBOXPILOT_APP_LANE_REPORT.md`
+  - `reports/ai-team/META_APP_NAME_CONSISTENCY_CHECK.md`
+  - `reports/ai-team/META_APP_REVIEW_EVIDENCE_CHECKLIST.md`
+  - `reports/ai-team/RELEASE_DECISION_AFTER_HUMAN_GATES.md`
+- Remaining gates:
+  - Owner must copy the new Instagram app secret into staging / Preview env without committing it.
+  - Owner must also copy the new parent Meta app secret into staging / Preview env without committing it.
+  - Reviewer-safe Meta / IG account must be added as app role / tester.
+  - Webhook verify token remains a secret gate.
+  - Production env remains unchanged.
+- Safety: no App Review submission, no Production deploy, no production DB, no PayUNI production switch, no real customer asset connection, no secret output.
+
+## 2026-07-06 - Meta new lane staging env setup checklist
+
+- Goal: identify the exact staging / Preview env keys required to switch from the legacy Meta / Instagram OAuth lane to the new clean InboxPilot lane.
+- Findings from source:
+  - Instagram authorize route uses `META_INSTAGRAM_APP_ID`, then falls back to `META_APP_ID`.
+  - Instagram code exchange requires `META_INSTAGRAM_APP_SECRET`; if Instagram app id differs from `META_APP_ID`, the Instagram-specific secret is mandatory.
+  - Meta callback / webhook subscription paths still use `META_APP_ID`, `META_APP_SECRET`, and `META_VERIFY_TOKEN`.
+- Conclusion:
+  - Staging / Preview cannot safely run a mixed lane.
+  - The new lane must update both parent-app and Instagram-app env keys together.
+- Added:
+  - `reports/ai-team/META_NEW_APP_STAGING_ENV_SETUP_CHECKLIST.md`
+- Additional Meta evidence:
+  - New app roles page shows `測試人員 0 / 50`.
+  - Current visible admin row is `林元 / 管理員`.
+  - Saved `reports/ai-team/meta-new-inboxpilot-app-lane/05-app-roles-testers-empty.png`.
+- New-lane staging / Preview key set:
+  - `META_APP_ID=1383365527078199`
+  - `META_APP_SECRET=<manual secret input>`
+  - `META_INSTAGRAM_APP_ID=2542520412924029`
+  - `META_INSTAGRAM_APP_SECRET=<manual secret input>`
+  - `META_INSTAGRAM_REDIRECT_URI=https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback`
+  - `META_FACEBOOK_REDIRECT_URI=https://staging.carry-digital-nomad.in.net/api/meta/oauth/callback`
+  - `APP_URL=https://staging.carry-digital-nomad.in.net`
+  - `APP_DOMAIN=staging.carry-digital-nomad.in.net`
+  - `META_GRAPH_API_VERSION=v25.0`
+  - `META_VERIFY_TOKEN=<existing or coordinated token>`
+- Validation status:
+  - Did not rerun connected-channel evidence on the new lane because the required staging / Preview secrets and tester role access are not completed yet.
+- Root blocker now confirmed more precisely:
+  - `INVALID_PLATFORM_APP_RESOLVED=YES`
+  - `HUMAN_SECRET_INPUT_REQUIRED=YES`
+  - `HUMAN_TESTER_ROLE_REQUIRED=YES`
+  - `OAUTH_BLOCKER=DEVELOPER_ROLE_INSUFFICIENT`
+- Safety: no secret output, no Production deploy, no production DB, no Meta App Review submission.
+
+## 2026-07-04 - Local admin login sync
+
+- 目標：確認本機 `http://localhost:3041/login` 是否可用 `.env.local` 的 admin 帳密登入。
+- 結果：`.env.local` 已有 `ADMIN_EMAIL=admin@example.com` 與 `ADMIN_PASSWORD` 值，未在回報中輸出密碼。
+- 執行：`npm run admin:ensure` 成功，回報 `admin@example.com is ready in Default Workspace`。
+- 驗證：使用 `.env.local` 的 admin 帳密呼叫 `POST /api/auth/login`，回傳 HTTP 200。
+- 安全：未改產品 source code、未改 schema、未碰 production DB、未部署 Production、未輸出密碼或 secret。
+
+## 2026-07-06 06:05 - Meta OAuth app id switch attempt
+
+- Selected option 2: tried to align staging Instagram OAuth with InboxPilot app id 924285843989683.
+- Updated local .env.local and Vercel Preview env scoped to branch staging so META_INSTAGRAM_APP_ID points to 924285843989683; secret value was not printed.
+- Redeployed Preview inboxpilot-9a38rglfa-a25814740s-projects.vercel.app and verified Instagram OAuth returned Invalid platform app.
+- Rolled staging.carry-digital-nomad.in.net back to the previous working Preview inboxpilot-8p7i2pdcf-a25814740s-projects.vercel.app; staging health returned status=ok.
+- Added `reports/ai-team/META_OAUTH_APP_ID_SWITCH_ATTEMPT_REPORT.md` and marked `STAGING_PREVIEW_ENV_NEEDS_REPAIR=YES` for future staging deployments.
+
+## 2026-07-06 - Meta new lane staging activation
+
+- Goal: verify the new clean Meta / Instagram lane after the owner said the new secrets and reviewer-safe tester were already set.
+- Initial live finding:
+  - `https://staging.carry-digital-nomad.in.net/channels/connect/social` still redirected OAuth with `client_id=1530009762118735`.
+  - This proved staging was still serving the old lane.
+- Root cause:
+  - The new secrets alone were not enough; the staging branch Preview env still needed the non-sensitive new app-id / redirect values.
+  - The custom staging domain was still pointing to the old deployment `inboxpilot-8p7i2pdcf-a25814740s-projects.vercel.app`.
+- Actions completed:
+  - Overrode branch-scoped Preview env for `staging`:
+    - `META_APP_ID=1383365527078199`
+    - `META_INSTAGRAM_APP_ID=2542520412924029`
+    - `META_INSTAGRAM_REDIRECT_URI=https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback`
+    - `META_FACEBOOK_REDIRECT_URI=https://staging.carry-digital-nomad.in.net/api/meta/oauth/callback`
+    - `APP_URL=https://staging.carry-digital-nomad.in.net`
+    - `APP_DOMAIN=staging.carry-digital-nomad.in.net`
+  - Redeployed the latest staging Preview, creating `https://inboxpilot-n6db8wzwx-a25814740s-projects.vercel.app`.
+  - Reassigned `staging.carry-digital-nomad.in.net` to that fresh deployment.
+- Verified result:
+  - Staging OAuth now redirects with `client_id=2542520412924029`.
+- `Invalid platform app` is resolved on live staging.
+- `開發人員角色不足` did not appear on this run.
+
+## 2026-07-07 03:20 - Meta new lane callback failure narrowed to post-consent token exchange
+
+- Scope: keep using the new clean Meta lane on staging without touching production or submitting Meta App Review.
+- Product-side fix completed:
+  - Updated `src/app/api/meta/oauth/callback/route.ts` so Instagram token exchange errors coming from `api.instagram.com/oauth/access_token` no longer collapse into the generic `Instagram OAuth request failed.`
+  - Added focused regression coverage in `tests/meta-business-login-sandbox-sbl12-callback-route.test.ts`.
+- Local validation:
+  - `npx vitest run tests/meta-business-login-sandbox-sbl12-callback-route.test.ts tests/meta-oauth.test.ts` -> PASS
+  - `npm run build` -> PASS
+  - `npm run lint -- src/app/api/meta/oauth/callback/route.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts` -> PASS
+- Deployment-side fix completed:
+  - Added `.vercelignore` so local CLI Preview deploys stop uploading `.next`, `node_modules`, reports, and videos.
+  - First local deploy failed because a CLI Preview deploy without git metadata did not receive branch-scoped Preview env; runtime logs showed `DATABASE_URL` resolved to an empty string.
+  - Re-deployed with Vercel metadata `githubDeployment=1` and `githubCommitRef=staging`, then re-pointed `staging.carry-digital-nomad.in.net` to the new Preview.
+  - Verified `POST /api/auth/login` on staging returns HTTP 200 again, proving branch-scoped staging DB env is active.
+- Live OAuth findings on the new lane:
+  - Staging `Channels / Connect / Social` launches Instagram OAuth with `client_id=2542520412924029`.
+  - Reviewer-safe Instagram login succeeds.
+  - Consent page succeeds and shows `InboxPilot-IG`.
+  - After clicking `允許`, the callback now returns a precise error instead of a generic one:
+    - `Error validating verification code. Please make sure your redirect_uri is identical to the one you used in the OAuth dialog request`
+- Current blocker:
+  - No longer `Invalid platform app`
+  - No longer `開發人員角色不足`
+  - Now narrowed to exact callback token exchange mismatch, most likely:
+    1. `META_INSTAGRAM_APP_SECRET` for client id `2542520412924029` is not the matching Instagram app secret, or
+    2. the new app lane is missing the exact staging / production Instagram redirect URIs in the Instagram login setup
+- Safety:
+  - no production deploy
+  - no production DB change
+  - no Meta App Review submission
+  - no secret written into repo or surfaced in logs
+  - The current blocker is now the human Instagram / Meta login step itself.
+- Evidence:
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/06-staging-new-lane-instagram-login.png`
+- Updated:
+  - `reports/ai-team/META_NEW_INBOXPILOT_APP_LANE_REPORT.md`
+  - `reports/ai-team/META_NEW_APP_STAGING_ENV_SETUP_CHECKLIST.md`
+  - `reports/ai-team/META_APP_NAME_CONSISTENCY_CHECK.md`
+  - `reports/ai-team/META_APP_REVIEW_EVIDENCE_CHECKLIST.md`
+  - `reports/ai-team/META_FINAL_PACKAGE_STATUS.md`
+  - `reports/ai-team/RELEASE_DECISION_AFTER_HUMAN_GATES.md`
+- Safety:
+  - no Production deploy
+  - no production DB mutation
+  - no Meta App Review submission
+  - no secret output
+
+## 2026-07-07 - Meta new lane real reviewer-safe login
+
+- Goal: use the reviewer-safe Instagram credentials stored in `.env.local` to continue the new staging Meta / Instagram OAuth lane.
+- Result:
+  - Username from `.env.local` was filled successfully.
+  - After submitting the reviewer-safe Instagram credentials, Instagram redirected to:
+    - `/oauth/authorize/third_party/error/?message=開發人員角色不足`
+  - Therefore the blocker is confirmed as a real Meta tester / role / permission gate for the reviewer-safe account.
+  - Direct Meta Developers follow-up confirmed:
+    - `A Facebook Developer Account is required to be added to an app. Test users can't be added.`
+  - So the current reviewer-safe Meta identity is treated as a test user, not a real Facebook Developer account.
+- Evidence:
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/07-staging-new-lane-developer-role-insufficient-after-login.png`
+  - `reports/ai-team/meta-new-inboxpilot-app-lane/08-meta-role-add-blocked-test-user.png`
+- Updated:
+  - `reports/ai-team/META_NEW_INBOXPILOT_APP_LANE_REPORT.md`
+  - `reports/ai-team/META_NEW_APP_STAGING_ENV_SETUP_CHECKLIST.md`
+  - `reports/ai-team/META_APP_NAME_CONSISTENCY_CHECK.md`
+  - `reports/ai-team/META_APP_REVIEW_EVIDENCE_CHECKLIST.md`
+  - `reports/ai-team/META_FINAL_PACKAGE_STATUS.md`
+  - `reports/ai-team/RELEASE_DECISION_AFTER_HUMAN_GATES.md`
+- Safety:
+  - no Production deploy
+  - no production DB mutation
+  - no Meta App Review submission
+  - no secret output
+
+## 2026-07-07 - New Meta lane re-smoke after redirect URI update
+
+- Scope: re-run staging Instagram OAuth smoke on the new Meta lane after updating the Instagram Business Login redirect URIs in Meta Developers.
+- Meta setup change confirmed in browser:
+  - Opened app `1383365527078199` → Instagram API setup → `商家登入設定`
+  - Confirmed `OAuth 重新導向 URI` now includes:
+    - `https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback`
+    - `https://carry-digital-nomad.in.net/api/instagram/oauth/callback`
+- Staging smoke (reviewer-safe account):
+  - reviewer-safe staging login: PASS
+  - OAuth popup launch with `client_id=2542520412924029`: PASS
+  - Instagram login page reached: PASS
+  - Previous callback error `Error validating verification code. Please make sure your redirect_uri is identical...`: NOT reproduced
+  - New blocker after login: Instagram `auth_platform/recaptcha`
+- Evidence refreshed:
+  - `reports/ai-team/meta-review-evidence/oauth-preflight-social-page.png`
+  - `reports/ai-team/meta-review-evidence/oauth-popup-initial.png`
+  - `reports/ai-team/meta-review-evidence/oauth-instagram-login-filled.png`
+  - `reports/ai-team/meta-review-evidence/07-staging-channel-connected.png`
+  - `reports/ai-team/meta-review-evidence/08-sidebar-connected-channel.png`
+  - `reports/ai-team/meta-review-evidence/09-inbox-connected-channel-scope.png`
+  - `reports/ai-team/meta-review-evidence/10-contacts-connected-channel-scope.png`
+  - `reports/ai-team/meta-review-evidence/11-automations-connected-channel-scope.png`
+- Interpretation:
+  - `redirect_uri` mismatch is effectively fixed on the new lane.
+  - Current blocker is no longer app id validity, tester-role rejection, or callback mismatch.
+  - Current blocker is external Instagram human verification.
+- Updated:
+  - `reports/ai-team/META_REVIEWER_SAFE_ASSET_LANE_REPORT.md`
+  - `reports/ai-team/META_APP_REVIEW_EVIDENCE_CHECKLIST.md`
+  - `reports/ai-team/META_FINAL_PACKAGE_STATUS.md`
+  - `reports/ai-team/RELEASE_DECISION_AFTER_HUMAN_GATES.md`
+- Safety:
+  - no product code change
+  - no production DB change
+  - no Production deploy
+  - no Meta App Review submission
+  - no secret output
+## 2026-07-07 - New lane recaptcha continue recheck
+
+- Re-ran the new Meta lane (`1383365527078199` / Instagram OAuth client `2542520412924029`) against staging after redirect URI repair.
+- Confirmed the old `redirect_uri mismatch` error is gone.
+- Confirmed the old `Invalid platform app` error is gone.
+- Fresh automation run still stops at Instagram `auth_platform/recaptcha` after reviewer-safe login.
+- Marked this as an external human gate instead of a product callback defect.
+- Updated Meta final package / evidence / release decision reports to keep `CONNECTED_CHANNEL_EVIDENCE=PASS` while leaving `FRESH_NEW_LANE_CALLBACK_SUCCESS=HUMAN_INPUT_REQUIRED`.
+## 2026-07-07 - Meta popup OAuth redirect_uri mismatch fix
+
+- Confirmed the Social Connect page still launches Instagram OAuth through the legacy popup provider route: `/api/oauth/meta-instagram/authorize`.
+- Found the mismatch root cause: the legacy popup authorize flow built `redirect_uri` from `getAppUrl(request)`, while the shared callback token-exchange flow already preferred `META_INSTAGRAM_REDIRECT_URI`.
+- This allowed staging OAuth to open with one callback URL and exchange the verification code with another, producing `Error validating verification code. Please make sure your redirect_uri is identical...`.
+- Fixed `src/lib/oauth/utils.ts` so `getLegacyMetaCallbackUrl()` now prefers `META_INSTAGRAM_REDIRECT_URI` / `META_FACEBOOK_REDIRECT_URI` before falling back to `getAppUrl(request)`.
+- Added a focused unit test to lock the configured redirect-URI behavior for the legacy popup Meta flow.
+
+## 2026-07-07 - Meta new lane fresh callback success on staging
+
+- Added safe staging-only callback diagnostics in `src/app/api/meta/oauth/callback/route.ts` to print non-secret app / redirect context when Instagram token exchange fails.
+- Verified from staging logs that the fresh failure was still using:
+  - `client_id=2542520412924029`
+  - `redirect_uri=https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback`
+  - but the runtime secret fingerprint did not match the new Instagram OAuth lane secret.
+- Narrowed the real blocker to the staging branch Preview `META_INSTAGRAM_APP_SECRET` override path, not the redirect fix itself.
+- Repaired the staging branch Preview secret override for the new lane and redeployed / re-aliased staging.
+- Final live staging result:
+  - reviewer-safe Instagram login: PASS
+  - `InboxPilot-IG` consent: PASS
+  - popup callback: `status=success`
+  - connected account display name: `Instagram @carry.digital.nomad`
+- Re-verified fresh connected scope in the UI:
+  - Channels / Settings
+  - sidebar account dropdown
+  - Inbox
+  - Contacts
+  - Automations
+- Updated Meta evidence / release decision reports so the remaining blocker is now only:
+  - final MP4 recording
+  - Meta Developers screenshots
+  - redaction review
+  - Business Verification / Advanced Access confirmation
+## 2026-07-07 - Meta final MP4 draft package
+
+- 使用既有 reviewer-safe staging 證據與新補的 Dashboard / Privacy / Terms / Data Deletion 截圖，產出 `reports/ai-team/meta-review-evidence/12-meta-reviewer-recording.mp4`。
+- 這份 MP4 為 reviewer-safe evidence reel，目的在於 final package 審閱與送審素材整理；尚未將其標示為最終可直接提交版本。
+- Meta final package 狀態改為：MP4 草稿已存在，但 `REDACTION_REVIEW` 仍需人工完成。
+- 未修改 production DB、未部署 Production、未送出 Meta App Review。
+
+## 2026-07-07 - Meta final package redaction recheck
+
+- 重新審核 `reports/ai-team/meta-review-evidence/` 與 `reports/ai-team/meta-review-evidence/meta-developers/` 後，確認目前 final package 仍不能判定為 submit-ready。
+- 發現 `oauth-instagram-login-filled.png` 含 reviewer-safe login identifier，不可納入送審素材。
+- 發現 `md-05-roles-testers.png`、`md-10-business-verification.png` 為未遮蔽版本；正式 package 只能使用 redacted 版本。
+- 發現 `02-meta-oauth-login-or-consent.png` 仍是 legacy `manychat-auto-reply-IG` consent 畫面，`07-staging-channel-connected.png` 與 `08-sidebar-connected-channel.png` 仍是未連接狀態，導致目前 `12-meta-reviewer-recording.mp4` 仍屬 stale evidence。
+- 最新結論：`REDACTION_REVIEW=REDACTION_REQUIRED`，release 仍維持 `HUMAN_ACCEPTANCE_REQUIRED`，尚未進入 `SALE_READY_CANDIDATE`。
+## 2026-07-07 Meta final package evidence replacement closeout
+
+- Replaced the stale Meta package with fresh new-lane assets for consent, connected channel, and sidebar connected account.
+- Regenerated `reports/ai-team/meta-review-evidence/12-meta-reviewer-recording.mp4` after the evidence replacements.
+- Moved unsafe originals out of the active package:
+  - `reports/ai-team/meta-review-evidence/excluded/oauth-instagram-login-filled.png`
+  - `reports/ai-team/meta-review-evidence/meta-developers/excluded/md-05-roles-testers.png`
+  - `reports/ai-team/meta-review-evidence/meta-developers/excluded/md-10-business-verification.png`
+- Re-ran the active-package redaction review and updated the Meta final package / release-gate docs.
+- Current decision: package freshness and redaction are no longer the blocker; release still stays at `HUMAN_ACCEPTANCE_REQUIRED` because Business Verification / Advanced Access / final submit authorization remain human gates.
+
+## 2026-07-07 Meta personal-operator compliance alignment
+
+- Kept the product brand as `InboxPilot` but aligned the legal/operator wording to `Luo Shih Lin / 羅仕林` across user-facing legal pages and official-site footers.
+- Updated Privacy Policy, Terms of Service, and Data Deletion to explicitly state that InboxPilot is a software product operated by Luo Shih Lin.
+- Clarified reviewer-safe wording for:
+  - what Meta / Instagram data is accessed
+  - why the data is needed
+  - how the data is used
+  - how deletion requests are submitted
+  - what service / platform guarantees are not promised
+- Added canonical docs:
+  - `docs/meta-verification-status.md`
+  - `docs/meta-app-review-package.md`
+- Explicitly marked Business Verification as blocked by missing formal registration documents, and recommended preparing the App Review package first instead of submitting mismatched business documents.
+
+## 2026-07-07 Settings footer owner block
+
+- Added a reviewer-facing `關於 InboxPilot` block to the bottom of the Settings page.
+- The block now keeps product ownership and review contact details visible in one stable place:
+  - `2026 Luo Shih Lin All rights reserved.`
+  - `Copyright© Luo Shih Lin`
+  - `InboxPilot is operated by Luo Shih Lin.`
+  - `Contact: zeroyuanbrothers@gmail.com`
+  - `Website: https://inboxpilot.carry-digital-nomad.in.net/`
+- Added a focused IA/source test to prevent this review-facing owner/contact section from disappearing during future settings-page cleanup.
+
+## 2026-07-07 Contact and website consistency audit
+
+- Audited the active public/legal surfaces and canonical Meta docs for brand / owner / contact / website consistency:
+  - official footers
+  - Contact
+  - Privacy Policy
+  - Terms
+  - Data Deletion
+  - Settings bottom `關於 InboxPilot`
+  - `docs/meta-verification-status.md`
+  - `docs/meta-app-review-package.md`
+- Found two practical inconsistencies:
+  - Contact copy still referred to an `InboxPilot 團隊` instead of the personal operator.
+  - Website references were split between the broader domain and the `inboxpilot.carry-digital-nomad.in.net` public site.
+- Normalized the active surfaces to the same visible contact set:
+  - owner/operator: `Luo Shih Lin / 羅仕林`
+  - contact email: `zeroyuanbrothers@gmail.com`
+  - website: `https://inboxpilot.carry-digital-nomad.in.net/`
+- Added a focused source-level consistency test so future copy cleanup does not silently reintroduce mixed contact data.
+
+## 2026-07-07 Settings IA simplification and split scrolling
+
+- Simplified the Settings left navigation down to four top-level entries only:
+  - `一般設定`
+  - `方案與用量`
+  - `社群平台`
+  - `關於 InboxPilot`
+- Removed the extra left-rail heading chrome (`設定` / `工作區設定`) to reduce visual noise.
+- Kept the top app header as the only fixed page title anchor.
+- Updated the Settings layout so desktop now behaves like a real two-pane app surface:
+  - left rail scrolls independently
+  - content pane scrolls independently
+  - both panes stay within the viewport under the fixed header
+- Added focused source-level assertions so the simplified nav shape does not regress back into grouped subsection clutter.
+
+## 2026-07-07 Settings mobile quick-nav polish
+
+- Added a mobile-only quick-nav row for the four Settings top-level sections so long Settings content does not feel anchorless on phones.
+- Shortened the header CTA on small screens from `+ 新增平台帳號` to `新增帳號`, while keeping the full label on wider screens.
+- Limited the content-pane independent scroll to desktop (`lg:overflow-y-auto`) so mobile keeps the natural document scroll behavior.
+
+## 2026-07-07 Local admin login recovery and Settings / Channels density polish
+
+- Re-checked the local login chain for `admin@example.com` against `localhost:3041`.
+- Confirmed the login API itself was healthy; the recurring local failure mode was the dev DB drifting away from the seeded admin state instead of a front-end auth regression.
+- Re-ran `npm run admin:ensure` against the current local dev DB and verified `POST /api/auth/login` returned `200`.
+- Updated `npm run dev` so local development now runs `admin:ensure` before starting Next.js on port `3041`, reducing the chance of the default admin disappearing between DB resets or local Supabase changes.
+- Used Playwright against `localhost:3041/channels` in desktop and mobile viewports to inspect the current Settings / Channels surface.
+- Polished the Settings / Channels layout in two low-risk places:
+  - tightened the desktop split-pane proportions so the Settings left rail does not over-consume width;
+  - improved mobile quick-nav anchoring and platform-card hierarchy so status badges, actions, and descriptions read more clearly.
+- Expanded focused source-level assertions to cover the updated quick-nav snapping and platform-card readability structure.
+
+## 2026-07-07 Settings topic pages and billing comparison polish
+
+- Reworked Settings from a dense one-page workspace settings dump into focused topic entry points:
+  - `方案與用量` links directly to `/billing`.
+  - `AI 設定` links directly to `/ai-settings`.
+  - `社群平台` stays on `/channels`.
+  - `關於 InboxPilot` remains as the reviewer-facing owner/contact block.
+- Hid the previous `一般設定` group for now because it only contained status cards and disabled controls, which made the page feel unfinished instead of useful.
+- Reduced `/channels` to the social-platform topic only:
+  - Instagram remains the only connectable production-facing platform.
+  - TikTok and WhatsApp remain visible as `未開放` so users understand the roadmap without seeing a broken OAuth flow.
+  - Mock OAuth Provider and `規劃中` provider cards no longer appear on the authenticated settings surface.
+- Improved `/billing` plan cards with comparison rows for contact limits, message events, automations, seats, and retention so plan differences are understandable without reading long paragraphs.
+- Marked add-ons as visible pricing references only; online add-on purchase remains disabled with explicit `尚未開放購買` UX.
+- Moved the current AI model information block to the top of `/ai-settings`, before the editable provider form.
+- Updated profile-menu and e2e expectations so links no longer point to stale `/channels#...` anchors.
+- Verified locally with:
+  - `npm run build`
+  - `npm run lint`
+  - `npm test`
+  - focused Vitest coverage for Settings IA, billing copy, channel visibility, and AI settings
+  - focused Playwright smoke for Settings IA and mobile admin menu
+  - in-app browser QA on `localhost:3041` desktop/mobile for `/channels`, `/billing`, and `/ai-settings`
+
+## 2026-07-07 Billing add-on completeness audit and purchase guard
+
+- Audited the current add-on lane end to end:
+  - `billingAddons` already exists in `src/lib/billing/plans.ts`
+  - invoice creation already accepts `addonKeys`
+  - entitlement reading already supports `SubscriptionAddon`
+  - but public checkout UI does not provide add-on selection
+  - and payment completion does not yet materialize paid add-ons into `SubscriptionAddon`
+- Treated this as a real billing integrity gap rather than a cosmetic TODO: a forged or future accidental request with `addonKeys` could otherwise create invoice value without opening matching entitlement.
+- Added a hard guard in `/api/billing/payuni/checkout`:
+  - if `addonKeys` is non-empty, the route now returns `409`
+  - public online add-on checkout is blocked until checkout, entitlement fulfillment, and refund/clawback behavior are implemented together
+- Tightened user-facing copy on:
+  - authenticated `/billing`
+  - public `/pricing`
+  - `docs/billing/PLANS.md`
+- The product now states clearly that add-ons are:
+  - visible for pricing / capacity planning
+  - not yet available for online purchase
+  - still missing three coordinated pieces before launch:
+    - checkout order flow
+    - paid add-on -> entitlement writeback
+    - refund / void -> entitlement rollback
+- Validation this round:
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+  - focused Vitest coverage for billing checkout guard, billing copy, and pricing copy
+  - in-app browser smoke confirmed the public pricing page now states add-on online purchase is not yet open; authenticated billing browser smoke could not be completed in the fresh in-app tab because the local browser session fell back to `/login`, while code/test validation and local app health remained green
+
+## 2026-07-07 Billing IA and visual-density polish
+
+- Audited `/billing` and `/pricing` in local desktop/mobile viewports with Playwright screenshots before editing.
+- Confirmed two concrete density problems:
+  - `/billing` repeated the same PayUNI Sandbox message in a floating toast, a top status strip, and per-card helper copy, which made the first viewport feel noisy.
+  - the authenticated plan comparison put `Agency` inside the same five-column grid as self-serve plans, which made the plan rail cramped and pushed the CTA hierarchy too hard.
+- Reworked `/billing` so PayUNI guidance is now an inline page section:
+  - removed the floating manual-action toast from this surface;
+  - kept the gateway status visible but folded the payment explanation into a single `PayUNI Sandbox 付款說明` block;
+  - shortened per-plan sandbox helper copy to a single supporting line.
+- Split `Agency` out of the self-serve comparison grid:
+  - Starter / Creator / Pro / Business now stay in the main comparison band;
+  - Agency is rendered as a separate `客製合作` card with its own contact-style explanation, so the self-serve choices read faster.
+- Reworked the public `/pricing` bottom notice from one long mixed paragraph into two clearer columns:
+  - `加量包`
+  - `推薦折抵`
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/pricing-page-polish.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+  - local Playwright screenshots on `http://127.0.0.1:3041/billing` and `/pricing` in desktop/mobile after the patch
+
+## 2026-07-07 Billing / Referrals / Wallet path polish
+
+- Audited the full authenticated path between:
+  - `/billing`
+  - `/referrals`
+  - `/wallet`
+- Checked the three surfaces in local desktop/mobile viewports and focused on:
+  - duplicated recommendation-credit rule text
+  - weak CTA hierarchy between pages
+  - empty-state copy that repeated navigation instructions instead of guiding the next action
+- Tightened `Wallet` first:
+  - added a dedicated `折抵使用提醒` section for the shared rules and next-step actions;
+  - moved `下一筆可用時間` / `下一筆到期時間` into their own summary tiles;
+  - removed duplicate rule text and duplicate CTA references from the ledger header / empty state.
+- Tightened `Referrals` next:
+  - upgraded the right-side `前往折抵金錢包` / `查看方案與用量` links from low-emphasis text links to proper secondary buttons;
+  - aligned their visual hierarchy with the existing Wallet / Billing action style.
+- Result:
+  - Wallet now reads as summary -> action -> ledger instead of one long mixed instruction block.
+  - Referrals now points to Wallet / Billing with the same CTA weight users already see elsewhere.
+- Validation this round:
+  - `npx vitest run tests/wallet-light-theme.test.ts tests/referral-affiliate-mvp-ui.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+  - local Playwright screenshots on `http://127.0.0.1:3041/referrals` and `/wallet` in desktop/mobile after the patch
+
+## 2026-07-07 Billing / Referrals / Wallet mobile detail closeout
+
+- Re-audited the authenticated mobile path for:
+  - `/billing`
+  - `/referrals`
+  - `/wallet`
+- Used fresh local iPhone-sized Playwright screenshots after login to verify narrow-screen spacing, CTA alignment, and card density instead of only checking source.
+- Confirmed two concrete mobile polish issues:
+  - CTA rows on Billing / Referrals / Wallet still used uneven inline button widths, which made the narrow-screen actions feel visually noisy.
+  - Referrals stacked four metric cards into a very tall single-column rail, which made the first interaction path longer than necessary on mobile.
+- Applied the smallest safe fixes:
+  - changed Billing / Referrals / Wallet quick-action rows to stack into full-width single-column buttons on narrow screens, while keeping the desktop inline layout;
+  - changed Referrals metrics to a two-column mobile grid and slightly tightened metric typography rhythm.
+- Result:
+  - mobile CTA groups now read as one clear action block instead of mixed-width pills;
+  - the Referrals first viewport is shorter and easier to scan without changing any product logic or release gating.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+  - fresh local Playwright screenshots on `http://127.0.0.1:3041/billing`, `/referrals`, and `/wallet` in iPhone-sized viewport after the patch
+
+## 2026-07-07 Billing / Referrals / Wallet desktop detail closeout
+
+- Re-audited the same authenticated path in a wide desktop viewport after the mobile cleanup:
+  - `/billing`
+  - `/referrals`
+  - `/wallet`
+- Used fresh local Playwright screenshots after a direct local login API seed to avoid relying on a stale browser session.
+- Confirmed two clear desktop polish issues:
+  - `Referrals` kept the left rules card and right boundary card at equal grid height, which left a large dead area under the right-side CTA block.
+  - `Billing` add-on cards still used only three desktop columns on a wide viewport, which made the add-on section taller and airier than the surrounding plan comparison.
+- Applied the smallest safe fixes:
+  - changed the `Referrals` desktop two-column section to `items-start` with a slightly asymmetric track ratio so the right-side card no longer stretches to the left card's full height;
+  - changed the `Billing` add-on grid to use four columns at `xl`, which reduces unnecessary vertical length and keeps pricing density closer to the main plan grid.
+- Result:
+  - the `Referrals` desktop mid-section now reads tighter and more intentional;
+  - the `Billing` add-on block uses wide-screen space better without changing any launch gating or purchase logic.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+  - fresh local Playwright screenshots on `http://127.0.0.1:3041/billing`, `/referrals`, and `/wallet` in desktop viewport after the patch
+- Note:
+  - `npm test` again hit the known Windows Vitest batch crash (`3221225477`) in the `segments / sequences` batch.
+  - the runner's existing diagnostic fallback re-ran each file individually and every file passed, so the command still completed green and this remains runner-level instability rather than a new product regression from this UI change.
+
+## 2026-07-07 Billing / Referrals / Wallet empty-state alignment
+
+- Audited the empty vs non-empty presentation for:
+  - Billing invoices
+  - Billing recent PayUNI orders
+  - Wallet ledger
+  - Referrals records
+- Focused on whether empty sections still looked like placeholder whitespace instead of product-ready states, especially compared to the stronger non-empty table/list structure.
+- Confirmed two concrete issues worth fixing:
+  - Billing `發票紀錄` and `最近 PayUNI 訂單` had very thin headers and one-line empty states, which made those blocks feel unfinished compared to the rest of the page.
+  - Wallet `折抵金流水` had a lighter empty state than its non-empty counterpart, so switching between no-data and real-data views would feel like two different surfaces.
+- Applied the smallest safe fixes:
+  - upgraded both Billing sections to structured headers with title + helper copy;
+  - replaced the one-line empty messages with short product-style empty states that explain what will appear after the first successful action;
+  - promoted the Wallet empty ledger message to the same heading rhythm as the non-empty ledger section and clarified what kinds of records will show up there.
+- Result:
+  - empty Billing and Wallet sections now read as intentional states instead of blank leftovers;
+  - the no-data path is closer to the density and information hierarchy already used by the non-empty path.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+- Note:
+  - the local browser-based empty-state screenshot attempt hit the same dev-session drift that sometimes drops back to `/login`, so code/test validation remained the source of record for this pass.
+
+## 2026-07-07 Billing / Referrals / Wallet populated-record alignment
+
+- Re-audited the authenticated `Billing -> Referrals -> Wallet` path, but this time only for the non-empty record/list state.
+- Focused on whether users can still understand each row quickly on desktop and mobile once the sections actually contain data.
+- Confirmed two concrete product-surface issues:
+  - `Billing` invoices and recent PayUNI orders showed raw values in a grid without strong column labels, so the mobile view especially depended on guesswork.
+  - `Referrals` records still behaved more like a temporary list than a proper product record surface, with weaker heading structure and no compact status badge treatment.
+- Applied the smallest safe fixes:
+  - added explicit desktop column headers for Billing invoice rows and recent PayUNI order rows;
+  - added mobile-only field labels for each Billing row so invoice number, amount, credit, and status remain readable in stacked layouts;
+  - upgraded `Referrals` records with a stronger section intro, desktop column headers, mobile field labels, and a clearer status badge treatment.
+- Left `Wallet` ledger unchanged this round because it already had the strongest non-empty table structure of the three surfaces.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+
+## 2026-07-07 Billing / Referrals / Wallet summary-to-record hierarchy polish
+
+- Re-audited the transition between the upper summary surfaces and the lower record sections on:
+  - `/billing`
+  - `/referrals`
+  - `/wallet`
+- Focused on whether the user can tell where "summary / decision" UI ends and where "actual records / history" UI begins, especially after the recent empty-state and populated-row cleanup.
+- Confirmed two small but high-signal issues:
+  - `Billing` jumped straight from the current-plan summary into the plan grid without a section bridge, so the upgrade/comparison area and the later records area felt flatter than they should.
+  - `Referrals` metrics and `Wallet` summary cards still appeared as floating card groups without a clear section title, which weakened the hierarchy before users reached the rules and record tables.
+- Applied the smallest safe fixes:
+  - added a compact `方案升級選項` section intro above the Billing plan comparison area;
+  - added a `推薦成效概況` section intro above the Referrals metrics;
+  - added a `折抵概況` section intro above the Wallet summary cards;
+  - stabilized the existing `tests/ai-providers.test.ts` hook timeout so the full batch runner does not randomly fail on DB cleanup timing while validating unrelated UI changes.
+- Result:
+  - the Billing / Referrals / Wallet pages now read more like intentional multi-section product surfaces instead of one long card stack;
+  - the transition from "overview" into "rules / records" is clearer on both desktop and mobile without changing any product logic.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+
+## 2026-07-07 Billing / Referrals / Wallet CTA-to-record balance polish
+
+- Re-audited whether helper copy and quick-action CTAs above the financial record sections were visually louder than the records themselves.
+- Focused on the three authenticated surfaces where users first read rules or summaries and then need to inspect actual data:
+  - `/billing`
+  - `/referrals`
+  - `/wallet`
+- Confirmed two concrete hierarchy issues:
+  - the `Billing`, `Referrals`, and `Wallet` quick-action buttons still carried almost the same visual weight as the surrounding primary sections, which made the records feel secondary instead of being the destination;
+  - `Billing` in particular still moved from plan / add-on decision UI into historical records without a strong enough transition cue.
+- Applied the smallest safe fixes:
+  - downgraded the quick-action rows to compact `快速前往` groups with shorter buttons and smaller type so they read as utility navigation, not as competing primary actions;
+  - added a dedicated `帳單與付款紀錄` bridge above the Billing history area so invoice and PayUNI records now clearly start a different section of the page.
+- Also updated the focused UI tests and kept the previously-added `ai-providers` timeout stabilization in place so the full validation pass remains reliable.
+- Result:
+  - the records area now reads as the primary destination after summary/helper content;
+  - CTA rows still exist and remain keyboard-accessible, but no longer steal attention from the actual financial tables.
+- Validation this round:
+  - `npx vitest run tests/billing-page-status-copy.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/wallet-light-theme.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+
+## 2026-07-07 Sale-ready UI polish pass
+
+- Completed a focused sale-ready polish pass across release gating, Contacts, Billing, Channels, Profile menu, and PayUNI return handling.
+- Updated simple-release feature gating so protected paid / AI areas redirect to `/dashboard?toast=feature_gated` with a softer dashboard toast instead of a hard 307-style dead end.
+- Added a safe Contacts demo-data bootstrap endpoint and an empty-state `載入示範聯絡人` action so reviewers and new users can enter a contact detail flow without hand-seeding data.
+- Preserved the Contacts filter because it is a real working filter panel, not a fake button; added coverage around the new mobile table scroll wrapper instead.
+- Confirmed Automations / Segments destructive actions no longer rely on `window.confirm`; added a regression guard so native confirm does not quietly return.
+- Added pending spinner feedback to the profile-menu logout action to prevent repeated clicks.
+- Added a branded PayUNI return loading screen for GET transitions while keeping POST callback processing unchanged.
+- Added current-plan protection on Billing cards with a `使用中` badge and disabled duplicate checkout for the active plan.
+- Softened disabled Channels cards with lower opacity, `aria-disabled`, and `cursor-not-allowed` so unavailable providers no longer look clickable.
+- Validation this round:
+  - `npx vitest run tests/sale-ready-polish.test.ts tests/contacts-empty-state.test.ts tests/billing-page-status-copy.test.ts tests/channels-connect-visibility.test.ts tests/release-proxy.test.ts`
+  - `npm run lint`
+  - `npm run build`
+  - `npm test`
+
+## 2026-07-08 ai-team-yolo-release delivery cleanup
+
+- Audited the dirty `ai-team-yolo-release` worktree before delivery instead of blindly committing every generated artifact.
+- Added ignore coverage for raw Meta / PayUNI evidence screenshots, MP4 recordings, tmp outputs, and the local reels/video child project so those files do not enter Git accidentally.
+- Hardened Vercel build-context excludes for `.env*`, reports, tmp files, videos, and local child-project outputs while keeping `.env.example` eligible for documentation.
+- Redacted Meta OAuth callback diagnostics so logs keep route/query-key evidence without storing raw callback URLs, OAuth codes, or app-secret fingerprints.
+- Added focused coverage to ensure Meta OAuth callback debug output does not regress to full callback URL or app-secret fingerprint logging.
+- Validation this round:
+  - `npm run lint`
+  - `npm run build`
+  - `npx vitest run tests/sale-ready-polish.test.ts tests/contacts-empty-state.test.ts tests/billing-page-status-copy.test.ts tests/billing-checkout-route.test.ts tests/channels-connect-visibility.test.ts tests/profile-menu-ia.test.ts tests/legal-contact-consistency.test.ts tests/unit/oauth-popup.test.ts tests/meta-business-login-sandbox-sbl12-callback-route.test.ts`
+  - `npm test`
+- Remaining delivery note:
+  - `localhost:3041` was not running during the final health probe, so browser QA should be run from a fresh dev server before any production-release decision.
+
+## 2026-07-08 Sale-ready polish QA leak cleanup
+
+- Completed the QA-driven polish pass for visible developer wording and unfinished-looking controls without touching production DB, Meta review, deployment, or schema.
+- Confirmed `npm run dev` already runs `npm run admin:ensure` first; `admin@example.com` is seeded from `.env.local` and the earlier login failure was caused by port `3041` already being occupied, not by a missing admin seed.
+- Rebuilt `/tags` from the generic JSON CRUD surface into a normal SaaS tag manager with create/edit/delete controls, color picker, empty state, and scoped API calls.
+- Cleaned external-facing Billing, Pricing, Signup, Referrals, Contacts, Profile menu, PayUNI return, and PayUNI gateway-status copy so internal wording such as Sandbox / test station / production gate / full release is no longer presented on the targeted product surfaces.
+- Tightened Automations disabled copy to `功能即將推出` and removed the editor-side list search/filter block that belonged to the overview list, not the node editor.
+- Moved Signup referral helper copy directly under the referral-code field.
+- Deduplicated Inbox tag data before passing it to `InboxClient` and removed the duplicate `社群平台` profile-menu shortcut.
+- Validation this round:
+  - `npx vitest run tests/tags-manager-ui.test.ts tests/billing-page-status-copy.test.ts tests/contacts-empty-state.test.ts tests/profile-menu-ia.test.ts tests/referral-affiliate-mvp-ui.test.ts tests/automation-disabled-ux.test.ts tests/signup-light-theme.test.ts tests/sale-ready-polish.test.ts tests/pricing-page-polish.test.ts tests/payuni-billing.test.ts`
+  - `npm run lint`
+  - `npm test`
