@@ -72,9 +72,9 @@ export function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";
-    url.searchParams.set("alert", "feature_gated");
+    url.searchParams.set("toast", "feature_gated");
     url.searchParams.set("feature", getFullOnlyFeatureKey(pathname));
-    const response = NextResponse.redirect(url, 307);
+    const response = NextResponse.redirect(url, 303);
     response.headers.set("x-request-id", requestId);
     return response;
   }

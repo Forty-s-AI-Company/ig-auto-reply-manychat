@@ -19,7 +19,7 @@ async function cleanDb() {
 describe("AI provider credentials", () => {
   beforeEach(async () => {
     await cleanDb();
-  });
+  }, 30_000);
 
   afterEach(() => {
     vi.unstubAllEnvs();

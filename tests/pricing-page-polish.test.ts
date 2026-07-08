@@ -28,7 +28,7 @@ describe("public pricing page polish", () => {
     expect(source).toContain("bg-[#f8fafc]");
     expect(source).toContain("border-[#d7dbe0]");
     expect(source).toContain("focus-visible:outline");
-    expect(source).toContain("PayUNI Sandbox 已驗證");
+    expect(source).toContain("安全付款流程已驗證");
     expect(source).toContain('href="/signup?plan=trial"');
     expect(source).toContain("function getPlanSignupHref");
     expect(source).toContain("href={getPlanSignupHref(plan)}");
@@ -39,8 +39,12 @@ describe("public pricing page polish", () => {
     const source = readFileSync(pricingClient, "utf8");
 
     expect(source).toContain('data-testid="pricing-referral-credit-rules"');
+    expect(source).toContain("線上購買尚未開放");
+    expect(source).toContain("加量包");
+    expect(source).toContain("推薦折抵");
+    expect(source).toContain("目前只開放方案訂閱 checkout");
     expect(source).toContain("推薦折抵可用於方案費");
-    expect(source).toContain("推薦折抵不可提現、不可轉讓");
+    expect(source).toContain("不可提現、不可轉讓");
     expect(source).toContain("超過 7 天退款觀察期才可用");
     expect(source).toContain("30 天內使用");
     expect(source).not.toContain('推薦折抵 {plan.affiliateCashPayoutEligible ? "可查看成效" : "可使用"}');

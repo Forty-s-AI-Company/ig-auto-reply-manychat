@@ -75,9 +75,9 @@ export function PricingPageClient() {
             方案以活躍聯絡人、訊息事件與團隊席次計算。
           </p>
           <p>
-            <span className="font-bold text-slate-950">PayUNI Sandbox 已驗證</span>
+            <span className="font-bold text-slate-950">安全付款流程已驗證</span>
             <br />
-            正式收費切換前仍維持測試站交易流程。
+            付款流程會在正式啟用前完成最後人工核對。
           </p>
         </div>
 
@@ -137,10 +137,24 @@ export function PricingPageClient() {
           ))}
         </div>
 
-        <section className="mt-8 rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-sm leading-7 text-cyan-950" data-testid="pricing-referral-credit-rules">
-          <strong>加量包：</strong>
-          訊息事件、活躍聯絡人、團隊席次與資料保存天數可按月加購；可用推薦折抵金折抵方案費，單筆帳單最低可折到 0 元。
-          推薦折抵不可提現、不可轉讓；首筆有效付費會先待確認，超過 7 天退款觀察期才可用，轉成可用後 30 天內使用。
+        <section
+          className="mt-8 rounded-lg border border-cyan-200 bg-cyan-50 p-5 text-sm leading-7 text-cyan-950"
+          data-testid="pricing-referral-credit-rules"
+        >
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <p className="font-semibold text-cyan-950">加量包</p>
+              <p className="mt-1">
+                訊息事件、活躍聯絡人、團隊席次與資料保存天數的規格已公開，但目前仍是價格參考，線上購買尚未開放。
+              </p>
+              <p className="mt-2 text-cyan-900">目前只開放方案訂閱 checkout；加量包會等 entitlement 疊加與退款規則完成後再開啟。</p>
+            </div>
+            <div>
+              <p className="font-semibold text-cyan-950">推薦折抵</p>
+              <p className="mt-1">可用推薦折抵金折抵方案費，單筆帳單最低可折到 0 元；不可提現、不可轉讓。</p>
+              <p className="mt-2 text-cyan-900">首筆有效付費會先待確認，超過 7 天退款觀察期才可用，轉成可用後 30 天內使用。</p>
+            </div>
+          </div>
         </section>
       </section>
     </main>

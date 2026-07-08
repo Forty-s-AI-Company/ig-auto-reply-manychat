@@ -7,6 +7,7 @@ describe("automation disabled UX", () => {
   it("connects controlled basic automation actions to visible reasons", () => {
     expect(source).toContain('id={`${basic.testId}-reason`}');
     expect(source).toContain('aria-describedby={`${basic.testId}-reason`}');
+    expect(source).toContain('action: "即將推出"');
   });
 
   it("connects the simple-release sequence gate to a visible reason", () => {
@@ -17,9 +18,17 @@ describe("automation disabled UX", () => {
 
   it("keeps editor actions and destructive dialogs mobile and keyboard friendly", () => {
     expect(source).toContain("previewPanelRef.current?.scrollIntoView");
+    expect(source).toContain('title="功能即將推出"');
+    expect(source).toContain("功能即將推出。");
+    expect(source).toContain('id="automation-delete-title" className="text-lg font-semibold text-zinc-950"');
+    expect(source).toContain('id="automation-node-delete-title" className="text-lg font-semibold text-zinc-950"');
+    expect(source).not.toContain("更多操作屬於受控開通功能");
+    expect(source).not.toContain("回收桶屬於受控開通功能");
+    expect(source).not.toContain('placeholder="搜尋其他自動化…"');
     expect(source).toContain("hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00b8d9]");
     expect(source).toContain("disabled:cursor-not-allowed disabled:bg-[#d7dbe0]");
-    expect(source).toContain("rounded-sm text-zinc-400 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300");
+    expect(source).toContain("text-red-600 hover:bg-red-50");
+    expect(source).toContain("disabled:cursor-not-allowed disabled:bg-red-200");
     expect(source).toContain("mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end");
   });
 

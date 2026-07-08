@@ -60,7 +60,7 @@ export function DisconnectChannelButton({ channelId, channelName }: DisconnectCh
             aria-labelledby="disconnect-channel-title"
             className="w-full max-w-md rounded-lg border border-[#fecdca] bg-white p-5 text-left shadow-xl"
           >
-            <h2 id="disconnect-channel-title" className="text-base font-semibold text-[#111827]">
+            <h2 id="disconnect-channel-title" className="text-lg font-semibold text-[#111827]">
               解除綁定 Instagram 渠道？
             </h2>
             <p className="mt-2 text-sm leading-6 text-[#475467]">

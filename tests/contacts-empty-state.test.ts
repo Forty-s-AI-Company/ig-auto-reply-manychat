@@ -101,6 +101,24 @@ describe("contacts empty state", () => {
     expect(source).toContain('aria-label="選取全部聯絡人"');
     expect(source).toContain('aria-label={`選取 ${contact.displayName}`}');
     expect(source).toContain("h-4 w-4 rounded border-[#d7dbe0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2");
+    expect(source).toContain('data-testid="contacts-table-scroll-area"');
+    expect(source).toContain("overflow-x-auto overflow-y-auto");
+  });
+
+  it("lets an empty workspace load a safe demo contact instead of hitting a dead end", () => {
+    const source = readFileSync("src/components/ContactsListClient.tsx", "utf8");
+    const routeSource = readFileSync("src/app/api/contacts/demo/route.ts", "utf8");
+
+    expect(source).toContain('data-testid="contacts-empty-load-demo"');
+    expect(source).toContain("載入示範聯絡人");
+    expect(source).toContain("CSV 匯入功能即將推出");
+    expect(source).not.toContain("CSV 匯入不是壞掉");
+    expect(source).toContain('fetch("/api/contacts/demo", { method: "POST" })');
+    expect(routeSource).toContain("assertSameOriginRequest(request)");
+    expect(routeSource).toContain("requireApiUser");
+    expect(routeSource).toContain("getCurrentWorkspaceId");
+    expect(routeSource).toContain('displayName: "示範聯絡人"');
+    expect(routeSource).toContain('metadataJson: { demo: true, source: "contacts_empty_state" }');
   });
 
   it("keeps the create-segment dialog mobile and keyboard friendly", () => {

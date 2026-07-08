@@ -10,10 +10,14 @@ export default function DataDeletionPage() {
     <MarketingInfoPage
       eyebrow="資料刪除"
       title="你可以要求刪除 InboxPilot 保存的個人資料。"
-      description="如果你曾使用 Facebook 或 Instagram 授權登入、連接 Instagram 專業帳號，或在 InboxPilot 建立自動化與對話資料，可以依照本頁方式申請刪除。"
+      description="如果你曾使用 Facebook 或 Instagram 授權登入、連接 Instagram 專業帳號，或在 InboxPilot 建立自動化與對話資料，可以依照本頁 reviewer-safe 流程申請刪除。"
       ctaLabel="寄信申請刪除"
       ctaHref="mailto:zeroyuanbrothers@gmail.com?subject=InboxPilot%20資料刪除申請"
       sections={[
+        {
+          title: "營運主體與刪除窗口",
+          body: "InboxPilot is a software product operated by Luo Shih Lin. InboxPilot 為羅仕林個人開發與營運之自動化行銷工具。資料刪除請求會由營運者透過 zeroyuanbrothers@gmail.com 受理與回覆。",
+        },
         {
           title: "如何提出申請",
           body: "請寄信到 zeroyuanbrothers@gmail.com，主旨填寫「InboxPilot 資料刪除申請」。信件中請提供你的註冊 Email、Facebook 名稱或 Instagram 帳號名稱，方便我們確認資料歸屬。",
@@ -34,6 +38,10 @@ export default function DataDeletionPage() {
         {
           title: "Meta 與付款資料",
           body: "若你要求刪除 Meta / Instagram 連接資料，我們會移除 InboxPilot 內保存的 channel token、連接設定與相關自動化資料。若資料涉及 PayUNI 訂單、發票、退款、爭議款或稽核紀錄，會依法律與對帳需求保存必要紀錄。",
+        },
+        {
+          title: "Meta reviewer 可如何驗證",
+          body: "Meta reviewer 可以直接檢查本頁、Privacy Policy 與 Terms 頁面，確認使用者可透過 Email 聯絡營運者申請刪除，並了解哪些 Meta / Instagram 資料會從 InboxPilot 系統中移除。",
         },
       ]}
     />

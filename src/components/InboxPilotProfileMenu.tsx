@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, Bell, Bot, ChevronDown, CircleHelp, CreditCard, KeyRound, LogOut, Settings, Shield, UserRound } from "lucide-react";
+import { BarChart3, Bot, ChevronDown, CircleHelp, CreditCard, KeyRound, Loader2, LogOut, Settings, Shield, UserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type InboxPilotProfileMenuProps = {
@@ -100,9 +100,8 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
 
           <div className="border-t border-[#edf0f2] py-2">
             <p className="px-4 py-2 text-xs font-medium text-[#98a2b3]">設定與支援</p>
-            <MenuLink href="/channels#notifications" icon={<Bell className="h-4 w-4" />} label="通知設定" />
-            <MenuLink href="/channels#ai-settings" icon={<Bot className="h-4 w-4" />} label="AI 設定" />
-            <MenuLink href="/channels#extensions" icon={<KeyRound className="h-4 w-4" />} label="API 與應用程式" />
+            <MenuLink href="/ai-settings" icon={<Bot className="h-4 w-4" />} label="AI 設定" />
+            <MenuLink href="/ai-settings" icon={<KeyRound className="h-4 w-4" />} label="API 與模型設定" />
             {isAdmin ? <MenuLink href="/admin/invoices" icon={<CreditCard className="h-4 w-4" />} label="帳單退款處理" /> : null}
             {isAdmin ? <MenuLink href="/admin/audit" icon={<Shield className="h-4 w-4" />} label="登入與稽核紀錄" /> : null}
             <MenuLink href="/help-center" icon={<CircleHelp className="h-4 w-4" />} label="說明中心" />
@@ -121,13 +120,10 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
               >
                 <option value="zh-TW">繁體中文</option>
                 <option value="en" disabled>
-                  English（受控開通）
+                  English（即將推出）
                 </option>
               </select>
             </label>
-            <p id="profile-language-help" className="mt-2 text-xs leading-5 text-[#667085]" data-testid="profile-language-help">
-              目前後台固定使用繁體中文；英文介面會在翻譯、客服與審核文案整理完成後受控開通。
-            </p>
           </div>
 
           <div className="border-t border-[#edf0f2] py-2">
@@ -142,7 +138,7 @@ export function InboxPilotProfileMenu({ name, email, avatarUrl, planName = "Tria
               disabled={loggingOut}
               className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-[#4b5563] hover:bg-[#f2f4f7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19d3d8] focus-visible:ring-inset disabled:cursor-wait disabled:text-[#98a2b3]"
             >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
+              {loggingOut ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <LogOut className="h-4 w-4" aria-hidden="true" />}
               {loggingOut ? "登出中…" : "登出"}
             </button>
           </div>

@@ -73,7 +73,7 @@ test.describe("AI_TEAM browser smoke", () => {
       expect(response.status()).toBe(307);
       const location = new URL(response.headers()["location"] || "", "http://127.0.0.1:3041");
       expect(location.pathname).toBe("/dashboard");
-      expect(location.searchParams.get("alert")).toBe("feature_gated");
+      expect(location.searchParams.get("toast")).toBe("feature_gated");
       expect(location.searchParams.get("feature")).toBe("billing");
     } else {
       expect(response.status()).toBe(200);

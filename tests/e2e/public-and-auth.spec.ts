@@ -16,7 +16,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   { path: "/dashboard", heading: /首頁|儀表板/, bodyText: /營運總覽|查看收件匣|快速建立自動化/ },
   { path: "/inbox", heading: /收件匣/, bodyText: /收件匣|對話|訊息/ },
   { path: "/contacts", heading: /聯絡人/, bodyText: /全部聯絡人|目前沒有符合條件的聯絡人|搜尋姓名/ },
-  { path: "/channels", heading: /工作區、Instagram 與自動化設定|設定/, bodyText: /新增平台帳號|Instagram|工作區、Instagram 與自動化設定/ },
+  { path: "/channels", heading: /社群平台/, bodyText: /新增平台帳號|Instagram|TikTok|WhatsApp|未開放/ },
   {
     path: "/channels/connect/instagram",
     finalUrl: /\/channels\/connect\/social(?:[?#].*)?$/,
@@ -289,41 +289,20 @@ test.describe("authenticated route smoke", () => {
     await expect(segmentCard).toHaveCount(0);
   });
 
-  test("shows Channels planned settings as explicit disabled controls", async ({ page }) => {
+  test("shows Settings IA with focused social platform controls", async ({ page }) => {
     await page.goto("/channels", { waitUntil: "domcontentloaded" });
-    await expect(page.getByTestId("channels-notifications-disabled")).toBeDisabled();
-    await expect(page.getByTestId("channels-notifications-disabled")).toContainText("Email 通知受控開通");
-    await expect(page.getByTestId("channels-notifications-disabled")).toHaveAttribute(
-      "aria-describedby",
-      "channels-notifications-disabled-reason",
-    );
-    await expect(page.locator("#channels-notifications-disabled-reason")).toContainText("退訂");
-    await expect(page.getByTestId("channels-display-disabled")).toBeDisabled();
-    await expect(page.getByTestId("channels-display-disabled")).toContainText("主題與語言受控開通");
-    await expect(page.getByTestId("channels-display-disabled")).toHaveAttribute(
-      "aria-describedby",
-      "channels-display-disabled-reason",
-    );
-    await expect(page.getByTestId("channels-logs-disabled")).toBeDisabled();
-    await expect(page.getByTestId("channels-logs-disabled")).toContainText("稽核紀錄受控開通");
-    await expect(page.getByTestId("channels-logs-disabled")).toHaveAttribute(
-      "aria-describedby",
-      "channels-logs-disabled-reason",
-    );
-    await expect(page.locator("body")).toContainText("AI 設定");
-    await expect(page.locator("body")).toContainText(/前往 AI 設定|完整版測試站可設定/);
-    await expect(page.getByTestId("channels-sequence-settings-disabled")).toBeDisabled();
-    await expect(page.getByTestId("channels-sequence-settings-disabled")).toContainText("序列設定受控開通");
-    await expect(page.getByTestId("channels-sequence-settings-disabled")).toHaveAttribute(
-      "aria-describedby",
-      "channels-sequence-settings-disabled-reason",
-    );
-    await expect(page.getByTestId("channels-conversion-events-disabled")).toBeDisabled();
-    await expect(page.getByTestId("channels-conversion-events-disabled")).toContainText("轉換事件受控開通");
-    await expect(page.getByTestId("channels-conversion-events-disabled")).toHaveAttribute(
-      "aria-describedby",
-      "channels-conversion-events-disabled-reason",
-    );
+    await expect(page.locator("h1").filter({ hasText: "社群平台" })).toBeVisible();
+    expect(await page.locator('a[href="/billing"]').count()).toBeGreaterThan(0);
+    expect(await page.locator('a[href="/ai-settings"]').count()).toBeGreaterThan(0);
+    expect(await page.locator('a[href="/channels"]').count()).toBeGreaterThan(0);
+    await expect(page.locator("body")).toContainText("TikTok");
+    await expect(page.locator("body")).toContainText("WhatsApp");
+    await expect(page.locator("body")).toContainText("未開放");
+    await expect(page.locator("body")).toContainText("目前未開放線上連線");
+    await expect(page.locator("body")).not.toContainText("Mock OAuth Provider");
+    await expect(page.locator("body")).not.toContainText("規劃中");
+    await expect(page.locator("body")).not.toContainText("通知設定");
+    await expect(page.locator("body")).not.toContainText("操作紀錄");
   });
 
   test("shows billing sandbox gate guidance", async ({ page }) => {
@@ -382,7 +361,7 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("目前方案");
     await expect(page.locator("body")).toContainText("方案與用量");
     await expect(page.locator("body")).toContainText("說明中心");
-    await expect(page.getByRole("link", { name: "AI 設定" })).toHaveAttribute("href", "/channels#ai-settings");
+    await expect(page.getByRole("link", { name: "AI 設定" })).toHaveAttribute("href", "/ai-settings");
     await expect(page.getByLabel("選擇介面語言")).toHaveValue("zh-TW");
     await expect(page.getByLabel("選擇介面語言")).toContainText("English（受控開通）");
     await expect(page.getByTestId("profile-language-help")).toContainText("英文介面會在翻譯、客服與審核文案整理完成後受控開通");

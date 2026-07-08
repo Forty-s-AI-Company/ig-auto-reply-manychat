@@ -16,6 +16,8 @@ describe("AI settings disabled UX", () => {
 
   it("keeps AI settings controls keyboard-visible and screen-reader friendly", () => {
     expect(source).toContain("focus-visible:ring-[#006fe6]");
+    expect(source).toContain('data-testid="ai-current-model-info"');
+    expect(source.indexOf('data-testid="ai-current-model-info"')).toBeLessThan(source.indexOf('<ManualActionNotice title="SaaS 連接方式：API Key"'));
     expect(source).toContain('<TestTube2 className="h-4 w-4" aria-hidden="true" />');
     expect(source).toContain('<Save className="h-4 w-4" aria-hidden="true" />');
     expect(source).toContain('<RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />');

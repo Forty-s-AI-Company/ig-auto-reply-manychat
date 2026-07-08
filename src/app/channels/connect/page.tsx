@@ -75,7 +75,7 @@ export default async function ChannelConnectionPage() {
       backLabel="返回主控台"
       visual={<GiftVisual />}
     >
-      <div className="space-y-6">
+      <div className="space-y-6 pb-6">
         <section className="space-y-3">
           <SectionHeading title="目前可連線" description="這些入口會直接打開授權流程，完成後會回到社群帳號頁。" />
           <div className="space-y-3">

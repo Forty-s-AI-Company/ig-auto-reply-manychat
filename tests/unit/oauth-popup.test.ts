@@ -4,7 +4,7 @@ import { metaFacebookProvider } from "@/lib/oauth/providers/meta-facebook";
 import { metaInstagramProvider } from "@/lib/oauth/providers/meta-instagram";
 import { mockProvider } from "@/lib/oauth/providers/mock";
 import { telegramBotProvider } from "@/lib/oauth/providers/telegram-bot";
-import { getProviderCallbackUrl } from "@/lib/oauth/utils";
+import { getLegacyMetaCallbackUrl, getProviderCallbackUrl } from "@/lib/oauth/utils";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -23,6 +23,20 @@ describe("unit: oauth popup module", () => {
   it("builds callback URLs from the request origin", () => {
     const request = new Request("http://localhost:3041/api/test");
     expect(getProviderCallbackUrl(request, "meta-instagram")).toBe("http://localhost:3041/api/oauth/meta-instagram/callback");
+  });
+
+  it("prefers configured legacy Meta redirect URIs when present", () => {
+    vi.stubEnv("META_INSTAGRAM_REDIRECT_URI", "https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback");
+    vi.stubEnv("META_FACEBOOK_REDIRECT_URI", "https://staging.carry-digital-nomad.in.net/api/meta/oauth/callback");
+
+    const request = new Request("https://carry-digital-nomad.in.net/api/oauth/meta-instagram/authorize");
+
+    expect(getLegacyMetaCallbackUrl(request, "meta-instagram")).toBe(
+      "https://staging.carry-digital-nomad.in.net/api/instagram/oauth/callback",
+    );
+    expect(getLegacyMetaCallbackUrl(request, "meta-facebook")).toBe(
+      "https://staging.carry-digital-nomad.in.net/api/meta/oauth/callback",
+    );
   });
 
   it("builds the Instagram auth URL with a forced fresh-login path", () => {

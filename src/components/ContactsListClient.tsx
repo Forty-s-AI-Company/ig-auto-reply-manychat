@@ -82,6 +82,7 @@ export function ContactsListClient({
   const [segmentDescription, setSegmentDescription] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [demoLoading, setDemoLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -248,6 +249,25 @@ export function ContactsListClient({
       setMessage(`已建立分眾「${data.name || name}」。`);
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "建立分眾失敗。");
+    }
+  }
+
+  async function loadDemoContact() {
+    setMessage("");
+    setError("");
+    setDemoLoading(true);
+    try {
+      const response = await fetch("/api/contacts/demo", { method: "POST" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.contactId) {
+        throw new Error(typeof data.error === "string" ? data.error : "載入示範聯絡人失敗。");
+      }
+      setMessage("已載入示範聯絡人。");
+      router.push(`/contacts/${data.contactId}`);
+    } catch (caughtError) {
+      setError(caughtError instanceof Error ? caughtError.message : "載入示範聯絡人失敗。");
+    } finally {
+      setDemoLoading(false);
     }
   }
 
@@ -489,7 +509,7 @@ export function ContactsListClient({
           聯絡人欄位較多，手機版可左右滑動查看渠道、標籤、對話與最後互動。
         </div>
 
-        <div className="min-h-0 flex-1 overflow-auto">
+        <div className="min-h-0 flex-1 overflow-x-auto overflow-y-auto" data-testid="contacts-table-scroll-area">
           <table className="min-w-[920px] w-full text-left text-sm">
             <thead className="sticky top-0 z-10 border-b border-[#d7dbe0] bg-[#f8fafc] text-[#667085]">
               <tr>
@@ -571,6 +591,17 @@ export function ContactsListClient({
                             </div>
                           ) : null}
                           <div className="mt-5 flex flex-wrap gap-2">
+                            {!hasActiveFilters ? (
+                              <button
+                                type="button"
+                                onClick={loadDemoContact}
+                                disabled={demoLoading}
+                                data-testid="contacts-empty-load-demo"
+                                className="inline-flex h-9 items-center justify-center rounded-md bg-[#006fe6] px-3 text-sm font-medium text-white hover:bg-[#0057b8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006fe6] focus-visible:ring-offset-2 disabled:cursor-wait disabled:bg-[#98a2b3]"
+                              >
+                                {demoLoading ? "載入中…" : "載入示範聯絡人"}
+                              </button>
+                            ) : null}
                             {emptyState.actions.map((action, index) =>
                               action.disabledReason ? (
                                 <span key={action.testId} className="inline-flex max-w-full flex-col gap-1">
@@ -608,7 +639,7 @@ export function ContactsListClient({
                           </div>
                           {!hasActiveFilters ? (
                             <p className="mt-3 text-xs leading-5 text-[#98a2b3]">
-                              CSV 匯入不是壞掉，而是先等欄位對應、去重與稽核流程完成後再開放。
+                              CSV 匯入功能即將推出；目前可先透過示範聯絡人或 Instagram 同步確認聯絡人流程。
                             </p>
                           ) : null}
                         </div>

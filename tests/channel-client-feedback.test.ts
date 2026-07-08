@@ -83,6 +83,7 @@ describe("channel client feedback", () => {
     expect(disconnect).toContain('text-[#b42318]');
     expect(disconnect).toContain('role="dialog"');
     expect(disconnect).toContain('aria-modal="true"');
+    expect(disconnect).toContain('id="disconnect-channel-title" className="text-lg font-semibold text-[#111827]"');
     expect(disconnect).toContain('data-testid="disconnect-channel-confirm"');
     expect(disconnect).toContain("flex flex-col-reverse justify-end gap-2 sm:flex-row");
     expect(disconnect).toContain('role="alert"');

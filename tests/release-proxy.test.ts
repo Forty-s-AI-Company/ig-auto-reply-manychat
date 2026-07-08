@@ -22,10 +22,10 @@ describe("release proxy smoke tests", () => {
 
     const response = proxy(request("https://inboxpilot.carry-digital-nomad.in.net/billing"));
 
-    expect(response.status).toBe(307);
+    expect(response.status).toBe(303);
     const location = new URL(response.headers.get("location") || "");
     expect(location.pathname).toBe("/dashboard");
-    expect(location.searchParams.get("alert")).toBe("feature_gated");
+    expect(location.searchParams.get("toast")).toBe("feature_gated");
     expect(location.searchParams.get("feature")).toBe("billing");
   });
 

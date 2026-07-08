@@ -103,6 +103,7 @@ describe("channel connect visibility", () => {
     expect(source).toContain("WhatsApp Business 尚未納入本次付費版可用範圍");
     expect(source).toContain("focus-visible:ring-[#006fe6]");
     expect(source).toContain("sm:flex-row");
+    expect(source).toContain("space-y-6 pb-6");
     expect(source).toContain("data-testid={`channels-connect-${channel.id}-disabled`}");
     expect(source).toContain("const disabledReasonId = `channels-connect-${channel.id}-disabled-reason`");
     expect(source).toContain("aria-describedby={channel.uiState.disabledReason ? disabledReasonId : undefined}");
@@ -146,13 +147,19 @@ describe("channel connect visibility", () => {
     const channelsSource = readFileSync("src/app/channels/page.tsx", "utf8");
 
     expect(channelsSource).toContain("focus-visible:ring-[#006fe6]");
-    expect(channelsSource).toContain("Telegram 屬於後續受控通路");
-    expect(channelsSource).toContain("TikTok 尚未納入本次付費版可用範圍");
-    expect(channelsSource).toContain("WhatsApp Business 尚未納入本次付費版可用範圍");
+    expect(channelsSource).toContain("space-y-5 pb-6 pr-1 lg:overflow-y-auto lg:pb-0");
+    expect(channelsSource).toContain('href: "/billing"');
+    expect(channelsSource).toContain('href: "/ai-settings"');
+    expect(channelsSource).toContain("尚未開放。需要完成官方 API");
+    expect(channelsSource).toContain("尚未開放。WhatsApp Business");
     expect(channelsSource).toContain("Meta Page Login（舊流程）");
-    expect(channelsSource).toContain("此功能目前受控開通，完成安全、權限與營運規則驗證後才會開放。");
-    expect(channelsSource).toContain("完成供應商串接、權限與訊息收發驗證後才會開放");
+    expect(channelsSource).toContain("目前未開放線上連線");
+    expect(channelsSource).toContain("完成官方 API、權限與訊息收發驗證後才會提供連線。");
+    expect(channelsSource).toContain("cursor-not-allowed opacity-60");
+    expect(channelsSource).toContain("aria-disabled={!entry.enabled}");
     expect(channelsSource).toContain("const reasonId = testId && visibleReason ? `${testId}-reason` : undefined");
     expect(channelsSource).toContain('aria-hidden="true"');
+    expect(channelsSource).not.toContain("Mock OAuth Provider");
+    expect(channelsSource).not.toContain("簡訊供應商");
   });
 });

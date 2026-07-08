@@ -165,7 +165,7 @@ const copy = {
       old: "舊版官網",
       legal: "法律與政策",
       resources: "資源",
-      copyright: "© 2026 InboxPilot. All rights reserved.",
+      copyright: "© 2026 InboxPilot · 羅仕林個人開發與營運。",
     },
   },
   en: {
@@ -297,7 +297,7 @@ const copy = {
       old: "Old official site",
       legal: "Legal",
       resources: "Resources",
-      copyright: "© 2026 InboxPilot. All rights reserved.",
+      copyright: "© 2026 InboxPilot. Operated by Luo Shih Lin.",
     },
   },
 } as const;
@@ -938,6 +938,9 @@ export function OfficialV2LandingPage() {
             </Link>
             <p className="mt-4 max-w-md leading-8 text-white/70">{t.footer.tagline}</p>
             <p className="mt-6 text-sm text-white/45">{t.footer.copyright}</p>
+            <p className="mt-2 text-sm text-white/45">InboxPilot is a software product operated by Luo Shih Lin.</p>
+            <p className="mt-2 text-sm text-white/45">Contact: zeroyuanbrothers@gmail.com</p>
+            <p className="mt-1 text-sm text-white/45">Website: https://inboxpilot.carry-digital-nomad.in.net/</p>
           </div>
           <div>
             <p className="font-black text-[#ffde45]">{t.footer.resources}</p>

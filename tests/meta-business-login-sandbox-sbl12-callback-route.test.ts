@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createSandboxCallbackCaptureState } from "@/lib/meta-business-sandbox-callback-capture";
@@ -39,6 +40,10 @@ vi.mock("@/lib/audit", () => ({
 describe("SBL-12 production callback sandbox capture guard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.restoreAllMocks();
+    vi.stubEnv("APP_URL", "https://inboxpilot.example.test");
+    vi.stubEnv("META_INSTAGRAM_APP_ID", "instagram-app-id");
+    vi.stubEnv("META_INSTAGRAM_APP_SECRET", "instagram-app-secret");
     mocks.cookieGet.mockImplementation((name: string) => {
       if (name === "meta_oauth_workspace") return { value: "default-workspace" };
       if (name === "meta_oauth_mode") return { value: "instagram" };
@@ -47,6 +52,15 @@ describe("SBL-12 production callback sandbox capture guard", () => {
     mocks.readPopupState.mockResolvedValue({});
     mocks.getDefaultWorkspaceId.mockResolvedValue("default-workspace");
     mocks.getCurrentUser.mockResolvedValue(null);
+  });
+
+  it("does not log the raw OAuth callback URL in Instagram debug context", () => {
+    const source = readFileSync("src/app/api/meta/oauth/callback/route.ts", "utf8");
+
+    expect(source).not.toContain("requestUrl: request.url");
+    expect(source).toContain("requestPath:");
+    expect(source).toContain("queryKeys:");
+    expect(source).not.toContain("appSecretFingerprint");
   });
 
   it("returns redacted sandbox evidence before state validation, token exchange, or production writes", async () => {
@@ -100,5 +114,49 @@ describe("SBL-12 production callback sandbox capture guard", () => {
         metadata: expect.objectContaining({ reason: "invalid_state" }),
       }),
     );
+  });
+
+  it("surfaces Instagram token exchange error_message in popup mode instead of falling back to a raw generic error", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ error_type: "OAuthException", error_message: "Invalid redirect_uri" }), {
+        status: 400,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+
+    mocks.cookieGet.mockImplementation((name: string) => {
+      if (name === "meta_oauth_workspace") return { value: "default-workspace" };
+      if (name === "meta_oauth_mode") return { value: "instagram" };
+      if (name === "meta_oauth_state") return { value: "expected-state" };
+      return undefined;
+    });
+    mocks.readPopupState.mockResolvedValue({ provider: "meta-instagram", transport: "popup" });
+    mocks.clearPopupState.mockResolvedValue(undefined);
+    mocks.getCurrentUser.mockResolvedValue({ id: "user-reviewer" });
+
+    const { GET } = await import("@/app/api/meta/oauth/callback/route");
+    const request = new Request(
+      "https://inboxpilot.example.test/api/instagram/oauth/callback?code=RAW_CODE&state=expected-state",
+    );
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(307);
+    const location = response.headers.get("location") || "";
+    expect(location).toContain("/oauth/popup/callback");
+    expect(location).toContain("provider=meta-instagram");
+    expect(location).toContain("message=Invalid+redirect_uri");
+    expect(decodeURIComponent(location)).not.toContain("Instagram OAuth request failed.");
+    expect(mocks.recordAuditEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: "oauth_callback_failed",
+        success: false,
+        metadata: expect.objectContaining({
+          provider: "meta-instagram",
+          reason: "Invalid redirect_uri",
+        }),
+      }),
+    );
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 });

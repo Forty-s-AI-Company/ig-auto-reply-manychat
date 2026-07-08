@@ -86,15 +86,15 @@ export function getPayuniGatewayStatus(
   const checkoutEnabled = sandbox || productionEnabled;
   const checkoutDisabledReason = checkoutEnabled
     ? null
-    : "目前付款按鈕先停用，因為正式金流尚未開通。請先切回測試站驗證流程，等 merchant review 與營運開關完成後再切正式站。";
+    : "目前付款服務尚未完成啟用，請稍後再試或聯絡我們協助處理。";
 
   return {
-    label: sandbox ? "PayUNI 測試站" : "PayUNI 正式站",
+    label: checkoutEnabled ? "線上付款可用" : "付款服務準備中",
     detail: sandbox
-      ? "目前付款會先走 sandbox，不會影響正式帳務。"
+      ? "付款流程會在安全付款頁完成，InboxPilot 不會保存卡號。"
       : productionEnabled
-        ? "正式站已受控開通，仍建議先用小額與對帳流程確認。"
-        : "正式站尚未開通自動扣款，先用測試站驗證流程。付款按鈕已先停用，避免送出後才知道不能用。",
+        ? "付款服務已啟用，仍會保留發票與訂單紀錄方便後續核對。"
+        : "付款服務尚未完成啟用，付款按鈕已先停用，避免送出後才知道不能用。",
     sandbox,
     productionEnabled,
     checkoutEnabled,

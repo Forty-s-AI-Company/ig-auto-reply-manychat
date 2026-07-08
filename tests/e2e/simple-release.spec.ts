@@ -88,14 +88,14 @@ test.describe("simple release smoke", () => {
     const response = await page.request.get("/billing", {
       maxRedirects: 0,
     });
-    expect(response.status()).toBe(307);
+    expect(response.status()).toBe(303);
     const location = new URL(response.headers()["location"] || "", "http://127.0.0.1:3041");
     expect(location.pathname).toBe("/dashboard");
-    expect(location.searchParams.get("alert")).toBe("feature_gated");
+    expect(location.searchParams.get("toast")).toBe("feature_gated");
     expect(location.searchParams.get("feature")).toBe("billing");
 
-    await page.goto("/dashboard?alert=feature_gated&feature=billing", { waitUntil: "domcontentloaded" });
-    await expect(page.getByText("此功能目前受控開通")).toBeVisible();
+    await page.goto("/dashboard?toast=feature_gated&feature=billing", { waitUntil: "domcontentloaded" });
+    await expect(page.getByText("本功能在目前版本尚未開放")).toBeVisible();
     await expect(page.locator("body")).toContainText("金流");
     await expect(page.locator("body")).toContainText("https://staging.carry-digital-nomad.in.net");
   });

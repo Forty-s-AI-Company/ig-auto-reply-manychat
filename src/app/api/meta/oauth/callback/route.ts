@@ -112,6 +112,18 @@ function getOAuthRedirectUri(request: Request, mode: MetaOauthMode) {
   return `${getAppUrl(request)}${callbackPath}`;
 }
 
+function getInstagramOauthDebugContext(request: Request) {
+  const url = new URL(request.url);
+  const instagramSecret = process.env.META_INSTAGRAM_APP_SECRET?.trim() || "";
+  return {
+    appId: process.env.META_INSTAGRAM_APP_ID?.trim() || process.env.META_APP_ID?.trim() || "",
+    redirectUri: getOAuthRedirectUri(request, "instagram"),
+    requestPath: `${url.origin}${url.pathname}`,
+    queryKeys: [...url.searchParams.keys()].sort(),
+    appSecretConfigured: Boolean(instagramSecret),
+  };
+}
+
 function requiredEnv(name: string) {
   const value = process.env[name]?.trim();
   if (!value) {
@@ -184,10 +196,16 @@ async function instagramFormPost<T>(url: string, params: Record<string, string>)
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(params),
   });
-  const data = (await response.json()) as T & MetaGraphError;
-  if (!response.ok || data.error) {
-    const detail = data.error?.message || "Instagram OAuth request failed.";
-    const trace = data.error?.fbtrace_id ? ` fbtrace_id=${data.error.fbtrace_id}` : "";
+  const data = (await response.json()) as T &
+    MetaGraphError & {
+      error_message?: string;
+      error_type?: string;
+      error_code?: number | string;
+      fbtrace_id?: string;
+    };
+  if (!response.ok || data.error || data.error_message) {
+    const detail = data.error?.message || data.error_message || "Instagram OAuth request failed.";
+    const trace = data.error?.fbtrace_id || data.fbtrace_id ? ` fbtrace_id=${data.error?.fbtrace_id || data.fbtrace_id}` : "";
     throw new Error(`${detail}${trace}`);
   }
   return data;
@@ -768,6 +786,12 @@ export async function GET(request: Request) {
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Meta connection failed.";
+    if (mode === "instagram") {
+      console.error("META_INSTAGRAM_OAUTH_CALLBACK_FAILED", {
+        ...getInstagramOauthDebugContext(request),
+        reason: safeErrorReason(message),
+      });
+    }
     await recordMetaOauthFailure({
       request,
       workspaceId,

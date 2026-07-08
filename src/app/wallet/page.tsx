@@ -48,7 +48,7 @@ function ledgerStatusLabel(status: string) {
 export default async function WalletPage() {
   const user = await requireUser();
   const [summary, ledger] = await Promise.all([getWalletSummary(user.id), getWalletLedger(user.id)]);
-  const summaryCards = [
+      const summaryCards = [
     {
       label: "可用折抵金",
       value: summary.availableCredits,
@@ -69,42 +69,66 @@ export default async function WalletPage() {
   return (
     <AdminShell title="折抵金錢包">
       <div className="space-y-6">
-        <section className="grid gap-4 md:grid-cols-3">
-          {summaryCards.map((card) => (
-            <article key={card.label} className="rounded-lg border border-[var(--border-soft)] bg-white p-5">
-              <p className="text-sm font-medium text-[var(--text-secondary)]">{card.label}</p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--text-primary)]">{formatTwd(card.value)}</p>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{card.description}</p>
-            </article>
-          ))}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">折抵概況</h2>
+            <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+              先看目前可用、待確認與已使用折抵的總覽，再往下確認使用規則、下一筆到期時間與實際流水紀錄。
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {summaryCards.map((card) => (
+              <article key={card.label} className="rounded-lg border border-[var(--border-soft)] bg-white p-5">
+                <p className="text-sm font-medium text-[var(--text-secondary)]">{card.label}</p>
+                <p className="mt-2 text-3xl font-semibold text-[var(--text-primary)]">{formatTwd(card.value)}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{card.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+        <section className="ip-dashboard-card p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">折抵使用提醒</h2>
+              <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+                推薦折抵只能折抵方案費，單筆帳單最低可折到 0 元；轉成可用後 30 天內未使用會自動失效。若來源付款退款，待確認折抵會取消，已使用折抵會以沖回紀錄抵銷。
+              </p>
+            </div>
+            <div className="flex w-full flex-col gap-2 sm:w-auto">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">快速前往</p>
+              <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2">
+                <Link
+                  href="/referrals"
+                  data-testid="wallet-open-referrals"
+                  className="inline-flex h-8 items-center justify-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-xs font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                >
+                  查看推薦活動
+                </Link>
+                <Link
+                  href="/billing"
+                  data-testid="wallet-open-billing"
+                  className="inline-flex h-8 items-center justify-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-xs font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
+                >
+                  查看方案與用量
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 text-sm text-[var(--text-secondary)] md:grid-cols-2">
+            <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 py-3">
+              <p className="text-xs font-semibold text-[var(--text-secondary)]">下一筆可用時間</p>
+              <p className="mt-1 text-[var(--text-primary)]">{summary.nextAvailableAt ? formatLedgerDate(summary.nextAvailableAt) : "目前沒有待確認折抵"}</p>
+            </div>
+            <div className="rounded-lg border border-[var(--border-soft)] bg-[var(--ip-surface-muted)] px-4 py-3">
+              <p className="text-xs font-semibold text-[var(--text-secondary)]">下一筆到期時間</p>
+              <p className="mt-1 text-[var(--text-primary)]">{summary.nextExpiryAt ? formatLedgerDate(summary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</p>
+            </div>
+          </div>
         </section>
         <section className="ip-dashboard-card overflow-hidden">
           <div className="border-b border-[var(--border-soft)] px-4 py-3">
             <h2 className="font-semibold text-[var(--text-primary)]">折抵金流水</h2>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">最近 100 筆折抵金入帳、待確認、到期失效、退款沖回與帳單折抵紀錄。</p>
-            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">
-              推薦折抵只能折抵方案費，單筆帳單最低可折到 0 元；轉成可用後 30 天內未使用會自動失效。若來源付款退款，待確認折抵會取消，已使用折抵會以沖回紀錄抵銷。
-            </p>
-            <div className="mt-3 flex flex-wrap gap-3 text-xs text-[var(--text-muted)]">
-              <span>下一筆可用時間：{summary.nextAvailableAt ? formatLedgerDate(summary.nextAvailableAt) : "目前沒有待確認折抵"}</span>
-              <span>下一筆到期時間：{summary.nextExpiryAt ? formatLedgerDate(summary.nextExpiryAt) : "目前沒有可用折抵即將到期"}</span>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Link
-                href="/referrals"
-                data-testid="wallet-open-referrals"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-              >
-                查看推薦活動
-              </Link>
-              <Link
-                href="/billing"
-                data-testid="wallet-open-billing"
-                className="inline-flex h-9 items-center rounded-md border border-[var(--border-soft)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)] transition hover:bg-[var(--ip-surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2"
-              >
-                查看方案與用量
-              </Link>
-            </div>
           </div>
           {ledger.length > 0 ? (
             <div className="overflow-x-auto">
@@ -137,8 +161,9 @@ export default async function WalletPage() {
             </div>
           ) : (
             <div className="px-4 py-8 text-sm leading-6 text-[var(--text-muted)]">
-              <p>目前還沒有折抵金紀錄。完成推薦活動或帳單折抵後，這裡會顯示入帳與使用明細。</p>
-              <p className="mt-2">上方保留了「查看推薦活動」與「查看方案與用量」，可以直接回去確認待確認折抵、目前方案與下一步付款安排。</p>
+              <p className="font-semibold text-[var(--text-primary)]">目前還沒有折抵金紀錄。</p>
+              <p className="mt-1">完成推薦活動或帳單折抵後，這裡會顯示入帳、待確認、到期失效與實際折抵明細。</p>
+              <p className="mt-2">若你要先確認待確認折抵、推薦進度或下一步付款安排，直接使用上方的快速操作即可。</p>
             </div>
           )}
         </section>

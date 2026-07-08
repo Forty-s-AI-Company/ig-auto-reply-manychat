@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 describe("admin shell localized titles", () => {
   it("keeps secondary admin surfaces localized in Traditional Chinese", () => {
     const tagsPage = readFileSync("src/app/tags/page.tsx", "utf8");
+    const tagsClient = readFileSync("src/components/TagsManagerClient.tsx", "utf8");
     const knowledgeBasePage = readFileSync("src/app/knowledge-base/page.tsx", "utf8");
     const aiSettingsPage = readFileSync("src/app/ai-settings/page.tsx", "utf8");
     const segmentsPage = readFileSync("src/app/segments/page.tsx", "utf8");
@@ -13,7 +14,7 @@ describe("admin shell localized titles", () => {
     const adminAffiliatesPage = readFileSync("src/app/admin/affiliates/page.tsx", "utf8");
 
     expect(tagsPage).toContain('AdminShell title="標籤管理"');
-    expect(tagsPage).toContain("重要客戶");
+    expect(tagsClient).toContain("重要客戶");
     expect(tagsPage).not.toContain("new-tag");
     expect(tagsPage).not.toContain('AdminShell title="Tags"');
     expect(knowledgeBasePage).toContain('AdminShell title="知識庫"');

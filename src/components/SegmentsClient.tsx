@@ -402,7 +402,7 @@ function SegmentDeleteDialog({
         className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-lg border border-[#d7dbe0] bg-white shadow-xl"
       >
         <div className="border-b border-[#d7dbe0] px-5 py-4">
-          <p id="segment-delete-title" className="text-base font-semibold text-[#111827]">
+          <p id="segment-delete-title" className="text-lg font-semibold text-[#111827]">
             刪除分眾名單？
           </p>
           <p className="mt-2 text-sm leading-6 text-[#667085]">

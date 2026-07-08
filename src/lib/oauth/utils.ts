@@ -18,6 +18,11 @@ export function getProviderCallbackUrl(request: Request, provider: string) {
 }
 
 export function getLegacyMetaCallbackUrl(request: Request, provider: "meta-instagram" | "meta-facebook") {
+  const configuredRedirect =
+    provider === "meta-instagram"
+      ? process.env.META_INSTAGRAM_REDIRECT_URI?.trim()
+      : process.env.META_FACEBOOK_REDIRECT_URI?.trim();
+  if (configuredRedirect) return configuredRedirect;
   const callbackPath = provider === "meta-instagram" ? "/api/instagram/oauth/callback" : "/api/meta/oauth/callback";
   return `${getAppUrl(request)}${callbackPath}`;
 }

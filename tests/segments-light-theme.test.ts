@@ -27,6 +27,7 @@ describe("segments light-theme polish", () => {
     expect(source).toContain("請先輸入分群名稱，才能儲存這組篩選條件。");
     expect(source).toContain("重新載入分群失敗，請稍後再試。");
     expect(source).toContain("刪除分群失敗，請稍後再試。");
+    expect(source).toContain('id="segment-delete-title" className="text-lg font-semibold text-[#111827]"');
     expect(source).toContain("flex flex-col-reverse gap-2 px-5 py-4 sm:flex-row sm:items-center sm:justify-end");
     expect(source).toContain('data-testid="segments-delete-dialog"');
     expect(source).toContain('data-testid="segments-confirm-delete"');
