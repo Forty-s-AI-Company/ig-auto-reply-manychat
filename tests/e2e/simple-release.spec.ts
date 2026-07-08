@@ -79,7 +79,7 @@ test.describe("simple release smoke", () => {
     await expect(page.getByTestId("automation-sequence-disabled")).toContainText("完整版開放");
     await expect(page.getByTestId("automation-sequence-disabled")).toHaveAttribute(
       "title",
-      "序列功能目前只在完整版本開放。簡版生產站先保留說明，不直接開放這個入口。",
+      "功能即將推出",
     );
     await expect(page.locator("body")).toContainText("目前只是把範圍說清楚，不是假裝序列已經在簡版可直接使用。");
   });

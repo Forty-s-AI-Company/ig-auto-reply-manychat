@@ -27,7 +27,7 @@ const authenticatedRouteSmokes: AuthenticatedRouteSmoke[] = [
   { path: "/automations", heading: /自動化/, bodyText: /自動化|流程|資料夾|新增/ },
   { path: "/sequences", heading: /序列/, bodyText: /序列列表|建立序列|訂閱聯絡人/ },
   { path: "/referrals", heading: /推薦活動/, bodyText: /你的推薦碼|推薦紀錄|推薦/ },
-  { path: "/billing", heading: /方案與用量/, bodyText: /目前方案|PayUNI|發票紀錄|受控開通|測試站/ },
+  { path: "/billing", heading: /方案與用量/, bodyText: /目前方案|安全付款說明|帳單與付款紀錄|尚未開放購買/ },
 ];
 
 function routeUrlPattern(path: string) {
@@ -109,7 +109,8 @@ test.describe("public and protected navigation", () => {
     await page.locator('a[href="/signup?plan=pro"]').click();
     await expect(page).toHaveURL(/\/signup\?plan=pro(?:[&#].*)?$/);
     await expect(page.getByTestId("signup-selected-plan")).toContainText("Pro");
-    await expect(page.getByTestId("signup-selected-plan")).toContainText("PayUNI Sandbox");
+    await expect(page.getByTestId("signup-selected-plan")).toContainText("方案與用量");
+    await expect(page.getByTestId("signup-selected-plan")).toContainText("推薦折抵");
     await expect(page.getByTestId("signup-back-to-pricing")).toHaveAttribute("href", "/pricing");
   });
 
@@ -176,9 +177,9 @@ test.describe("authenticated route smoke", () => {
     await page.getByTestId("automation-trigger-filter").selectOption("all");
     await expect(page.getByRole("button", { name: "回收桶" })).toBeDisabled();
     await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("aria-describedby", "automation-trash-disabled-reason");
-    await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("title", /受控開通/);
+    await expect(page.getByTestId("automation-trash-disabled")).toHaveAttribute("title", /功能即將推出/);
     await expect(page.getByTestId("automation-trash-disabled")).not.toHaveAttribute("title", /沒接好/);
-    await expect(page.locator("#automation-trash-disabled-reason")).toContainText("還原、永久刪除與稽核紀錄");
+    await expect(page.locator("#automation-trash-disabled-reason")).toContainText("功能即將推出");
     await page.getByTestId("automation-tab-basic").click();
     await expect(page.getByTestId("automation-basic-disabled-new-follower")).toBeDisabled();
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toBeDisabled();
@@ -187,9 +188,9 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toHaveAttribute("aria-describedby", "automation-basic-disabled-opening-prompts-reason");
     await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toHaveAttribute("aria-describedby", "automation-basic-disabled-story-mentions-reason");
     await expect(page.getByTestId("automation-basic-disabled-main-menu")).toHaveAttribute("aria-describedby", "automation-basic-disabled-main-menu-reason");
-    await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toContainText("受控開通");
-    await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toContainText("受控開通");
-    await expect(page.getByTestId("automation-basic-disabled-main-menu")).toContainText("受控開通");
+    await expect(page.getByTestId("automation-basic-disabled-opening-prompts")).toContainText("即將推出");
+    await expect(page.getByTestId("automation-basic-disabled-story-mentions")).toContainText("即將推出");
+    await expect(page.getByTestId("automation-basic-disabled-main-menu")).toContainText("即將推出");
 
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/automations", { waitUntil: "domcontentloaded" });
@@ -201,12 +202,12 @@ test.describe("authenticated route smoke", () => {
     await expect(page.getByLabel("返回自動化列表")).toBeVisible();
     await expect(page.getByLabel("展開節點編輯面板")).toHaveCount(0);
     await expect(page.getByTestId("automation-editor-more-disabled")).toBeDisabled();
-    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-label", "更多操作受控開通");
+    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-label", "更多操作即將推出");
     await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("aria-describedby", "automation-editor-more-disabled-reason");
-    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("title", /受控開通/);
+    await expect(page.getByTestId("automation-editor-more-disabled")).toHaveAttribute("title", /功能即將推出/);
     await expect(page.getByTestId("automation-editor-more-disabled")).not.toHaveAttribute("title", /沒有接好/);
-    await expect(page.locator("#automation-editor-more-disabled-reason")).toContainText("複製、封存與匯出");
-    await expect(page.getByPlaceholder("搜尋其他自動化…")).toBeVisible();
+    await expect(page.locator("#automation-editor-more-disabled-reason")).toContainText("功能即將推出");
+    await expect(page.getByPlaceholder("搜尋所有自動化…")).toHaveCount(0);
   });
 
   test("shows analytics scope and data-state guidance", async ({ page }) => {
@@ -308,8 +309,9 @@ test.describe("authenticated route smoke", () => {
   test("shows billing sandbox gate guidance", async ({ page }) => {
     await page.goto("/billing", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { name: /方案與用量/ })).toBeVisible();
-    await expect(page.locator("body")).toContainText(/PayUNI 測試站|PayUNI 正式站/);
-    await expect(page.locator("body")).toContainText(/受控開通|正式站尚未開通自動扣款|目前付款會先走 sandbox/);
+    await expect(page.locator("body")).toContainText("安全付款說明");
+    await expect(page.locator("body")).toContainText(/付款資料不由 InboxPilot 保存|付款會在 PayUNI 安全頁面完成/);
+    await expect(page.locator("body")).toContainText(/線上付款可用|付款服務準備中/);
   });
 
   test("shows Referrals in the shared light dashboard style", async ({ page }) => {
@@ -363,8 +365,7 @@ test.describe("authenticated route smoke", () => {
     await expect(page.locator("body")).toContainText("說明中心");
     await expect(page.getByRole("link", { name: "AI 設定" })).toHaveAttribute("href", "/ai-settings");
     await expect(page.getByLabel("選擇介面語言")).toHaveValue("zh-TW");
-    await expect(page.getByLabel("選擇介面語言")).toContainText("English（受控開通）");
-    await expect(page.getByTestId("profile-language-help")).toContainText("英文介面會在翻譯、客服與審核文案整理完成後受控開通");
+    await expect(page.getByLabel("選擇介面語言")).toContainText("English（即將推出）");
     await expect(page.locator("body")).not.toContainText("進階功能");
     await expect(page.locator("body")).not.toContainText("排隊中");
     await page.getByRole("button", { name: "關閉選單", exact: true }).click();
